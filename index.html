@@ -25,6 +25,14 @@
   </head>
 
   <body>
+
+    <script>
+  const redirect = sessionStorage.getItem("redirect-path");
+  if (redirect) {
+    sessionStorage.removeItem("redirect-path");
+    history.replaceState(null, "", redirect);
+  }
+</script>
     <div id="root"></div>
   </body>
 </html>
