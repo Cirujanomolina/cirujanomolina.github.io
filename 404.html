@@ -1,8 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="refresh" content="0; url=/" />
+    <meta charset="utf-8" />
+    <title>Redirecting…</title>
+    <script>
+      // Preserve the original path and query
+      const redirectTo = window.location.pathname + window.location.search + window.location.hash;
+
+      // Store it temporarily
+      sessionStorage.setItem("redirect-path", redirectTo);
+
+      // Redirect to root
+      window.location.replace("/");
+    </script>
   </head>
   <body></body>
 </html>
