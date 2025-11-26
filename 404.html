@@ -3,14 +3,18 @@
   <head>
     <meta charset="utf-8" />
     <title>Redirecting…</title>
-    <script>
-      // Preserve the original path and query
-      const redirectTo = window.location.pathname + window.location.search + window.location.hash;
 
-      // Store it temporarily
+    <script>
+      // Preserve original path + query + hash
+      const redirectTo =
+        window.location.pathname +
+        window.location.search +
+        window.location.hash;
+
+      // Store temporarily
       sessionStorage.setItem("redirect-path", redirectTo);
 
-      // Redirect to root
+      // Redirect to root (index.html)
       window.location.replace("/");
     </script>
   </head>
