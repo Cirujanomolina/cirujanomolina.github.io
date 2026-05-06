@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -25,7 +25,7 @@
             font-weight: 300;
         }
 
-        /* HEADER BANNER - MISMA ESTÉTICA QUE EL NEWSLETTER */
+        /* HEADER BANNER */
         .header-banner {
             background-color: var(--vn);
             height: 140px; 
@@ -167,6 +167,17 @@
             display: inline-block;
         }
 
+        /* ESTADO DE CARGA Y ERRORES */
+        #loading-message, #error-message {
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+        }
+        #error-message {
+            color: #ff6b6b;
+            display: none;
+        }
+
         /* FOOTER */
         .footer {
             background-color: var(--hueso);
@@ -205,12 +216,12 @@
             .header-banner { padding: 0 20px; }
             td, th { padding: 10px; font-size: 12px; }
             .btn-view { padding: 5px 8px; font-size: 10px; }
+            .stats { flex-direction: column; }
         }
     </style>
 </head>
 <body>
 
-    <!-- HEADER IDÉNTICO AL NEWSLETTER -->
     <header class="header-banner">
         <div class="header-logo-box">
             <img src="https://uyzywbvbftlvegpzyzvy.supabase.co/storage/v1/object/public/Logos/Dr.%20Juan%20Santiago%20Molina%20logo-11%20big.png" alt="Símbolo Dr. Molina">
@@ -225,26 +236,28 @@
         <div class="stats">
             <div class="stat-card">
                 <h3>Total Registros</h3>
-                <p id="count-total">0</p>
+                <p id="count-total">Cargando...</p>
             </div>
             <div class="stat-card">
                 <h3>Hoy</h3>
-                <p id="count-today">0</p>
+                <p id="count-today">Cargando...</p>
             </div>
         </div>
 
         <div class="search-container">
-            <input type="text" id="searchInput" class="search-input" placeholder="Omnibuscador: Escribe nombre, cédula, ciudad o email..." onkeyup="filterTable()">
+            <input type="text" id="searchInput" class="search-input" placeholder="Omnibuscador: Escribe nombre, ciudad, email o cédula..." onkeyup="filterTable()">
         </div>
 
         <div class="table-wrapper">
-            <table id="patientTable">
+            <div id="loading-message">Conectando con la base de datos de Supabase...</div>
+            <div id="error-message"></div>
+            <table id="patientTable" style="display: none;">
                 <thead>
                     <tr>
                         <th>Fecha</th>
                         <th>Nombre Completo</th>
                         <th>Ciudad</th>
-                        <th>Email</th>
+                        <th>Email / Teléfono</th>
                         <th>Acción</th>
                     </tr>
                 </thead>
@@ -255,7 +268,6 @@
         </div>
     </main>
 
-    <!-- FOOTER IDÉNTICO AL NEWSLETTER -->
     <footer class="footer">
         <div class="footer-logo-crop">
             <img src="https://uyzywbvbftlvegpzyzvy.supabase.co/storage/v1/object/public/Logos/Dr.%20Juan%20Santiago%20Molina%20logo%20(1)-09.png" alt="Dr. Juan Santiago Molina">
@@ -266,23 +278,45 @@
     </footer>
 
     <script>
-        // CONFIGURACIÓN DE SUPABASE
-        const SUPA_URL = "TU_SUPABASE_URL";
-        const SUPA_KEY = "TU_SUPABASE_ANON_KEY";
+        // ==========================================
+        // TUS CREDENCIALES DE SUPABASE YA INYECTADAS
+        // ==========================================
+        const SUPA_URL = "https://uyzywbvbftlvegpzyzvy.supabase.co"; 
+        const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5enl3YnZiZnRsdmVncHp5enZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5NDg3MjIsImV4cCI6MjA5MzUyNDcyMn0.sTvVxvOt7NmZ3t-kGhngIbtjl3pWSj5t1S7KVEx6Xlk"; 
+        
+        const TABLE_NAME = "Preconsulta_Bariatrica";
 
         async function fetchPatients() {
+            const loadingMsg = document.getElementById('loading-message');
+            const errorMsg = document.getElementById('error-message');
+            const table = document.getElementById('patientTable');
+
             try {
-                const response = await fetch(`${SUPA_URL}/rest/v1/Preconsulta_Bariatrica?select=*&order=created_at.desc`, {
+                const response = await fetch(`${SUPA_URL}/rest/v1/${TABLE_NAME}?select=*&order=created_at.desc`, {
                     headers: {
                         'apikey': SUPA_KEY,
                         'Authorization': 'Bearer ' + SUPA_KEY
                     }
                 });
+                
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta de red: ' + response.status);
+                }
+
                 const data = await response.json();
+                
+                loadingMsg.style.display = 'none';
+                table.style.display = 'table';
+                
                 renderTable(data);
                 updateStats(data);
             } catch (error) {
                 console.error('Error cargando pacientes:', error);
+                loadingMsg.style.display = 'none';
+                errorMsg.style.display = 'block';
+                errorMsg.innerHTML = 'Hubo un error al cargar los datos. Por favor, revisa la consola para más detalles.';
+                document.getElementById('count-total').textContent = 'Error';
+                document.getElementById('count-today').textContent = 'Error';
             }
         }
 
@@ -290,17 +324,26 @@
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
 
+            if (patients.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px;">No hay pacientes registrados aún en Supabase.</td></tr>';
+                return;
+            }
+
             patients.forEach(p => {
                 const row = document.createElement('tr');
-                const date = new Date(p.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                const dateObj = new Date(p.created_at);
+                const date = dateObj.toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' });
                 
                 row.innerHTML = `
                     <td>${date}</td>
-                    <td style="font-weight: 400; color: var(--teal);">${p.nombre_completo || 'Sin nombre'}</td>
+                    <td style="font-weight: 600; color: var(--teal);">${p.nombre_completo || 'Sin nombre'}</td>
                     <td>${p.ciudad || 'N/A'}</td>
-                    <td style="opacity: 0.7;">${p.email || 'N/A'}</td>
                     <td>
-                        <a href="visualizador_paciente.html?id=${p.id}" class="btn-view">Ver Ficha</a>
+                        <span style="opacity: 0.9;">${p.email || 'N/A'}</span><br>
+                        <span style="font-size: 11px; opacity: 0.6;">${p.telefono || ''}</span>
+                    </td>
+                    <td>
+                        <a href="visualizador_paciente.html?id=${p.id}" class="btn-view" target="_blank">Ver Ficha</a>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -309,8 +352,8 @@
 
         function updateStats(data) {
             document.getElementById('count-total').textContent = data.length;
-            const today = new Date().toISOString().split('T')[0];
-            const todayCount = data.filter(p => p.created_at.startsWith(today)).length;
+            const todayStr = new Date().toISOString().split('T')[0];
+            const todayCount = data.filter(p => p.created_at.startsWith(todayStr)).length;
             document.getElementById('count-today').textContent = todayCount;
         }
 
@@ -324,7 +367,9 @@
                 const td = tr[i].getElementsByTagName("td");
                 let textContent = "";
                 for(let j = 0; j < td.length; j++) {
-                    textContent += td[j].innerText + " ";
+                    if (td[j]) {
+                        textContent += td[j].textContent || td[j].innerText + " ";
+                    }
                 }
                 if (textContent.toUpperCase().indexOf(filter) > -1) {
                     tr[i].style.display = "";
@@ -334,10 +379,11 @@
             }
         }
 
-        // Carga inicial
+        // Ejecutar al cargar la página
         fetchPatients();
     </script>
 </body>
 </html>
+
 
 ```
