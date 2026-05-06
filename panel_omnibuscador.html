@@ -1,0 +1,343 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Pacientes — Dr. Juan Santiago Molina</title>
+    <!-- Fuentes: Cormorant Garamond 300 y Archivo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Archivo:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --vn: #14262D;    /* Verde Nocturno */
+            --va: #1F434E;    /* Verde Azulado */
+            --beige: #CCC2A7; /* Beige Marca */
+            --teal: #2ABFB0;  /* Teal Acento */
+            --hueso: #F4F5F0; /* Color Hueso */
+        }
+
+        body {
+            background-color: var(--vn);
+            margin: 0;
+            padding: 0;
+            font-family: 'Archivo', sans-serif;
+            color: var(--hueso);
+            font-weight: 300;
+        }
+
+        /* HEADER BANNER - MISMA ESTÉTICA QUE EL NEWSLETTER */
+        .header-banner {
+            background-color: var(--vn);
+            height: 140px; 
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0 45px;
+            border-bottom: 4px solid var(--teal);
+        }
+
+        .header-logo-box {
+            height: 80px; 
+            width: auto;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-logo-box img {
+            height: 80px; 
+            width: auto;
+            object-fit: contain;
+        }
+
+        .banner-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 300;
+            font-size: 32px;
+            color: var(--hueso);
+            letter-spacing: 0.5px;
+            border-left: 1px solid rgba(204, 194, 167, 0.4);
+            padding-left: 25px;
+            margin-left: 15px;
+            line-height: 1;
+            text-transform: lowercase;
+        }
+        .banner-title::first-letter { text-transform: uppercase; }
+
+        /* CONTENIDO PRINCIPAL */
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .search-container {
+            margin-bottom: 40px;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--va);
+            border: 1px solid var(--beige);
+            border-radius: 4px;
+            padding: 20px;
+            color: white;
+            font-size: 18px;
+            font-family: 'Archivo', sans-serif;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: var(--teal);
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--va);
+            padding: 20px;
+            border-radius: 4px;
+            flex: 1;
+            border-bottom: 2px solid var(--teal);
+        }
+
+        .stat-card h3 {
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--beige);
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .stat-card p {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--teal);
+        }
+
+        /* TABLA DE PACIENTES */
+        .table-wrapper {
+            background: #ffffff10;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid rgba(204, 194, 167, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: var(--va);
+            padding: 15px 20px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 18px;
+            color: var(--teal);
+            border-bottom: 1px solid var(--beige);
+        }
+
+        td {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(204, 194, 167, 0.1);
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: rgba(42, 191, 176, 0.05);
+        }
+
+        .btn-view {
+            background: var(--teal);
+            color: var(--vn);
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 2px;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+        }
+
+        /* FOOTER */
+        .footer {
+            background-color: var(--hueso);
+            padding: 10px 20px 45px 20px;
+            text-align: center;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 60px;
+        }
+
+        .footer-logo-crop {
+            height: 110px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .footer-logo-crop img {
+            height: 320px; 
+            width: auto;
+            object-fit: contain;
+        }
+
+        .footer-tagline {
+            font-family: 'Archivo', sans-serif;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--beige);
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .banner-title { font-size: 24px; }
+            .header-banner { padding: 0 20px; }
+            td, th { padding: 10px; font-size: 12px; }
+            .btn-view { padding: 5px 8px; font-size: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER IDÉNTICO AL NEWSLETTER -->
+    <header class="header-banner">
+        <div class="header-logo-box">
+            <img src="https://uyzywbvbftlvegpzyzvy.supabase.co/storage/v1/object/public/Logos/Dr.%20Juan%20Santiago%20Molina%20logo-11%20big.png" alt="Símbolo Dr. Molina">
+        </div>
+        <div class="banner-title">
+            gestión de pacientes
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Total Registros</h3>
+                <p id="count-total">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Hoy</h3>
+                <p id="count-today">0</p>
+            </div>
+        </div>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="Omnibuscador: Escribe nombre, cédula, ciudad o email..." onkeyup="filterTable()">
+        </div>
+
+        <div class="table-wrapper">
+            <table id="patientTable">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Nombre Completo</th>
+                        <th>Ciudad</th>
+                        <th>Email</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Los datos se cargarán aquí -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- FOOTER IDÉNTICO AL NEWSLETTER -->
+    <footer class="footer">
+        <div class="footer-logo-crop">
+            <img src="https://uyzywbvbftlvegpzyzvy.supabase.co/storage/v1/object/public/Logos/Dr.%20Juan%20Santiago%20Molina%20logo%20(1)-09.png" alt="Dr. Juan Santiago Molina">
+        </div>
+        <div class="footer-tagline">
+            Humanidad, ciencia y acompañamiento real
+        </div>
+    </footer>
+
+    <script>
+        // CONFIGURACIÓN DE SUPABASE
+        const SUPA_URL = "TU_SUPABASE_URL";
+        const SUPA_KEY = "TU_SUPABASE_ANON_KEY";
+
+        async function fetchPatients() {
+            try {
+                const response = await fetch(`${SUPA_URL}/rest/v1/Preconsulta_Bariatrica?select=*&order=created_at.desc`, {
+                    headers: {
+                        'apikey': SUPA_KEY,
+                        'Authorization': 'Bearer ' + SUPA_KEY
+                    }
+                });
+                const data = await response.json();
+                renderTable(data);
+                updateStats(data);
+            } catch (error) {
+                console.error('Error cargando pacientes:', error);
+            }
+        }
+
+        function renderTable(patients) {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            patients.forEach(p => {
+                const row = document.createElement('tr');
+                const date = new Date(p.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                
+                row.innerHTML = `
+                    <td>${date}</td>
+                    <td style="font-weight: 400; color: var(--teal);">${p.nombre_completo || 'Sin nombre'}</td>
+                    <td>${p.ciudad || 'N/A'}</td>
+                    <td style="opacity: 0.7;">${p.email || 'N/A'}</td>
+                    <td>
+                        <a href="visualizador_paciente.html?id=${p.id}" class="btn-view">Ver Ficha</a>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function updateStats(data) {
+            document.getElementById('count-total').textContent = data.length;
+            const today = new Date().toISOString().split('T')[0];
+            const todayCount = data.filter(p => p.created_at.startsWith(today)).length;
+            document.getElementById('count-today').textContent = todayCount;
+        }
+
+        function filterTable() {
+            const input = document.getElementById("searchInput");
+            const filter = input.value.toUpperCase();
+            const table = document.getElementById("patientTable");
+            const tr = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < tr.length; i++) {
+                const td = tr[i].getElementsByTagName("td");
+                let textContent = "";
+                for(let j = 0; j < td.length; j++) {
+                    textContent += td[j].innerText + " ";
+                }
+                if (textContent.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+
+        // Carga inicial
+        fetchPatients();
+    </script>
+</body>
+</html>
+
+```
