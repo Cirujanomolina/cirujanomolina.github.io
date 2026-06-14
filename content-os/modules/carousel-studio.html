@@ -1,0 +1,2433 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carrusel Studio — Content OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="../design-system.css">
+<!-- Librerías para exportar a PNG y ZIP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<style>
+/* ── ESTILOS DEL MÓDULO ── */
+body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: 'Archivo', sans-serif; }
+body { display: flex; flex-direction: column; height: 100vh; }
+.topbar { display: none; } /* Removido en favor de vb-header */
+
+/* ── HEADER PREMIUM ── */
+.vb-header {
+    background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 2rem;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-shrink: 0;
+}
+.vb-header::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.04;
+    pointer-events: none;
+}
+.vb-header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px;
+    left: 5%;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: var(--beige);
+    opacity: 0.03;
+    pointer-events: none;
+}
+.vb-header-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 1;
+    min-width: 0;
+}
+.vb-header-actions {
+    z-index: 1;
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+}
+.vb-title {
+    font-family: var(--f-display);
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 300;
+    color: var(--text);
+    line-height: 1.1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.vb-title em {
+    color: var(--accent);
+    font-style: italic;
+}
+.vb-badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+.vb-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 11px;
+    border-radius: 20px;
+    background: rgba(42, 191, 176, 0.1);
+    border: 1px solid rgba(42, 191, 176, 0.25);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--accent);
+}
+
+/* Layout Split */
+.split-view { display: flex; flex: 1; overflow: hidden; }
+
+/* PANEL IZQUIERDO: FORMULARIO */
+.left-panel { flex: 1; min-width: 600px; border-right: 1px solid var(--border2); background: var(--surface); display: flex; flex-direction: column; }
+.panel-header { padding: 15px 20px; border-bottom: 1px solid var(--border2); font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text2); }
+.panel-content { flex: 1; overflow-y: auto; padding: 20px; }
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 11px; color: var(--text2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
+.field input, .field textarea, .field select { width: 100%; padding: 10px; background: var(--bg); border: 1px solid var(--border2); color: var(--text); border-radius: var(--radius); font-family: 'Archivo', sans-serif; font-size: 13px; }
+.field input:focus, .field textarea:focus, .field select:focus { outline: none; border-color: var(--accent); }
+
+/* Lista de Slides */
+.slide-item { padding: 12px; background: var(--bg); border: 1px solid var(--border2); border-radius: var(--radius); margin-bottom: 8px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: space-between; }
+.slide-item:hover, .slide-item.active { border-color: var(--accent); }
+.slide-item-title { font-weight: 600; font-size: 13px; }
+.slide-item-type { font-size: 10px; color: var(--accent); background: rgba(42,191,176,0.1); padding: 2px 6px; border-radius: 4px; margin-top: 4px; display: inline-block; }
+
+/* PANEL DERECHO: PREVIEW */
+.right-panel { width: 460px; background: var(--bg2); display: flex; flex-direction: column; flex-shrink: 0; }
+.preview-header { padding: 10px 20px; border-bottom: 1px solid var(--border2); display: flex; justify-content: space-between; align-items: center; }
+.preview-container { flex: 1; overflow: auto; display: flex; justify-content: center; align-items: center; padding: 40px; }
+.preview-wrapper { 
+    transform-origin: top left; 
+    transition: transform 0.2s;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+/* ── DISEÑO DEL SLIDE (REGLAS DE LA SKILL) ── */
+.slide-box {
+    /* TOKENS DE @CIRUJANOMOLINA */
+    --black: #14262D;
+    --smoke: #1F444E;
+    --cream: #CCC2A7;
+    --white: #F4F5F0;
+    --accent: #2ABFB0;
+    --safe: 80px;
+    --f-display: 'Cormorant Garamond', serif;
+    --f-serif: 'Cormorant Garamond', serif;
+    --f-body: 'Archivo', sans-serif;
+    --f-mono: 'Archivo', sans-serif;
+
+    width: 1080px;
+    height: 1350px;
+    position: relative;
+    overflow: hidden;
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--f-body);
+}
+.slide-box * { box-sizing: border-box; }
+
+.ui-top { position: absolute; top: var(--safe); left: var(--safe); z-index: 30; }
+.ui-tag { font-family: var(--f-mono); font-weight: 500; font-size: 16px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cream); }
+.ui-tag .star { color: var(--accent); }
+
+.slide-num { position: absolute; bottom: 60px; right: 60px; z-index: 35; font-family: var(--f-mono); font-weight: 500; font-size: 14px; letter-spacing: 0.18em; color: var(--cream); opacity: 0.7; }
+.logo-corner { position: absolute; bottom: 60px; left: 60px; z-index: 35; opacity: 0.8; }
+
+.hero { font-family: var(--f-display); font-weight: 400; line-height: 0.92; letter-spacing: -0.015em; color: var(--white); text-transform: none; text-align: left; }
+.hero-large { font-size: 200px; }
+.hero-medium { font-size: 145px; }
+.hero-small { font-size: 105px; }
+.hero-xsmall { font-size: 80px; }
+
+.italic-accent { font-family: var(--f-serif); font-style: italic; font-weight: 400; letter-spacing: -0.025em; color: var(--accent); }
+
+.body-text { font-family: var(--f-body); font-weight: 400; font-size: 36px; line-height: 1.4; color: var(--cream); }
+
+.vignette { position: absolute; inset: 0; z-index: 10; pointer-events: none; background: linear-gradient(to bottom, rgba(20,38,45,0.2) 0%, transparent 30%, transparent 60%, rgba(20,38,45,0.95) 100%); }
+
+/* GHOST NUMBER */
+.ghost { position: absolute; font-family: var(--f-display); font-weight: 400; line-height: 0.78; color: transparent; -webkit-text-stroke: 3px var(--smoke); pointer-events: none; z-index: 5; opacity: 0.85; }
+
+/* Renderizador Oculto para Exportar */
+#export-container { position: absolute; top: -10000px; left: -10000px; width: 1080px; }
+
+/* SWITCH TOGGLE */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 22px;
+    flex-shrink: 0;
+}
+.switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: var(--border2);
+    transition: 0.3s;
+    border-radius: 22px;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background-color: var(--text);
+    transition: 0.3s;
+    border-radius: 50%;
+}
+.switch input:checked + .slider {
+    background-color: var(--accent);
+}
+.switch input:checked + .slider:before {
+    transform: translateX(22px);
+    background-color: #14262D;
+}
+.toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--accent);
+    color: #14262D;
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    font-size: 12px;
+    font-weight: 600;
+    z-index: 9999;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    max-width: 280px;
+    animation: fadeIn 0.2s ease;
+}
+</style>
+</head>
+<body>
+
+<header class="vb-header">
+    <div class="vb-header-main">
+        <h1 class="vb-title">Carousel <em>Studio</em></h1>
+        <div class="vb-badges">
+            <span class="vb-badge"><i class="ti ti-carousel-horizontal"></i> Diseñador de Carruseles</span>
+            <span class="vb-badge"><i class="ti ti-brand-instagram"></i> @cirujanomolina</span>
+            <span class="vb-badge"><i class="ti ti-download"></i> Exportación Zip/PNG</span>
+        </div>
+    </div>
+    <div class="vb-header-actions">
+        <button class="btn btn-outline" id="btn-assets-manager" onclick="abrirAssetsModal()"><i class="ti ti-photo"></i> Biblioteca Assets</button>
+        <button class="btn btn-outline" onclick="reiniciar()"><i class="ti ti-refresh"></i> Nuevo</button>
+        <button class="btn btn-primary" id="btn-guardar" onclick="saveCarrusel()" style="display:none;"><i class="ti ti-device-floppy"></i> Guardar</button>
+        <button class="btn btn-primary" onclick="exportarZIP()" id="btn-exportar" style="display:none;"><i class="ti ti-download"></i> Exportar PNGs</button>
+    </div>
+</header>
+
+<div class="split-view fade-in">
+        <!-- FORMULARIO / LISTA DE SLIDES -->
+        <div class="left-panel">
+            <div id="view-generator">
+                <div class="panel-header">🪄 Generador IA (@Molina)</div>
+                <div class="panel-content" style="max-width: 600px; margin: 0 auto; padding: 30px 20px;">
+                    <p style="font-size:12px; color:var(--text2); margin-bottom:20px; line-height:1.4;">
+                        Ingresa un tema o dolor del paciente y el sistema generará automáticamente la estructura y los copys de un carrusel de alto rendimiento.
+                    </p>
+                    <div class="field">
+                        <label>Tema o Idea Principal</label>
+                        <textarea id="gen-tema" rows="3" placeholder="Ej: Por qué la manga gástrica falla a los 5 años y cómo la reganancia de peso no es falta de voluntad..."></textarea>
+                    </div>
+                    <div class="field">
+                        <label>Pilar de Contenido</label>
+                        <select id="gen-pilar">
+                            <option value="mitos">Mitos Bariátricos</option>
+                            <option value="mindset">Nutrición & Mindset</option>
+                            <option value="historias">Historias Reales / Testimonios</option>
+                            <option value="autoridad">Autoridad & Casos Clínicos</option>
+                            <option value="estilo">Estilo de Vida Saludable</option>
+                        </select>
+                    </div>
+                    <div class="field" style="display:flex; gap:10px;">
+                        <div style="flex:1;">
+                            <label>Objetivo</label>
+                            <select id="gen-objetivo">
+                                <option value="educar">Educar / Enseñar</option>
+                                <option value="conectar">Generar Conexión</option>
+                                <option value="vender">Vender (Call to Action Fuerte)</option>
+                                <option value="entretener">Entretener</option>
+                            </select>
+                        </div>
+                        <div style="flex:1;">
+                            <label>Emoción a Evocar</label>
+                            <select id="gen-emocion">
+                                <option value="empatia">Empatía / Alivio</option>
+                                <option value="urgencia">Urgencia / Acción</option>
+                                <option value="curiosidad">Curiosidad</option>
+                                <option value="inspiracion">Inspiración / Esperanza</option>
+                                <option value="indignacion">Indignación (Contra la industria)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Ángulo del Copy</label>
+                        <select id="gen-angulo">
+                            <option value="emocional">Emocional (Basado en la persona)</option>
+                            <option value="cientifico">Científico (Basado en datos y biología)</option>
+                            <option value="contrarian">Contrarian (Desmintiendo creencias)</option>
+                            <option value="directo">Directo al Grano (Sin rodeos)</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" style="width:100%; justify-content:center; margin-top:20px; font-size:14px; padding:12px;" onclick="generarCarrusel()"><i class="ti ti-wand"></i> Generar Carrusel Estratégico</button>
+                    <div style="margin-top: 25px; border-top: 1px solid var(--border2); padding-top: 20px;">
+                        <button class="btn btn-outline" style="width:100%; justify-content:center; padding:10px; font-size:12px;" onclick="abrirAssetsModal()">
+                            <i class="ti ti-photo-library"></i> Explorar & Indexar Biblioteca de Fotos
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-editor" style="display:none; flex-direction:column; height:100%; width:100%;">
+                <div class="panel-header" style="display:flex; justify-content:space-between; flex-shrink: 0; align-items: center;">
+                    <span style="font-family:'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; text-transform: none;">Editor de Carrusel</span>
+                    <button class="btn btn-outline" onclick="volverGenerador()" style="padding: 6px 12px; font-size: 11px;"><i class="ti ti-arrow-left"></i> Volver al Generador</button>
+                </div>
+                
+                <div style="display:flex; flex:1; overflow:hidden;">
+                    <!-- Columna 1: Lista de Slides -->
+                    <div style="width: 250px; border-right: 1px solid var(--border2); display: flex; flex-direction: column; overflow: hidden; height: 100%;">
+                        <div class="panel-header" style="font-size: 10px; color: var(--text2); background: var(--bg2); border-bottom: 1px solid var(--border2); flex-shrink: 0; padding: 10px 15px;">DIAPOSITIVAS</div>
+                        <div class="panel-content" id="lista-slides" style="flex: 1; overflow-y: auto; padding: 15px;">
+                            <!-- Los slides se inyectan aquí -->
+                        </div>
+                    </div>
+                    
+                    <!-- Columna 2: Editor de Slide Activo -->
+                    <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden; height: 100%; background: var(--bg2);">
+                        <div class="panel-header" style="font-size: 10px; color: var(--text2); background: var(--bg2); border-bottom: 1px solid var(--border2); flex-shrink: 0; padding: 10px 15px;">EDITAR SLIDE ACTIVO</div>
+                        <div class="panel-content" id="form-slide" style="flex: 1; overflow-y: auto; padding: 20px;">
+                            <!-- Campos dinámicos -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PREVIEW -->
+        <div class="right-panel">
+            <div class="preview-header">
+                <div style="font-size:12px; font-weight:600; color:var(--text2);">VISTA PREVIA <span id="preview-indicator"></span></div>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn btn-outline" style="padding:4px 8px;" onclick="zoom(-0.1)"><i class="ti ti-zoom-out"></i></button>
+                    <button class="btn btn-outline" style="padding:4px 8px;" onclick="zoom(0.1)"><i class="ti ti-zoom-in"></i></button>
+                </div>
+            </div>
+            <div class="preview-container" style="flex: 1; overflow: auto; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding: 20px; gap: 20px;">
+                <!-- Caja de Consejo de Layout -->
+                <div id="layout-tip-box" style="width: 100%; max-width: 410px; background: rgba(42, 191, 176, 0.08); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 var(--radius) var(--radius) 0; font-size: 12px; line-height: 1.4; color: var(--text2); display: none; margin-bottom: 5px; box-sizing: border-box;">
+                </div>
+                
+                <!-- Contenedor con tamaño escalado dinámico para centrado perfecto -->
+                <div id="preview-scale-box" style="width: 410.4px; height: 513px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; position: relative; overflow: visible;">
+                    <div class="preview-wrapper" id="preview-wrapper" style="position: absolute; left: 0; top: 0; width: 1080px; height: 1350px; transform: scale(0.38); transform-origin: top left; flex-shrink: 0;">
+                        <!-- Render del HTML del slide seleccionado -->
+                    </div>
+                </div>
+                <!-- Controles de navegación de slides -->
+                <div class="preview-nav" id="preview-nav" style="display: none; gap: 15px; align-items: center; justify-content: center; z-index: 40;">
+                    <button class="btn btn-outline" onclick="prevSlide()" style="padding: 10px 18px; border-radius: 30px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                        <i class="ti ti-arrow-left"></i> Anterior
+                    </button>
+                    <span id="nav-counter" style="font-family: 'Archivo', sans-serif; font-size: 14px; font-weight: 600; color: var(--text); min-width: 90px; text-align: center;">Slide 1 / 10</span>
+                    <button class="btn btn-outline" onclick="nextSlide()" style="padding: 10px 18px; border-radius: 30px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                        Siguiente <i class="ti ti-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Contenedor oculto para renderizar los 10 slides y exportar -->
+<div id="export-container"></div>
+
+<script type="module">
+import { supabase } from '../supabase-client.js';
+
+async function logActivity(action, details) {
+  const activeUser = JSON.parse(localStorage.getItem('content_os_user') || '{}');
+  if (!activeUser.email) return;
+  try {
+    await supabase.from('audit_logs').insert({
+      user_email: activeUser.email,
+      user_name: activeUser.name,
+      action: action,
+      details: details
+    });
+  } catch (err) {
+    console.error("Error logging activity:", err);
+  }
+}
+
+let currentCarruselId = null;
+let currentStatus = 'en_creacion';
+let linkedIdeaId = null;
+
+// --- MOTOR DE ASSETS (IMÁGENES Y LOGOS) ---
+const DEFAULT_IMAGES = [
+    'IMG_20260211_112414.jpg',
+    'IMG_20260211_114317.jpg',
+    'IMG_20260218_100913.jpg',
+    'IMG_20260218_102743.jpg',
+    'IMG_20260218_111136.jpg',
+    'dji_mimo_20260213_072742_0_1777725894329_photo.jpg',
+    'dji_mimo_20260217_094656_0_1777726006441_pano.jpg',
+    'dji_mimo_20260226_133918_0_1777726477803_photo.jpg',
+    'dji_mimo_20260226_154100_0_1772153181469_photo.jpg'
+];
+
+const IMAGES_DB = [...DEFAULT_IMAGES];
+let IMAGES_METADATA = [];
+let LOGOS_DB = [
+    'Logo Completo Blanco.png',
+    'Logo Completo Oscuro.png',
+    'Logo Nombre Blanco.png',
+    'Logo Nombre Oscuro.png',
+    'Logo Superpuesto Blanco.png',
+    'Logo Superpuesto Oscuro.png',
+    'Sello oscuro.png',
+    'Sello.png',
+    'Símbolo Blanco.png',
+    'Símbolo Oscuro.png'
+];
+
+async function loadAssets() {
+    try {
+        const res = await fetch('/api/assets');
+        if (!res.ok) throw new Error("Servidor API no disponible");
+        const data = await res.json();
+        
+        IMAGES_METADATA = data.images;
+        LOGOS_DB = data.logos || LOGOS_DB;
+        
+        IMAGES_DB.length = 0;
+        IMAGES_DB.push(...data.images.map(img => img.name));
+        console.log("Assets cargados desde el servidor API local:", IMAGES_METADATA);
+    } catch (e) {
+        console.warn("Fallo al conectar con el servidor local. Usando fallbacks estáticos:", e);
+        // Intentar parsear el listado estático como antes
+        await loadImagesFromDirectory();
+        
+        // Rellenar metadatos vacíos para las imágenes
+        IMAGES_METADATA = IMAGES_DB.map(img => ({
+            name: img,
+            path: `../assets/images_database/${img}`,
+            photo_type: "Desconocido",
+            subject: "Desconocido",
+            detailed_description: "",
+            mood: "Desconocido",
+            safe_space: "Desconocido",
+            suggested_filename: ""
+        }));
+    }
+}
+
+async function loadImagesFromDirectory() {
+    try {
+        const response = await fetch('../assets/images_database/');
+        if (!response.ok) return;
+        const text = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, 'text/html');
+        const links = doc.querySelectorAll('a');
+        const images = [];
+        links.forEach(link => {
+            const href = link.getAttribute('href') || link.innerText;
+            if (href) {
+                const cleanHref = href.trim();
+                const lower = cleanHref.toLowerCase();
+                if (lower.endsWith('.jpg') || lower.endsWith('.jpeg') || lower.endsWith('.png') || lower.endsWith('.webp')) {
+                    const filename = cleanHref.split('/').pop();
+                    if (filename && !images.includes(filename)) {
+                        images.push(filename);
+                    }
+                }
+            }
+        });
+        if (images.length > 0) {
+            IMAGES_DB.length = 0;
+            IMAGES_DB.push(...images);
+        }
+    } catch (e) {
+        console.warn("Usando base de datos estática:", e);
+    }
+}
+
+// Cargar imágenes al iniciar la página
+window.addEventListener('DOMContentLoaded', loadAssets);
+
+function getRandomImage() {
+    if (IMAGES_DB.length === 0) return 'https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=1080&h=1350&fit=crop';
+    const img = IMAGES_DB[Math.floor(Math.random() * IMAGES_DB.length)];
+    return `../assets/images_database/${img}`;
+}
+
+function isImageCompatible(imagePath, layoutId) {
+    if (!imagePath) return false;
+    const filename = imagePath.split('/').pop();
+    const meta = IMAGES_METADATA.find(img => img.name === filename);
+    if (!meta) return true; // Si no hay metadatos, asumimos compatible
+    
+    let targetSpaces = [];
+    if (layoutId === 'content-photo-split') {
+        targetSpaces = ['bottom-left', 'left-half'];
+    } else if (layoutId === 'cover-cinematic-center' || layoutId === 'hero-foto') {
+        targetSpaces = ['top-left', 'top-right', 'top-half', 'center'];
+    } else {
+        return true;
+    }
+    
+    return targetSpaces.includes(meta.safe_space);
+}
+
+function getAssetRating(imgMeta, layoutId) {
+    if (!imgMeta) return null;
+    
+    const safeSpace = imgMeta.safe_space;
+    const subjectPos = imgMeta.subject_position;
+    
+    let safeSpaceOk = false;
+    let subjectPosOk = false;
+    
+    if (layoutId === 'cover-cinematic-center' || layoutId === 'hero-foto') {
+        const allowedSpaces = ['center', 'bottom-half', 'bottom-left', 'bottom-right', 'left-half', 'right-half'];
+        const allowedSubjectPositions = ['center', 'top-half', 'top-left', 'top-right'];
+        
+        safeSpaceOk = allowedSpaces.includes(safeSpace);
+        subjectPosOk = allowedSubjectPositions.includes(subjectPos);
+    } else if (layoutId === 'content-photo-split') {
+        const allowedSpaces = ['left-half', 'bottom-left', 'top-left', 'center'];
+        const allowedSubjectPositions = ['right-half', 'top-right', 'bottom-right'];
+        
+        safeSpaceOk = allowedSpaces.includes(safeSpace);
+        subjectPosOk = allowedSubjectPositions.includes(subjectPos);
+    } else {
+        return null;
+    }
+    
+    if (safeSpaceOk && subjectPosOk) {
+        return 'recomendada';
+    } else if (safeSpaceOk || subjectPosOk) {
+        return 'buena';
+    }
+    return null;
+}
+
+// --- BASE DE DATOS DE LAYOUTS ---
+function renderSlideLogo(slide) {
+    if (slide.show_logo === false) return '';
+    
+    let logoFile = slide.logo_file;
+    if (!logoFile) {
+        let theme = slide.logo_theme;
+        if (!theme) {
+            theme = (slide.type === 'tesis' || slide.type === 'insight') ? 'oscuro' : 'claro';
+        }
+        logoFile = theme === 'oscuro' ? 'Logo Completo Oscuro.png' : 'Logo Completo Blanco.png';
+    }
+    
+    const logoUrl = `../assets/logos/${logoFile}`;
+    const pos = slide.logo_position || (slide.layout === 'cover-cinematic-center' ? 'bottom-center' : 'bottom-left');
+    
+    let posStyle = '';
+    if (pos === 'top-left') posStyle = 'top: 80px; left: 80px;';
+    else if (pos === 'top-center') posStyle = 'top: 80px; left: 50%; transform: translateX(-50%);';
+    else if (pos === 'top-right') posStyle = 'top: 80px; right: 80px;';
+    else if (pos === 'bottom-right') posStyle = 'bottom: 60px; right: 80px;';
+    else if (pos === 'bottom-center') posStyle = 'bottom: 60px; left: 50%; transform: translateX(-50%);';
+    else if (pos === 'bottom-left') posStyle = 'bottom: 60px; left: 80px;';
+    
+    return `<img src="${logoUrl}" style="position: absolute; ${posStyle} width: 220px; height: auto; opacity: 0.9; z-index: 35;" onerror="this.style.display='none';">`;
+}
+
+function renderSlideTints(slide) {
+    let html = '';
+    
+    const color = slide.tint_color || '#2ABFB0';
+    const direction = slide.tint_direction || 'to bottom';
+    const opacity = slide.tint_opacity !== undefined ? parseFloat(slide.tint_opacity) : 0.15;
+    
+    if (opacity > 0) {
+        const cleanHex = color.replace('#', '');
+        const r = parseInt(cleanHex.substring(0, 2), 16) || 42;
+        const g = parseInt(cleanHex.substring(2, 4), 16) || 191;
+        const b = parseInt(cleanHex.substring(4, 6), 16) || 176;
+        
+        html += `<div class="tint-layer" style="position:absolute; inset:0; background: linear-gradient(${direction}, rgba(${r},${g},${b},0) 0%, rgba(${r},${g},${b},${opacity}) 100%); z-index: 11; pointer-events: none;"></div>`;
+    }
+    
+    if (slide.tint_dark_active === true) {
+        const darkDir = slide.tint_dark_direction || 'to bottom';
+        const darkOp = slide.tint_dark_opacity !== undefined ? parseFloat(slide.tint_dark_opacity) : 0.6;
+        if (darkOp > 0) {
+            html += `<div class="dark-tint-layer" style="position:absolute; inset:0; background: linear-gradient(${darkDir}, rgba(15,30,36,0) 0%, rgba(15,30,36,${darkOp}) 100%); z-index: 12; pointer-events: none;"></div>`;
+        }
+    }
+    
+    return html;
+}
+
+function getShadowStyle(key, slide) {
+    const level = slide[`${key}_shadow`] || 'none';
+    if (level === 'none') return '';
+    
+    // Determinar si el fondo es claro
+    let isLightBg = false;
+    if (slide.layout) {
+        isLightBg = slide.logo_theme === 'oscuro';
+    } else {
+        if (slide.type === 'tesis' || slide.type === 'insight') {
+            isLightBg = true;
+        } else if (slide.logo_theme) {
+            isLightBg = slide.logo_theme === 'oscuro';
+        }
+    }
+    
+    // Si el fondo es claro la sombra debe ser oscura. Si el fondo es oscuro la sombra debe ser clara.
+    const shadowColor = isLightBg ? 'rgba(20, 38, 45, 0.4)' : 'rgba(0, 0, 0, 0.7)';
+    const shadowColorStrong = isLightBg ? 'rgba(20, 38, 45, 0.65)' : 'rgba(0, 0, 0, 0.95)';
+    
+    if (level === 'soft') {
+        return `text-shadow: 0 2px 6px ${shadowColor};`;
+    }
+    if (level === 'strong') {
+        return `text-shadow: 0 4px 14px ${shadowColorStrong}, 0 2px 4px ${shadowColorStrong};`;
+    }
+    return '';
+}
+
+
+const LAYOUTS_DB = {
+    'cover-cinematic-center': {
+        id: 'cover-cinematic-center',
+        name: 'Portada Cinemática Centrada (Molina)',
+        category: 'cover',
+        tip: 'Selecciona una imagen con el sujeto principal bien centrado. El 1/4 inferior debe ser lo suficientemente oscuro o simple para que los textos en mayúsculas y la palabra de acento resalten con contraste.',
+        default_data: {
+            tag: 'EXCLUSIVO',
+            title1: 'DON\'T SHOOT',
+            title2: 'YOUR NEXT',
+            accent: 'CAMPAIGN',
+            badge: 'CURATE IT WITH AI.',
+            logo_theme: 'claro',
+            tint_color: '#2ABFB0',
+            tint_direction: 'to bottom',
+            tint_opacity: 0.12,
+            tint_dark_active: true,
+            tint_dark_direction: 'to bottom',
+            tint_dark_opacity: 0.9
+        },
+        fields: [
+            { key: 'tag', label: 'Etiqueta superior', type: 'text' },
+            { key: 'title1', label: 'Título Línea 1 (Archivo)', type: 'text' },
+            { key: 'title2', label: 'Título Línea 2 (Archivo)', type: 'text' },
+            { key: 'accent', label: 'Palabra Acento (Garamond Itálica)', type: 'text' },
+            { key: 'badge', label: 'Tag inclinado (Teal)', type: 'text' },
+            { key: 'bg', label: 'Foto de fondo', type: 'select_bg' },
+            { key: 'logo_theme', label: 'Tema de Logo (blanco/oscuro)', type: 'select_logo_theme' }
+        ],
+        render: function(slide, index, total) {
+            const num = `${String(index+1).padStart(2,'0')} / ${String(total).padStart(2,'0')}`;
+            const isDarkLogo = slide.logo_theme === 'oscuro';
+            const textColor = isDarkLogo ? 'var(--black)' : 'var(--white)';
+            const starColor = isDarkLogo ? 'var(--smoke)' : 'var(--accent)';
+            const tagColor = isDarkLogo ? 'var(--smoke)' : 'var(--cream)';
+            
+            const shadowTitle1 = getShadowStyle('title1', slide);
+            const shadowTitle2 = getShadowStyle('title2', slide);
+            const shadowAccent = getShadowStyle('accent', slide);
+            const shadowBadge = getShadowStyle('badge', slide);
+            const shadowTag = getShadowStyle('tag', slide);
+
+            return `
+            <div class="slide-box" style="background: ${isDarkLogo ? 'var(--white)' : 'var(--black)'};">
+                <img src="${slide.bg}" onerror="this.src='https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=1080&h=1350&fit=crop'" style="position:absolute; width:100%; height:100%; object-fit:cover; object-position:center 30%;">
+                ${renderSlideTints(slide)}
+                
+                ${slide.show_tag !== false ? `
+                <div class="ui-top" style="z-index: 30; ${shadowTag}">
+                    <span class="ui-tag" style="color: ${tagColor}; font-weight: 600;"><span class="star" style="color: ${starColor};">*</span> ${slide.tag}</span>
+                </div>` : ''}
+                
+                <div style="position:absolute; inset: 0 80px; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; padding-bottom:180px; text-align:center; z-index:25;">
+                    <div style="font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 115px; line-height: 0.85; letter-spacing: -0.03em; text-transform: uppercase; color: ${textColor}; margin-bottom: 5px;">
+                        <span style="display:inline-block; ${shadowTitle1}">${parseMarkdown(slide.title1)}</span><br>
+                        <span style="display:inline-block; ${shadowTitle2}">${parseMarkdown(slide.title2)}</span>
+                     </div>
+                     <div style="font-family: 'Cormorant Garamond', serif; font-weight: 400; font-style: italic; font-size: 150px; line-height: 0.85; letter-spacing: -0.02em; color: var(--accent); margin-top: -35px; margin-bottom: 15px; position: relative; z-index: 10; ${shadowAccent}">
+                         ${parseMarkdown(slide.accent)}
+                     </div>
+                     <div style="font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 26px; letter-spacing: 0.05em; text-transform: uppercase; background-color: var(--accent); color: var(--black); padding: 12px 24px; transform: rotate(-2.5deg) translateY(-5px); display: inline-block; position: relative; z-index: 20; box-shadow: 0 8px 16px rgba(0,0,0,0.3); ${shadowBadge}">
+                         ${parseMarkdown(slide.badge)}
+                     </div>
+                </div>
+                
+                ${renderSlideLogo(slide)}
+                ${slide.show_counter !== false ? `<div class="slide-num" style="left: auto; right: 80px; bottom: 60px; color: ${isDarkLogo ? 'var(--smoke)' : 'var(--cream)'}; opacity: 0.8; z-index: 35;">${num}</div>` : ''}
+            </div>`;
+        }
+    },
+    'content-photo-split': {
+        id: 'content-photo-split',
+        name: 'Contenido Editorial Foto Completa (Derecha)',
+        category: 'content',
+        tip: 'Selecciona una foto donde el sujeto o elemento de interés ocupe los 2/4 superiores y el 1/4 inferior derecho. El 1/4 inferior izquierdo debe estar libre y despejado para que el texto y el botón CTA se integren de forma natural sobre el fondo completo.',
+        default_data: {
+            tag: 'PROCESO',
+            title: 'Wear what you *believe* in.',
+            subtitle: 'The new collection.',
+            cta_text: 'Explore Now →',
+            cta_box_style: 'border',
+            logo_theme: 'claro',
+            tint_color: '#2ABFB0',
+            tint_direction: 'to bottom',
+            tint_opacity: 0.0,
+            tint_dark_active: false,
+            tint_dark_direction: 'to bottom',
+            tint_dark_opacity: 0.4
+        },
+        fields: [
+            { key: 'tag', label: 'Etiqueta superior', type: 'text' },
+            { key: 'title', label: 'Título (Usa *texto* o _texto_ para acentuar en color/sin itálica)', type: 'text' },
+            { key: 'subtitle', label: 'Subtítulo (Archivo)', type: 'text' },
+            { key: 'cta_text', label: 'Texto botón CTA', type: 'text' },
+            { key: 'cta_box_style', label: 'Estilo de botón', type: 'select_cta_style' },
+            { key: 'bg', label: 'Foto de fondo (Derecha)', type: 'select_bg' },
+            { key: 'logo_theme', label: 'Tema de Logo (blanco/oscuro)', type: 'select_logo_theme' }
+        ],
+        render: function(slide, index, total) {
+            const num = `${String(index+1).padStart(2,'0')} / ${String(total).padStart(2,'0')}`;
+            const isDarkLogo = slide.logo_theme === 'oscuro';
+            const textColor = isDarkLogo ? 'var(--black)' : 'var(--white)';
+            const subColor = isDarkLogo ? 'var(--smoke)' : 'var(--cream)';
+            
+            const shadowTitle = getShadowStyle('title', slide);
+            const shadowSubtitle = getShadowStyle('subtitle', slide);
+            const shadowCta = getShadowStyle('cta_text', slide);
+            const shadowTag = getShadowStyle('tag', slide);
+            
+            const parseSplitTitle = (text) => {
+                if (!text) return '';
+                let formatted = text.replace(/[\*_]{2}(.*?)[\*_]{2}/g, '<span style="font-family:\'Archivo\', sans-serif; font-style:normal; color:var(--accent); font-weight:600;">$1</span>');
+                formatted = formatted.replace(/[\*_](.*?)[\*_]/g, '<span style="font-family:\'Archivo\', sans-serif; font-style:normal; color:var(--accent); font-weight:600;">$1</span>');
+                formatted = formatted.replace(/\\([_*])/g, '$1');
+                return formatted;
+            };
+
+            const isSolidCta = slide.cta_box_style === 'solid';
+            const ctaStyle = isSolidCta 
+                ? 'background: var(--accent); color: var(--black); border: none; font-weight: 600;'
+                : 'border: 1px solid var(--accent); color: var(--accent); background: transparent; font-weight: 500;';
+            
+            if (!slide.bg) slide.bg = getRandomImage();
+            const bgImage = slide.bg;
+            const solidColor = isDarkLogo ? 'var(--white)' : 'var(--black)';
+
+            return `
+            <div class="slide-box" style="background: ${solidColor};">
+                <img src="${bgImage}" onerror="this.src='https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=1080&h=1350&fit=crop'" style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 30%;">
+                ${renderSlideTints(slide)}
+                
+                
+                ${slide.show_tag !== false ? `
+                <div class="ui-top" style="z-index: 30; ${shadowTag}">
+                    <span class="ui-tag" style="color: ${isDarkLogo ? 'var(--smoke)' : 'var(--cream)'}; font-weight: 600;"><span class="star" style="color: var(--accent); font-weight:600;">*</span> ${slide.tag}</span>
+                </div>` : ''}
+                
+                <div style="position:absolute; left:80px; bottom:160px; max-width:480px; z-index:25; text-align: left; display:flex; flex-direction:column; gap:20px; align-items: flex-start;">
+                    <div style="font-family: 'Cormorant Garamond', serif; font-size: 80px; font-style: italic; line-height: 1.05; letter-spacing: -0.015em; color: ${textColor}; ${shadowTitle}">
+                        ${parseSplitTitle(slide.title)}
+                    </div>
+                    <div style="font-family: 'Archivo', sans-serif; font-weight: 400; font-size: 28px; line-height: 1.4; color: ${subColor}; ${shadowSubtitle}">
+                        ${parseMarkdown(slide.subtitle)}
+                    </div>
+                    ${slide.cta_text ? `
+                    <div style="${ctaStyle} padding: 12px 24px; display: inline-block; font-size: 18px; font-family: 'Archivo', sans-serif; text-transform: uppercase; letter-spacing:0.05em; z-index: 10; margin-top: 10px; ${shadowCta}">
+                        ${parseMarkdown(slide.cta_text)}
+                    </div>` : ''}
+                </div>
+                
+                ${(slide.show_handle !== false && (slide.show_logo === false || slide.logo_position !== 'bottom-left')) ? `
+                <div style="position:absolute; bottom:60px; left:80px; z-index:35;">
+                    <div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;color:${textColor}; opacity: 0.8;">@cirujanomolina</div>
+                </div>` : ''}
+                ${renderSlideLogo(slide)}
+                ${slide.show_counter !== false ? `<div class="slide-num" style="left: auto; right: 80px; bottom: 60px; color: ${isDarkLogo ? 'var(--smoke)' : 'var(--cream)'}; opacity: 0.8; z-index: 35;">${num}</div>` : ''}
+            </div>`;
+        }
+    },
+    'cta-standard': {
+        id: 'cta-standard',
+        name: 'Llamado a la Acción Estándar (Molina)',
+        category: 'cta',
+        tip: 'Si usas foto de fondo, prefiere texturas sutiles, abstractas o desenfocadas. El protagonismo debe pertenecer enteramente a los botones de acción y a la frase de cierre.',
+        default_data: {
+            tag: 'CIERRE',
+            hero: '¿Listo para recuperar quien eres?',
+            action1: 'AGENDA TU CONSULTA',
+            desc1: 'Haz clic en el enlace de mi perfil para hablar.',
+            action2: 'COMPARTE',
+            desc2: 'Envía este carrusel a alguien que lo necesite.',
+            logo_theme: 'claro'
+        },
+        fields: [
+            { key: 'tag', label: 'Etiqueta superior', type: 'text' },
+            { key: 'hero', label: 'Frase de Cierre (Cormorant Garamond)', type: 'text' },
+            { key: 'action1', label: 'Acción 1 (Archivo)', type: 'text' },
+            { key: 'desc1', label: 'Descripción 1 (Archivo)', type: 'text' },
+            { key: 'action2', label: 'Acción 2 (Archivo, Opcional)', type: 'text' },
+            { key: 'desc2', label: 'Descripción 2 (Archivo, Opcional)', type: 'text' },
+            { key: 'logo_theme', label: 'Tema de Logo (blanco/oscuro)', type: 'select_logo_theme' }
+        ],
+        render: function(slide, index, total) {
+            const num = `${String(index+1).padStart(2,'0')} / ${String(total).padStart(2,'0')}`;
+            const isDarkLogo = slide.logo_theme === 'oscuro';
+            const textColor = isDarkLogo ? 'var(--black)' : 'var(--white)';
+            const subColor = isDarkLogo ? 'var(--smoke)' : 'var(--cream)';
+            
+            const shadowHero = getShadowStyle('hero', slide);
+            const shadowAction1 = getShadowStyle('action1', slide);
+            const shadowDesc1 = getShadowStyle('desc1', slide);
+            const shadowAction2 = getShadowStyle('action2', slide);
+            const shadowDesc2 = getShadowStyle('desc2', slide);
+            const shadowTag = getShadowStyle('tag', slide);
+
+            const sizeClass = getHeroSizeClass(slide.hero);
+            let correctedSizeClass = sizeClass;
+            if (sizeClass === 'hero-large') correctedSizeClass = 'hero-medium';
+
+            const logoMarkup = renderSlideLogo(slide);
+
+            return `
+            <div class="slide-box" style="background: ${isDarkLogo ? 'var(--white)' : 'var(--black)'};">
+                <div class="ghost" style="font-size:800px; left:-80px; top:-100px; opacity:0.2; color: ${isDarkLogo ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.05)'}; pointer-events:none;">?</div>
+                ${slide.show_tag !== false ? `
+                <div class="ui-top" style="${shadowTag}">
+                    <span class="ui-tag" style="color: ${isDarkLogo ? 'var(--smoke)' : 'var(--cream)'}; font-weight: 600;">
+                        <span class="star" style="color: var(--accent);">*</span> ${slide.tag}
+                    </span>
+                </div>` : ''}
+                <div style="position:absolute; left:80px; right:80px; top:160px; z-index:25;">
+                    <div class="hero ${correctedSizeClass}" style="margin-top:48px; color: ${textColor}; ${shadowHero}">
+                        ${parseMarkdown(slide.hero)}
+                    </div>
+                    <div style="margin-top:50px; display:flex; flex-direction:column; gap:28px;">
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                            <div style="display:flex; align-items:center; gap:16px;">
+                                <span style="font-family:var(--f-display); font-size:56px; line-height:1; color:var(--accent); display:inline-block; transform:translateY(-2px);">↓</span>
+                                <span style="font-family:var(--f-display); font-size:62px; line-height:1; color:${textColor}; ${shadowAction1}">
+                                    ${parseMarkdown(slide.action1)}
+                                </span>
+                            </div>
+                            <div style="font-family:var(--f-body); font-weight:400; font-size:24px; color:${subColor}; padding-left:44px; ${shadowDesc1}">
+                                ${parseMarkdown(slide.desc1)}
+                            </div>
+                        </div>
+                        ${slide.action2 ? `
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                            <div style="display:flex; align-items:center; gap:16px;">
+                                <span style="font-family:var(--f-display); font-size:56px; line-height:1; color:var(--accent); display:inline-block; transform:translateY(-2px);">↗</span>
+                                <span style="font-family:var(--f-display); font-size:62px; line-height:1; color:${textColor}; ${shadowAction2}">
+                                    ${parseMarkdown(slide.action2)}
+                                </span>
+                            </div>
+                            <div style="font-family:var(--f-body); font-weight:400; font-size:24px; color:${subColor}; padding-left:44px; ${shadowDesc2}">
+                                ${parseMarkdown(slide.desc2)}
+                            </div>
+                        </div>` : ''}
+                    </div>
+                </div>
+                ${logoMarkup}
+                ${slide.show_counter !== false ? `<div class="slide-num" style="left: auto; right: 80px; bottom: 60px; color: ${isDarkLogo ? 'var(--smoke)' : 'var(--cream)'}; opacity: 0.8; z-index: 35;">${num}</div>` : ''}
+            </div>`;
+        }
+    }
+};
+
+function limpiarCamposExcepto(s, llavesValidas) {
+    const llavesPreservar = ['type', 'layout', 'bg', 'logo_theme', 'show_logo', 'logo_position', 'show_counter', 'show_tag', 'show_handle'];
+    Object.keys(s).forEach(key => {
+        if (llavesPreservar.includes(key)) return;
+        if (key.endsWith('_shadow')) return;
+        if (llavesValidas.includes(key)) return;
+        delete s[key];
+    });
+}
+
+function cambiarLayout(layoutId) {
+    const s = currentSlides[activeSlideIndex];
+    
+    // 1. Extraer los textos actuales de forma agnóstica para preservarlos
+    let titleVal = '';
+    let subtitleVal = '';
+    let accentVal = '';
+
+    if (s.title1 || s.title2) {
+        titleVal = ((s.title1 || '') + ' ' + (s.title2 || '')).trim();
+    } else if (s.title) {
+        titleVal = s.title;
+    } else if (s.line1 || s.line2) {
+        titleVal = ((s.line1 || '') + ' ' + (s.line2 || '')).trim();
+    } else if (s.hero) {
+        titleVal = s.hero;
+    } else if (s.header) {
+        titleVal = s.header;
+    }
+
+    if (s.subtitle) {
+        subtitleVal = s.subtitle;
+    } else if (s.body) {
+        subtitleVal = s.body;
+    } else if (s.desc1) {
+        subtitleVal = s.desc1;
+    } else if (s.subheader) {
+        subtitleVal = s.subheader;
+    }
+
+    if (s.accent) {
+        accentVal = s.accent;
+    } else if (s.italic) {
+        accentVal = s.italic;
+    } else if (s.cta_text) {
+        accentVal = s.cta_text;
+    } else if (s.badge) {
+        accentVal = s.badge;
+    } else if (s.action1) {
+        accentVal = s.action1;
+    }
+
+    // Preservar tag
+    const tagVal = s.tag || 'INFO';
+
+    // 2. Establecer el nuevo layout
+    s.layout = layoutId;
+    
+    const layout = LAYOUTS_DB[layoutId];
+    if (layout) {
+        if (layoutId === 'content-photo-split') {
+            const llavesValidas = ['tag', 'title', 'subtitle', 'cta_text', 'cta_box_style'];
+            limpiarCamposExcepto(s, llavesValidas);
+            
+            s.tag = tagVal;
+            s.title = titleVal || 'Wear what you *believe* in.';
+            s.subtitle = subtitleVal || 'The new collection.';
+            s.cta_text = accentVal || 'Explore Now →';
+        } else if (layoutId === 'cover-cinematic-center') {
+            const llavesValidas = ['tag', 'title1', 'title2', 'accent', 'badge'];
+            limpiarCamposExcepto(s, llavesValidas);
+            
+            s.tag = tagVal;
+            if (titleVal) {
+                const words = titleVal.split(' ');
+                s.title1 = words.slice(0, Math.ceil(words.length / 2)).join(' ');
+                s.title2 = words.slice(Math.ceil(words.length / 2)).join(' ');
+            }
+            
+            if (subtitleVal && accentVal) {
+                if (subtitleVal.length >= accentVal.length) {
+                    s.accent = subtitleVal;
+                    s.badge = accentVal;
+                } else {
+                    s.accent = accentVal;
+                    s.badge = subtitleVal;
+                }
+            } else if (subtitleVal) {
+                s.accent = subtitleVal;
+                s.badge = 'Recupera quien eres';
+            } else if (accentVal) {
+                s.accent = accentVal;
+                s.badge = 'Recupera quien eres';
+            }
+        } else if (layoutId === 'cta-standard') {
+            const llavesValidas = ['tag', 'hero', 'action1', 'desc1', 'action2', 'desc2'];
+            limpiarCamposExcepto(s, llavesValidas);
+            
+            s.tag = tagVal;
+            s.hero = titleVal;
+            s.desc1 = subtitleVal;
+            s.action1 = accentVal;
+        }
+        
+        // Rellenar con default_data si quedó algún campo vacío
+        Object.keys(layout.default_data).forEach(key => {
+            if (s[key] === undefined || s[key] === null || s[key] === '') {
+                s[key] = layout.default_data[key];
+            }
+        });
+        
+        // Asignar imagen si no tiene una
+        if (!s.bg || s.bg === '') {
+            s.bg = getRandomImage();
+        }
+    } else if (layoutId === 'default') {
+        // Restaurar campos según s.type
+        if (s.type === 'hero-foto') {
+            const llavesValidas = ['tag', 'title1', 'title2', 'subtitle', 'accent'];
+            limpiarCamposExcepto(s, llavesValidas);
+            s.tag = tagVal;
+            if (titleVal) {
+                const words = titleVal.split(' ');
+                s.title1 = words.slice(0, Math.ceil(words.length / 2)).join(' ');
+                s.title2 = words.slice(Math.ceil(words.length / 2)).join(' ');
+            }
+            s.subtitle = subtitleVal;
+            s.accent = accentVal;
+        } else if (s.type === 'hero-texto') {
+            const llavesValidas = ['tag', 'title', 'subtitle', 'italic'];
+            limpiarCamposExcepto(s, llavesValidas);
+            s.tag = tagVal;
+            s.title = titleVal || 'Sin Título';
+            s.subtitle = subtitleVal || 'Sin Subtítulo';
+            s.italic = accentVal || 'Detalle';
+        } else if (s.type === 'tesis') {
+            const llavesValidas = ['tag', 'line1', 'line2'];
+            limpiarCamposExcepto(s, llavesValidas);
+            s.tag = tagVal;
+            if (titleVal) {
+                const words = titleVal.split(' ');
+                s.line1 = words.slice(0, Math.ceil(words.length / 2)).join(' ');
+                s.line2 = words.slice(Math.ceil(words.length / 2)).join(' ');
+            } else {
+                s.line1 = 'Tesis';
+                s.line2 = 'Línea';
+            }
+        } else if (s.type === 'regla') {
+            const llavesValidas = ['tag', 'ghost', 'title', 'body', 'italic'];
+            limpiarCamposExcepto(s, llavesValidas);
+            s.tag = tagVal;
+            s.title = titleVal || 'Regla o Principio';
+            s.body = subtitleVal || 'Cuerpo de la regla explicando el concepto principal.';
+            s.italic = accentVal || 'Detalle final';
+            if (!s.ghost) s.ghost = String(activeSlideIndex + 1).padStart(2, '0');
+        } else if (s.type === 'insight') {
+            const llavesValidas = ['tag', 'line1', 'accent'];
+            limpiarCamposExcepto(s, llavesValidas);
+            s.tag = tagVal;
+            s.line1 = titleVal || 'Insight';
+            s.accent = accentVal || 'Acento';
+        } else if (s.type === 'bento') {
+            const llavesValidas = ['tag', 'header', 'subheader', 'c1_title', 'c1_cap', 'c2_title', 'c2_cap', 'c3_title', 'c3_cap', 'c4_title', 'c4_cap'];
+            limpiarCamposExcepto(s, llavesValidas);
+            s.tag = tagVal;
+            s.header = titleVal || 'Estructura Bento';
+            s.subheader = subtitleVal || 'Detalle de los puntos clave';
+            for (let i = 1; i <= 4; i++) {
+                s[`c${i}_title`] = s[`c${i}_title`] || `Paso ${i}`;
+                s[`c${i}_cap`] = s[`c${i}_cap`] || `Detalle ${i}`;
+            }
+        } else if (s.type === 'cta') {
+            const llavesValidas = ['tag', 'hero', 'action1', 'desc1', 'action2', 'desc2'];
+            limpiarCamposExcepto(s, llavesValidas);
+            s.tag = tagVal;
+            s.hero = titleVal || '¿Listo para el cambio?';
+            s.action1 = accentVal || 'AGENDA TU CITA';
+            s.desc1 = subtitleVal || 'Haz clic en el enlace de mi perfil.';
+        }
+        
+        // Asignar imagen si no tiene una
+        if ((s.type === 'hero-foto') && (!s.bg || s.bg === '')) {
+            s.bg = getRandomImage();
+        }
+    }
+    
+    actualizarEditor();
+    actualizarPreview();
+}
+
+// --- ALGORITMO GENERADOR (MOCK DE LA SKILL) ---
+let currentSlides = [];
+let activeSlideIndex = 0;
+let currentZoom = 0.38;
+
+async function generarCarrusel() {
+    const tema = document.getElementById('gen-tema').value || 'La realidad de la manga gástrica';
+    
+    // Leemos las variables estratégicas
+    const pilar = document.getElementById('gen-pilar').value;
+    const objetivo = document.getElementById('gen-objetivo').value;
+    const emocion = document.getElementById('gen-emocion').value;
+    const angulo = document.getElementById('gen-angulo').value;
+    
+    const btn = document.querySelector('button[onclick="generarCarrusel()"]');
+    const oldText = btn.innerHTML;
+    btn.innerHTML = '<i class="ti ti-loader ti-spin"></i> Generando IA...';
+    btn.disabled = true;
+
+    const prompt = `Eres CARRUSEL STUDIO, director creativo y copywriter experto operando en MODO @MOLINA.
+
+IDENTIDAD DE MARCA
+Quién es: Dr. Juan Santiago Molina V. — cirujano bariátrico y laparoscopista avanzado (@cirujanomolina / Visual Brain Molina).
+Tagline: "Recupera quien eres." / "Humanidad, ciencia y acompañamiento real."
+Posicionamiento: El cirujano bariátrico premium que combina humanidad, ciencia y acompañamiento real para transformar vidas de manera profunda y sostenible.
+
+TIPOGRAFÍA Y DISEÑO
+Cormorant Garamond: Titulares, hooks. Itálica en #2ABFB0 (Teal Vibrante) para 1-2 palabras de énfasis.
+Archivo: Cuerpo, subtítulos.
+Énfasis: 1-2 palabras clave del titular van en itálica y en Teal. NUNCA más de 2 palabras en teal por slide.
+IMPORTANTE: Escribe en minúsculas y mayúsculas normales (Sentence case / Mixed case), NUNCA todo en Mayúsculas. Queremos una tipografía elegante, no agresiva.
+
+VOZ DE MARCA
+Fórmula emocional: 70% emoción / 30% ciencia.
+SIEMPRE:
+- Validar antes de explicar: el paciente necesita sentirse escuchado primero.
+- Quitar la culpa: la obesidad es una enfermedad, no una falla de voluntad.
+- Hablar con calidez clínica: cercano pero con autoridad médica.
+- Usar "tú" (tuteo), nunca "usted".
+- Intensidad constante: ningún slide puede "bajar la guardia".
+NUNCA:
+- Frases de motivación vacía ("¡Tú puedes!").
+- Tono frío, corporativo o académico excesivo.
+- Lenguaje que sugiera que el paciente puede resolverlo solo sin ayuda médica.
+
+AUDIENCIA Y HERIDAS EMOCIONALES
+Avatares: Valeria (agotada, culpa, miedo al juicio, deseo de recuperar su identidad) y Andrés (metabólico, miedo al deterioro).
+Heridas a tocar: Vergüenza social, culpa por no bajar de peso, agotamiento por dietas fallidas, miedo a la cirugía, sentirse atrapados en su cuerpo.
+
+FRAMEWORKS DE HOOKS (Motores Emocionales)
+1. Validación de culpa ("No es falta de voluntad. Es biología.")
+2. Disonancia cognitiva ("La cirugía NO es la salida fácil.")
+3. Dolor silencioso ("Lo que más pesa no siempre se mide en kilos.")
+Gancho textual: Máximo 7 palabras, con 1-2 en teal. Entrada directa al conflicto.
+
+ARQUITECTURA DE CARRUSELES MOLINA (Tú decides cuál usar según el tema)
+- Largo (10 slides): Hook -> 2-3. Ejemplo/Historia -> 4-5. Dato visual -> 6-9. Valor práctico -> CTA.
+- Medio (6 slides): Hook -> 2. Contexto -> 3-4. Valor clave -> 5. Tensión/remate -> CTA.
+- Corto (4 slides): Hook -> 2-3. Valor concentrado -> CTA.
+
+SOLICITUD ACTUAL:
+Tema principal: "${tema}"
+Pilar de Contenido: ${pilar}
+Objetivo: ${objetivo}
+Emoción a Evocar: ${emocion}
+Ángulo del copy: ${angulo}
+
+INSTRUCCIONES DE SALIDA:
+Analiza el tema y decide si el carrusel debe ser de 4, 6 o 10 slides.
+Redacta el contenido aplicando MAGISTRALMENTE la Voz de Marca, validando la culpa y usando los Motores de Hooks.
+Devuelve ÚNICAMENTE un JSON válido (array de objetos). SIN MARKDOWN. SIN \`\`\`json. 
+
+Tipos de slide válidos y sus estructuras JSON exactas (SIGUE LAS REGLAS DE LONGITUD ESTRICTAMENTE O EL DISEÑO SE ROMPERÁ):
+1. { "type": "hero-foto", "tag": "TEXTO", "title1": "TEXTO (max 3 palabras)", "title2": "TEXTO (max 3 palabras)", "subtitle": "texto (max 6 palabras)", "accent": "1-2 palabras clave de acento en itálica Teal" } -> Ejemplo: "title1": "La cirugía no", "title2": "es la salida", "subtitle": "Es el inicio de una nueva", "accent": "_vida_"
+2. { "type": "hero-texto", "tag": "TEXTO", "title": "TEXTO GRANDE (max 6 palabras)", "subtitle": "texto (max 5 palabras)", "italic": "frase con impacto (max 4 palabras)" } -> Ejemplo: "title": "No es falta de voluntad", "subtitle": "Tu biología te está saboteando", "italic": "y no es tu _culpa_"
+3. { "type": "tesis", "tag": "TEXTO", "line1": "texto (max 3 palabras)", "line2": "texto (max 3 palabras)" } -> IMPORTANTE: Letra muy grande, máximo 6 palabras en total entre ambas líneas. Ejemplo: "line1": "La obesidad es", "line2": "una _enfermedad_"
+4. { "type": "regla", "tag": "TEXTO", "ghost": "01", "title": "titulo (max 5 palabras)", "body": "parrafo corto (MAX 25 PALABRAS. NUNCA TE PASES O SE CORTA EL TEXTO)", "italic": "frase punchline (max 4 palabras)" } -> Ejemplo: "body": "Tu cerebro defiende el peso más alto porque cree que te protege. No estás fallando tú, está actuando tu instinto de supervivencia."
+5. { "type": "insight", "tag": "TEXTO", "line1": "texto mayuscula (MÁXIMO 2 PALABRAS)", "accent": "frase italica teal (MÁXIMO 2 PALABRAS)" } -> IMPORTANTE: Este slide es visualmente gigante. No pongas oraciones completas aquí. Ejemplo: "line1": "NO ES TU", "accent": "_culpa_"
+6. { "type": "bento", "tag": "RESUMEN", "header": "texto (max 4 palabras)", "subheader": "texto (max 5 palabras)", "c1_title": "titulo corto (max 2 palabras)", "c1_cap": "descripcion (max 6 palabras)", "c2_title": "titulo (max 2 palabras)", "c2_cap": "desc (max 6)", "c3_title": "titulo (max 2 palabras)", "c3_cap": "desc (max 6)", "c4_title": "titulo (max 2 palabras)", "c4_cap": "desc (max 6)" }
+7. { "type": "cta", "tag": "CIERRE", "hero": "frase cierre (max 4 palabras)", "action1": "AGENDA (max 2 palabras)", "desc1": "texto (max 5 palabras)", "action2": "COMPARTE (max 2 palabras)", "desc2": "texto (max 5 palabras)" }
+
+IMPORTANTE: 
+- El carrusel debe iniciar OBLIGATORIAMENTE con un slide de tipo "hero-foto" para usar la foto de portada. El resto del carrusel sigue con el desarrollo ("regla", "tesis", etc.) y siempre termina con un "cta".
+- Usa guiones bajos (ej. _palabra_) en las palabras de acento o itálicas para aplicar el estilo Teal de manera automática en la web.`;
+
+        const apiKey = localStorage.getItem('gemini_api_key') || "AIzaSyDoFbsWJclf_aLUT7hJLF9mz86frAlJeec"; // Gemini API Key
+        
+    const maxRetries = 3;
+    let attempt = 0;
+    let res;
+    
+    while (attempt < maxRetries) {
+        try {
+            res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }],
+                    generationConfig: { response_mime_type: "application/json" }
+                })
+            });
+
+            if (res.status === 503 || res.status === 429) {
+                attempt++;
+                const is429 = res.status === 429;
+                btn.innerHTML = `<i class="ti ti-loader ti-spin"></i> ${is429 ? 'Límite de cuota superado' : 'API ocupada'}. Reintentando (${attempt}/${maxRetries})...`;
+                await new Promise(r => setTimeout(r, (is429 ? 4000 : 2000) * attempt)); // Espera exponencial
+                continue;
+            }
+
+            if (!res.ok) throw new Error("Error HTTP " + res.status);
+
+            const data = await res.json();
+            const textoJSON = data.candidates[0].content.parts[0].text;
+            
+            // Parsear el JSON
+            const obj = JSON.parse(textoJSON);
+            
+            // Asignar los fondos y layouts automáticamente
+            obj.forEach((slide, i) => {
+                if (i === 0) {
+                    slide.layout = 'cover-cinematic-center';
+                    const oldAccent = (slide.accent || '').trim();
+                    const oldSubtitle = (slide.subtitle || '').trim();
+                    
+                    // Asignar el más largo al acento (Garamond Itálica) y el más corto al badge
+                    if (oldSubtitle.length >= oldAccent.length) {
+                        slide.accent = oldSubtitle;
+                        slide.badge = oldAccent || 'Recupera quien eres';
+                    } else {
+                        slide.accent = oldAccent;
+                        slide.badge = oldSubtitle || 'Recupera quien eres';
+                    }
+                    
+                    // Eliminar campos antiguos
+                    delete slide.subtitle;
+                    
+                    if (!slide.logo_theme) {
+                        slide.logo_theme = 'claro';
+                    }
+                } else if (i === obj.length - 1) {
+                    slide.layout = 'cta-standard';
+                    if (!slide.logo_theme) {
+                        slide.logo_theme = 'claro';
+                    }
+                }
+                if (slide.type === 'hero-foto' || slide.layout === 'cover-cinematic-center' || slide.layout === 'content-photo-split') {
+                    slide.bg = getRandomImage();
+                }
+            });
+
+            currentSlides = obj;
+            
+            // Mostrar UI de edición
+            document.getElementById('view-generator').style.display = 'none';
+            document.getElementById('view-editor').style.display = 'flex';
+            document.getElementById('btn-exportar').style.display = 'block';
+            document.getElementById('preview-nav').style.display = 'flex';
+            document.getElementById('btn-assets-manager').style.display = 'block';
+            
+            renderListaSlides();
+            seleccionarSlide(0);
+            break; // Salió bien, rompemos el loop de reintentos
+
+        } catch (e) {
+            console.error("Error al generar con IA:", e);
+            if (attempt >= maxRetries - 1) {
+                alert("Hubo un error de conexión con los servidores de Google (Gemini) tras varios intentos. Por favor, espera un par de minutos y vuelve a intentarlo.");
+                break;
+            }
+            attempt++;
+            await new Promise(r => setTimeout(r, 2000 * attempt));
+        }
+    }
+
+    btn.innerHTML = oldText;
+    btn.disabled = false;
+}
+
+// --- RENDERIZADO DEL SLIDE A HTML ---
+function parseMarkdown(text) {
+    if (!text) return '';
+    // Reemplaza **texto**, __texto__, *texto* o _texto_ por una etiqueta span con estilo italic-accent
+    let formatted = text.replace(/[\*_]{2}(.*?)[\*_]{2}/g, '<span class="italic-accent">$1</span>');
+    formatted = formatted.replace(/[\*_](.*?)[\*_]/g, '<span class="italic-accent">$1</span>');
+    // Quita escapes de markdown si la IA los puso (ej. \_palabra\_)
+    formatted = formatted.replace(/\\([_*])/g, '$1');
+    return formatted;
+}
+
+function getHeroSizeClass(text) {
+    if (!text) return 'hero-large';
+    // Limpiamos formato markdown para medir la longitud del texto real
+    const plainText = text.replace(/[*_]/g, '');
+    const length = plainText.length;
+    if (length < 12) return 'hero-large';
+    if (length < 22) return 'hero-medium';
+    if (length < 35) return 'hero-small';
+    return 'hero-xsmall';
+}
+
+function buildSlideHTML(slide, index, total) {
+    const num = `${String(index+1).padStart(2,'0')} / ${String(total).padStart(2,'0')}`;
+    
+    // Si es un layout o tipo de slide que requiere fondo y no lo tiene, se lo asignamos de forma persistente para que no cambie al escribir
+    if (!slide.bg && (slide.type === 'hero-foto' || slide.layout === 'cover-cinematic-center' || slide.layout === 'content-photo-split')) {
+        slide.bg = getRandomImage();
+    }
+    
+    // Si tiene un layout definido en la base de datos de layouts, usar su renderizador
+    if (slide.layout && LAYOUTS_DB[slide.layout]) {
+        return LAYOUTS_DB[slide.layout].render(slide, index, total);
+    }
+    
+    if (slide.type === 'hero-foto') {
+        const sizeClass1 = getHeroSizeClass(slide.title1);
+        const sizeClass2 = getHeroSizeClass(slide.title2);
+        // Usa la clase más restrictiva para que ambas líneas quepan
+        const sizeClass = (sizeClass1 === 'hero-small' || sizeClass2 === 'hero-small') ? 'hero-small' : 
+                          (sizeClass1 === 'hero-medium' || sizeClass2 === 'hero-medium') ? 'hero-medium' : 'hero-large';
+                          
+        return `<div class="slide-box">
+            <img src="${slide.bg}" onerror="this.src='https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=1080&h=1350&fit=crop'" style="position:absolute; width:100%; height:100%; object-fit:cover; object-position:center 30%;">
+            ${renderSlideTints(slide)}
+            ${slide.show_tag !== false ? `<div class="ui-top" style="${getShadowStyle('tag', slide)}"><span class="ui-tag"><span class="star">*</span> ${slide.tag}</span></div>` : ''}
+            <div style="position:absolute; left:80px; right:80px; bottom:220px; z-index:25;">
+                <div class="hero ${sizeClass}">
+                    <span style="display:inline-block; ${getShadowStyle('title1', slide)}">${parseMarkdown(slide.title1)}</span><br>
+                    <span style="display:inline-block; ${getShadowStyle('title2', slide)}">${parseMarkdown(slide.title2)}</span>
+                </div>
+                <div style="font-family:var(--f-display); font-weight:400; font-size:58px; line-height:1.05; color:var(--cream); margin-top:28px;">
+                    <span style="display:inline-block; ${getShadowStyle('subtitle', slide)}">${parseMarkdown(slide.subtitle)}</span> 
+                    <span class="italic-accent" style="display:inline-block; ${getShadowStyle('accent', slide)}">${parseMarkdown(slide.accent)}</span>
+                </div>
+            </div>
+            ${renderSlideLogo(slide)}
+            ${slide.show_counter !== false ? `<div class="slide-num">${num}</div>` : ''}
+        </div>`;
+    }
+    
+    if (slide.type === 'hero-texto') {
+        const sizeClass = getHeroSizeClass(slide.title);
+        return `<div class="slide-box">
+            <div style="position:absolute; inset:0; display:flex; flex-direction:column; justify-content:center; padding:0 80px; z-index:25;">
+                <div class="hero ${sizeClass}" style="${getShadowStyle('title', slide)}">${parseMarkdown(slide.title)}</div>
+                <div class="hero" style="font-size:78px; color:var(--cream); margin-top:32px; line-height:1.0; ${getShadowStyle('subtitle', slide)}">${parseMarkdown(slide.subtitle)}</div>
+                <div class="italic-accent" style="font-size:54px; line-height:1.1; margin-top:48px; ${getShadowStyle('italic', slide)}">
+                    <span style="display:inline-block; transform:translateY(-4px); margin-right:12px;">→</span>${parseMarkdown(slide.italic)}
+                </div>
+            </div>
+            <div class="ghost" style="font-size:1100px; right:-80px; bottom:-200px; opacity:0.3; pointer-events:none;">02</div>
+            ${slide.show_tag !== false ? `<div class="ui-top" style="${getShadowStyle('tag', slide)}"><span class="ui-tag"><span class="star">*</span> ${slide.tag}</span></div>` : ''}
+            ${renderSlideLogo(slide)}
+            ${slide.show_counter !== false ? `<div class="slide-num">${num}</div>` : ''}
+        </div>`;
+    }
+
+    if (slide.type === 'tesis') {
+        const fullText = ((slide.line1 || '') + ' ' + (slide.line2 || '')).trim();
+        const plainText = fullText.replace(/[*_]/g, '');
+        let size = '180px';
+        if (plainText.length > 25) size = '105px';
+        else if (plainText.length > 15) size = '135px';
+
+        return `<div class="slide-box" style="background:var(--accent); color:var(--black);">
+            <div style="position:absolute; inset:0; display:flex; align-items:center; padding:0 80px; z-index:25;">
+                <div class="hero" style="font-size:${size}; line-height:0.92; color:var(--black);">
+                    <span style="display:inline-block; ${getShadowStyle('line1', slide)}">${parseMarkdown(slide.line1)}</span><br>
+                    <span style="display:inline-block; ${getShadowStyle('line2', slide)}">${parseMarkdown(slide.line2 || '')}</span>
+                </div>
+            </div>
+            ${slide.show_tag !== false ? `<div class="ui-top" style="${getShadowStyle('tag', slide)}"><span class="ui-tag" style="color:var(--black);"><span class="star" style="color:var(--black);">*</span> ${slide.tag}</span></div>` : ''}
+            ${renderSlideLogo(slide)}
+            <div class="slide-num" style="color:var(--black); opacity:0.6;">${slide.show_counter !== false ? num : ''}</div>
+        </div>`;
+    }
+
+    if (slide.type === 'regla') {
+        return `<div class="slide-box">
+            <div class="ghost" style="font-size:1500px; right:-180px; bottom:-420px; pointer-events:none;">${slide.ghost}</div>
+            <div style="position:absolute; left:80px; right:80px; top:160px; z-index:25;">
+                <div class="hero hero-small" style="max-width:920px; ${getShadowStyle('title', slide)}">${parseMarkdown(slide.title)}</div>
+                <p class="body-text" style="margin-top:48px; max-width:760px; ${getShadowStyle('body', slide)}">${parseMarkdown(slide.body)}</p>
+                <div class="italic-accent" style="font-size:42px; line-height:1.25; margin-top:32px; ${getShadowStyle('italic', slide)}">${parseMarkdown(slide.italic)}</div>
+            </div>
+            ${slide.show_tag !== false ? `<div class="ui-top" style="${getShadowStyle('tag', slide)}"><span class="ui-tag"><span class="star">*</span> ${slide.tag}</span></div>` : ''}
+            ${renderSlideLogo(slide)}
+            ${slide.show_counter !== false ? `<div class="slide-num">${num}</div>` : ''}
+        </div>`;
+    }
+
+    if (slide.type === 'insight') {
+        const line1Plain = (slide.line1 || '').replace(/[*_]/g, '');
+        const accentPlain = (slide.accent || '').replace(/[*_]/g, '');
+        
+        let size1 = '150px';
+        if (line1Plain.length > 20) size1 = '90px';
+        else if (line1Plain.length > 10) size1 = '120px';
+        
+        let sizeAccent = '220px';
+        if (accentPlain.length > 20) sizeAccent = '110px';
+        else if (accentPlain.length > 10) sizeAccent = '150px';
+
+        return `<div class="slide-box" style="background:var(--cream); color:var(--black);">
+            <div style="position:absolute; left:80px; right:80px; top:300px; z-index:25;">
+                <div class="hero" style="font-size:${size1}; line-height:0.95; color:var(--black); ${getShadowStyle('line1', slide)}">${parseMarkdown(slide.line1)}</div>
+                <div class="italic-accent" style="font-size:${sizeAccent}; line-height:0.95; margin-top:24px; color:var(--accent); ${getShadowStyle('accent', slide)}">${parseMarkdown(slide.accent)}</div>
+            </div>
+            ${slide.show_tag !== false ? `<div class="ui-top" style="${getShadowStyle('tag', slide)}"><span class="ui-tag" style="color:var(--smoke);"><span class="star" style="color:var(--accent);">*</span> ${slide.tag}</span></div>` : ''}
+            ${renderSlideLogo(slide)}
+            <div class="slide-num" style="color:var(--smoke);">${slide.show_counter !== false ? num : ''}</div>
+        </div>`;
+    }
+
+    if (slide.type === 'bento') {
+        return `<div class="slide-box">
+            <div style="padding:80px; height:100%; display:flex; flex-direction:column;">
+                ${slide.show_tag !== false ? `<div class="ui-tag" style="margin-bottom:24px; ${getShadowStyle('tag', slide)}"><span class="star">*</span> ${slide.tag}</div>` : ''}
+                <div class="hero hero-small" style="margin-bottom:8px; ${getShadowStyle('header', slide)}">${parseMarkdown(slide.header)}</div>
+                <div class="italic-accent" style="font-size:42px; line-height:1.25; margin-bottom:48px; ${getShadowStyle('subheader', slide)}">${parseMarkdown(slide.subheader)}</div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:16px; flex:1;">
+                    <div style="background:var(--smoke); padding:48px 40px; border-top:4px solid var(--accent); display:flex; flex-direction:column; justify-content:space-between;">
+                        <div>
+                            <div style="font-family:var(--f-display); font-size:92px; line-height:1; color:var(--accent);">01</div>
+                            <div style="font-family:var(--f-display); font-size:44px; line-height:1.05; color:var(--white); margin-top:24px;">${parseMarkdown(slide.c1_title)}</div>
+                        </div>
+                        <div style="font-family:var(--f-mono); font-size:14px; color:var(--cream); letter-spacing:0.15em;">${parseMarkdown(slide.c1_cap)}</div>
+                    </div>
+                    <div style="background:var(--smoke); padding:48px 40px; border-top:4px solid var(--accent); display:flex; flex-direction:column; justify-content:space-between;">
+                        <div>
+                            <div style="font-family:var(--f-display); font-size:92px; line-height:1; color:var(--accent);">02</div>
+                            <div style="font-family:var(--f-display); font-size:44px; line-height:1.05; color:var(--white); margin-top:24px;">${parseMarkdown(slide.c2_title)}</div>
+                        </div>
+                        <div style="font-family:var(--f-mono); font-size:14px; color:var(--cream); letter-spacing:0.15em;">${parseMarkdown(slide.c2_cap)}</div>
+                    </div>
+                    <div style="background:var(--smoke); padding:48px 40px; border-top:4px solid var(--accent); display:flex; flex-direction:column; justify-content:space-between;">
+                        <div>
+                            <div style="font-family:var(--f-display); font-size:92px; line-height:1; color:var(--accent);">03</div>
+                            <div style="font-family:var(--f-display); font-size:44px; line-height:1.05; color:var(--white); margin-top:24px;">${parseMarkdown(slide.c3_title)}</div>
+                        </div>
+                        <div style="font-family:var(--f-mono); font-size:14px; color:var(--cream); letter-spacing:0.15em;">${parseMarkdown(slide.c3_cap)}</div>
+                    </div>
+                    <div style="background:var(--smoke); padding:48px 40px; border-top:4px solid var(--accent); display:flex; flex-direction:column; justify-content:space-between;">
+                        <div>
+                            <div style="font-family:var(--f-display); font-size:92px; line-height:1; color:var(--accent);">04</div>
+                            <div style="font-family:var(--f-display); font-size:44px; line-height:1.05; color:var(--white); margin-top:24px;">${parseMarkdown(slide.c4_title)}</div>
+                        </div>
+                        <div style="font-family:var(--f-mono); font-size:14px; color:var(--cream); letter-spacing:0.15em;">${parseMarkdown(slide.c4_cap)}</div>
+                    </div>
+                </div>
+            </div>
+            ${renderSlideLogo(slide)}
+            ${slide.show_counter !== false ? `<div class="slide-num">${num}</div>` : ''}
+        </div>`;
+    }
+
+    if (slide.type === 'cta') {
+        const sizeClass = getHeroSizeClass(slide.hero);
+        let correctedSizeClass = sizeClass;
+        if (sizeClass === 'hero-large') correctedSizeClass = 'hero-medium'; // Evitamos el tamaño ultra-gigante en el CTA para dejar espacio
+
+        const logoLargo = `<div style="font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--white);">Dr. Juan Santiago Molina<br><span style="color:var(--accent);font-style:italic;font-size:24px;">Cirujano Bariátrico</span></div>`;
+
+        return `<div class="slide-box">
+            <div class="ghost" style="font-size:800px; left:-80px; top:-100px; opacity:0.2; pointer-events:none;">?</div>
+            ${slide.show_tag !== false ? `<div class="ui-top" style="${getShadowStyle('tag', slide)}"><span class="ui-tag"><span class="star">*</span> ${slide.tag}</span></div>` : ''}
+            <div style="position:absolute; left:80px; right:80px; top:160px; z-index:25;">
+                <div class="hero ${correctedSizeClass}" style="margin-top:48px; ${getShadowStyle('hero', slide)}">${parseMarkdown(slide.hero)}</div>
+                <div style="margin-top:50px; display:flex; flex-direction:column; gap:28px;">
+                    <div style="display:flex; flex-direction:column; gap:8px;">
+                        <div style="display:flex; align-items:center; gap:16px;">
+                            <span style="font-family:var(--f-display); font-size:56px; line-height:1; color:var(--accent); display:inline-block; transform:translateY(-2px);">↓</span>
+                            <span style="font-family:var(--f-display); font-size:62px; line-height:1; color:var(--white); ${getShadowStyle('action1', slide)}">${parseMarkdown(slide.action1)}</span>
+                        </div>
+                        <div style="font-family:var(--f-body); font-weight:400; font-size:24px; color:var(--cream); padding-left:44px; ${getShadowStyle('desc1', slide)}">${parseMarkdown(slide.desc1)}</div>
+                    </div>
+                    ${slide.action2 ? `<div style="display:flex; flex-direction:column; gap:8px;">
+                        <div style="display:flex; align-items:center; gap:16px;">
+                            <span style="font-family:var(--f-display); font-size:56px; line-height:1; color:var(--accent); display:inline-block; transform:translateY(-2px);">↗</span>
+                            <span style="font-family:var(--f-display); font-size:62px; line-height:1; color:var(--white); ${getShadowStyle('action2', slide)}">${parseMarkdown(slide.action2)}</span>
+                        </div>
+                        <div style="font-family:var(--f-body); font-weight:400; font-size:24px; color:var(--cream); padding-left:44px; ${getShadowStyle('desc2', slide)}">${parseMarkdown(slide.desc2)}</div>
+                    </div>` : ''}
+                </div>
+            </div>
+            <div style="position:absolute; bottom:60px; left:60px; right:60px; display:flex; justify-content:space-between; align-items:flex-end; z-index:35;">
+                ${logoLargo}
+                ${slide.show_handle !== false ? `
+                <div style="font-family:var(--f-mono); font-size:14px; color:var(--cream); text-align:right; max-width:280px; letter-spacing:0.15em; line-height:1.5;">
+                    <span style="color:var(--accent);">→</span> @CIRUJANOMOLINA
+                </div>` : ''}
+            </div>
+            ${slide.show_counter !== false ? `<div class="slide-num">${num}</div>` : ''}
+        </div>`;
+    }
+
+    return `<div class="slide-box"><div class="hero hero-small">Slide genérico</div></div>`;
+}
+
+// --- UI LOGIC ---
+function renderListaSlides() {
+    const lista = document.getElementById('lista-slides');
+    lista.innerHTML = '';
+    currentSlides.forEach((s, i) => {
+        const title = s.title1 || s.title || s.line1 || s.hero || `Slide ${i+1}`;
+        lista.innerHTML += `
+        <div class="slide-item ${i === activeSlideIndex ? 'active' : ''}" onclick="seleccionarSlide(${i})">
+            <div>
+                <div class="slide-item-title">${i+1}. ${title.substring(0,30)}...</div>
+                <div class="slide-item-type">${s.type.toUpperCase()}</div>
+            </div>
+            <i class="ti ti-chevron-right" style="color:var(--text2)"></i>
+        </div>`;
+    });
+}
+
+function seleccionarSlide(idx) {
+    activeSlideIndex = idx;
+    renderListaSlides();
+    actualizarEditor();
+    actualizarPreview();
+    document.getElementById('preview-indicator').textContent = `(SLIDE ${idx+1}/${currentSlides.length})`;
+    
+    const counter = document.getElementById('nav-counter');
+    if (counter) {
+        counter.textContent = `Slide ${idx+1} / ${currentSlides.length}`;
+    }
+}
+
+function prevSlide() {
+    if (currentSlides.length === 0) return;
+    const newIdx = (activeSlideIndex - 1 + currentSlides.length) % currentSlides.length;
+    seleccionarSlide(newIdx);
+}
+
+function nextSlide() {
+    if (currentSlides.length === 0) return;
+    const newIdx = (activeSlideIndex + 1) % currentSlides.length;
+    seleccionarSlide(newIdx);
+}
+
+function renderTextField(key, val, isTextArea) {
+    const shadowVal = currentSlides[activeSlideIndex][`${key}_shadow`] || 'none';
+    
+    const inputHtml = isTextArea
+        ? `<textarea oninput="actualizarDato('${key}', this.value)" rows="3" style="width:100%; resize:vertical;">${val}</textarea>`
+        : `<input type="text" value="${val.replace(/"/g, '&quot;')}" oninput="actualizarDato('${key}', this.value)" style="width:100%;">`;
+        
+    return `
+    <div style="display: flex; gap: 8px; align-items: flex-start; width: 100%;">
+        <div style="flex: 1;">
+            ${inputHtml}
+        </div>
+        <select onchange="actualizarDato('${key}_shadow', this.value)" title="Intensidad de Sombra" style="width: 105px; padding: 10px 5px; font-size: 11px; flex-shrink: 0; background: var(--bg); border: 1px solid var(--border2); color: var(--text); border-radius: var(--radius); cursor: pointer; height: 38px;">
+            <option value="none" ${shadowVal === 'none' ? 'selected' : ''}>🌑 Sin sombra</option>
+            <option value="soft" ${shadowVal === 'soft' ? 'selected' : ''}>🌓 Suave</option>
+            <option value="strong" ${shadowVal === 'strong' ? 'selected' : ''}>🌕 Notoria</option>
+        </select>
+    </div>`;
+}
+
+function actualizarEditor() {
+    const s = currentSlides[activeSlideIndex];
+    const form = document.getElementById('form-slide');
+    let html = '';
+
+    // Selector de Layout dinámico según la categoría del slide
+    let layoutOptions = '';
+    if (activeSlideIndex === 0) {
+        // Categoría Cover
+        layoutOptions = Object.keys(LAYOUTS_DB)
+            .filter(key => LAYOUTS_DB[key].category === 'cover')
+            .map(key => `<option value="${key}" ${s.layout === key ? 'selected' : ''}>${LAYOUTS_DB[key].name}</option>`)
+            .join('');
+    } else if (activeSlideIndex === currentSlides.length - 1) {
+        // Categoría CTA
+        layoutOptions = Object.keys(LAYOUTS_DB)
+            .filter(key => LAYOUTS_DB[key].category === 'cta')
+            .map(key => `<option value="${key}" ${s.layout === key ? 'selected' : ''}>${LAYOUTS_DB[key].name}</option>`)
+            .join('');
+    } else {
+        // Categoría Content + Default
+        const contentOptions = Object.keys(LAYOUTS_DB)
+            .filter(key => LAYOUTS_DB[key].category === 'content')
+            .map(key => `<option value="${key}" ${s.layout === key ? 'selected' : ''}>${LAYOUTS_DB[key].name}</option>`)
+            .join('');
+        layoutOptions = `
+            <option value="default" ${!s.layout || s.layout === 'default' ? 'selected' : ''}>Layout Estándar (Por Defecto)</option>
+            ${contentOptions}
+        `;
+    }
+    
+    html += `
+    <div class="field" style="border-bottom: 1px solid var(--border2); padding-bottom: 20px; margin-bottom: 20px;">
+        <label>Diseño / Layout del Slide</label>
+        <select onchange="cambiarLayout(this.value)">
+            ${layoutOptions}
+        </select>
+    </div>`;
+
+    // Si tiene un layout específico en la base de datos de layouts, usar sus campos definidos
+    const layout = LAYOUTS_DB[s.layout];
+    if (layout) {
+        layout.fields.forEach(field => {
+            const val = s[field.key] || '';
+            const isTextArea = field.key === 'body' || field.key === 'desc1' || field.key === 'desc2';
+            
+            if (field.type === 'select_bg') {
+                const imgName = val ? val.split('/').pop() : '';
+                html += `
+                <div class="field">
+                    <label>${field.label}</label>
+                    <div style="display:flex; gap:12px; align-items:center; background:var(--bg); border:1px solid var(--border2); padding:10px; border-radius:var(--radius);">
+                        <div style="width:60px; height:75px; border-radius:4px; overflow:hidden; background:var(--bg2); flex-shrink:0; display:flex; align-items:center; justify-content:center; border:1px solid var(--border2);">
+                            ${val ? `<img src="${val}" style="width:100%; height:100%; object-fit:cover;">` : `<i class="ti ti-photo" style="color:var(--text2); font-size:20px;"></i>`}
+                        </div>
+                        <div style="flex:1; min-width:0;">
+                            <div style="font-size:12px; font-weight:600; color:var(--text); word-break:break-all; margin-bottom:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${imgName}">${imgName || 'Sin imagen'}</div>
+                            <button class="btn btn-outline" style="padding: 4px 10px; font-size: 11px;" onclick="abrirAssetPickerModal('${field.key}')">
+                                <i class="ti ti-photo-edit"></i> Cambiar Foto
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+            } else if (field.type === 'select_logo_theme') {
+                html += `
+                <div class="field">
+                    <label>${field.label}</label>
+                    <select onchange="actualizarDato('${field.key}', this.value)">
+                        <option value="claro" ${val === 'claro' ? 'selected' : ''}>Claro (Sobre fondos oscuros)</option>
+                        <option value="oscuro" ${val === 'oscuro' ? 'selected' : ''}>Oscuro (Sobre fondos claros)</option>
+                    </select>
+                </div>`;
+            } else if (field.type === 'select_cta_style') {
+                html += `
+                <div class="field">
+                    <label>${field.label}</label>
+                    <select onchange="actualizarDato('${field.key}', this.value)">
+                        <option value="border" ${val === 'border' ? 'selected' : ''}>Solo Borde (Borde y texto Teal)</option>
+                        <option value="solid" ${val === 'solid' ? 'selected' : ''}>Color Sólido (Fondo Teal, texto oscuro)</option>
+                    </select>
+                </div>`;
+            } else if (field.type === 'boolean') {
+                html += `
+                <div class="field" style="display:flex; align-items:center; gap:10px; margin-bottom: 20px;">
+                    <input type="checkbox" id="field-${field.key}" ${val === true || val === 'true' ? 'checked' : ''} onchange="actualizarDato('${field.key}', this.checked)" style="width:auto; margin:0; cursor:pointer;">
+                    <label for="field-${field.key}" style="margin:0; cursor:pointer; font-weight:500; font-size:13px; text-transform:none;">${field.label}</label>
+                </div>`;
+            } else {
+                html += `
+                <div class="field">
+                    <label>${field.label}</label>
+                    ${renderTextField(field.key, val, isTextArea)}
+                </div>`;
+            }
+        });
+    } else {
+        // Fallback al editor dinámico genérico por defecto
+        Object.keys(s).forEach(key => {
+            if (key === 'type' || key === 'layout' || key.endsWith('_shadow')) return;
+            const isTextArea = key === 'body' || key === 'desc1' || key === 'desc2';
+            if (key === 'bg') {
+                const imgName = s[key] ? s[key].split('/').pop() : '';
+                html += `
+                <div class="field">
+                    <label>Foto de Fondo (Molina Database)</label>
+                    <div style="display:flex; gap:12px; align-items:center; background:var(--bg); border:1px solid var(--border2); padding:10px; border-radius:var(--radius);">
+                        <div style="width:60px; height:75px; border-radius:4px; overflow:hidden; background:var(--bg2); flex-shrink:0; display:flex; align-items:center; justify-content:center; border:1px solid var(--border2);">
+                            ${s[key] ? `<img src="${s[key]}" style="width:100%; height:100%; object-fit:cover;">` : `<i class="ti ti-photo" style="color:var(--text2); font-size:20px;"></i>`}
+                        </div>
+                        <div style="flex:1; min-width:0;">
+                            <div style="font-size:12px; font-weight:600; color:var(--text); word-break:break-all; margin-bottom:5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${imgName}">${imgName || 'Sin imagen'}</div>
+                            <button class="btn btn-outline" style="padding: 4px 10px; font-size: 11px;" onclick="abrirAssetPickerModal('${key}')">
+                                <i class="ti ti-photo-edit"></i> Cambiar Foto
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+            } else {
+                html += `
+                <div class="field">
+                    <label>${key}</label>
+                    ${renderTextField(key, s[key], isTextArea)}
+                </div>`;
+            }
+        });
+    }
+
+    // Controles de Tintes y Vignette (Capas de degradados)
+    if (s.bg || s.layout === 'cover-cinematic-center' || s.layout === 'content-photo-split' || s.type === 'hero-foto') {
+        const tintColor = s.tint_color || '#2ABFB0';
+        const tintDir = s.tint_direction || 'to bottom';
+        const tintOpacity = s.tint_opacity !== undefined ? parseFloat(s.tint_opacity) : 0.15;
+        
+        const darkActive = s.tint_dark_active === true;
+        const darkDir = s.tint_dark_direction || 'to bottom';
+        const darkOpacity = s.tint_dark_opacity !== undefined ? parseFloat(s.tint_dark_opacity) : 0.6;
+        
+        html += `
+        <div style="border-top: 1px solid var(--border2); padding-top: 20px; margin-top: 20px; margin-bottom: 20px;">
+            <div style="font-weight:600; font-size:13px; color:var(--text); margin-bottom:15px; display:flex; align-items:center; gap:6px;">
+                <i class="ti ti-color-filter" style="color:var(--accent); font-size:16px;"></i> Capas de Color (Gradientes)
+            </div>
+            
+            <!-- Tinte de Color -->
+            <div style="background: var(--bg); border: 1px solid var(--border2); padding: 12px; border-radius: var(--radius); margin-bottom: 12px;">
+                <div style="font-size:12px; font-weight:600; color:var(--text); margin-bottom:10px;">Tinte de Color</div>
+                
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px;">
+                    <div>
+                        <label style="font-size:9px; color:var(--text2); display:block; margin-bottom:4px; text-transform:uppercase;">Color</label>
+                        <div style="display:flex; gap:6px; align-items:center;">
+                            <input type="color" value="${tintColor}" oninput="this.nextElementSibling.value = this.value; actualizarDato('tint_color', this.value);" style="width:40px; height:30px; padding:0; border:none; background:none; cursor:pointer; flex-shrink:0;">
+                            <input type="text" value="${tintColor}" oninput="this.previousElementSibling.value = this.value; actualizarDato('tint_color', this.value);" style="font-size:11px; padding:6px; height:30px; text-transform:uppercase; width:100%;">
+                        </div>
+                    </div>
+                    <div>
+                        <label style="font-size:9px; color:var(--text2); display:block; margin-bottom:4px; text-transform:uppercase;">Dirección</label>
+                        <select onchange="actualizarDato('tint_direction', this.value)" style="font-size:11px; padding:6px; height:30px; width:100%;">
+                            <option value="to bottom" ${tintDir === 'to bottom' ? 'selected' : ''}>⬇ Hacia Abajo</option>
+                            <option value="to top" ${tintDir === 'to top' ? 'selected' : ''}>⬆ Hacia Arriba</option>
+                            <option value="to right" ${tintDir === 'to right' ? 'selected' : ''}>➡ Hacia la Derecha</option>
+                            <option value="to left" ${tintDir === 'to left' ? 'selected' : ''}>⬅ Hacia la Izquierda</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                        <label style="font-size:9px; color:var(--text2); text-transform:uppercase; margin:0;">Opacidad: <span id="val-tint-opacity">${Math.round(tintOpacity * 100)}%</span></label>
+                    </div>
+                    <input type="range" min="0" max="1" step="0.01" value="${tintOpacity}" 
+                           oninput="document.getElementById('val-tint-opacity').innerText = Math.round(this.value * 100) + '%'; actualizarDato('tint_opacity', parseFloat(this.value));" 
+                           style="width:100%; height:4px; background:var(--border2); border-radius:2px; cursor:pointer; -webkit-appearance:none; margin:8px 0;">
+                </div>
+            </div>
+            
+            <!-- Tinte Oscuro -->
+            <div style="background: var(--bg); border: 1px solid var(--border2); padding: 12px; border-radius: var(--radius);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <span style="font-size:12px; font-weight:600; color:var(--text);">Tinte Oscuro Adicional</span>
+                    <label class="switch">
+                        <input type="checkbox" ${darkActive ? 'checked' : ''} onchange="actualizarDato('tint_dark_active', this.checked); actualizarEditor();">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                ${darkActive ? `
+                <div style="display:grid; grid-template-columns: 1fr; gap:10px; margin-bottom:10px;">
+                    <div>
+                        <label style="font-size:9px; color:var(--text2); display:block; margin-bottom:4px; text-transform:uppercase;">Dirección del Tinte Oscuro</label>
+                        <select onchange="actualizarDato('tint_dark_direction', this.value)" style="font-size:11px; padding:6px; height:30px; width:100%;">
+                            <option value="to bottom" ${darkDir === 'to bottom' ? 'selected' : ''}>⬇ Hacia Abajo</option>
+                            <option value="to top" ${darkDir === 'to top' ? 'selected' : ''}>⬆ Hacia Arriba</option>
+                            <option value="to right" ${darkDir === 'to right' ? 'selected' : ''}>➡ Hacia la Derecha</option>
+                            <option value="to left" ${darkDir === 'to left' ? 'selected' : ''}>⬅ Hacia la Izquierda</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                        <label style="font-size:9px; color:var(--text2); text-transform:uppercase; margin:0;">Opacidad: <span id="val-dark-opacity">${Math.round(darkOpacity * 100)}%</span></label>
+                    </div>
+                    <input type="range" min="0" max="1" step="0.01" value="${darkOpacity}" 
+                           oninput="document.getElementById('val-dark-opacity').innerText = Math.round(this.value * 100) + '%'; actualizarDato('tint_dark_opacity', parseFloat(this.value));" 
+                           style="width:100%; height:4px; background:var(--border2); border-radius:2px; cursor:pointer; -webkit-appearance:none; margin:8px 0;">
+                </div>
+                ` : ''}
+            </div>
+        </div>`;
+    }
+
+    // Selector gráfico de posición de logo al final de todos los slides
+    const defaultLogoPos = s.layout === 'cover-cinematic-center' ? 'bottom-center' : 'bottom-left';
+    html += `
+    <div class="field" style="border-top: 1px solid var(--border2); padding-top: 15px; margin-top: 25px;">
+        <!-- Fila de Logo de Marca -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <span style="font-weight:600; font-size:13px; color:var(--text);">Añadir Logo de Marca</span>
+            <label class="switch">
+                <input type="checkbox" id="logo-toggle" ${s.show_logo !== false ? 'checked' : ''} onchange="actualizarDato('show_logo', this.checked); actualizarEditor();">
+                <span class="slider"></span>
+            </label>
+        </div>
+        
+        <!-- Selector de Estilo de Logo (si está activo) -->
+        ${s.show_logo !== false ? `
+        <div class="field" style="margin-bottom: 20px;">
+            <label style="font-size:10px; color:var(--text2); margin-bottom:8px; font-weight:500; display:block; text-transform:uppercase; letter-spacing:0.05em;">Estilo / Variación de Logo (Click para elegir)</label>
+            <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:8px; width:100%;">
+                ${LOGOS_DB.map(logo => {
+                    const isSelected = (s.logo_file || (s.logo_theme === 'oscuro' ? 'Logo Completo Oscuro.png' : 'Logo Completo Blanco.png')) === logo;
+                    const isDarkThemeLogo = logo.toLowerCase().includes('oscuro') || logo.toLowerCase().includes('sello oscuro') || logo.toLowerCase().includes('símbolo oscuro') || logo.toLowerCase().includes('sello.png');
+                    const cardBg = isDarkThemeLogo ? '#F4F5F0' : '#14262D';
+                    const activeBorder = isSelected ? 'border: 2px solid var(--accent);' : 'border: 2px solid var(--border2); opacity:0.7;';
+                    return `
+                    <div onclick="actualizarDato('logo_file', '${logo}'); actualizarEditor();" 
+                         style="height:55px; background:${cardBg}; border-radius:var(--radius); padding:4px; cursor:pointer; display:flex; align-items:center; justify-content:center; ${activeBorder} transition:all 0.2s; position:relative;"
+                         title="${logo}">
+                        <img src="../assets/logos/${logo}" style="max-width:100%; max-height:100%; object-fit:contain;">
+                    </div>`;
+                }).join('')}
+            </div>
+        </div>
+        ` : ''}
+        
+        <!-- Fila con Grid de Posición (Izquierda) y Toggles (Derecha) -->
+        <div style="display: flex; gap: 40px; align-items: flex-start; width: 100%;">
+            <!-- LADO IZQUIERDO: Selector de posición de logo -->
+            <div style="flex: 1; min-width: 240px; display: ${s.show_logo !== false ? 'block' : 'none'};">
+                <label style="font-size:10px; color:var(--text2); margin-bottom:8px; font-weight:500; display:block; text-transform:uppercase; letter-spacing:0.05em;">Posición del Logo (Haz clic en la celda)</label>
+                <div class="logo-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; width: 100%; max-width: 240px; aspect-ratio: 3/2; background: var(--bg); border: 1px solid var(--border2); padding: 6px; border-radius: var(--radius);">
+                    ${[
+                        { pos: 'top-left', icon: 'ti-arrow-up-left', label: 'TL' },
+                        { pos: 'top-center', icon: 'ti-arrow-up', label: 'TC' },
+                        { pos: 'top-right', icon: 'ti-arrow-up-right', label: 'TR' },
+                        { pos: 'bottom-left', icon: 'ti-arrow-down-left', label: 'BL' },
+                        { pos: 'bottom-center', icon: 'ti-arrow-down', label: 'BC' },
+                        { pos: 'bottom-right', icon: 'ti-arrow-down-right', label: 'BR' }
+                    ].map(item => {
+                        const isActive = (s.logo_position || defaultLogoPos) === item.pos;
+                        const activeBg = isActive ? 'background: var(--accent); color: var(--black); border-color: var(--accent);' : 'background: var(--bg2); color: var(--text2); border-color: var(--border2);';
+                        return `
+                        <button onclick="actualizarDato('logo_position', '${item.pos}'); actualizarEditor();" 
+                                style="${activeBg} border: 1px solid; border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px; cursor: pointer; transition: all 0.2s;"
+                                title="${item.pos}">
+                            <i class="ti ${item.icon}" style="font-size: 14px;"></i>
+                            <span style="font-size: 9px; font-weight: 600; margin-top: 2px;">${item.label}</span>
+                        </button>`;
+                    }).join('')}
+                </div>
+            </div>
+            
+            <!-- LADO DERECHO: Toggles Interruptores -->
+            <div style="flex: 1.2; display: flex; flex-direction: column; gap: 14px; align-self: stretch; justify-content: flex-end; padding-top: 18px;">
+                <!-- Conteo -->
+                <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg); border:1px solid var(--border2); padding:10px 14px; border-radius:var(--radius);">
+                    <span style="font-size:12px; font-weight:500; color:var(--text);">Mostrar Conteo (01/06)</span>
+                    <label class="switch">
+                        <input type="checkbox" ${s.show_counter !== false ? 'checked' : ''} onchange="actualizarDato('show_counter', this.checked); actualizarEditor();">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <!-- Etiqueta Superior -->
+                <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg); border:1px solid var(--border2); padding:10px 14px; border-radius:var(--radius);">
+                    <span style="font-size:12px; font-weight:500; color:var(--text);">Mostrar Etiqueta Superior</span>
+                    <label class="switch">
+                        <input type="checkbox" ${s.show_tag !== false ? 'checked' : ''} onchange="actualizarDato('show_tag', this.checked); actualizarEditor();">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <!-- Handle -->
+                <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg); border:1px solid var(--border2); padding:10px 14px; border-radius:var(--radius);">
+                    <span style="font-size:12px; font-weight:500; color:var(--text);">Mostrar @Handle</span>
+                    <label class="switch">
+                        <input type="checkbox" ${s.show_handle !== false ? 'checked' : ''} onchange="actualizarDato('show_handle', this.checked); actualizarEditor();">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>`;
+
+    form.innerHTML = html;
+}
+
+function actualizarDato(key, value) {
+    currentSlides[activeSlideIndex][key] = value;
+    actualizarPreview(); // Render en tiempo real
+    
+    // Actualizar lista sin perder foco (debounced idealmente, pero así funciona)
+    const listItems = document.querySelectorAll('.slide-item-title');
+    const title = currentSlides[activeSlideIndex].title1 || currentSlides[activeSlideIndex].title || currentSlides[activeSlideIndex].line1 || currentSlides[activeSlideIndex].hero || `Slide`;
+    if (listItems[activeSlideIndex]) {
+        listItems[activeSlideIndex].textContent = `${activeSlideIndex+1}. ${title.substring(0,30)}...`;
+    }
+}
+
+function actualizarPreview() {
+    const s = currentSlides[activeSlideIndex];
+    const wrapper = document.getElementById('preview-wrapper');
+    wrapper.innerHTML = buildSlideHTML(s, activeSlideIndex, currentSlides.length);
+    wrapper.style.transform = `scale(${currentZoom})`;
+    actualizarLayoutTip();
+}
+
+function actualizarLayoutTip() {
+    const s = currentSlides[activeSlideIndex];
+    const tipBox = document.getElementById('layout-tip-box');
+    if (!tipBox) return;
+    
+    let tipText = '';
+    
+    if (s.layout && LAYOUTS_DB[s.layout] && LAYOUTS_DB[s.layout].tip) {
+        tipText = LAYOUTS_DB[s.layout].tip;
+    } else {
+        // Fallback según tipo de slide
+        if (s.type === 'tesis') {
+            tipText = 'Este slide usa un fondo de color plano Teal vibrante para romper el patrón visual del carrusel. Escribe un copy sumamente corto y de máximo 6 palabras.';
+        } else if (s.type === 'insight') {
+            tipText = 'Este slide usa un fondo Crema de alto contraste con tipografía gigante. Úsalo para afirmaciones directas de 2 o 3 palabras que causen disonancia cognitiva.';
+        } else if (s.type === 'bento') {
+            tipText = 'El layout Bento distribuye la información en 4 cuadrículas estructuradas. Es ideal para resumir procesos, pasos o subtemas de forma muy masticable.';
+        } else if (s.type === 'regla') {
+            tipText = 'Combina un número gigante al fondo con un copy descriptivo corto. Asegúrate de no pasarte de las 25 palabras en el cuerpo para no dañar el diseño.';
+        } else if (s.type === 'hero-texto') {
+            tipText = 'Este hero usa un fondo plano de color sólido (blanco o oscuro). Asegúrate de contrastar bien el tema de logo y elegir sombras notorias para máxima legibilidad.';
+        }
+    }
+    
+    if (tipText) {
+        tipBox.innerHTML = `<div style="display:flex; gap:10px; align-items:flex-start;">
+            <i class="ti ti-bulb" style="color:var(--accent); font-size:16px; margin-top:1px; flex-shrink:0;"></i>
+            <div><strong style="color:var(--text); font-weight:600;">Consejo de Foto y Diseño:</strong><br>${tipText}</div>
+        </div>`;
+        tipBox.style.display = 'block';
+    } else {
+        tipBox.style.display = 'none';
+    }
+}
+
+function zoom(delta) {
+    currentZoom = Math.max(0.2, Math.min(1, currentZoom + delta));
+    actualizarPreview();
+}
+
+function volverGenerador() {
+    document.getElementById('view-editor').style.display = 'none';
+    document.getElementById('view-generator').style.display = 'block';
+    document.getElementById('btn-exportar').style.display = 'none';
+    document.getElementById('btn-guardar').style.display = 'none';
+    document.getElementById('preview-nav').style.display = 'none';
+}
+
+function reiniciar() {
+    volverGenerador();
+    document.getElementById('gen-tema').value = '';
+    currentSlides = [];
+    document.getElementById('preview-wrapper').innerHTML = '';
+}
+
+// --- EXPORTACIÓN ---
+async function exportarZIP() {
+    const btn = document.getElementById('btn-exportar');
+    btn.innerHTML = '<i class="ti ti-loader ti-spin"></i> Generando PNGs...';
+    btn.disabled = true;
+
+    try {
+        const zip = new JSZip();
+        const exportContainer = document.getElementById('export-container');
+        
+        // Renderizar los 10 slides en el contenedor oculto
+        exportContainer.innerHTML = currentSlides.map((s, i) => buildSlideHTML(s, i, currentSlides.length)).join('');
+        
+        // Esperar fuentes y renders
+        await document.fonts.ready;
+        await new Promise(r => setTimeout(r, 500)); 
+
+        const slidesDOM = exportContainer.querySelectorAll('.slide-box');
+        
+        for (let i = 0; i < slidesDOM.length; i++) {
+            const canvas = await html2canvas(slidesDOM[i], {
+                scale: 2, // Retina
+                useCORS: true,
+                backgroundColor: null
+            });
+            const imgData = canvas.toDataURL('image/png').split(',')[1];
+            zip.file(`Slide_${String(i+1).padStart(2,'0')}.png`, imgData, {base64: true});
+        }
+
+        const content = await zip.generateAsync({type:"blob"});
+        saveAs(content, "Carrusel_Studio_Export.zip");
+        
+    } catch (e) {
+        console.error(e);
+        alert('Error al exportar. Revisa la consola.');
+    } finally {
+        btn.innerHTML = '<i class="ti ti-download"></i> Exportar PNGs';
+        btn.disabled = false;
+        document.getElementById('export-container').innerHTML = ''; // Limpiar memoria
+    }
+}
+
+/* ── SUPABASE PERSISTENCE ── */
+async function saveCarrusel() {
+    if (currentSlides.length === 0) {
+        showToast('⚠️ No hay slides para guardar');
+        return;
+    }
+    const titleVal = currentSlides[0].title1 || currentSlides[0].title || currentSlides[0].line1 || currentSlides[0].hero || 'Carrusel sin título';
+    const cleanTitle = titleVal.replace(/[*_]/g, '').trim();
+    
+    const ui_state = {
+        exact_status: currentStatus === 'en_creacion' ? 'Idea' : (currentStatus === 'revision' ? 'Edición' : (currentStatus === 'listo' ? 'Listo' : 'Publicado')),
+        exact_format: 'Carrusel'
+    };
+
+    const row = {
+        title: cleanTitle,
+        type: 'carrusel',
+        pillar: document.getElementById('gen-pilar')?.value || 'Mitos Bariátricos',
+        platform: 'Instagram',
+        status: currentStatus,
+        idea_id: linkedIdeaId,
+        content_data: {
+            slides: currentSlides,
+            ui_state
+        },
+        updated_at: new Date().toISOString()
+    };
+
+    try {
+        if (currentCarruselId) {
+            const { error } = await supabase
+                .from('content_pieces')
+                .update(row)
+                .eq('id', currentCarruselId);
+            if (error) throw error;
+            showToast('Carrusel actualizado en Supabase ✅');
+            await logActivity('Edición', `Se actualizó el carrusel: "${cleanTitle}" (Estado: ${currentStatus})`);
+        } else {
+            const { data, error } = await supabase
+                .from('content_pieces')
+                .insert([row])
+                .select();
+            if (error) throw error;
+            if (data && data[0]) {
+                currentCarruselId = data[0].id;
+            }
+            showToast('Carrusel guardado en Supabase ✅');
+            await logActivity('Creación', `Se creó el nuevo carrusel: "${cleanTitle}"`);
+        }
+    } catch (err) {
+        console.error("Error saving carrusel:", err);
+        let detail = err.message || '';
+        if (err.details) detail += (detail ? ' - ' : '') + err.details;
+        if (err.code) detail += ` (Código: ${err.code})`;
+        if (!detail) detail = typeof err === 'object' ? JSON.stringify(err) : String(err);
+        showToast(`⚠️ Error al guardar en Supabase: ${detail}`);
+    }
+}
+
+async function loadCarrusel(id) {
+    try {
+        const { data, error } = await supabase
+            .from('content_pieces')
+            .select('*')
+            .eq('id', id)
+            .single();
+        if (error) throw error;
+        if (data) {
+            currentCarruselId = data.id;
+            currentStatus = data.status || 'en_creacion';
+            linkedIdeaId = data.idea_id || null;
+            
+            if (data.content_data && data.content_data.slides) {
+                currentSlides = data.content_data.slides;
+                
+                // Show editor view
+                document.getElementById('view-generator').style.display = 'none';
+                document.getElementById('view-editor').style.display = 'flex';
+                document.getElementById('btn-exportar').style.display = 'block';
+                document.getElementById('btn-guardar').style.display = 'block';
+                document.getElementById('preview-nav').style.display = 'flex';
+                document.getElementById('btn-assets-manager').style.display = 'block';
+                
+                renderListaSlides();
+                seleccionarSlide(0);
+                showToast('Carrusel cargado de Supabase ✅');
+            }
+        }
+    } catch (err) {
+        console.error("Error loading carrusel:", err);
+        let detail = err.message || '';
+        if (err.details) detail += (detail ? ' - ' : '') + err.details;
+        if (err.code) detail += ` (Código: ${err.code})`;
+        if (!detail) detail = typeof err === 'object' ? JSON.stringify(err) : String(err);
+        showToast(`⚠️ Error al cargar el carrusel de Supabase: ${detail}`);
+    }
+}
+
+function showToast(msg) {
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
+
+// --- INITIALIZATION ---
+async function init() {
+    await loadAssets();
+    
+    // Check pending transfer
+    const pending = localStorage.getItem('pending_transfer_idea');
+    if (pending) {
+        try {
+            const data = JSON.parse(pending);
+            if (document.getElementById('gen-tema')) {
+                document.getElementById('gen-tema').value = data.title || '';
+            }
+            
+            const pilarMap = {
+                'contrarian / mitos': 'mitos',
+                'educación premium': 'mitos',
+                'transformación de vida': 'mindset',
+                'autoridad humana': 'autoridad',
+                'validación emocional': 'mindset',
+                'conversión directa': 'autoridad'
+            };
+            const key = data.pilar ? data.pilar.toLowerCase() : '';
+            if (document.getElementById('gen-pilar')) {
+                document.getElementById('gen-pilar').value = pilarMap[key] || 'mitos';
+            }
+            
+            linkedIdeaId = data.idea_id || null;
+            
+            // Auto trigger generation!
+            generarCarrusel();
+            
+        } catch (e) {
+            console.error("Error reading pending transfer:", e);
+        } finally {
+            localStorage.removeItem('pending_transfer_idea');
+        }
+    } else {
+        // Check url parameter or pending localStorage edit ID
+        const params = new URLSearchParams(window.location.search);
+        let carruselId = params.get('id');
+        if (!carruselId) {
+            carruselId = localStorage.getItem('pending_edit_piece_id');
+            localStorage.removeItem('pending_edit_piece_id'); // Clear immediately
+        }
+        if (carruselId) {
+            await loadCarrusel(carruselId);
+        }
+    }
+}
+
+if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
+
+// Theme handling
+window.addEventListener('message', (e) => {
+    if (e.data.type === 'THEME_CHANGE') {
+        const theme = e.data.payload || e.data.theme;
+        if (theme === 'light') document.body.classList.add('light');
+        else document.body.classList.remove('light');
+    }
+});
+
+// Notificar al shell que el constructor está listo
+if (window.parent) {
+    window.parent.postMessage({ type: 'IFRAME_READY' }, '*');
+}
+
+// Bind to window for ES Module scoping
+window.loadAssets = loadAssets;
+window.generarCarrusel = generarCarrusel;
+window.cambiarLayout = cambiarLayout;
+window.seleccionarSlide = seleccionarSlide;
+window.prevSlide = prevSlide;
+window.nextSlide = nextSlide;
+window.actualizarDato = actualizarDato;
+window.actualizarEditor = actualizarEditor;
+window.actualizarPreview = actualizarPreview;
+window.zoom = zoom;
+window.volverGenerador = volverGenerador;
+window.reiniciar = reiniciar;
+window.exportarZIP = exportarZIP;
+window.saveCarrusel = saveCarrusel;
+window.loadCarrusel = loadCarrusel;
+window.currentSlides = currentSlides;
+window.activeSlideIndex = activeSlideIndex;
+window.IMAGES_METADATA = IMAGES_METADATA;
+window.IMAGES_DB = IMAGES_DB;
+window.LOGOS_DB = LOGOS_DB;
+</script>
+
+<!-- MODAL DE BIBLIOTECA DE ASSETS -->
+<div id="assets-modal" style="display:none; position:fixed; inset:0; background:rgba(20,38,45,0.85); z-index:1000; justify-content:center; align-items:center; backdrop-filter:blur(8px);">
+    <div style="background:var(--surface); border:1px solid var(--border2); border-radius:var(--radius); width:95%; max-width:1300px; height:90vh; display:flex; flex-direction:column; box-shadow:0 20px 50px rgba(0,0,0,0.5);">
+        <!-- Header -->
+        <div style="padding:20px; border-bottom:1px solid var(--border2); display:flex; justify-content:space-between; align-items:center; flex-shrink:0;">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <i class="ti ti-photo-library" style="font-size:24px; color:var(--accent);"></i>
+                <span style="font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:600;">Biblioteca de Imágenes</span>
+            </div>
+            <div style="display:flex; gap:12px; align-items:center;">
+                <button class="btn btn-primary" onclick="rescanearAssets()" id="btn-rescan-ia" style="font-size:12px; padding:6px 12px;">
+                    <i class="ti ti-scan"></i> Re-escanear e Indexar con IA
+                </button>
+                <button class="btn btn-outline" onclick="cerrarAssetsModal()" style="padding:6px 10px;"><i class="ti ti-x"></i></button>
+            </div>
+        </div>
+        
+        <!-- Contenido principal -->
+        <div style="display:flex; flex:1; overflow:hidden;">
+            <!-- Panel izquierdo: Filtros e Info -->
+            <div style="width:280px; border-right:1px solid var(--border2); padding:20px; display:flex; flex-direction:column; gap:15px; background:var(--bg2); overflow-y:auto; flex-shrink:0;">
+                <div class="field">
+                    <label>Buscar Imagen</label>
+                    <input type="text" id="asset-search" oninput="filtrarAssets()" placeholder="Escribe el nombre...">
+                </div>
+                <div class="field">
+                    <label>Filtrar por Espacio Seguro</label>
+                    <select id="asset-filter-space" onchange="filtrarAssets()">
+                        <option value="">Cualquier espacio</option>
+                        <option value="top-left">Esquina Superior Izquierda</option>
+                        <option value="top-right">Esquina Superior Derecha</option>
+                        <option value="bottom-left">Esquina Inferior Izquierda</option>
+                        <option value="bottom-right">Esquina Inferior Derecha</option>
+                        <option value="center">Centro</option>
+                        <option value="left-half">Mitad Izquierda</option>
+                        <option value="right-half">Mitad Derecha</option>
+                        <option value="none">Sin espacio (Muy cargada)</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Filtrar por Sujeto</label>
+                    <select id="asset-filter-subject" onchange="filtrarAssets()">
+                        <option value="">Cualquier sujeto</option>
+                        <option value="Dr. Molina solo">Dr. Molina solo</option>
+                        <option value="Dr. Molina operando con ayudante">Dr. Molina operando con ayudante</option>
+                        <option value="Dr. Molina con su equipo">Dr. Molina con su equipo</option>
+                        <option value="Dr. Molina con paciente">Dr. Molina con paciente</option>
+                        <option value="Paciente solo">Paciente solo</option>
+                        <option value="Equipo de trabajo">Equipo de trabajo</option>
+                        <option value="Manos/Instrumentos">Manos / Instrumentos</option>
+                        <option value="Objetos">Objetos</option>
+                        <option value="Ninguno/Abstracto">Abstracto / Texturas</option>
+                    </select>
+                </div>
+                
+                <div style="margin-top:auto; font-size:11px; color:var(--text2); line-height:1.4; border-top:1px solid var(--border2); padding-top:15px;">
+                    <i class="ti ti-bulb" style="color:var(--accent);"></i>
+                    <strong>Nota:</strong> Los archivos HEIC se omiten automáticamente. Convierte tus fotos a JPG/PNG/WebP antes de guardarlas en la carpeta de imágenes.
+                </div>
+            </div>
+            
+            <!-- Panel derecho: Grid de Imágenes -->
+            <div style="flex:1; padding:20px; overflow-y:auto; position:relative;" id="assets-grid-container">
+                <div id="assets-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:16px;">
+                    <!-- Se inyectan las imágenes dinámicamente -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* --- ESTILOS DE BIBLIOTECA DE ASSETS --- */
+.asset-card {
+    transition: all 0.2s ease;
+}
+.asset-card:hover {
+    border-color: var(--accent) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(42, 191, 176, 0.18);
+}
+.asset-card img {
+    transition: transform 0.3s ease;
+}
+.asset-card:hover img {
+    transform: scale(1.04);
+}
+.picker-overlay {
+    background: rgba(20, 38, 45, 0.65);
+}
+</style>
+
+<script>
+function abrirAssetsModal() {
+    assetPickerTargetField = null;
+    document.getElementById('assets-modal').style.display = 'flex';
+    filtrarAssets();
+}
+
+function abrirAssetPickerModal(fieldKey) {
+    assetPickerTargetField = fieldKey;
+    document.getElementById('assets-modal').style.display = 'flex';
+    filtrarAssets();
+}
+
+function cerrarAssetsModal() {
+    document.getElementById('assets-modal').style.display = 'none';
+    assetPickerTargetField = null;
+}
+
+function selectAsset(path) {
+    if (assetPickerTargetField) {
+        actualizarDato(assetPickerTargetField, path);
+        cerrarAssetsModal();
+    }
+}
+
+function filtrarAssets() {
+    const searchVal = document.getElementById('asset-search').value.toLowerCase();
+    const spaceFilter = document.getElementById('asset-filter-space').value;
+    const subjectFilter = document.getElementById('asset-filter-subject').value;
+    
+    const filtered = IMAGES_METADATA.filter(img => {
+        const matchesSearch = img.name.toLowerCase().includes(searchVal);
+        const matchesSpace = !spaceFilter || img.safe_space === spaceFilter;
+        const matchesSubject = !subjectFilter || img.subject === subjectFilter;
+        return matchesSearch && matchesSpace && matchesSubject;
+    });
+    
+    renderAssetCards(filtered);
+}
+
+function renderAssetCards(filteredImages) {
+    const grid = document.getElementById('assets-grid');
+    grid.innerHTML = '';
+    
+    if (filteredImages.length === 0) {
+        grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:50px; color:var(--text2);"><i class="ti ti-photo-off" style="font-size:48px; color:var(--border);"></i><br><br>No se encontraron imágenes</div>`;
+        return;
+    }
+    
+    filteredImages.forEach(img => {
+        const isPicker = assetPickerTargetField !== null;
+        
+        let badgeHtml = '';
+        if (currentSlides[activeSlideIndex]) {
+            const activeLayout = currentSlides[activeSlideIndex].layout || currentSlides[activeSlideIndex].type;
+            const rating = getAssetRating(img, activeLayout);
+            if (rating === 'recomendada') {
+                badgeHtml = `<span style="position:absolute; top:8px; left:8px; z-index:5; background:rgba(42, 191, 176, 0.95); color:#14262D; border:1px solid var(--accent); padding:3px 8px; border-radius:12px; font-size:9px; font-weight:700; letter-spacing:0.03em; display:flex; align-items:center; gap:3px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"><i class="ti ti-star-filled" style="font-size:9px; color:#14262D;"></i> RECOMENDADA</span>`;
+            } else if (rating === 'buena') {
+                badgeHtml = `<span style="position:absolute; top:8px; left:8px; z-index:5; background:rgba(204, 194, 167, 0.95); color:#14262D; border:1px solid var(--cream); padding:3px 8px; border-radius:12px; font-size:9px; font-weight:700; letter-spacing:0.03em; display:flex; align-items:center; gap:3px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"><i class="ti ti-thumb-up-filled" style="font-size:9px; color:#14262D;"></i> BUENA</span>`;
+            }
+        }
+        
+        let metaHtml = `
+        <div style="font-size:10px; color:var(--text2); margin-top:8px; line-height:1.4; display:flex; flex-direction:column; gap:2px;">
+            <div><strong>Sujeto:</strong> ${img.subject} ${img.subject_position && img.subject_position !== 'Desconocido' ? `(${img.subject_position})` : ''}</div>
+            ${img.detailed_description ? `<div style="color:var(--text3); font-style:italic; margin: 2px 0 4px 0;">"${img.detailed_description}"</div>` : ''}
+            <div><strong>Fondo seguro:</strong> <span style="color:var(--accent); font-weight:600;">${img.safe_space}</span></div>
+            <div><strong>Mood:</strong> ${img.mood}</div>
+        </div>`;
+        
+        grid.innerHTML += `
+        <div class="asset-card" style="background:var(--bg2); border:1px solid var(--border2); border-radius:var(--radius); padding:12px; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden;">
+            <!-- Imagen Thumbnail -->
+            <div onclick="selectAsset('${img.path}')" style="width:100%; aspect-ratio:4/5; border-radius:4px; overflow:hidden; background:var(--bg); cursor:pointer; position:relative;">
+                ${badgeHtml}
+                <img src="${img.path}" style="width:100%; height:100%; object-fit:cover;">
+                <div class="picker-overlay" style="position:absolute; inset:0; opacity:0; display:flex; align-items:center; justify-content:center; transition:opacity 0.2s;">
+                    <span style="background:var(--accent); color:var(--black); padding:6px 12px; border-radius:20px; font-size:11px; font-weight:600;">${isPicker ? 'Seleccionar' : 'Ver Detalles'}</span>
+                </div>
+            </div>
+            
+            <!-- Info & Renombrar -->
+            <div style="margin-top:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:4px; margin-bottom: 5px;">
+                    <div style="font-size:11px; font-weight:600; color:var(--text); word-break:break-all; flex:1; line-height:1.2;" title="${img.name}">${img.name}</div>
+                    <button class="btn btn-outline" style="padding:2px; border-radius:4px; background:var(--bg);" title="Renombrar Archivo" onclick="event.stopPropagation(); abrirRenameInput('${img.name}')">
+                        <i class="ti ti-edit" style="font-size:11px;"></i>
+                    </button>
+                </div>
+                ${metaHtml}
+            </div>
+        </div>`;
+    });
+}
+
+function abrirRenameInput(oldName) {
+    const newName = prompt(`Escribe el nuevo nombre para la imagen:\n(Se conservará la extensión original)`, oldName);
+    if (!newName || newName === oldName) return;
+    
+    renombrarAsset(oldName, newName);
+}
+
+async function renombrarAsset(oldName, newName) {
+    try {
+        const response = await fetch('/api/rename', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ old_name: oldName, new_name: newName })
+        });
+        
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.error || "Error en el servidor");
+        }
+        
+        await loadAssets(); // Recargar assets
+        
+        // Si el slide activo usaba la foto antigua, actualizarla
+        currentSlides.forEach(s => {
+            if (s.bg && s.bg.includes(oldName)) {
+                const parts = s.bg.split('/');
+                parts[parts.length - 1] = newName;
+                s.bg = parts.join('/');
+            }
+        });
+        
+        filtrarAssets();
+        actualizarEditor();
+        actualizarPreview();
+    } catch (e) {
+        console.error("Error al renombrar asset:", e);
+        alert("Fallo al renombrar: " + e.message);
+    }
+}
+
+async function rescanearAssets() {
+    const btn = document.getElementById('btn-rescan-ia');
+    const originalHtml = btn.innerHTML;
+    btn.innerHTML = '<i class="ti ti-loader ti-spin"></i> Indexando con IA...';
+    btn.disabled = true;
+    
+    const savedKey = localStorage.getItem('gemini_api_key') || "AIzaSyDoFbsWJclf_aLUT7hJLF9mz86frAlJeec";
+    
+    try {
+        const response = await fetch('/api/rescan', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ api_key: savedKey })
+        });
+        
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.error || "Error en el servidor");
+        }
+        
+        const data = await response.json();
+        IMAGES_METADATA = data.images;
+        
+        // Actualizar IMAGES_DB
+        IMAGES_DB.length = 0;
+        IMAGES_DB.push(...data.images.map(img => img.name));
+        
+        alert(`¡Indexación completada!\nSe analizaron ${data.new_analyses} nuevas imágenes.`);
+        
+        if (data.errors && data.errors.length > 0) {
+            console.warn("Algunos errores ocurrieron:", data.errors);
+            alert("Advertencia: " + data.errors.join("\n"));
+        }
+        
+        filtrarAssets();
+        actualizarEditor();
+        actualizarPreview();
+    } catch (e) {
+        console.error("Error al escanear assets:", e);
+        alert("Fallo al escanear: " + e.message);
+    } finally {
+        btn.innerHTML = originalHtml;
+        btn.disabled = false;
+    }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Content OS — Dr. Molina</title>
+    <link rel="stylesheet" href="design-system.css">
+    <style>
+        /* Shell Specific Layout */
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar {
+            height: var(--topbar-h);
+            background: var(--bg2);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .menu-btn {
+            display: none; /* Hidden on desktop */
+            background: transparent;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            padding: 0.5rem;
+            margin-left: -0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .logo {
+            font-family: var(--f-display);
+            font-size: 1.7rem; /* Increased size */
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        
+        .logo i { color: var(--accent); font-size: 1.8rem; }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+        
+        .topbar-right .btn {
+            font-size: 1.25rem;
+            padding: 0.4rem;
+        }
+
+        .shell-main {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Sidebar Desktop */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--bg2);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 40;
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 150px;
+            background: radial-gradient(circle at top left, var(--teal-bg2), transparent 70%);
+            pointer-events: none;
+        }
+
+        .nav-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .nav-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            padding: 0 1rem;
+        }
+
+        .nav-group-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text3);
+            font-weight: 600;
+            padding: 0 0.75rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            color: var(--text2);
+            border-radius: var(--r-sm);
+            text-decoration: none;
+            font-size: var(--fs-sm);
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            color: var(--text);
+            background: var(--surface2);
+        }
+
+        .nav-link.active {
+            color: var(--accent);
+            background: var(--teal-bg);
+            font-weight: 600;
+        }
+
+        .nav-link i { font-size: 1.1rem; }
+
+        .sidebar-foot {
+            padding: 1rem;
+            border-top: 1px solid var(--border2);
+        }
+
+        /* Theme Toggle */
+        .theme-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 0.75rem;
+            color: var(--text2);
+            font-size: var(--fs-sm);
+        }
+        .toggle-track {
+            width: 36px;
+            height: 20px;
+            background: var(--surface3);
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .toggle-dot {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            background: var(--text);
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        body.light .toggle-track { background: var(--accent); }
+        body.light .toggle-dot { transform: translateX(16px); background: #fff; }
+
+        /* Mobile Sidebar Overlay */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(2px);
+            z-index: 39;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        /* Iframe Container */
+        .module-container {
+            flex: 1;
+            background: var(--bg);
+            position: relative;
+        }
+
+        .module-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* FAB for mobile */
+        .fab {
+            display: none;
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: #14262D;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 12px rgba(42,191,176,0.4);
+            border: none;
+            cursor: pointer;
+            z-index: 45;
+            transition: transform 0.2s;
+        }
+        .fab:active { transform: scale(0.95); }
+
+        /* ═══ RESPONSIVE ═══ */
+        @media (max-width: 768px) {
+            .menu-btn { display: block; }
+            
+            .sidebar {
+                position: fixed;
+                top: var(--topbar-h);
+                bottom: 0;
+                left: 0;
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            
+            .sidebar-overlay.open {
+                display: block;
+                opacity: 1;
+            }
+
+            .fab { display: flex; }
+        }
+
+        /* ── LOGIN OVERLAY ── */
+        .login-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 20, 25, 0.9);
+            backdrop-filter: blur(12px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            transition: opacity 0.3s ease;
+        }
+        .login-card {
+            background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            width: 100%;
+            max-width: 420px;
+            padding: 2.25rem 2rem;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+        .login-title {
+            font-family: var(--f-display);
+            font-size: 2.2rem;
+            font-weight: 300;
+            color: var(--text);
+            text-align: center;
+            margin: 0;
+        }
+        .login-title i {
+            color: var(--accent);
+        }
+        .login-subtitle {
+            font-size: 13px;
+            color: var(--text2);
+            text-align: center;
+            margin-top: -10px;
+            margin-bottom: 5px;
+        }
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            margin-bottom: 0.75rem;
+        }
+        .field-label {
+            font-size: 11px;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+        .input-control {
+            width: 100%;
+            padding: 0.6rem 0.75rem;
+            background: var(--bg2);
+            border: 1px solid var(--border2);
+            color: var(--text);
+            border-radius: var(--r-sm);
+            font-size: var(--fs-sm);
+            transition: border-color 0.2s ease;
+        }
+        .input-control:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        .login-btn-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body class="dark">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+        <div class="topbar-left">
+            <button class="menu-btn" id="menuToggle">
+                <i class="ti ti-menu-2"></i>
+            </button>
+            <div class="logo">
+                <img src="assets/logos/icono.png" alt="Icono" style="height: 2.3rem; width: auto; object-fit: contain;" /> Content OS
+            </div>
+        </div>
+        <div class="topbar-right">
+            <button class="btn btn-icon" style="border:none;background:transparent;color:var(--text);font-size:1.3rem;cursor:pointer"><i class="ti ti-bell"></i></button>
+            <div style="position: relative; display: inline-block;">
+                <div id="userAvatar" class="avatar" style="width:38px;height:38px;border-radius:50%;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:0.9rem;cursor:pointer">U</div>
+                <div id="userDropdown" style="display: none; position: absolute; right: 0; top: 48px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-sm); box-shadow: 0 4px 12px rgba(0,0,0,0.3); padding: 0.5rem 0; width: 220px; z-index: 100;">
+                    <div style="padding: 0.5rem 1rem; border-bottom: 1px solid var(--border2); font-size: var(--fs-xs);">
+                        <div id="dropdownName" style="font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Cargando...</div>
+                        <div id="dropdownEmail" style="color: var(--text3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Cargando...</div>
+                    </div>
+                    <a id="logoutBtn" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; color: var(--danger); text-decoration: none; font-size: var(--fs-sm); cursor: pointer; transition: background 0.2s;">
+                        <i class="ti ti-logout"></i> Cerrar Sesión
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="shell-main">
+        <!-- OVERLAY MOBILE -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="nav-content">
+                <div class="nav-group">
+                    <div class="nav-group-label">Principal</div>
+                    <a class="nav-link active" data-target="dashboard"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
+                    <a class="nav-link" data-target="visual-brain"><i class="ti ti-palette"></i> Visual Brain</a>
+                    <a class="nav-link" data-target="estrategia"><i class="ti ti-calendar-stats"></i> Estrategia</a>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-group-label">Contenido</div>
+                    <a class="nav-link" data-target="constructor-reels"><i class="ti ti-movie"></i> Constructor Reels</a>
+                    <a class="nav-link" data-target="carousel-studio"><i class="ti ti-carousel-horizontal"></i> Carousel Studio</a>
+                    <a class="nav-link" data-target="biblioteca"><i class="ti ti-lock"></i> Bóveda de Creativos</a>
+                    <a class="nav-link" data-target="deposito-ideas"><i class="ti ti-bulb"></i> Depósito de Ideas</a>
+                    <a class="nav-link" data-target="calendario-editorial"><i class="ti ti-calendar-event"></i> Calendario</a>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-group-label">Crecimiento</div>
+                    <a class="nav-link" data-target="pauta"><i class="ti ti-speakerphone"></i> Pauta</a>
+                    <a class="nav-link" data-target="analisis"><i class="ti ti-chart-bar"></i> Análisis</a>
+                    <a class="nav-link" data-target="banco-hooks"><i class="ti ti-fish-hook"></i> Banco de Hooks</a>
+                </div>
+
+                <div class="nav-group">
+                    <div class="nav-group-label">Equipo</div>
+                    <a class="nav-link" data-target="crm-leads"><i class="ti ti-users"></i> CRM Leads</a>
+                    <a class="nav-link" data-target="equipo"><i class="ti ti-user-plus"></i> Equipo</a>
+                    <a class="nav-link" data-target="configuracion"><i class="ti ti-settings"></i> Configuración</a>
+                </div>
+            </div>
+
+            <div class="sidebar-foot">
+                <div class="theme-row">
+                    <span>Modo Claro</span>
+                    <div class="toggle-track" id="themeToggle">
+                        <div class="toggle-dot"></div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CONTENEDOR MODULOS -->
+        <main class="module-container">
+            <iframe id="moduleFrame" class="module-iframe" src="modules/dashboard.html"></iframe>
+        </main>
+    </div>
+
+    <!-- FAB MOBILE -->
+    <button class="fab"><i class="ti ti-plus"></i></button>
+
+    <!-- LOGIN/REGISTER OVERLAY -->
+    <div id="loginOverlay" class="login-overlay" style="display: none;">
+        <div class="login-card">
+            <h2 class="login-title" id="loginCardTitle"><i class="ti ti-brain"></i> Iniciar Sesión</h2>
+            <p class="login-subtitle" id="loginCardSubtitle">Accede al Content OS de Dr. Molina</p>
+            
+            <form id="loginForm" onsubmit="event.preventDefault();">
+                <!-- Username field (only shown on registration) -->
+                <div class="field" id="usernameField" style="display: none;">
+                    <label class="field-label">Nombre de Usuario</label>
+                    <input type="text" id="regUsername" class="input-control" placeholder="ej: molinacreativo">
+                </div>
+
+                <!-- Name field (only shown on registration) -->
+                <div class="field" id="nameField" style="display: none;">
+                    <label class="field-label">Nombre Completo</label>
+                    <input type="text" id="regName" class="input-control" placeholder="ej: Juan Molina">
+                </div>
+
+                <div class="field">
+                    <label class="field-label" id="emailLabel">Nombre de Usuario o Correo</label>
+                    <input type="text" id="loginEmail" class="input-control" required placeholder="ej: admin o admin@molina.com">
+                </div>
+
+                <div class="field">
+                    <label class="field-label">Contraseña</label>
+                    <input type="password" id="loginPassword" class="input-control" required placeholder="••••••••">
+                </div>
+
+                <!-- Function selection (only shown on registration) -->
+                <div class="field" id="functionField" style="display: none;">
+                    <label class="field-label">Función / Especialidad</label>
+                    <select id="regFunction" class="input-control">
+                        <option value="Editor de Video">Editor de Video</option>
+                        <option value="Diseñador">Diseñador</option>
+                        <option value="Copywriter">Copywriter</option>
+                        <option value="Trafficker">Trafficker</option>
+                        <option value="Administrador">Administrador</option>
+                        <option value="Otros">Otros</option>
+                    </select>
+                </div>
+
+                <div id="loginError" style="color: #ff6b6b; font-size: 12px; margin-bottom: 10px; display: none; text-align: center; line-height: 1.4;"></div>
+
+                <div class="login-btn-row">
+                    <button type="submit" id="submitBtn" class="btn btn-primary" style="width:100%;">Ingresar</button>
+                    <button type="button" id="toggleAuthModeBtn" class="btn btn-secondary" style="width:100%; border:none; background:transparent;">¿No tienes cuenta? Regístrate</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { supabase } from './supabase-client.js';
+
+        // State
+        let isLight = false;
+        let currentModule = 'dashboard';
+        let authMode = 'login'; // 'login' or 'register'
+
+        // Elements
+        const themeToggle = document.getElementById('themeToggle');
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const iframe = document.getElementById('moduleFrame');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        // User profile & login elements
+        const loginOverlay = document.getElementById('loginOverlay');
+        const loginForm = document.getElementById('loginForm');
+        const loginEmail = document.getElementById('loginEmail');
+        const loginPassword = document.getElementById('loginPassword');
+        const emailLabel = document.getElementById('emailLabel');
+        const regUsername = document.getElementById('regUsername');
+        const regName = document.getElementById('regName');
+        const regFunction = document.getElementById('regFunction');
+        
+        const usernameField = document.getElementById('usernameField');
+        const nameField = document.getElementById('nameField');
+        const functionField = document.getElementById('functionField');
+        
+        const loginCardTitle = document.getElementById('loginCardTitle');
+        const loginCardSubtitle = document.getElementById('loginCardSubtitle');
+        const loginError = document.getElementById('loginError');
+        const submitBtn = document.getElementById('submitBtn');
+        const toggleAuthModeBtn = document.getElementById('toggleAuthModeBtn');
+
+        const userAvatar = document.getElementById('userAvatar');
+        const userDropdown = document.getElementById('userDropdown');
+        const dropdownName = document.getElementById('dropdownName');
+        const dropdownEmail = document.getElementById('dropdownEmail');
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Toggle user dropdown
+        userAvatar.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userDropdown.style.display = userDropdown.style.display === 'none' ? 'block' : 'none';
+        });
+
+        document.addEventListener('click', () => {
+            userDropdown.style.display = 'none';
+        });
+
+        userDropdown.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // Logout action
+        logoutBtn.addEventListener('click', async () => {
+            const cachedUser = JSON.parse(localStorage.getItem('content_os_user') || '{}');
+            if (cachedUser.email) {
+                await logActivity(cachedUser.email, cachedUser.name, 'Cierre de Sesión', 'El usuario cerró sesión en el Content OS.');
+            }
+            localStorage.removeItem('content_os_user');
+            window.location.reload();
+        });
+
+        // Password hashing helper (SHA-256 via Web Crypto API)
+        async function hashPassword(password) {
+            const msgUint8 = new TextEncoder().encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Audit Log action
+        async function logActivity(email, name, action, details) {
+            try {
+                await supabase.from('audit_logs').insert({
+                    user_email: email,
+                    user_name: name,
+                    action: action,
+                    details: details
+                });
+            } catch (err) {
+                console.error("Error logging activity:", err);
+            }
+        }
+
+        // Seed default admin if table is empty
+        async function ensureAdminExists() {
+            try {
+                const { count, error } = await supabase
+                    .from('colaboradores')
+                    .select('*', { count: 'exact', head: true });
+                
+                if (error) {
+                    console.error("Database table 'colaboradores' check error:", error.message);
+                    if (error.message.includes("does not exist") || error.code === "P0001" || error.status === 404) {
+                        loginError.style.display = 'block';
+                        loginError.innerHTML = '⚠️ La tabla "colaboradores" no existe en Supabase.<br>Por favor ejecuta "schema_update.sql" en el SQL Editor de tu Supabase.';
+                    }
+                    return;
+                }
+                
+                if (count === 0) {
+                    const hashedPassword = await hashPassword('admin123');
+                    const { error: seedError } = await supabase
+                        .from('colaboradores')
+                        .insert({
+                            username: 'admin',
+                            name: 'Dr. Molina (Master)',
+                            email: 'admin@molina.com',
+                            password: hashedPassword,
+                            role: 'administrador',
+                            function: 'Administrador',
+                            verified: true
+                        });
+                    if (seedError) {
+                        console.error("Error seeding default admin:", seedError.message);
+                    } else {
+                        console.log("Master administrator created: admin@molina.com / admin123");
+                    }
+                }
+            } catch (e) {
+                console.error("ensureAdminExists exception:", e);
+            }
+        }
+
+        // Toggle Auth Mode
+        toggleAuthModeBtn.addEventListener('click', () => {
+            loginError.style.display = 'none';
+            if (authMode === 'login') {
+                authMode = 'register';
+                loginCardTitle.innerHTML = '<i class="ti ti-user-plus"></i> Registrarse';
+                loginCardSubtitle.textContent = 'Crea tu perfil de colaborador';
+                usernameField.style.display = 'flex';
+                nameField.style.display = 'flex';
+                functionField.style.display = 'flex';
+                emailLabel.textContent = 'Correo Electrónico';
+                loginEmail.placeholder = 'correo@ejemplo.com';
+                submitBtn.textContent = 'Registrarse y Solicitar Acceso';
+                toggleAuthModeBtn.textContent = '¿Ya tienes cuenta? Inicia sesión';
+                loginEmail.value = '';
+                loginPassword.value = '';
+            } else {
+                authMode = 'login';
+                loginCardTitle.innerHTML = '<i class="ti ti-brain"></i> Iniciar Sesión';
+                loginCardSubtitle.textContent = 'Accede al Content OS de Dr. Molina';
+                usernameField.style.display = 'none';
+                nameField.style.display = 'none';
+                functionField.style.display = 'none';
+                emailLabel.textContent = 'Nombre de Usuario o Correo';
+                loginEmail.placeholder = 'ej: admin o admin@molina.com';
+                submitBtn.textContent = 'Ingresar';
+                toggleAuthModeBtn.textContent = '¿No tienes cuenta? Regístrate';
+                loginEmail.value = '';
+                loginPassword.value = '';
+            }
+        });
+
+        // Submit Form
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            loginError.style.display = 'none';
+            submitBtn.disabled = true;
+            const originalText = submitBtn.textContent;
+            submitBtn.innerHTML = '<i class="ti ti-loader ti-spin"></i> Procesando...';
+
+            try {
+                const inputVal = loginEmail.value.trim();
+                const password = loginPassword.value;
+
+                if (authMode === 'login') {
+                    // Login mode
+                    const hashedPassword = await hashPassword(password);
+                    
+                    let query = supabase.from('colaboradores').select('*');
+                    if (inputVal.includes('@')) {
+                        query = query.eq('email', inputVal.toLowerCase());
+                    } else {
+                        query = query.eq('username', inputVal.toLowerCase());
+                    }
+
+                    const { data: users, error } = await query;
+
+                    if (error) {
+                        console.error("Login database error:", error);
+                        if (error.message.includes("does not exist") || error.code === "P0001" || error.status === 404 || (error.message && error.message.toLowerCase().includes("relation"))) {
+                            throw new Error('⚠️ La tabla "colaboradores" no existe en Supabase. Por favor ejecuta el contenido del archivo "schema_update.sql" en el SQL Editor de tu consola de Supabase.');
+                        }
+                        throw new Error(`Error de base de datos: ${error.message}`);
+                    }
+
+                    if (!users || users.length === 0) {
+                        throw new Error('Credenciales incorrectas (usuario/correo o contraseña no válidos).');
+                    }
+
+                    const user = users[0];
+                    if (user.password !== hashedPassword) {
+                        throw new Error('Credenciales incorrectas (usuario/correo o contraseña no válidos).');
+                    }
+
+                    if (!user.verified) {
+                        throw new Error('Tu cuenta está registrada pero aún no está verificada por el Administrador.');
+                    }
+
+                    // Success login!
+                    localStorage.setItem('content_os_user', JSON.stringify(user));
+                    loginOverlay.style.display = 'none';
+                    updateUIForUser(user);
+                    
+                    // Log audit
+                    await logActivity(user.email, user.name, 'Inicio de Sesión', 'El usuario inició sesión en el Content OS.');
+                    
+                    // Reload active module
+                    reloadCurrentModule();
+                } else {
+                    // Register mode
+                    const username = regUsername.value.trim().toLowerCase();
+                    const name = regName.value.trim();
+                    const specFunction = regFunction.value;
+                    const email = inputVal.toLowerCase();
+
+                    if (!username || !name || !email || !password) {
+                        throw new Error('Por favor completa todos los campos.');
+                    }
+
+                    if (username.length < 3) {
+                        throw new Error('El nombre de usuario debe tener al menos 3 caracteres.');
+                    }
+
+                    const hashedPassword = await hashPassword(password);
+
+                    // Insert colaborador
+                    const { error: insertError } = await supabase
+                        .from('colaboradores')
+                        .insert({
+                            username: username,
+                            name: name,
+                            email: email,
+                            password: hashedPassword,
+                            role: 'colaborador',
+                            function: specFunction,
+                            verified: false
+                        });
+
+                    if (insertError) {
+                        if (insertError.message.includes('unique') || insertError.message.includes('already exists')) {
+                            throw new Error('El nombre de usuario o correo electrónico ya están registrados.');
+                        }
+                        throw new Error(insertError.message);
+                    }
+
+                    // Success registration
+                    alert('¡Registro exitoso!\nTu cuenta ha sido creada. Pídele al administrador (Dr. Molina) que verifique tu perfil en la sección de Equipo para poder acceder.');
+                    
+                    // Log audit under system log
+                    await logActivity(email, name, 'Registro de Cuenta', `Nuevo registro como colaborador. Especialidad: ${specFunction}.`);
+
+                    // Switch back to login mode
+                    toggleAuthModeBtn.click();
+                }
+            } catch (err) {
+                loginError.style.display = 'block';
+                loginError.textContent = err.message;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        });
+
+        // Update topbar and layout with user data
+        function updateUIForUser(user) {
+            dropdownName.textContent = user.name;
+            dropdownEmail.textContent = user.email + ` (${user.role === 'administrador' ? 'Administrador' : user.function})`;
+            
+            // Set avatar text or image
+            const initials = user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            if (user.photo_url) {
+                userAvatar.innerHTML = `<img src="${user.photo_url}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" onerror="this.outerHTML='${initials}'">`;
+                userAvatar.style.background = 'transparent';
+            } else {
+                userAvatar.textContent = initials;
+                userAvatar.style.background = user.role === 'administrador' ? 'var(--accent)' : 'var(--beige)';
+                userAvatar.style.color = '#14262D';
+            }
+        }
+
+        // Validate session on load
+        async function validateSession() {
+            // First check if table exists and default admin is seeded
+            await ensureAdminExists();
+
+            const cachedUser = JSON.parse(localStorage.getItem('content_os_user') || 'null');
+            if (!cachedUser) {
+                loginOverlay.style.display = 'flex';
+                return;
+            }
+
+            try {
+                const { data: user, error } = await supabase
+                    .from('colaboradores')
+                    .select('*')
+                    .eq('id', cachedUser.id)
+                    .single();
+
+                if (error || !user) {
+                    localStorage.removeItem('content_os_user');
+                    loginOverlay.style.display = 'flex';
+                    return;
+                }
+
+                if (!user.verified) {
+                    localStorage.removeItem('content_os_user');
+                    loginOverlay.style.display = 'flex';
+                    loginError.style.display = 'block';
+                    loginError.textContent = 'Tu cuenta está registrada pero aún no está verificada por el Administrador.';
+                    return;
+                }
+
+                // Session valid!
+                localStorage.setItem('content_os_user', JSON.stringify(user));
+                loginOverlay.style.display = 'none';
+                updateUIForUser(user);
+            } catch (e) {
+                // Offline fallback - use cache
+                updateUIForUser(cachedUser);
+            }
+        }
+
+        function reloadCurrentModule() {
+            iframe.src = 'about:blank';
+            setTimeout(() => {
+                iframe.src = `modules/${currentModule}.html?t=` + new Date().getTime();
+            }, 30);
+        }
+
+        // Initial cache-busting load
+        iframe.src = `modules/${currentModule}.html?t=` + new Date().getTime();
+
+        // Theme Management
+        themeToggle.addEventListener('click', () => {
+            isLight = !isLight;
+            document.body.classList.toggle('light', isLight);
+            
+            // Send theme change to active iframe
+            if(iframe.contentWindow) {
+                iframe.contentWindow.postMessage({
+                    type: 'THEME_CHANGE',
+                    payload: isLight ? 'light' : 'dark'
+                }, '*');
+            }
+        });
+
+        // Mobile Menu
+        function toggleMenu() {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+        menuToggle.addEventListener('click', toggleMenu);
+        overlay.addEventListener('click', toggleMenu);
+
+        // Navigation
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                const target = e.currentTarget.getAttribute('data-target');
+                if(!target) return;
+
+                // Update active state
+                navLinks.forEach(l => l.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+
+                // Load module (force clean reload)
+                currentModule = target;
+                reloadCurrentModule();
+
+                // Close mobile menu
+                if(window.innerWidth <= 768) {
+                    toggleMenu();
+                }
+            });
+        });
+
+        // Listen for messages from modules
+        window.addEventListener('message', (e) => {
+            if (!e.data || !e.data.type) return;
+
+            if (e.data.type === 'NAVIGATE') {
+                const target = e.data.payload.module;
+                const linkToClick = document.querySelector(`.nav-link[data-target="${target}"]`);
+                if(linkToClick) linkToClick.click();
+            }
+
+            if (e.data.type === 'IFRAME_READY') {
+                // Ensure the iframe gets the current theme when it loads
+                iframe.contentWindow.postMessage({
+                    type: 'THEME_CHANGE',
+                    payload: isLight ? 'light' : 'dark'
+                }, '*');
+            }
+        });
+
+        // Run session check
+        validateSession();
+    </script>
+</body>
+</html>

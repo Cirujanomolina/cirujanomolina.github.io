@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Años Intentando — @cirujanomolina</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--verde:#14262D;--verde2:#1F434E;--beige:#CCC2A7;--teal:#2ABFB0;--hueso:#F4F5F0;--rehook:#E8A87C;--trans:#7C9EB8}
+body{background:var(--verde);color:var(--hueso);font-family:'Archivo',sans-serif;font-weight:300;padding-bottom:100px}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,#0d1c21 0%,var(--verde2) 100%);border-bottom:1px solid rgba(42,191,176,0.2);padding:2rem 2rem 1.75rem;position:relative;overflow:hidden}
+.header::after{content:'';position:absolute;bottom:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:var(--teal);opacity:0.05}
+.eyebrow{font-size:10px;font-weight:500;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:0.5rem}
+.htitle{font-family:'Cormorant Garamond',serif;font-size:clamp(20px,4vw,34px);font-weight:300;color:var(--hueso);line-height:1.1;margin-bottom:0.75rem}
+.htitle em{color:var(--teal);font-style:italic}
+.hbadges{display:flex;gap:6px;flex-wrap:wrap}
+.hbadge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;background:rgba(42,191,176,0.1);border:0.5px solid rgba(42,191,176,0.35);font-size:11px;font-weight:500;color:var(--teal)}
+
+/* LAYOUT */
+.wrap{max-width:920px;margin:0 auto;padding:1.75rem 1.25rem}
+.sec{margin-bottom:1.75rem}
+.sec-label{font-size:10px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin-bottom:0.9rem;display:flex;align-items:center;gap:6px}
+.divider{height:0.5px;background:rgba(244,245,240,0.07);margin:1.75rem 0}
+
+/* FICHA — 2 COLUMNAS */
+.ficha-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ficha-card{background:rgba(255,255,255,0.04);border:0.5px solid rgba(244,245,240,0.07);border-radius:10px;padding:0.85rem 1rem}
+.ficha-card.wide{grid-column:1/-1}
+.flabel{font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:4px}
+.fval{font-size:13px;font-weight:400;color:var(--hueso);line-height:1.4}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;background:rgba(42,191,176,0.12);border:0.5px solid rgba(42,191,176,0.3);color:var(--teal)}
+.badge-b{background:rgba(204,194,167,0.12);border-color:rgba(204,194,167,0.3);color:var(--beige)}
+
+/* HOOKS */
+.hooks-grid{display:grid;gap:10px}
+.hook-card{background:var(--verde2);border-left:3px solid var(--teal);border-radius:0 10px 10px 0;padding:1.1rem 1.1rem 1.1rem 1.25rem}
+.hook-type{font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:6px}
+.hook-letter{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:rgba(42,191,176,0.25);line-height:1;margin-bottom:6px}
+.hook-vis{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--hueso);margin-bottom:5px;line-height:1.2}
+.hook-vis em{color:var(--teal);font-style:italic}
+.hook-verb{font-size:12px;font-weight:300;color:var(--beige);line-height:1.5;font-style:italic;border-top:0.5px solid rgba(244,245,240,0.1);padding-top:7px;margin-top:7px}
+
+/* TABLA GUION */
+.table-wrap{background:var(--verde2);border:0.5px solid rgba(244,245,240,0.07);border-radius:12px;overflow:hidden;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:700px}
+th{background:rgba(0,0,0,0.3);font-size:9px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);padding:9px 10px;text-align:left;border-bottom:1px solid rgba(42,191,176,0.15);white-space:nowrap}
+td{padding:9px 10px;border-bottom:0.5px solid rgba(244,245,240,0.05);vertical-align:top;line-height:1.5;color:var(--hueso)}
+/* ROW TYPES */
+tr.row-normal:hover td{background:rgba(42,191,176,0.03)}
+tr.row-rehook td{background:rgba(232,168,124,0.08);border-bottom:0.5px solid rgba(232,168,124,0.15)}
+tr.row-trans td{background:rgba(124,158,184,0.06);border-bottom:0.5px solid rgba(124,158,184,0.12)}
+
+.escena-n{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;color:rgba(42,191,176,0.35)}
+.rehook-n{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:600;color:var(--rehook)}
+.trans-n{font-size:10px;font-weight:500;color:var(--trans)}
+
+.tbadge{display:inline-block;padding:2px 7px;border-radius:6px;font-size:10px;font-weight:500;white-space:nowrap}
+.tbadge-time{background:rgba(42,191,176,0.12);color:var(--teal)}
+.tbadge-rehook{background:rgba(232,168,124,0.15);color:var(--rehook)}
+.tbadge-trans{background:rgba(124,158,184,0.15);color:var(--trans)}
+.plano-t{display:inline-block;padding:1px 7px;border-radius:5px;background:rgba(204,194,167,0.1);color:var(--beige);font-size:10px;margin-bottom:2px;white-space:nowrap}
+.txt-scr{font-family:'Cormorant Garamond',serif;font-size:12px;font-style:italic;color:var(--teal)}
+.nota{font-size:11px;font-weight:300;color:rgba(244,245,240,0.45);line-height:1.4}
+.overlay-box{background:rgba(42,191,176,0.06);border:0.5px solid rgba(42,191,176,0.2);border-radius:6px;padding:5px 8px;margin-top:4px;font-size:10px;color:rgba(42,191,176,0.8);line-height:1.4}
+
+/* RITMO */
+.ritmo-wrap{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.ritmo-badge{font-size:9px;font-weight:600;letter-spacing:1px;padding:1px 6px;border-radius:4px;flex-shrink:0}
+.r-s{background:rgba(42,191,176,0.15);color:var(--teal)}
+.r-m{background:rgba(204,194,167,0.15);color:var(--beige)}
+.r-l{background:rgba(232,168,124,0.15);color:var(--rehook)}
+.r-xl{background:rgba(220,100,80,0.15);color:#E8957A}
+.ritmo-bar{height:3px;border-radius:2px;background:currentColor;opacity:0.4;flex-shrink:0}
+
+/* CTA */
+.cta-block{background:linear-gradient(135deg,var(--verde2),rgba(42,191,176,0.07));border:0.5px solid rgba(42,191,176,0.2);border-radius:12px;padding:1.4rem}
+.cta-verb{font-family:'Cormorant Garamond',serif;font-size:19px;font-style:italic;color:var(--hueso);line-height:1.4;margin-bottom:0.9rem}
+.cta-tag{display:inline-block;font-size:12px;font-weight:500;letter-spacing:0.5px;color:var(--teal);border:0.5px solid var(--teal);padding:5px 14px;border-radius:6px;margin:3px 6px 3px 0}
+.cta-kw{font-size:12px;font-weight:300;color:var(--beige);margin-top:0.75rem}
+.cta-kw strong{color:var(--teal);font-weight:500}
+
+/* PALETA */
+.paleta-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:0.9rem}
+.pchip{display:flex;align-items:center;gap:7px;padding:5px 10px;border-radius:7px;background:rgba(255,255,255,0.04);border:0.5px solid rgba(244,245,240,0.07)}
+.pswatch{width:18px;height:18px;border-radius:4px;flex-shrink:0}
+.pname{font-size:11px;font-weight:500;color:var(--hueso);display:block}
+.phex{font-size:10px;color:var(--beige);font-family:monospace}
+.brief-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.bitem{background:rgba(255,255,255,0.04);border-radius:8px;padding:0.7rem}
+.blabel{font-size:9px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:3px}
+.bval{font-size:11px;font-weight:300;color:var(--hueso);line-height:1.5}
+
+/* CALENDARIO */
+.cal-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cal-card{background:rgba(255,255,255,0.04);border:0.5px solid rgba(244,245,240,0.07);border-radius:10px;padding:0.9rem}
+.cal-label{font-size:9px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:3px}
+.cal-val{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--hueso)}
+.cal-sub{font-size:11px;font-weight:300;color:var(--beige);margin-top:3px;line-height:1.4}
+
+/* FEEDBACK PANEL */
+.feedback-panel{background:var(--verde2);border:0.5px solid rgba(42,191,176,0.2);border-radius:14px;padding:1.4rem;margin-top:1.75rem}
+.fp-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--hueso);margin-bottom:0.3rem}
+.fp-title em{color:var(--teal);font-style:italic}
+.fp-sub{font-size:12px;font-weight:300;color:var(--beige);margin-bottom:1rem}
+.quick-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem}
+.qbtn{font-family:'Archivo',sans-serif;font-size:11px;font-weight:500;padding:7px 13px;border-radius:8px;border:0.5px solid rgba(42,191,176,0.35);background:transparent;color:var(--teal);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px}
+.qbtn:hover{background:rgba(42,191,176,0.1);border-color:var(--teal)}
+.qbtn:disabled{opacity:0.4;cursor:not-allowed}
+.feedback-input-row{display:flex;gap:8px;align-items:flex-end}
+.feedback-input{flex:1;background:rgba(0,0,0,0.2);border:0.5px solid rgba(244,245,240,0.15);border-radius:8px;padding:10px 14px;font-family:'Archivo',sans-serif;font-size:13px;font-weight:300;color:var(--hueso);resize:none;min-height:44px;max-height:120px;outline:none;transition:border-color 0.15s}
+.feedback-input::placeholder{color:rgba(244,245,240,0.3)}
+.feedback-input:focus{border-color:rgba(42,191,176,0.5)}
+.send-btn{font-family:'Archivo',sans-serif;font-size:12px;font-weight:500;padding:10px 18px;border-radius:8px;border:none;background:var(--teal);color:var(--verde);cursor:pointer;transition:all 0.15s;white-space:nowrap;flex-shrink:0}
+.send-btn:hover{background:#25a99b}
+.send-btn:disabled{opacity:0.5;cursor:not-allowed}
+.ai-response{background:rgba(0,0,0,0.15);border-radius:8px;padding:0.9rem;margin-top:0.9rem;display:none}
+.ai-response.visible{display:block}
+.ai-resp-label{font-size:9px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:6px}
+.ai-resp-text{font-size:13px;font-weight:300;color:var(--hueso);line-height:1.6;white-space:pre-wrap}
+.ai-thinking{display:flex;align-items:center;gap:8px;color:var(--beige);font-size:12px}
+.dots span{animation:dot 1.2s infinite;display:inline-block;opacity:0}
+.dots span:nth-child(2){animation-delay:.2s}
+.dots span:nth-child(3){animation-delay:.4s}
+@keyframes dot{0%,100%{opacity:0}50%{opacity:1}}
+
+/* EXPORT BAR */
+.export-bar{background:rgba(20,38,45,0.95);backdrop-filter:blur(12px);border-top:0.5px solid rgba(244,245,240,0.08);padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;position:fixed;bottom:0;left:0;right:0;z-index:100}
+.exp-label{font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--beige)}
+.exp-btns{display:flex;gap:8px}
+.ebtn{font-family:'Archivo',sans-serif;font-size:11px;font-weight:500;padding:8px 16px;border-radius:7px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:6px;border:none}
+.ebtn-md{background:var(--teal);color:var(--verde)}
+.ebtn-md:hover{background:#25a99b;transform:translateY(-1px)}
+.ebtn-csv{background:transparent;color:var(--teal);border:0.5px solid var(--teal)}
+.ebtn-csv:hover{background:rgba(42,191,176,0.1);transform:translateY(-1px)}
+
+.toast{position:fixed;bottom:76px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--teal);color:var(--verde);font-size:12px;font-weight:500;padding:8px 18px;border-radius:7px;opacity:0;transition:all 0.25s;pointer-events:none;z-index:200;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="eyebrow">Estrategia de Reel · @cirujanomolina</div>
+  <div class="htitle">Años intentando — <em>la culpa no es tuya</em></div>
+  <div class="hbadges">
+    <span class="hbadge">⬡ Validación emocional</span>
+    <span class="hbadge">↑ TOFU</span>
+    <span class="hbadge">⏱ 45s</span>
+    <span class="hbadge">📅 Lunes</span>
+    <span class="hbadge">🎬 Talking head</span>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- FICHA ESTRATÉGICA 2 cols -->
+  <div class="sec">
+    <div class="sec-label">⬡ Ficha estratégica</div>
+    <div class="ficha-grid">
+      <div class="ficha-card"><div class="flabel">Pilar</div><div class="fval"><span class="badge">Validación emocional</span></div></div>
+      <div class="ficha-card"><div class="flabel">Etapa del funnel</div><div class="fval"><span class="badge">TOFU</span></div></div>
+      <div class="ficha-card"><div class="flabel">Emoción central</div><div class="fval"><span class="badge-b badge">Alivio · Identificación</span></div></div>
+      <div class="ficha-card"><div class="flabel">Objetivo algorítmico</div><div class="fval">Guardados + compartidos masivos</div></div>
+      <div class="ficha-card"><div class="flabel">Formato</div><div class="fval">Talking head conversacional</div></div>
+      <div class="ficha-card"><div class="flabel">Tipo de edición</div><div class="fval">Emocional lento · pausas intencionadas</div></div>
+      <div class="ficha-card"><div class="flabel">Duración ideal</div><div class="fval"><span class="badge">45 segundos</span></div></div>
+      <div class="ficha-card"><div class="flabel">Ubicación · Vestuario</div><div class="fval">Consultorio cálido · Bata o casual premium oscuro</div></div>
+      <div class="ficha-card wide"><div class="flabel">Objetivo psicológico</div><div class="fval">Quitar la culpa. Hacer sentir a la paciente vista y entendida sin juicio — que por primera vez alguien pone nombre a lo que siente.</div></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- HOOKS -->
+  <div class="sec">
+    <div class="sec-label">⚡ Hooks propuestos</div>
+    <div class="hooks-grid">
+      <div class="hook-card">
+        <div class="hook-type">Hook A · Emocional — reconocimiento directo</div>
+        <div class="hook-letter">A</div>
+        <div class="hook-vis">Años <em>intentando.</em></div>
+        <div class="hook-verb">"Si llevas años haciendo todo bien y el peso no baja — esto es para ti."</div>
+      </div>
+      <div class="hook-card">
+        <div class="hook-type">Hook B · Pregunta incómoda que ya se hicieron</div>
+        <div class="hook-letter">B</div>
+        <div class="hook-vis">¿Por qué no puedo <em>bajar de peso?</em></div>
+        <div class="hook-verb">"Antes de responder eso, necesito que sepas algo: la culpa no es tuya."</div>
+      </div>
+      <div class="hook-card">
+        <div class="hook-type">Hook C · Contraste / disonancia cognitiva</div>
+        <div class="hook-letter">C</div>
+        <div class="hook-vis">No es voluntad. Es <em>biología.</em></div>
+        <div class="hook-verb">"El 95% de personas que bajan de peso con dieta lo recuperan. No porque fallen — porque el cuerpo está diseñado para hacerlo."</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- GUION -->
+  <div class="sec">
+    <div class="sec-label">🎬 Guion de producción</div>
+    <p style="font-size:11px;color:var(--beige);margin-bottom:0.75rem;line-height:1.5">
+      <span style="color:var(--teal)">■</span> Escenas normales &nbsp;·&nbsp;
+      <span style="color:var(--rehook)">■</span> Re-hooks &nbsp;·&nbsp;
+      <span style="color:var(--trans)">■</span> Transiciones &nbsp;·&nbsp;
+      Ritmo: <span style="color:var(--teal)">S</span> corto · <span style="color:var(--beige)">M</span> medio · <span style="color:var(--rehook)">L</span> largo · <span style="color:#E8957A">XL</span> extendido
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th><th>Tiempo</th><th>Diálogo / Acción</th><th>Plano · Cámara</th><th>Movimiento</th><th>Overlay / PIP</th><th>Texto pantalla</th><th>Notas</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- E01 -->
+          <tr class="row-normal">
+            <td><span class="escena-n">01</span></td>
+            <td><span class="tbadge tbadge-time">0–2s</span></td>
+            <td>
+              <div class="ritmo-wrap"><span class="ritmo-badge r-s">S</span><div class="ritmo-bar r-s" style="width:20px"></div></div>
+              <em style="color:var(--beige);font-size:11px">(silencio absoluto)</em>
+            </td>
+            <td><span class="plano-t">Close-up</span> manos del Dr. sobre escritorio, entrelazadas</td>
+            <td>Estático · ligero rack focus de manos a rostro</td>
+            <td>—</td>
+            <td class="txt-scr">"Años <em>intentando.</em>"<br><span style="font-size:10px;color:rgba(42,191,176,0.6)">Cormorant · grande · aparece letra a letra</span></td>
+            <td class="nota">Solo texto. Sin música todavía. El silencio y las manos crean tensión antes de que hable.</td>
+          </tr>
+
+          <!-- TRANSICION 1 -->
+          <tr class="row-trans">
+            <td><span class="trans-n">→</span></td>
+            <td colspan="7" style="font-size:11px;color:var(--trans)">
+              <span class="tbadge tbadge-trans">TRANSICIÓN</span>&nbsp;
+              <strong>Corte seco</strong> — cambio inmediato de manos a plano medio. El corte refuerza el impacto del texto.
+            </td>
+          </tr>
+
+          <!-- E02 -->
+          <tr class="row-normal">
+            <td><span class="escena-n">02</span></td>
+            <td><span class="tbadge tbadge-time">2–5s</span></td>
+            <td>
+              <div class="ritmo-wrap"><span class="ritmo-badge r-m">M</span><div class="ritmo-bar r-m" style="width:40px"></div></div>
+              "Si llevas años haciendo todo bien y el peso no baja —<br>esto es para ti."
+            </td>
+            <td><span class="plano-t">Medium shot</span> Dr. directo a cámara, consultorio detrás</td>
+            <td>Leve zoom in lento durante toda la frase</td>
+            <td>—</td>
+            <td class="txt-scr">—</td>
+            <td class="nota">1s de pausa antes de hablar. Mirada fija, seria. Sin sonrisa aún. Autoridad empática.</td>
+          </tr>
+
+          <!-- TRANSICION 2 -->
+          <tr class="row-trans">
+            <td><span class="trans-n">→</span></td>
+            <td colspan="7" style="font-size:11px;color:var(--trans)">
+              <span class="tbadge tbadge-trans">TRANSICIÓN</span>&nbsp;
+              <strong>Dissolve suave (8f)</strong> — continuidad narrativa. El ritmo baja para entrar al desarrollo emocional.
+            </td>
+          </tr>
+
+          <!-- E03 -->
+          <tr class="row-normal">
+            <td><span class="escena-n">03</span></td>
+            <td><span class="tbadge tbadge-time">5–14s</span></td>
+            <td>
+              <div class="ritmo-wrap"><span class="ritmo-badge r-s">S</span><div class="ritmo-bar r-s" style="width:20px"></div></div>
+              "Sé que has intentado todo."<br><br>
+              <div class="ritmo-wrap"><span class="ritmo-badge r-m">M</span><div class="ritmo-bar r-m" style="width:40px"></div></div>
+              "Dietas, ejercicio, pastillas, medicina natural."<br><br>
+              <div class="ritmo-wrap"><span class="ritmo-badge r-l">L</span><div class="ritmo-bar r-l" style="width:65px"></div></div>
+              "Y cada vez que no funciona, sientes que fallaste tú. Que es tu culpa."
+            </td>
+            <td><span class="plano-t">Medium shot</span> continúa</td>
+            <td>Estático · leve respiración de cámara</td>
+            <td>
+              <div class="overlay-box">
+                🖼 <strong>PIP overlay</strong><br>
+                Aparece en s.8 · dura 6s<br>
+                Imagen desenfocada de una mujer mirando por ventana<br>
+                Opacidad 25% · fondo completo · detrás del Dr.<br>
+                Tipo: stock emocional (Pexels/Unsplash)
+              </div>
+            </td>
+            <td class="txt-scr">—</td>
+            <td class="nota">Las tres líneas en ritmo S→M→L generan aceleración emocional. Pausa de 0.5s entre "todo" y "Dietas". El overlay aparece justo al decir "sientes que fallaste".</td>
+          </tr>
+
+          <!-- RE-HOOK -->
+          <tr class="row-rehook">
+            <td><span class="rehook-n">↺</span></td>
+            <td><span class="tbadge tbadge-rehook">RE-HOOK</span></td>
+            <td colspan="6" style="color:var(--rehook);font-size:12px;font-weight:400">
+              <strong>"Pero hay algo que nadie te está diciendo."</strong><br>
+              <span style="font-size:11px;font-weight:300;color:rgba(232,168,124,0.7)">Pausa de 1s completo antes de esta línea. Es la promesa de revelación que impide el abandono. El overlay desaparece. Zoom in brusco. La cámara se acerca para marcar el quiebre.</span>
+            </td>
+          </tr>
+
+          <!-- TRANSICION 3 -->
+          <tr class="row-trans">
+            <td><span class="trans-n">→</span></td>
+            <td colspan="7" style="font-size:11px;color:var(--trans)">
+              <span class="tbadge tbadge-trans">TRANSICIÓN</span>&nbsp;
+              <strong>Zoom cut</strong> — el re-hook se refuerza con un corte de zoom. Crea energía justo antes de la revelación central.
+            </td>
+          </tr>
+
+          <!-- E04 -->
+          <tr class="row-normal">
+            <td><span class="escena-n">04</span></td>
+            <td><span class="tbadge tbadge-time">15–28s</span></td>
+            <td>
+              <div class="ritmo-wrap"><span class="ritmo-badge r-s">S</span><div class="ritmo-bar r-s" style="width:20px"></div></div>
+              "La culpa no es tuya."<br><br>
+              <div class="ritmo-wrap"><span class="ritmo-badge r-xl">XL</span><div class="ritmo-bar r-xl" style="width:90px"></div></div>
+              "La obesidad no es una falla de voluntad. Es una enfermedad. Tu cuerpo tiene mecanismos biológicos diseñados para recuperar el peso que pierde — sin importar cuánto te esfuerces."<br><br>
+              <div class="ritmo-wrap"><span class="ritmo-badge r-s">S</span><div class="ritmo-bar r-s" style="width:20px"></div></div>
+              "No es contigo."
+            </td>
+            <td><span class="plano-t">Medium-close</span> Dr., más cerca que antes</td>
+            <td>Estático · el zoom ya llegó</td>
+            <td>
+              <div class="overlay-box">
+                📊 <strong>Animación de dato</strong><br>
+                Aparece en s.20 · dura 5s<br>
+                Texto animado: "9 de cada 10 dietas fallan — no la persona"<br>
+                Opacidad 75% · esquina inferior derecha<br>
+                Tipo: motion graphic simple, fondo oscuro, texto teal
+              </div>
+            </td>
+            <td class="txt-scr">"No es tu culpa."<br><span style="font-size:10px;color:rgba(42,191,176,0.6)">Aparece al inicio de E04 · Archivo 500 · teal grande</span></td>
+            <td class="nota">La línea XL es el único momento denso del reel — soporta peso porque viene de un S fuerte. Hablar despacio. La frase "no es contigo" casi susurrada.</td>
+          </tr>
+
+          <!-- TRANSICION 4 -->
+          <tr class="row-trans">
+            <td><span class="trans-n">→</span></td>
+            <td colspan="7" style="font-size:11px;color:var(--trans)">
+              <span class="tbadge tbadge-trans">TRANSICIÓN</span>&nbsp;
+              <strong>Fade negro cortísimo (3f)</strong> — el negro de 3 frames marca el paso del dolor a la esperanza. Pausa emocional.
+            </td>
+          </tr>
+
+          <!-- E05 REMATE -->
+          <tr class="row-normal">
+            <td><span class="escena-n">05</span></td>
+            <td><span class="tbadge tbadge-time">28–38s</span></td>
+            <td>
+              <div class="ritmo-wrap"><span class="ritmo-badge r-m">M</span><div class="ritmo-bar r-m" style="width:40px"></div></div>
+              "Llevas años peleando con el equipo equivocado."<br><br>
+              <div class="ritmo-wrap"><span class="ritmo-badge r-s">S</span><div class="ritmo-bar r-s" style="width:20px"></div></div>
+              "Eso no es fracaso."<br><br>
+              <div class="ritmo-wrap"><span class="ritmo-badge r-m">M</span><div class="ritmo-bar r-m" style="width:40px"></div></div>
+              "Es no haber encontrado todavía el tratamiento correcto para lo que tienes."
+            </td>
+            <td><span class="plano-t">Close-up facial</span></td>
+            <td>Estático · ojos del Dr. bien visibles</td>
+            <td>—</td>
+            <td class="txt-scr">—</td>
+            <td class="nota">Ritmo M→S→M genera certeza y firmeza. Cada frase como una afirmación. La línea "eso no es fracaso" con pausa de 1.5s antes y después. Tono: revelación, no consuelo.</td>
+          </tr>
+
+          <!-- TRANSICION 5 -->
+          <tr class="row-trans">
+            <td><span class="trans-n">→</span></td>
+            <td colspan="7" style="font-size:11px;color:var(--trans)">
+              <span class="tbadge tbadge-trans">TRANSICIÓN</span>&nbsp;
+              <strong>Dissolve suave (6f)</strong> — el cierre emocional pide suavidad. Zoom out lento al mismo tiempo.
+            </td>
+          </tr>
+
+          <!-- E06 CTA -->
+          <tr class="row-normal">
+            <td><span class="escena-n">06</span></td>
+            <td><span class="tbadge tbadge-time">38–45s</span></td>
+            <td>
+              <div class="ritmo-wrap"><span class="ritmo-badge r-l">L</span><div class="ritmo-bar r-l" style="width:65px"></div></div>
+              "Si esto resonó contigo, comparte este video con alguien que lo necesite escuchar."<br><br>
+              <div class="ritmo-wrap"><span class="ritmo-badge r-m">M</span><div class="ritmo-bar r-m" style="width:40px"></div></div>
+              "Y si quieres dar el primer paso — escríbeme."<br><br>
+              <div class="ritmo-wrap"><span class="ritmo-badge r-s">S</span><div class="ritmo-bar r-s" style="width:20px"></div></div>
+              "Sin compromiso. Solo hablamos."
+            </td>
+            <td><span class="plano-t">Medium shot</span> Dr. se recarga levemente</td>
+            <td>Zoom out suave durante el CTA</td>
+            <td>—</td>
+            <td class="txt-scr">"Comparte · Escríbeme"<br><span style="font-size:10px;color:rgba(42,191,176,0.6)">Archivo 500 · teal · aparece al final</span></td>
+            <td class="nota">Ritmo L→M→S baja la intensidad suavemente. Termina en calma. Pequeña sonrisa genuina al decir "solo hablamos". No ansioso, no vendedor.</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CTA -->
+  <div class="sec">
+    <div class="sec-label">💬 Call to action</div>
+    <div class="cta-block">
+      <div class="cta-verb">"Si quieres dar el primer paso, escríbeme — sin compromiso, solo hablamos."</div>
+      <div><span class="cta-tag">Comparte</span><span class="cta-tag">Escríbeme</span></div>
+      <div class="cta-kw">Palabra clave: <strong>"Comenta LISTO si esto resonó contigo"</strong></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- BRIEF VISUAL -->
+  <div class="sec">
+    <div class="sec-label">🎨 Brief visual — post producción</div>
+    <div class="paleta-row">
+      <div class="pchip"><div class="pswatch" style="background:#14262D;border:0.5px solid rgba(255,255,255,0.15)"></div><div><span class="pname">Verde Noche</span><span class="phex">#14262D</span></div></div>
+      <div class="pchip"><div class="pswatch" style="background:#1F434E"></div><div><span class="pname">Verde Azulado</span><span class="phex">#1F434E</span></div></div>
+      <div class="pchip"><div class="pswatch" style="background:#2ABFB0"></div><div><span class="pname">Teal Vibrante</span><span class="phex">#2ABFB0</span></div></div>
+      <div class="pchip"><div class="pswatch" style="background:#F4F5F0"></div><div><span class="pname">Hueso Claro</span><span class="phex">#F4F5F0</span></div></div>
+    </div>
+    <div class="brief-grid">
+      <div class="bitem"><div class="blabel">Tipografía hooks</div><div class="bval">Cormorant Garamond · Peso 300 · énfasis 1-2 palabras en itálica teal</div></div>
+      <div class="bitem"><div class="blabel">Subtítulos</div><div class="bval">Siempre activos · Archivo 300 · #F4F5F0 · zona segura</div></div>
+      <div class="bitem"><div class="blabel">Música</div><div class="bval">Piano ambient minimal · ≤20% volumen · sube levemente en E04</div></div>
+      <div class="bitem"><div class="blabel">Handle</div><div class="bval">@cirujanomolina · Cormorant · arriba derecha · opacidad 55%</div></div>
+      <div class="bitem"><div class="blabel">Logo</div><div class="bval">Ícono JSM · esquina inferior izq. · opacidad 50%</div></div>
+      <div class="bitem"><div class="blabel">Tratamiento</div><div class="bval">Reflexivo e íntimo · luz cálida sobre rostro · fondo desenfocado f/1.8</div></div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- CALENDARIO -->
+  <div class="sec">
+    <div class="sec-label">📅 Encaje en calendario</div>
+    <div class="cal-row">
+      <div class="cal-card"><div class="cal-label">Día</div><div class="cal-val">Lunes</div><div class="cal-sub">Reel emocional de validación · apertura de semana</div></div>
+      <div class="cal-card"><div class="cal-label">Fase 90 días</div><div class="cal-val">IGNITE</div><div class="cal-sub">Días 1–30 · encender la marca</div></div>
+      <div class="cal-card"><div class="cal-label">Historias complementarias</div><div class="cal-sub">Mar: mini-mito "fuerza de voluntad" en caja de preguntas · Jue: reflexión del Dr. sobre paciente que sintió la misma culpa</div></div>
+    </div>
+  </div>
+
+  <!-- FEEDBACK PANEL -->
+  <div class="feedback-panel">
+    <div class="fp-title">Feedback con <em>IA</em></div>
+    <div class="fp-sub">Pide cambios específicos o usa los botones rápidos — la IA conoce la marca del Dr. Molina.</div>
+    <div class="quick-btns">
+      <button class="qbtn" onclick="quickFeedback('Dame 3 hooks completamente diferentes. Más contrarian y directos.')">🎣 Nuevos hooks</button>
+      <button class="qbtn" onclick="quickFeedback('Reescribe el guion completo con mejor ritmo S/M/L/XL y más re-hooks. Mismo pilar y emoción.')">📝 Nuevo guion</button>
+      <button class="qbtn" onclick="quickFeedback('Ajusta el tono para que sea más directo y confrontativo. Menos suave, más contrarian.')">🎯 Más contrarian</button>
+      <button class="qbtn" onclick="quickFeedback('Ajusta el tono para que sea más emocional y empático. Más suave, más cercano.')">💙 Más emocional</button>
+      <button class="qbtn" onclick="quickFeedback('Sugiere 3 overlays/PIP adicionales distintos para este reel, con timing y composición detallados.')">🖼 Más overlays</button>
+    </div>
+    <div class="feedback-input-row">
+      <textarea class="feedback-input" id="feedbackInput" placeholder="Escribe tu feedback... ej: 'no me gusta el hook B', 'el guion es muy largo', 'cambia el CTA por algo más directo'" rows="1"
+        oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendFeedback()}"
+      ></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendFeedback()">Enviar →</button>
+    </div>
+    <div class="ai-response" id="aiResponse">
+      <div class="ai-resp-label">✦ Respuesta</div>
+      <div class="ai-resp-text" id="aiRespText"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- EXPORT BAR -->
+<div class="export-bar">
+  <span class="exp-label">↓ Exportar estrategia</span>
+  <div class="exp-btns">
+    <button class="ebtn ebtn-md" onclick="exportarMD()">⬇ .MD</button>
+    <button class="ebtn ebtn-csv" onclick="exportarCSV()">⬇ Guion .CSV</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const BRAND_CONTEXT = `Eres el asistente de contenido del Dr. Juan Santiago Molina V., cirujano bariátrico premium de Medellín (@cirujanomolina). Conoces su marca a la perfección:
+- Posicionamiento: humano, premium, cercano, con autoridad médica real
+- Tagline: "Recupera quien eres."
+- Audiencia: mujeres 32-48 años agotadas de intentar sin resultado. Pacientes metabólicos.
+- Fórmula: 70% emoción / 30% ciencia. Validar antes de explicar. Nunca motivación vacía.
+- NUNCA: "¡tú puedes!", tecnicismos fríos, arrogancia, competir por precio
+- Paleta: verde noche #14262D, teal #2ABFB0, beige #CCC2A7, hueso #F4F5F0
+- Reel actual: "Años intentando — la culpa no es tuya" · Pilar: Validación emocional · TOFU · 45s · Talking head
+El usuario te dará feedback sobre este reel. Responde de forma directa, accionable y en español. Sé específico — da el texto exacto de lo que cambiarías. Usa el sistema de ritmo S/M/L/XL para líneas de guion. Los re-hooks son obligatorios en reels de 30s+.`;
+
+async function callClaude(userMessage) {
+  const resp = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 1000,
+      system: BRAND_CONTEXT,
+      messages: [{ role: "user", content: userMessage }]
+    })
+  });
+  const data = await resp.json();
+  return data.content?.[0]?.text || "No se pudo obtener respuesta.";
+}
+
+async function sendFeedback() {
+  const input = document.getElementById('feedbackInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  runFeedback(msg);
+  input.value = '';
+  input.style.height = 'auto';
+}
+
+async function quickFeedback(msg) {
+  runFeedback(msg);
+}
+
+async function runFeedback(msg) {
+  const resp = document.getElementById('aiResponse');
+  const text = document.getElementById('aiRespText');
+  const sendBtn = document.getElementById('sendBtn');
+  const btns = document.querySelectorAll('.qbtn, .send-btn');
+
+  btns.forEach(b => b.disabled = true);
+  resp.classList.add('visible');
+  text.innerHTML = '<div class="ai-thinking">Pensando<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>';
+
+  try {
+    const answer = await callClaude(msg);
+    text.textContent = answer;
+  } catch(e) {
+    text.textContent = 'Error al conectar con la IA. Revisa tu conexión e intenta de nuevo.';
+  }
+  btns.forEach(b => b.disabled = false);
+}
+
+const REEL = {
+  nombre: "Años intentando — la culpa no es tuya",
+  nombreSlug: "anos-intentando-culpa-no-es-tuya",
+  pilar: "Validación emocional", funnel: "TOFU", emocion: "Alivio · Identificación",
+  objetivoPsicologico: "Quitar la culpa. Hacer sentir a la paciente vista y entendida sin juicio.",
+  objetivoAlgoritmico: "Guardados + compartidos masivos",
+  formato: "Talking head conversacional", edicion: "Emocional lento — cortes largos, pausas intencionadas",
+  duracion: "45s", ubicacion: "Consultorio cálido", vestuario: "Bata médica o casual premium oscuro",
+  hooks: [
+    { tipo: "Emocional — reconocimiento directo", visual: "Años intentando.", verbal: "Si llevas años haciendo todo bien y el peso no baja — esto es para ti." },
+    { tipo: "Pregunta incómoda", visual: "¿Por qué no puedo bajar de peso?", verbal: "Antes de responder eso, necesito que sepas algo: la culpa no es tuya." },
+    { tipo: "Contraste / disonancia cognitiva", visual: "No es voluntad. Es biología.", verbal: "El 95% de personas que bajan de peso con dieta lo recuperan. No porque fallen — porque el cuerpo está diseñado para hacerlo." }
+  ],
+  guion: [
+    { escena:"01", tiempo:"0–2s", tipo:"ESCENA", ritmo:"S", dialogo:"(silencio absoluto)", plano:"Close-up manos sobre escritorio", movimiento:"Estático, rack focus de manos a rostro", overlay:"—", texto:'"Años intentando." — Cormorant, letra a letra', notas:"Solo texto. Sin música. El silencio crea tensión." },
+    { escena:"→", tiempo:"", tipo:"TRANSICIÓN", ritmo:"", dialogo:"Corte seco — cambio inmediato de manos a plano medio.", plano:"", movimiento:"", overlay:"", texto:"", notas:"" },
+    { escena:"02", tiempo:"2–5s", tipo:"ESCENA", ritmo:"M", dialogo:"Si llevas años haciendo todo bien y el peso no baja — esto es para ti.", plano:"Medium shot, Dr. directo a cámara", movimiento:"Leve zoom in lento durante la frase", overlay:"—", texto:"—", notas:"1s pausa antes de hablar. Mirada fija. Seriedad empática." },
+    { escena:"→", tiempo:"", tipo:"TRANSICIÓN", ritmo:"", dialogo:"Dissolve suave (8f) — continuidad narrativa, ritmo baja.", plano:"", movimiento:"", overlay:"", texto:"", notas:"" },
+    { escena:"03", tiempo:"5–14s", tipo:"ESCENA", ritmo:"S · M · L", dialogo:"S: Sé que has intentado todo. / M: Dietas, ejercicio, pastillas, medicina natural. / L: Y cada vez que no funciona, sientes que fallaste tú. Que es tu culpa.", plano:"Medium shot continúa", movimiento:"Estático, leve respiración de cámara", overlay:"PIP: mujer mirando ventana — opac 25%, fondo completo, aparece en s.8, dura 6s", texto:"—", notas:"S→M→L = aceleración emocional. Pausa 0.5s entre 'todo' y 'Dietas'. Overlay en 'sientes que fallaste'." },
+    { escena:"↺", tiempo:"~14s", tipo:"REHOOK", ritmo:"S", dialogo:"REHOOK: 'Pero hay algo que nadie te está diciendo.' — Pausa 1s completo antes. Zoom in brusco. Overlay desaparece.", plano:"", movimiento:"Zoom cut", overlay:"", texto:"", notas:"Momento de mayor riesgo de abandono. La promesa de revelación retiene al usuario." },
+    { escena:"→", tiempo:"", tipo:"TRANSICIÓN", ritmo:"", dialogo:"Zoom cut — refuerza el re-hook. Energía antes de la revelación central.", plano:"", movimiento:"", overlay:"", texto:"", notas:"" },
+    { escena:"04", tiempo:"15–28s", tipo:"ESCENA", ritmo:"S · XL · S", dialogo:"S: La culpa no es tuya. / XL: La obesidad no es una falla de voluntad. Es una enfermedad. Tu cuerpo tiene mecanismos biológicos diseñados para recuperar el peso que pierde — sin importar cuánto te esfuerces. / S: No es contigo.", plano:"Medium-close, Dr. más cerca", movimiento:"Estático — el zoom ya llegó", overlay:"Animación: '9 de cada 10 dietas fallan — no la persona' — opac 75%, esquina inf. derecha, aparece en s.20, dura 5s", texto:'"No es tu culpa." — Archivo 500, teal, aparece al inicio de E04', notas:"XL soporta peso porque viene de S fuerte. 'No es contigo' casi susurrado." },
+    { escena:"→", tiempo:"", tipo:"TRANSICIÓN", ritmo:"", dialogo:"Fade negro 3f — marca el paso del dolor a la esperanza. Pausa emocional.", plano:"", movimiento:"", overlay:"", texto:"", notas:"" },
+    { escena:"05", tiempo:"28–38s", tipo:"ESCENA", ritmo:"M · S · M", dialogo:"M: Llevas años peleando con el equipo equivocado. / S: Eso no es fracaso. / M: Es no haber encontrado todavía el tratamiento correcto para lo que tienes.", plano:"Close-up facial", movimiento:"Estático", overlay:"—", texto:"—", notas:"M→S→M = certeza y firmeza. Pausa 1.5s antes y después de 'eso no es fracaso'. Revelación, no consuelo." },
+    { escena:"→", tiempo:"", tipo:"TRANSICIÓN", ritmo:"", dialogo:"Dissolve suave (6f) + zoom out lento — cierre emocional pide suavidad.", plano:"", movimiento:"", overlay:"", texto:"", notas:"" },
+    { escena:"06", tiempo:"38–45s", tipo:"ESCENA", ritmo:"L · M · S", dialogo:"L: Si esto resonó contigo, comparte este video con alguien que lo necesite escuchar. / M: Y si quieres dar el primer paso — escríbeme. / S: Sin compromiso. Solo hablamos.", plano:"Medium shot, Dr. se recarga levemente", movimiento:"Zoom out suave", overlay:"—", texto:'"Comparte · Escríbeme" — Archivo 500, teal', notas:"L→M→S baja la intensidad. Pequeña sonrisa genuina en 'solo hablamos'. No ansioso." }
+  ],
+  ctaVerbal: "Si quieres dar el primer paso, escríbeme — sin compromiso, solo hablamos.",
+  ctaVisual: "Comparte · Escríbeme", ctaKeyword: "Comenta LISTO si esto resonó contigo",
+  musica: "Piano ambient minimal · ≤20% volumen · sube levemente en E04",
+  tratamientoImagen: "Reflexivo e íntimo · luz cálida sobre el rostro · fondo desenfocado f/1.8",
+  dia: "Lunes", fase: "IGNITE (Días 1–30)",
+  historias: "Mar: mini-mito 'fuerza de voluntad' en caja de preguntas · Jue: reflexión del Dr. sobre paciente que sintió la misma culpa"
+};
+
+function exportarMD() {
+  const R = REEL;
+  const hooksText = R.hooks.map((h,i) =>
+    `### Hook ${String.fromCharCode(65+i)} — ${h.tipo}\n> **Visual:** "${h.visual}"\n>\n> **Verbal:** "${h.verbal}"`
+  ).join('\n\n');
+  const guionRows = R.guion.map(r => {
+    if (!r.escena || r.escena === '→') return `| → | ${r.dialogo} | | | | | |`;
+    if (r.tipo === 'REHOOK') return `| ↺ REHOOK | ${r.tiempo} | **${r.dialogo}** | | ${r.movimiento} | | ${r.notas} |`;
+    return `| ${r.escena} | ${r.tiempo} | [${r.ritmo}] ${r.dialogo} | ${r.plano} | ${r.movimiento} | ${r.overlay} | ${r.texto} | ${r.notas} |`;
+  }).join('\n');
+  const md = `# 🎬 ${R.nombre}\n> @cirujanomolina · *"Recupera quien eres."*\n\n---\n\n## FICHA ESTRATÉGICA\n\n| Campo | Detalle |\n|---|---|\n| **Pilar** | ${R.pilar} |\n| **Funnel** | ${R.funnel} |\n| **Emoción** | ${R.emocion} |\n| **Objetivo psicológico** | ${R.objetivoPsicologico} |\n| **Objetivo algorítmico** | ${R.objetivoAlgoritmico} |\n| **Formato** | ${R.formato} |\n| **Edición** | ${R.edicion} |\n| **Duración** | ${R.duracion} |\n| **Ubicación** | ${R.ubicacion} |\n| **Vestuario** | ${R.vestuario} |\n\n---\n\n## HOOKS\n\n${hooksText}\n\n---\n\n## GUION DE PRODUCCIÓN\n\n*Ritmo: S=corto · M=medio · L=largo · XL=extendido · ↺=Re-hook · →=Transición*\n\n| # | Tiempo | Diálogo [Ritmo] | Plano | Movimiento | Overlay/PIP | Texto pantalla | Notas |\n|---|---|---|---|---|---|---|---|\n${guionRows}\n\n---\n\n## CALL TO ACTION\n\n**Verbal:** "${R.ctaVerbal}"\n**Visual:** ${R.ctaVisual}\n**Palabra clave:** ${R.ctaKeyword}\n\n---\n\n## BRIEF VISUAL\n\n- **Música:** ${R.musica}\n- **Imagen:** ${R.tratamientoImagen}\n- **Tipografía hooks:** Cormorant Garamond · énfasis itálica #2ABFB0\n- **Subtítulos:** Siempre · Archivo 300 · #F4F5F0 · zona segura\n- **Handle:** @cirujanomolina · discreto · arriba derecha\n- **Logo:** Ícono JSM · opacidad 50%\n\n---\n\n## CALENDARIO\n\n- **Día:** ${R.dia}\n- **Fase:** ${R.fase}\n- **Historias:** ${R.historias}\n`;
+  descargar(md, R.nombreSlug + '.md', 'text/markdown');
+  showToast('✓ Descargando .MD');
+}
+
+function exportarCSV() {
+  const R = REEL;
+  const headers = ['Tipo','Escena','Tiempo','Ritmo','Dialogo','Plano','Movimiento','OverlayPIP','TextoPantalla','NotasDireccion'];
+  const rows = R.guion.map(r =>
+    [r.tipo||'ESCENA', r.escena, r.tiempo, r.ritmo, r.dialogo, r.plano, r.movimiento, r.overlay, r.texto, r.notas]
+      .map(v => `"${(v||'').replace(/"/g,'""')}"`)
+      .join(',')
+  );
+  descargar([headers.join(','),...rows].join('\n'), R.nombreSlug+'-guion.csv', 'text/csv');
+  showToast('✓ Descargando guion .CSV');
+}
+
+function descargar(c, n, t) {
+  const b = new Blob([c],{type:t}), u = URL.createObjectURL(b), a = document.createElement('a');
+  a.href=u; a.download=n; a.click(); URL.revokeObjectURL(u);
+}
+function showToast(m) {
+  const t = document.getElementById('toast');
+  t.textContent=m; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>

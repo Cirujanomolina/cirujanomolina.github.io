@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Leads — Content OS</title>
+    <link rel="stylesheet" href="../design-system.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            font-family: var(--f-body);
+        }
+
+        /* ── HEADER PREMIUM ── */
+        .vb-header {
+            background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 2rem;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            flex-shrink: 0;
+        }
+        .vb-header::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: var(--accent);
+            opacity: 0.04;
+            pointer-events: none;
+        }
+        .vb-header::after {
+            content: '';
+            position: absolute;
+            bottom: -60px;
+            left: 5%;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: var(--beige);
+            opacity: 0.03;
+            pointer-events: none;
+        }
+        .vb-header-main {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 1;
+            min-width: 0;
+        }
+        .vb-header-actions {
+            z-index: 1;
+            flex-shrink: 0;
+        }
+        .vb-title {
+            font-family: var(--f-display);
+            font-size: clamp(22px, 3vw, 30px);
+            font-weight: 300;
+            color: var(--text);
+            line-height: 1.1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin: 0;
+        }
+        .vb-title em {
+            color: var(--accent);
+            font-style: italic;
+        }
+        .vb-badges {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .vb-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 11px;
+            border-radius: 20px;
+            background: rgba(42, 191, 176, 0.1);
+            border: 1px solid rgba(42, 191, 176, 0.25);
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--accent);
+        }
+
+        /* ── BENTO KPIs ── */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+            margin: 1.5rem 2rem;
+            flex-shrink: 0;
+        }
+        .bento-card {
+            background: linear-gradient(135deg, var(--bg2) 0%, var(--surface) 100%);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            padding: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        .bento-card::before {
+            content: '';
+            position: absolute;
+            top: -20px; right: -20px;
+            width: 80px; height: 80px;
+            background: var(--accent);
+            opacity: 0.02;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .bento-icon {
+            font-size: 1.75rem;
+            color: var(--accent);
+            background: var(--teal-bg);
+            width: 50px;
+            height: 50px;
+            border-radius: var(--r-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(42, 191, 176, 0.15);
+        }
+        .bento-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .bento-val {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text);
+            font-family: var(--f-body);
+        }
+        .bento-lbl {
+            font-size: 11px;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* ── FILTER BAR ── */
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 0 2rem;
+            margin-bottom: 1.5rem;
+            flex-shrink: 0;
+        }
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .search-wrapper {
+            position: relative;
+            min-width: 230px;
+        }
+        .search-wrapper input {
+            width: 100%;
+            padding: 0.5rem 0.75rem 0.5rem 2.25rem;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: var(--r-sm);
+            font-size: var(--fs-sm);
+            transition: all 0.25s ease;
+        }
+        .search-wrapper input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 8px rgba(42, 191, 176, 0.15);
+        }
+        .search-wrapper i {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text3);
+            font-size: 14px;
+        }
+        .select-filter {
+            padding: 0.5rem 1.75rem 0.5rem 0.75rem;
+            background: var(--bg2) url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%236a8f98' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") no-repeat right 0.75rem center/8px 10px;
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: var(--r-sm);
+            font-size: var(--fs-sm);
+            cursor: pointer;
+            appearance: none;
+            min-width: 140px;
+            max-width: 220px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .select-filter:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* ── VIEW SWITCHER ── */
+        .view-switcher {
+            display: flex;
+            background: var(--bg2);
+            border: 1px solid var(--border2);
+            border-radius: var(--r-sm);
+            padding: 2px;
+        }
+        .view-btn {
+            background: transparent;
+            border: none;
+            color: var(--text2);
+            padding: 0.4rem 0.8rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+        .view-btn.active {
+            background: var(--surface3);
+            color: var(--text);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* ── WORKSPACE PANELS ── */
+        .workspace-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ── KANBAN BOARD ── */
+        .board-container {
+            flex: 1;
+            display: flex;
+            gap: 1.25rem;
+            padding: 0 2rem 2rem 2rem;
+            overflow-x: auto;
+            overflow-y: hidden;
+            align-items: stretch;
+        }
+        .kanban-col {
+            flex: 0 0 290px;
+            background: rgba(20, 38, 45, 0.4);
+            border: 1px solid var(--border3);
+            border-radius: var(--r);
+            display: flex;
+            flex-direction: column;
+            padding: 0.85rem;
+            transition: border-color 0.25s ease, background 0.25s ease;
+            overflow: hidden;
+        }
+        .kanban-col.drag-over {
+            border-color: var(--accent);
+            background: rgba(42, 191, 176, 0.06);
+        }
+        .col-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border3);
+            flex-shrink: 0;
+        }
+        .col-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .col-count {
+            background: var(--surface2);
+            color: var(--text2);
+            font-size: 10px;
+            padding: 2px 7px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        .col-cards-list {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            overflow-y: auto;
+            min-height: 200px;
+            padding-right: 2px;
+        }
+
+        /* ── LEADS CARDS ── */
+        .lead-card {
+            background: var(--surface);
+            border: 1px solid var(--border3);
+            border-radius: var(--r-sm);
+            padding: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            cursor: grab;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            position: relative;
+        }
+        .lead-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+            border-color: var(--border);
+        }
+        .lead-card.dragging {
+            opacity: 0.4;
+            transform: scale(0.95);
+        }
+        .lead-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        .lead-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 0;
+            cursor: pointer;
+            line-height: 1.3;
+        }
+        .lead-name:hover {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+        .capacity-badge {
+            font-size: 9px;
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+        .capacity-Alta {
+            background: rgba(39, 174, 96, 0.12);
+            color: var(--success);
+            border: 1px solid rgba(39, 174, 96, 0.2);
+        }
+        .capacity-Media {
+            background: rgba(201, 134, 42, 0.12);
+            color: var(--amber);
+            border: 1px solid rgba(201, 134, 42, 0.2);
+        }
+        .capacity-Baja {
+            background: rgba(245, 90, 138, 0.12);
+            color: var(--danger);
+            border: 1px solid rgba(245, 90, 138, 0.2);
+        }
+        .lead-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: var(--text3);
+        }
+        .lead-meta-row i {
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        .lead-origin {
+            font-style: italic;
+            color: var(--text2);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+        .lead-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border3);
+            padding-top: 0.5rem;
+            margin-top: 2px;
+        }
+        .alert-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 9px;
+            font-weight: 600;
+            color: var(--danger);
+            background: rgba(245, 90, 138, 0.12);
+            border: 1px solid rgba(245, 90, 138, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .action-btns {
+            display: flex;
+            gap: 4px;
+        }
+        .btn-card-action {
+            background: transparent;
+            border: none;
+            color: var(--text2);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        .btn-card-action:hover {
+            background: var(--surface2);
+            color: var(--text);
+        }
+        .btn-card-action.btn-wa {
+            color: var(--success);
+        }
+        .btn-card-action.btn-wa:hover {
+            background: rgba(39, 174, 96, 0.1);
+            color: #2ebd59;
+        }
+
+        /* ── TABLE VIEW CONTAINER ── */
+        .table-view-container {
+            display: none;
+            padding: 0 2rem 2rem 2rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .premium-table-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            overflow: hidden;
+            box-shadow: 0 4px 25px rgba(0,0,0,0.1);
+        }
+        .premium-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: var(--fs-sm);
+        }
+        .premium-table th {
+            background: var(--bg2);
+            color: var(--text2);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .premium-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border3);
+            color: var(--text);
+            vertical-align: middle;
+        }
+        .premium-table tr:hover {
+            background: rgba(42, 191, 176, 0.03);
+        }
+        .table-select-stage {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 180px;
+        }
+        .table-select-stage:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* ── MODAL PREMIUM ── */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 20, 25, 0.75);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.open {
+            display: flex;
+            opacity: 1;
+        }
+        .modal-card {
+            background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            width: 100%;
+            max-width: 520px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+            overflow: hidden;
+        }
+        .modal-overlay.open .modal-card {
+            transform: scale(1);
+        }
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .modal-title {
+            font-family: var(--f-display);
+            font-size: 1.5rem;
+            color: var(--text);
+            margin: 0;
+            font-weight: 400;
+        }
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--text3);
+            cursor: pointer;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease;
+        }
+        .modal-close:hover {
+            color: var(--text);
+        }
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border2);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            background: rgba(20, 38, 45, 0.2);
+        }
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+        .field-label {
+            font-size: 11px;
+            color: var(--text3);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+        .input-control {
+            width: 100%;
+            padding: 0.55rem 0.75rem;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: var(--r-sm);
+            font-size: var(--fs-sm);
+            transition: border-color 0.2s ease;
+        }
+        .input-control:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        .textarea-control {
+            resize: vertical;
+            min-height: 80px;
+            font-family: var(--f-body);
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* ── TOASTS ── */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 2000;
+        }
+        .toast {
+            background: var(--surface3);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--r-sm);
+            font-size: var(--fs-sm);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: slideIn 0.3s ease forwards;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(1rem); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <header class="vb-header">
+        <div class="vb-header-main">
+            <h1 class="vb-title">CRM & <em>Leads</em></h1>
+            <div class="vb-badges">
+                <span class="vb-badge"><i class="ti ti-mail"></i> Mensajes Directos</span>
+                <span class="vb-badge"><i class="ti ti-user-check"></i> Pacientes Potenciales</span>
+                <span class="vb-badge"><i class="ti ti-adjustments-horizontal"></i> Filtros de Interacción</span>
+            </div>
+        </div>
+        <div class="vb-header-actions">
+            <button class="btn btn-primary" onclick="window.openNewLeadModal()"><i class="ti ti-user-plus"></i> Nuevo Prospecto</button>
+        </div>
+    </header>
+
+    <!-- Bento KPIs -->
+    <section class="bento-grid">
+        <div class="bento-card">
+            <div class="bento-icon"><i class="ti ti-users"></i></div>
+            <div class="bento-info">
+                <span class="bento-val" id="kpi-total-leads">0</span>
+                <span class="bento-lbl">Prospectos Totales</span>
+            </div>
+        </div>
+        <div class="bento-card">
+            <div class="bento-icon"><i class="ti ti-chart-bar"></i></div>
+            <div class="bento-info">
+                <span class="bento-val" id="kpi-conv-rate">0%</span>
+                <span class="bento-lbl">Tasa Conversión</span>
+            </div>
+        </div>
+        <div class="bento-card">
+            <div class="bento-icon"><i class="ti ti-user-check"></i></div>
+            <div class="bento-info">
+                <span class="bento-val" id="kpi-active-patients">0</span>
+                <span class="bento-lbl">Pacientes Activos</span>
+            </div>
+        </div>
+        <div class="bento-card">
+            <div class="bento-icon"><i class="ti ti-calendar-event"></i></div>
+            <div class="bento-info">
+                <span class="bento-val" id="kpi-monthly-leads">0</span>
+                <span class="bento-lbl">Prospectos del Mes</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filters & View Switcher -->
+    <section class="filter-bar">
+        <div class="filter-group">
+            <div class="search-wrapper">
+                <i class="ti ti-search"></i>
+                <input type="text" id="lead-search" placeholder="Buscar por nombre, tel..." oninput="window.filterLeads()">
+            </div>
+            
+            <select id="filter-source" class="select-filter" onchange="window.filterLeads()">
+                <option value="Todos">Todos los canales</option>
+                <option value="Instagram DM">Instagram DM</option>
+                <option value="WhatsApp">WhatsApp</option>
+                <option value="Meta Ads">Meta Ads</option>
+                <option value="TikTok Ads">TikTok Ads</option>
+                <option value="Google Ads">Google Ads</option>
+                <option value="Otros">Otros canales</option>
+            </select>
+
+            <select id="filter-capacity" class="select-filter" onchange="window.filterLeads()">
+                <option value="Todos">Capacidad Económica: Todas</option>
+                <option value="Alta">Alta</option>
+                <option value="Media">Media</option>
+                <option value="Baja">Baja</option>
+            </select>
+
+            <select id="filter-creative" class="select-filter" onchange="window.filterLeads()">
+                <option value="Todos">Filtrar por Creativo: Todos</option>
+            </select>
+        </div>
+
+        <div class="view-switcher">
+            <button id="btn-view-kanban" class="view-btn active" onclick="window.switchView('kanban')">
+                <i class="ti ti-layout-kanban"></i> Kanban
+            </button>
+            <button id="btn-view-table" class="view-btn" onclick="window.switchView('table')">
+                <i class="ti ti-table"></i> Tabla Excel
+            </button>
+        </div>
+    </section>
+
+    <!-- Workspace Area -->
+    <div class="workspace-area">
+        <!-- Kanban Board -->
+        <section id="crm-view-kanban" class="board-container">
+            <!-- 1. Contacto Inicial -->
+            <div class="kanban-col" id="col-contacto_inicial" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'contacto_inicial')">
+                <div class="col-header">
+                    <span class="col-title"><i class="ti ti-message-2" style="color:var(--info)"></i> Contacto Inicial</span>
+                    <span class="col-count" id="count-contacto_inicial">0</span>
+                </div>
+                <div class="col-cards-list" id="list-contacto_inicial"></div>
+            </div>
+            
+            <!-- 2. Info Enviada -->
+            <div class="kanban-col" id="col-info_enviada" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'info_enviada')">
+                <div class="col-header">
+                    <span class="col-title"><i class="ti ti-send" style="color:var(--amber)"></i> Info Enviada</span>
+                    <span class="col-count" id="count-info_enviada">0</span>
+                </div>
+                <div class="col-cards-list" id="list-info_enviada"></div>
+            </div>
+
+            <!-- 3. Pre-Consulta -->
+            <div class="kanban-col" id="col-pre_consulta" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'pre_consulta')">
+                <div class="col-header">
+                    <span class="col-title"><i class="ti ti-calendar-time" style="color:var(--purple)"></i> Pre-Consulta</span>
+                    <span class="col-count" id="count-pre_consulta">0</span>
+                </div>
+                <div class="col-cards-list" id="list-pre_consulta"></div>
+            </div>
+
+            <!-- 4. Consulta Valoración -->
+            <div class="kanban-col" id="col-consulta" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'consulta')">
+                <div class="col-header">
+                    <span class="col-title"><i class="ti ti-stethoscope" style="color:var(--accent)"></i> Consulta</span>
+                    <span class="col-count" id="count-consulta">0</span>
+                </div>
+                <div class="col-cards-list" id="list-consulta"></div>
+            </div>
+
+            <!-- 5. En Proceso -->
+            <div class="kanban-col" id="col-en_proceso" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="drop(event, 'en_proceso')">
+                <div class="col-header">
+                    <span class="col-title"><i class="ti ti-hourglass-high" style="color:var(--warning)"></i> En Proceso</span>
+                    <span class="col-count" id="count-en_proceso">0</span>
+                </div>
+                <div class="col-cards-list" id="list-en_proceso"></div>
+            </div>
+
+            <!-- 6. Paciente Activo -->
+            <div class="kanban-col" id="col-paciente_activo" ondragover="allowDrop(event)" ondragenter="dragEnter(event)" ondragleave="dragLeave(event)" ondrop="event.stopPropagation(); drop(event, 'paciente_activo')">
+                <div class="col-header">
+                    <span class="col-title"><i class="ti ti-circle-check" style="color:var(--success)"></i> Paciente Activo</span>
+                    <span class="col-count" id="count-paciente_activo">0</span>
+                </div>
+                <div class="col-cards-list" id="list-paciente_activo"></div>
+            </div>
+        </section>
+
+        <!-- Excel Table View -->
+        <section id="crm-view-table" class="table-view-container">
+            <div class="premium-table-card">
+                <table class="premium-table">
+                    <thead>
+                        <tr>
+                            <th>Prospecto</th>
+                            <th>Canal de Origen</th>
+                            <th>Creativo Detonante</th>
+                            <th>Teléfono</th>
+                            <th style="width: 190px;">Estado (Embudo)</th>
+                            <th>Capacidad</th>
+                            <th>Último Contacto</th>
+                            <th style="width: 140px; text-align: center;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-leads-tbody">
+                        <!-- Carga dinámica -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal Lead -->
+    <div class="modal-overlay" id="lead-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="modal-title" id="lead-modal-title">Nuevo Prospecto</h3>
+                <button class="modal-close" onclick="window.closeLeadModal()"><i class="ti ti-x"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="lead-id">
+                
+                <div class="field">
+                    <span class="field-label">Nombre del Paciente *</span>
+                    <input type="text" id="lead-name" class="input-control" placeholder="ej: Juan Pérez" required>
+                </div>
+
+                <div class="grid-2">
+                    <div class="field">
+                        <span class="field-label">Teléfono (WhatsApp) *</span>
+                        <input type="tel" id="lead-phone" class="input-control" placeholder="ej: +573001234567" required>
+                    </div>
+                    <div class="field">
+                        <span class="field-label">Capacidad Económica</span>
+                        <select id="lead-capacity" class="input-control">
+                            <option value="Media">Media</option>
+                            <option value="Alta">Alta</option>
+                            <option value="Baja">Baja</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="field">
+                        <span class="field-label">Canal de Origen</span>
+                        <select id="lead-source" class="input-control">
+                            <option value="Instagram DM">Instagram DM</option>
+                            <option value="WhatsApp">WhatsApp</option>
+                            <option value="Meta Ads">Meta Ads</option>
+                            <option value="TikTok Ads">TikTok Ads</option>
+                            <option value="Google Ads">Google Ads</option>
+                            <option value="Otros">Otros canales</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <span class="field-label">Creativo Detonante</span>
+                        <select id="lead-creative" class="input-control">
+                            <!-- Carga dinámica -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="field">
+                        <span class="field-label">Etapa del Embudo</span>
+                        <select id="lead-stage" class="input-control">
+                            <option value="contacto_inicial">Contacto Inicial</option>
+                            <option value="info_enviada">Información Enviada</option>
+                            <option value="pre_consulta">Pre-Consulta</option>
+                            <option value="consulta">Consulta</option>
+                            <option value="en_proceso">En Proceso</option>
+                            <option value="paciente_activo">Paciente Activo</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <span class="field-label">Último Contacto</span>
+                        <input type="date" id="lead-last-contact" class="input-control">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <span class="field-label">Notas de Seguimiento</span>
+                    <textarea id="lead-notes" class="input-control textarea-control" placeholder="Detalles de interés, historial médico básico o dudas planteadas..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="window.closeLeadModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="window.saveLeadRow()">Guardar Prospecto</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <script type="module">
+        import { supabase } from '../supabase-client.js';
+
+        async function logActivity(action, details) {
+            const activeUser = JSON.parse(localStorage.getItem('content_os_user') || '{}');
+            if (!activeUser.email) return;
+            try {
+                await supabase.from('audit_logs').insert({
+                    user_email: activeUser.email,
+                    user_name: activeUser.name,
+                    action: action,
+                    details: details
+                });
+            } catch (err) {
+                console.error("Error logging activity:", err);
+            }
+        }
+
+        let leads = [];
+        let creativesList = [];
+        let isSupabaseOnline = false;
+        let activeView = 'kanban'; // 'kanban' o 'table'
+
+        const toastContainer = document.getElementById('toast-container');
+        const leadModal = document.getElementById('lead-modal'); // reference will be grabbed by id
+
+        // Dummy data fallback
+        const DUMMY_LEADS = [
+            {
+                id: "d1",
+                name: "Sofía Rodríguez",
+                phone: "+573001234567",
+                source: "Instagram DM",
+                content_origin: "Reel 1 - Dolor Articular y Peso",
+                stage: "contacto_inicial",
+                economic_capacity: "Media",
+                notes: "Preguntó por precios de manga gástrica.",
+                first_contact_date: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                last_followup_date: null
+            },
+            {
+                id: "d2",
+                name: "Carlos Mendoza",
+                phone: "+573119876543",
+                source: "WhatsApp",
+                content_origin: "Video - Remisión de Diabetes Tipo 2",
+                stage: "info_enviada",
+                economic_capacity: "Alta",
+                notes: "Interesado en cirugía metabólica, se envió catálogo de servicios.",
+                first_contact_date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                last_followup_date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+            },
+            {
+                id: "d3",
+                name: "Mariana Gómez",
+                phone: "+573155554433",
+                source: "Meta Ads",
+                content_origin: "Imagen - Transformación Caso María",
+                stage: "pre_consulta",
+                economic_capacity: "Baja",
+                notes: "Pendiente de confirmar disponibilidad de agenda para el viernes.",
+                first_contact_date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                last_followup_date: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+            },
+            {
+                id: "d4",
+                name: "Alejandra Restrepo",
+                phone: "+573204443322",
+                source: "Instagram DM",
+                content_origin: "Reel - Acidez constante",
+                stage: "paciente_activo",
+                economic_capacity: "Alta",
+                notes: "Cirugía bypass programada y exitosa. En control post-operatorio.",
+                first_contact_date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                last_followup_date: new Date().toISOString().split('T')[0]
+            }
+        ];
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initCRM();
+        });
+
+        // Theme sync
+        window.addEventListener('message', (e) => {
+            if (e.data && e.data.type === 'THEME_CHANGE') {
+                document.body.classList.toggle('light', e.data.payload === 'light');
+            }
+        });
+        window.parent.postMessage({ type: 'IFRAME_READY' }, '*');
+
+        async function initCRM() {
+            // Check shell active theme
+            const searchParams = new URLSearchParams(window.location.search);
+            const parentTheme = searchParams.get('theme') || localStorage.getItem('content_os_theme') || 'dark';
+            document.body.classList.toggle('light', parentTheme === 'light');
+
+            // 1. Fetch creatives from content_pieces (where status = publicado)
+            try {
+                const { data: pieces, error: piecesErr } = await supabase
+                    .from('content_pieces')
+                    .select('id, title, type, status')
+                    .eq('status', 'publicado');
+                if (!piecesErr && pieces) {
+                    creativesList = pieces;
+                }
+            } catch(e) {
+                console.warn("Supabase content_pieces not queryable, using fallback creatives.");
+            }
+
+            if (creativesList.length === 0) {
+                creativesList = [
+                    { id: "ad1", title: "Reel 1 - Dolor Articular y Peso" },
+                    { id: "ad2", title: "Imagen - Transformación Caso María" },
+                    { id: "ad3", title: "Video - Remisión de Diabetes Tipo 2" },
+                    { id: "ad4", title: "Reel - Acidez constante" }
+                ];
+            }
+            populateCreativeDropdowns();
+
+            // 2. Fetch leads
+            try {
+                const { data: dbLeads, error } = await supabase
+                    .from('leads')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                isSupabaseOnline = true;
+                leads = dbLeads || [];
+
+                if (leads.length === 0) {
+                    // Try inserting dummy data
+                    const { data: inserted, error: insertErr } = await supabase
+                        .from('leads')
+                        .insert(DUMMY_LEADS)
+                        .select();
+                    if (!insertErr && inserted) {
+                        leads = inserted;
+                    } else {
+                        leads = [...DUMMY_LEADS];
+                    }
+                }
+            } catch(err) {
+                console.warn("Using localStorage fallback for CRM Leads:", err.message);
+                isSupabaseOnline = false;
+                const stored = localStorage.getItem('content_os_crm_leads');
+                if (stored) {
+                    leads = JSON.parse(stored);
+                } else {
+                    leads = [...DUMMY_LEADS];
+                    localStorage.setItem('content_os_crm_leads', JSON.stringify(leads));
+                }
+                showToast("Modo Offline: Base de datos local", "ti-info-circle");
+            }
+
+            // Restore view selection from localStorage
+            const storedView = localStorage.getItem('content_os_crm_active_view');
+            if (storedView) {
+                switchView(storedView);
+            } else {
+                switchView('kanban');
+            }
+
+            renderAll();
+        }
+
+        // Populate dynamic filter creative dropdown and modal dropdown
+        function populateCreativeDropdowns() {
+            const filterSelect = document.getElementById('filter-creative');
+            const modalSelect = document.getElementById('lead-creative');
+            if (!filterSelect || !modalSelect) return;
+
+            // Reset
+            filterSelect.innerHTML = '<option value="Todos">Filtrar por Creativo: Todos</option>';
+            modalSelect.innerHTML = '<option value="">-- Ninguno / Tránsito Directo --</option>';
+
+            creativesList.forEach(c => {
+                const optFilter = document.createElement('option');
+                optFilter.value = c.title;
+                optFilter.textContent = c.title;
+                filterSelect.appendChild(optFilter);
+
+                const optModal = document.createElement('option');
+                optModal.value = c.title;
+                optModal.textContent = c.title;
+                modalSelect.appendChild(optModal);
+            });
+        }
+
+        function renderAll() {
+            updateKPIs();
+            filterLeads();
+        }
+
+        // Update Bento KPIs
+        function updateKPIs() {
+            const total = leads.length;
+            const active = leads.filter(l => l.stage === 'paciente_activo').length;
+            const conv = total > 0 ? ((active / total) * 100).toFixed(1) + '%' : '0%';
+            
+            // Monthly leads (last 30 days)
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            const monthly = leads.filter(l => {
+                const contactDateStr = l.first_contact_date || l.created_at;
+                if (!contactDateStr) return false;
+                const d = new Date(contactDateStr);
+                return d >= thirtyDaysAgo;
+            }).length;
+
+            document.getElementById('kpi-total-leads').textContent = total;
+            document.getElementById('kpi-conv-rate').textContent = conv;
+            document.getElementById('kpi-active-patients').textContent = active;
+            document.getElementById('kpi-monthly-leads').textContent = monthly;
+        }
+
+        // Apply filters & search and render either Kanban or Excel View
+        window.filterLeads = () => {
+            const query = document.getElementById('lead-search').value.toLowerCase().trim();
+            const source = document.getElementById('filter-source').value;
+            const capacity = document.getElementById('filter-capacity').value;
+            const creative = document.getElementById('filter-creative').value;
+
+            const filtered = leads.filter(l => {
+                const matchesSearch = !query || 
+                    (l.name && l.name.toLowerCase().includes(query)) ||
+                    (l.phone && l.phone.toLowerCase().includes(query)) ||
+                    (l.notes && l.notes.toLowerCase().includes(query));
+
+                const matchesSource = source === 'Todos' || l.source === source;
+                const matchesCapacity = capacity === 'Todos' || l.economic_capacity === capacity;
+                const matchesCreative = creative === 'Todos' || l.content_origin === creative;
+
+                return matchesSearch && matchesSource && matchesCapacity && matchesCreative;
+            });
+
+            if (activeView === 'kanban') {
+                renderKanbanView(filtered);
+            } else {
+                renderTableView(filtered);
+            }
+        };
+
+        // Render Kanban Column Cards
+        function renderKanbanView(filteredList) {
+            const stages = ['contacto_inicial', 'info_enviada', 'pre_consulta', 'consulta', 'en_proceso', 'paciente_activo'];
+            
+            // Clear all columns
+            stages.forEach(stg => {
+                const container = document.getElementById(`list-${stg}`);
+                const countBadge = document.getElementById(`count-${stg}`);
+                if (container) container.innerHTML = '';
+                if (countBadge) countBadge.textContent = 0;
+            });
+
+            // Populate cards
+            filteredList.forEach(lead => {
+                const colList = document.getElementById(`list-${lead.stage}`);
+                if (!colList) return;
+
+                // Check expired follow up (> 3 days)
+                let isExpired = false;
+                const compareDateStr = lead.last_followup_date || lead.first_contact_date;
+                if (compareDateStr && lead.stage !== 'paciente_activo') {
+                    const compDate = new Date(compareDateStr);
+                    const diffTime = Math.abs(new Date() - compDate);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    if (diffDays > 3) {
+                        isExpired = true;
+                    }
+                }
+
+                const card = document.createElement('div');
+                card.className = 'lead-card';
+                card.draggable = true;
+                card.setAttribute('data-id', lead.id);
+                card.ondragstart = (e) => window.drag(e, lead.id);
+                card.ondragend = (e) => window.dragEnd(e);
+
+                const capacityTagClass = `capacity-${lead.economic_capacity || 'Media'}`;
+                const warningHTML = isExpired ? `<span class="alert-pill"><i class="ti ti-alert-triangle"></i> Seg. Expirado</span>` : '';
+                
+                const formattedContactDate = lead.last_followup_date 
+                    ? `Seg: ${formatDate(lead.last_followup_date)}` 
+                    : `Reg: ${formatDate(lead.first_contact_date)}`;
+
+                card.innerHTML = `
+                    <div class="lead-card-header">
+                        <h4 class="lead-name" onclick="window.openEditLeadModal('${lead.id}')">${lead.name}</h4>
+                        <span class="capacity-badge ${capacityTagClass}">${lead.economic_capacity || 'Media'}</span>
+                    </div>
+                    <div class="lead-meta-row">
+                        <i class="ti ti-mail-forward"></i>
+                        <span>${lead.source || 'Instagram DM'}</span>
+                    </div>
+                    ${lead.content_origin ? `
+                    <div class="lead-meta-row">
+                        <i class="ti ti-movie"></i>
+                        <span class="lead-origin" title="${lead.content_origin}">${lead.content_origin}</span>
+                    </div>
+                    ` : ''}
+                    <div class="lead-meta-row">
+                        <i class="ti ti-clock"></i>
+                        <span>${formattedContactDate}</span>
+                    </div>
+                    <div class="lead-footer">
+                        ${warningHTML}
+                        <div style="flex:1;"></div>
+                        <div class="action-btns">
+                            <button class="btn-card-action btn-wa" onclick="window.sendWhatsApp('${lead.id}')" title="Mensaje WhatsApp">
+                                <i class="ti ti-brand-whatsapp"></i>
+                            </button>
+                            <button class="btn-card-action" onclick="window.openEditLeadModal('${lead.id}')" title="Editar datos">
+                                <i class="ti ti-pencil"></i>
+                            </button>
+                            <button class="btn-card-action" onclick="window.deleteLeadRow('${lead.id}')" title="Eliminar" style="color:var(--danger)">
+                                <i class="ti ti-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+
+                colList.appendChild(card);
+            });
+
+            // Update column header counts
+            stages.forEach(stg => {
+                const countBadge = document.getElementById(`count-${stg}`);
+                const list = document.getElementById(`list-${stg}`);
+                if (countBadge && list) {
+                    countBadge.textContent = list.children.length;
+                }
+            });
+        }
+
+        // Render Excel Table View
+        function renderTableView(filteredList) {
+            const tbody = document.getElementById('table-leads-tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+
+            if (filteredList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text3); padding: 2rem;">No se encontraron prospectos con los filtros actuales.</td></tr>`;
+                return;
+            }
+
+            filteredList.forEach(lead => {
+                let isExpired = false;
+                const compareDateStr = lead.last_followup_date || lead.first_contact_date;
+                if (compareDateStr && lead.stage !== 'paciente_activo') {
+                    const compDate = new Date(compareDateStr);
+                    const diffTime = Math.abs(new Date() - compDate);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    if (diffDays > 3) {
+                        isExpired = true;
+                    }
+                }
+
+                const tr = document.createElement('tr');
+                const lastDate = lead.last_followup_date ? formatDate(lead.last_followup_date) : formatDate(lead.first_contact_date);
+                const capacityTagClass = `capacity-${lead.economic_capacity || 'Media'}`;
+
+                tr.innerHTML = `
+                    <td style="font-weight:600; color:var(--text); cursor:pointer;" onclick="window.openEditLeadModal('${lead.id}')">${lead.name}</td>
+                    <td>${lead.source || 'Instagram DM'}</td>
+                    <td style="font-style:italic; color:var(--text2); max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${lead.content_origin || ''}">${lead.content_origin || '—'}</td>
+                    <td>${lead.phone || '—'}</td>
+                    <td>
+                        <select class="table-select-stage" onchange="window.updateLeadStageInline('${lead.id}', this.value)">
+                            <option value="contacto_inicial" ${lead.stage === 'contacto_inicial' ? 'selected' : ''}>Contacto Inicial</option>
+                            <option value="info_enviada" ${lead.stage === 'info_enviada' ? 'selected' : ''}>Información Enviada</option>
+                            <option value="pre_consulta" ${lead.stage === 'pre_consulta' ? 'selected' : ''}>Pre-Consulta</option>
+                            <option value="consulta" ${lead.stage === 'consulta' ? 'selected' : ''}>Consulta</option>
+                            <option value="en_proceso" ${lead.stage === 'en_proceso' ? 'selected' : ''}>En Proceso</option>
+                            <option value="paciente_activo" ${lead.stage === 'paciente_activo' ? 'selected' : ''}>Paciente Activo</option>
+                        </select>
+                    </td>
+                    <td><span class="capacity-badge ${capacityTagClass}">${lead.economic_capacity || 'Media'}</span></td>
+                    <td>${lastDate}</td>
+                    <td style="text-align: center;">
+                        <div class="action-btns" style="justify-content: center;">
+                            ${isExpired ? `<span class="alert-pill" style="margin-right:4px;" title="Seguimiento Expirado"><i class="ti ti-alert-triangle"></i> Expirado</span>` : ''}
+                            <button class="btn-card-action btn-wa" onclick="window.sendWhatsApp('${lead.id}')" title="Mensaje WhatsApp">
+                                <i class="ti ti-brand-whatsapp"></i>
+                            </button>
+                            <button class="btn-card-action" onclick="window.openEditLeadModal('${lead.id}')" title="Editar">
+                                <i class="ti ti-pencil"></i>
+                            </button>
+                            <button class="btn-card-action" onclick="window.deleteLeadRow('${lead.id}')" title="Eliminar" style="color:var(--danger)">
+                                <i class="ti ti-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Switch View (Kanban vs Table)
+        window.switchView = (viewName) => {
+            activeView = viewName;
+            localStorage.setItem('content_os_crm_active_view', viewName);
+
+            const kanbanContainer = document.getElementById('crm-view-kanban');
+            const tableContainer = document.getElementById('crm-view-table');
+            const btnKanban = document.getElementById('btn-view-kanban');
+            const btnTable = document.getElementById('btn-view-table');
+
+            if (viewName === 'kanban') {
+                kanbanContainer.style.display = 'flex';
+                tableContainer.style.display = 'none';
+                btnKanban.classList.add('active');
+                btnTable.classList.remove('active');
+            } else {
+                kanbanContainer.style.display = 'none';
+                tableContainer.style.display = 'block';
+                btnKanban.classList.remove('active');
+                btnTable.classList.add('active');
+            }
+            window.filterLeads();
+        };
+
+        // Date formatter helper
+        function formatDate(dateStr) {
+            if (!dateStr) return '—';
+            try {
+                const parts = dateStr.split('-');
+                if (parts.length === 3) {
+                    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+                }
+                const d = new Date(dateStr);
+                return d.toLocaleDateString('es-CO');
+            } catch(e) {
+                return dateStr;
+            }
+        }
+
+        // Drag and Drop implementation
+        window.allowDrop = (ev) => {
+            ev.preventDefault();
+        };
+
+        window.drag = (ev, id) => {
+            ev.dataTransfer.setData("text/plain", id);
+            // Delay class toggle to avoid visual glitch
+            setTimeout(() => {
+                const target = document.querySelector(`[data-id="${id}"]`);
+                if (target) target.classList.add('dragging');
+            }, 0);
+        };
+
+        window.dragEnd = (ev) => {
+            ev.currentTarget.classList.remove('dragging');
+        };
+
+        window.dragEnter = (ev) => {
+            ev.preventDefault();
+            ev.currentTarget.classList.add('drag-over');
+        };
+
+        window.dragLeave = (ev) => {
+            ev.currentTarget.classList.remove('drag-over');
+        };
+
+        window.drop = async (ev, targetStage) => {
+            ev.preventDefault();
+            ev.currentTarget.classList.remove('drag-over');
+            const leadId = ev.dataTransfer.getData("text/plain");
+            if (leadId) {
+                await updateLeadStage(leadId, targetStage);
+            }
+        };
+
+        // Update Lead stage via Drag/Drop or Select box
+        async function updateLeadStage(id, newStage) {
+            const lead = leads.find(l => l.id == id || l.id === id);
+            if (!lead) return;
+            
+            const prevStage = lead.stage;
+            if (prevStage === newStage) return;
+
+            // Set last followup date to today on stage change
+            const todayStr = new Date().toISOString().split('T')[0];
+            lead.stage = newStage;
+            lead.last_followup_date = todayStr;
+
+            if (isSupabaseOnline) {
+                try {
+                    const { error } = await supabase
+                        .from('leads')
+                        .update({ stage: newStage, last_followup_date: todayStr })
+                        .eq('id', id);
+                    if (error) throw error;
+                } catch(e) {
+                    console.error("Error updating lead stage in Supabase:", e.message);
+                    showToast("Error de red, guardado local temporalmente", "ti-alert-circle");
+                }
+            }
+
+            // Sync local storage
+            localStorage.setItem('content_os_crm_leads', JSON.stringify(leads));
+            
+            showToast(`Prospecto movido a: ${formatStageName(newStage)}`, 'ti-arrows-transfer-down');
+            await logActivity('Edición', `Se cambió la etapa del prospecto "${lead.name}" a: ${formatStageName(newStage)}`);
+            renderAll();
+        }
+
+        window.updateLeadStageInline = async (id, newStage) => {
+            await updateLeadStage(id, newStage);
+        };
+
+        function formatStageName(stage) {
+            const map = {
+                'contacto_inicial': 'Contacto Inicial',
+                'info_enviada': 'Info Enviada',
+                'pre_consulta': 'Pre-Consulta',
+                'consulta': 'Consulta',
+                'en_proceso': 'En Proceso',
+                'paciente_activo': 'Paciente Activo'
+            };
+            return map[stage] || stage;
+        }
+
+        // WhatsApp Messager Template Resolver
+        window.sendWhatsApp = (leadId) => {
+            const lead = leads.find(l => l.id == leadId || l.id === leadId);
+            if (!lead) return;
+            if (!lead.phone) {
+                showToast("El prospecto no tiene número de teléfono", "ti-alert-circle");
+                return;
+            }
+
+            let message = "";
+            const stage = lead.stage;
+            const name = lead.name || "";
+            const creative = lead.content_origin || lead.source || "nuestro contenido";
+
+            if (stage === 'contacto_inicial') {
+                message = `Hola ${name}, vi que mostraste interés en nuestro creativo "${creative}". ¿Cómo te podemos ayudar hoy?`;
+            } else if (stage === 'info_enviada') {
+                message = `Hola ${name}, te escribo para dar seguimiento a la información que te enviamos de la clínica del Dr. Molina. ¿Tienes alguna duda o te gustaría agendar tu cita?`;
+            } else if (stage === 'pre_consulta' || stage === 'consulta') {
+                message = `Hola ${name}, te confirmo tu cita de valoración con el Dr. Molina en nuestra clínica. ¿Nos confirmas asistencia?`;
+            } else {
+                message = `Hola ${name}, ¿cómo estás? Te escribimos de la clínica del Dr. Molina para darte seguimiento a tu proceso de salud.`;
+            }
+
+            // Standardize phone string
+            let phoneClean = lead.phone.replace(/[^0-9+]/g, '');
+            if (!phoneClean.startsWith('+') && !phoneClean.startsWith('57') && phoneClean.length === 10) {
+                phoneClean = '57' + phoneClean; // Default to Colombia
+            }
+
+            const url = `https://wa.me/${phoneClean}?text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        };
+
+        // Open Modal - Add
+        window.openNewLeadModal = () => {
+            const overlay = document.getElementById('lead-modal');
+            document.getElementById('lead-modal-title').textContent = 'Nuevo Prospecto';
+            document.getElementById('lead-id').value = '';
+            document.getElementById('lead-name').value = '';
+            document.getElementById('lead-phone').value = '';
+            document.getElementById('lead-capacity').value = 'Media';
+            document.getElementById('lead-source').value = 'Instagram DM';
+            document.getElementById('lead-creative').value = '';
+            document.getElementById('lead-stage').value = 'contacto_inicial';
+            document.getElementById('lead-last-contact').value = new Date().toISOString().split('T')[0];
+            document.getElementById('lead-notes').value = '';
+
+            overlay.classList.add('open');
+        };
+
+        // Open Modal - Edit
+        window.openEditLeadModal = (id) => {
+            const lead = leads.find(l => l.id == id || l.id === id);
+            if (!lead) return;
+
+            const overlay = document.getElementById('lead-modal');
+            document.getElementById('lead-modal-title').textContent = 'Editar Prospecto';
+            document.getElementById('lead-id').value = lead.id;
+            document.getElementById('lead-name').value = lead.name || '';
+            document.getElementById('lead-phone').value = lead.phone || '';
+            document.getElementById('lead-capacity').value = lead.economic_capacity || 'Media';
+            document.getElementById('lead-source').value = lead.source || 'Instagram DM';
+            document.getElementById('lead-creative').value = lead.content_origin || '';
+            document.getElementById('lead-stage').value = lead.stage || 'contacto_inicial';
+            document.getElementById('lead-last-contact').value = lead.last_followup_date || lead.first_contact_date || new Date().toISOString().split('T')[0];
+            document.getElementById('lead-notes').value = lead.notes || '';
+
+            overlay.classList.add('open');
+        };
+
+        window.closeLeadModal = () => {
+            const overlay = document.getElementById('lead-modal');
+            overlay.classList.remove('open');
+        };
+
+        // Save Lead Row (Add / Edit)
+        window.saveLeadRow = async () => {
+            const id = document.getElementById('lead-id').value;
+            const name = document.getElementById('lead-name').value.trim();
+            const phone = document.getElementById('lead-phone').value.trim();
+            const economic_capacity = document.getElementById('lead-capacity').value;
+            const source = document.getElementById('lead-source').value;
+            const content_origin = document.getElementById('lead-creative').value;
+            const stage = document.getElementById('lead-stage').value;
+            const lastContact = document.getElementById('lead-last-contact').value;
+            const notes = document.getElementById('lead-notes').value.trim();
+
+            if (!name) {
+                showToast("El nombre es requerido", "ti-alert-circle");
+                return;
+            }
+            if (!phone) {
+                showToast("El teléfono es requerido", "ti-alert-circle");
+                return;
+            }
+
+            const today = new Date().toISOString().split('T')[0];
+
+            if (id) {
+                // Edit mode
+                const leadIdx = leads.findIndex(l => l.id == id || l.id === id);
+                if (leadIdx !== -1) {
+                    const original = leads[leadIdx];
+                    const updatedLead = {
+                        ...original,
+                        name,
+                        phone,
+                        economic_capacity,
+                        source,
+                        content_origin,
+                        stage,
+                        last_followup_date: lastContact,
+                        notes
+                    };
+
+                    leads[leadIdx] = updatedLead;
+
+                    if (isSupabaseOnline) {
+                        try {
+                            const { error } = await supabase
+                                .from('leads')
+                                .update({
+                                    name,
+                                    phone,
+                                    economic_capacity,
+                                    source,
+                                    content_origin,
+                                    stage,
+                                    last_followup_date: lastContact,
+                                    notes
+                                })
+                                .eq('id', id);
+                            if (error) throw error;
+                        } catch(e) {
+                            console.error("Error editing lead in Supabase:", e.message);
+                            showToast("Error de red, guardado local temporalmente", "ti-alert-circle");
+                        }
+                    }
+                    showToast("Prospecto actualizado con éxito", "ti-circle-check");
+                    await logActivity('Edición', `Se actualizaron los datos del prospecto "${name}"`);
+                }
+            } else {
+                // Add mode
+                const newId = isSupabaseOnline ? undefined : 'l_' + new Date().getTime();
+                const newLeadObj = {
+                    name,
+                    phone,
+                    economic_capacity,
+                    source,
+                    content_origin,
+                    stage,
+                    first_contact_date: today,
+                    last_followup_date: lastContact || today,
+                    notes
+                };
+                if (!isSupabaseOnline) {
+                    newLeadObj.id = newId;
+                    leads.unshift(newLeadObj);
+                }
+
+                if (isSupabaseOnline) {
+                    try {
+                        const { data, error } = await supabase
+                            .from('leads')
+                            .insert(newLeadObj)
+                            .select();
+                        if (error) throw error;
+                        if (data && data.length > 0) {
+                            leads.unshift(data[0]);
+                        }
+                    } catch(e) {
+                        console.error("Error creating lead in Supabase:", e.message);
+                        showToast("Error de red, guardado local temporalmente", "ti-alert-circle");
+                        // Fallback insertion
+                        newLeadObj.id = 'l_' + new Date().getTime();
+                        leads.unshift(newLeadObj);
+                    }
+                }
+                showToast("Nuevo prospecto creado", "ti-user-plus");
+                await logActivity('Creación', `Se registró un nuevo prospecto: "${name}"`);
+            }
+
+            // Sync localStorage
+            localStorage.setItem('content_os_crm_leads', JSON.stringify(leads));
+            
+            closeLeadModal();
+            renderAll();
+        };
+
+        // Delete Lead Row
+        window.deleteLeadRow = async (id) => {
+            if (!confirm("¿Estás seguro de que deseas eliminar este prospecto del embudo?")) return;
+
+            const lead = leads.find(l => l.id == id || l.id === id);
+            const name = lead ? lead.name : 'Prospecto';
+            leads = leads.filter(l => l.id != id && l.id !== id);
+
+            if (isSupabaseOnline) {
+                try {
+                    const { error } = await supabase
+                        .from('leads')
+                        .delete()
+                        .eq('id', id);
+                    if (error) throw error;
+                } catch(e) {
+                    console.error("Error deleting lead in Supabase:", e.message);
+                    showToast("Error de red, eliminado localmente", "ti-alert-circle");
+                }
+            }
+
+            // Sync localStorage
+            localStorage.setItem('content_os_crm_leads', JSON.stringify(leads));
+            
+            showToast("Prospecto eliminado del embudo", "ti-trash");
+            await logActivity('Eliminación', `Se eliminó al prospecto "${name}" del CRM`);
+            renderAll();
+        };
+
+        // Toast notifications
+        function showToast(msg, icon = 'ti-info-circle') {
+            const t = document.createElement('div');
+            t.className = 'toast';
+            t.innerHTML = `<i class="ti ${icon}"></i> <span>${msg}</span>`;
+            toastContainer.appendChild(t);
+            setTimeout(() => {
+                t.style.animation = 'none';
+                t.offsetHeight;
+                t.style.animation = 'slideIn 0.3s ease reverse forwards';
+                setTimeout(() => t.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

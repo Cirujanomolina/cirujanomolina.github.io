@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Métricas — Content OS</title>
+    <link rel="stylesheet" href="../design-system.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            font-family: var(--f-body);
+        }
+
+        .container {
+            flex: 1;
+            height: auto;
+            overflow-y: auto;
+            padding: clamp(1rem, 3vw, 2rem);
+        }
+
+        /* ── HEADER PREMIUM ── */
+        .vb-header {
+            background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 2rem;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            flex-shrink: 0;
+        }
+        .vb-header::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: var(--accent);
+            opacity: 0.04;
+            pointer-events: none;
+        }
+        .vb-header::after {
+            content: '';
+            position: absolute;
+            bottom: -60px;
+            left: 5%;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: var(--beige);
+            opacity: 0.03;
+            pointer-events: none;
+        }
+        .vb-header-main {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 1;
+            min-width: 0;
+        }
+        .vb-header-actions {
+            z-index: 1;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .vb-title {
+            font-family: var(--f-display);
+            font-size: clamp(22px, 3vw, 30px);
+            font-weight: 300;
+            color: var(--text);
+            line-height: 1.1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin: 0;
+        }
+        .vb-title em {
+            color: var(--accent);
+            font-style: italic;
+        }
+        .vb-badges {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .vb-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 11px;
+            border-radius: 20px;
+            background: rgba(42, 191, 176, 0.1);
+            border: 1px solid rgba(42, 191, 176, 0.25);
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--accent);
+        }
+
+        /* ── BENTO KPI GRID ── */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        @media (max-width: 1024px) {
+            .kpi-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (max-width: 600px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        .kpi-card {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: var(--r);
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            position: relative;
+            transition: all 0.2s;
+        }
+        .kpi-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text2);
+        }
+        .kpi-val {
+            font-family: var(--f-display);
+            font-size: 1.75rem;
+            line-height: 1.1;
+            color: var(--accent);
+            font-weight: 500;
+        }
+        .kpi-sub {
+            font-size: 11px;
+            color: var(--text3);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* ── CHARTS SECTION ── */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        @media (max-width: 1024px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .chart-card {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: var(--r);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            min-height: 320px;
+        }
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chart-title {
+            font-size: var(--fs-md);
+            font-weight: 600;
+            color: var(--text);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .chart-container {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            height: 250px;
+        }
+
+        /* ── AI AUDIT ADVISOR ── */
+        .audit-card {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: var(--r);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .audit-title {
+            font-family: var(--f-display);
+            font-size: var(--fs-lg);
+            font-weight: 400;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 8px;
+            margin-bottom: 1rem;
+        }
+        .audit-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .audit-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 0.75rem 1rem;
+            border-radius: var(--r-sm);
+            font-size: var(--fs-sm);
+            line-height: 1.5;
+        }
+        .audit-success {
+            background: rgba(39, 174, 96, 0.08);
+            border: 1px solid rgba(39, 174, 96, 0.2);
+            color: var(--text);
+        }
+        .audit-success i { color: var(--success); font-size: 16px; margin-top: 2px;}
+        .audit-warning {
+            background: rgba(201, 134, 42, 0.08);
+            border: 1px solid rgba(201, 134, 42, 0.2);
+            color: var(--text);
+        }
+        .audit-warning i { color: var(--amber); font-size: 16px; margin-top: 2px; }
+        .audit-danger {
+            background: rgba(245, 90, 138, 0.08);
+            border: 1px solid rgba(245, 90, 138, 0.2);
+            color: var(--text);
+        }
+        .audit-danger i { color: var(--danger); font-size: 16px; margin-top: 2px; }
+        
+        /* ── CREATIVES LEADERBOARDS ── */
+        .leaderboards-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .leaderboards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .leaderboard-card {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: var(--r);
+            padding: 1.25rem;
+        }
+        .leaderboard-hdr {
+            font-size: var(--fs-md);
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+        }
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            border-radius: var(--r-sm);
+            border-bottom: 1px solid var(--border3);
+            font-size: var(--fs-sm);
+        }
+        .leaderboard-item:last-child {
+            border-bottom: none;
+        }
+        .leaderboard-item:hover {
+            background: var(--surface2);
+        }
+        .creative-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .creative-thumb {
+            width: 42px;
+            height: 42px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+        .creative-meta {
+            display: flex;
+            flex-direction: column;
+        }
+        .creative-name {
+            font-weight: 600;
+            color: var(--text);
+        }
+        .creative-details {
+            font-size: 10px;
+            color: var(--text3);
+        }
+        .creative-metrics {
+            text-align: right;
+        }
+        .creative-metric-val {
+            font-weight: 600;
+            color: var(--accent);
+        }
+        .creative-metric-lbl {
+            font-size: 9px;
+            color: var(--text3);
+        }
+
+        /* ── DETAILED TABLE ── */
+        .table-card {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: var(--r);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .table-card-hdr {
+            font-size: var(--fs-md);
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+            border: 1px solid var(--border3);
+            border-radius: var(--r-sm);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: var(--fs-sm);
+        }
+        th, td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border3);
+        }
+        th {
+            background: var(--surface2);
+            font-weight: 600;
+            color: var(--text2);
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.05em;
+        }
+        .row-campaign {
+            background: var(--surface2);
+            border-left: 3px solid var(--accent);
+        }
+        .row-adset {
+            background: var(--surface);
+            border-left: 3px dashed var(--text3);
+        }
+        .row-ad {
+            background: transparent;
+            border-left: 3px solid transparent;
+        }
+        
+        /* ── EMPTY STATE ── */
+        .empty-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 70vh;
+        }
+        .empty-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            padding: 4rem 3rem;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        .empty-icon {
+            font-size: 3.5rem;
+            color: var(--accent);
+            background: var(--teal-bg);
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(42, 191, 176, 0.2);
+            animation: float 4s ease-in-out infinite;
+        }
+        .empty-title {
+            font-family: var(--f-display);
+            font-size: var(--fs-xl);
+            font-weight: 400;
+            color: var(--text);
+        }
+        .empty-desc {
+            color: var(--text2);
+            font-size: var(--fs-sm);
+            line-height: 1.6;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* Mode Light Compatibility */
+        body.light .empty-card {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        /* ── TOASTS ── */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 2000;
+        }
+        .toast {
+            background: var(--surface3);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--r-sm);
+            font-size: var(--fs-sm);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: slideIn 0.3s ease forwards;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(1rem); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="dark">
+
+    <!-- CABECERA -->
+    <header class="vb-header">
+        <div class="vb-header-main">
+            <h1 class="vb-title">Análisis de <em>Métricas</em></h1>
+            <div class="vb-badges">
+                <span class="vb-badge" id="badge-campaign-count"><i class="ti ti-chart-bar"></i> 0 Campañas</span>
+                <span class="vb-badge"><i class="ti ti-activity"></i> Auditoría IA</span>
+                <span class="vb-badge"><i class="ti ti-device-analytics"></i> Conversiones</span>
+            </div>
+        </div>
+        <div class="vb-header-actions">
+            <div class="flex-row" style="gap: 8px;">
+                <span style="font-size: 11px; color: var(--text2); font-weight: 600; text-transform: uppercase;">Filtrar Campaña:</span>
+                <select id="select-campaign-filter" style="padding: 0.4rem 0.6rem; min-width: 180px;" onchange="onFilterChange()">
+                    <option value="global">Rendimiento Global</option>
+                </select>
+            </div>
+            <button class="btn btn-outline" onclick="goToPauta()"><i class="ti ti-speakerphone"></i> Ir a Pauta</button>
+        </div>
+    </header>
+
+    <!-- TAB SWITCHER -->
+    <div style="background: var(--bg2); border-bottom: 1px solid var(--border); padding: 0.5rem 2rem; display: flex; gap: 8px; flex-shrink: 0; align-items: center; z-index: 10;">
+        <button class="btn btn-primary" id="tab-publicaciones" onclick="window.switchAnalisisTab('publicaciones')" style="padding: 0.4rem 1rem; font-size: 12px; display: flex; align-items: center; gap: 6px;">
+            <i class="ti ti-movie"></i> Análisis de Publicaciones
+        </button>
+        <button class="btn btn-outline" id="tab-metricas" onclick="window.switchAnalisisTab('metricas')" style="padding: 0.4rem 1rem; font-size: 12px; display: flex; align-items: center; gap: 6px;">
+            <i class="ti ti-speakerphone"></i> Análisis de Métricas (Pauta)
+        </button>
+    </div>
+
+    <!-- ORGANIC BODY (PUBLICACIONES) -->
+    <div class="container fade-in" id="area-publicaciones">
+        <!-- ROW 1: KPIs -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-title">Vistas / Rep. Orgánicas</div>
+                <div class="kpi-val" id="org-kpi-views">0</div>
+                <div class="kpi-sub"><i class="ti ti-eye"></i> Visualizaciones Totales</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Alcance Total (Reach)</div>
+                <div class="kpi-val" id="org-kpi-reach">0</div>
+                <div class="kpi-sub"><i class="ti ti-users"></i> Personas Alcanzadas</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Nuevos Seguidores</div>
+                <div class="kpi-val" id="org-kpi-followers" style="color: var(--info);">0</div>
+                <div class="kpi-sub"><i class="ti ti-user-plus"></i> Atribución Orgánica</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Mensajes Recibidos (DM)</div>
+                <div class="kpi-val" id="org-kpi-dms" style="color: var(--purple);">0</div>
+                <div class="kpi-sub"><i class="ti ti-message-circle"></i> Conversaciones DMs</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Guardados / Alcance</div>
+                <div class="kpi-val" id="org-kpi-saves" style="color: var(--warning);">0</div>
+                <div class="kpi-sub"><i class="ti ti-bookmark"></i> Guardados Totales</div>
+            </div>
+        </div>
+
+        <!-- ROW 2: DETAILED LIST & PERFORMANCE -->
+        <div class="leaderboards-grid" style="grid-template-columns: 1.2fr 0.8fr; margin-bottom: 25px; gap: 1.5rem;">
+            <!-- Column 1: Publicaciones Recientes & Edición de Métricas -->
+            <div class="leaderboard-card" style="display: flex; flex-direction: column; gap: 15px;">
+                <div class="leaderboard-hdr" style="color: var(--info); font-size: 16px; margin-bottom: 0;">
+                    <i class="ti ti-movie"></i> Control de Publicaciones
+                </div>
+                <div class="flex-col" style="gap: 12px; margin-top: 10px; overflow-y: auto; max-height: 550px; padding-right: 5px;" id="org-posts-list">
+                    <!-- Dynamic list of published content pieces with edit buttons -->
+                </div>
+            </div>
+
+            <!-- Column 2: Leaderboard & Distribution -->
+            <div class="flex-col" style="gap: 20px;">
+                <!-- Leaderboard -->
+                <div class="leaderboard-card">
+                    <div class="leaderboard-hdr" style="color: var(--warning);"><i class="ti ti-trophy"></i> Publicaciones Destacadas</div>
+                    <div class="flex-col" style="gap: 12px; margin-top: 15px;" id="org-leaderboard-list">
+                        <!-- Top 5 posts -->
+                    </div>
+                </div>
+
+                <!-- Pillar distribution -->
+                <div class="leaderboard-card">
+                    <div class="leaderboard-hdr" style="color: var(--accent);"><i class="ti ti-chart-bar"></i> Rendimiento por Pilar</div>
+                    <div class="flex-col" style="gap: 15px; margin-top: 15px;" id="org-pillar-distribution">
+                        <!-- Dynamic pillar list -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN BODY (PAUTA / METRICAS) -->
+    <div class="container fade-in" id="main-content-area" style="display: none;">
+        
+        <!-- ROW 1: KPIs -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-title">Presupuesto Diario</div>
+                <div class="kpi-val" id="kpi-budget">$0.00</div>
+                <div class="kpi-sub" id="sub-budget"><i class="ti ti-wallet"></i> Inversión Global</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Inversión Acumulada</div>
+                <div class="kpi-val" id="kpi-spend">$0.00</div>
+                <div class="kpi-sub" id="sub-clicks"><i class="ti ti-mouse"></i> 0 Clics</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Leads WhatsApp</div>
+                <div class="kpi-val" id="kpi-leads">0</div>
+                <div class="kpi-sub" id="sub-cpl" style="color: var(--success);"><i class="ti ti-coin"></i> $0.00 CPL</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Citas Agendadas</div>
+                <div class="kpi-val" id="kpi-appointments">0</div>
+                <div class="kpi-sub" id="sub-cpa" style="color: var(--info);"><i class="ti ti-check"></i> 0% Cita/Lead</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">CTR Promedio</div>
+                <div class="kpi-val" id="kpi-ctr">0.00%</div>
+                <div class="kpi-sub" id="sub-ctr"><i class="ti ti-trending-up"></i> Tasa de Clics</div>
+            </div>
+        </div>
+
+        <!-- ROW 2: CHARTS -->
+        <div class="charts-grid">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <span class="chart-title"><i class="ti ti-funnel" style="color: var(--accent);"></i> Embudo de Conversión (Paid Media)</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chart-funnel"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-header">
+                    <span class="chart-title"><i class="ti ti-coin" style="color: var(--accent);"></i> Eficiencia (Inversión vs Leads)</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chart-efficiency"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROW 3: AI AUDIT ADVISOR -->
+        <div class="audit-card">
+            <div class="audit-title">
+                <i class="ti ti-sparkles" style="color: var(--accent);"></i> Auditoría Estratégica Automática (IA de Content OS)
+            </div>
+            <div class="audit-list" id="audit-advisor-list">
+                <!-- Dynamic AI recommendations -->
+            </div>
+        </div>
+
+        <!-- ROW 4: CREATIVE LEADERBOARD -->
+        <div class="leaderboards-grid">
+            
+            <div class="leaderboard-card">
+                <div class="leaderboard-hdr" style="color: var(--success);">
+                    <i class="ti ti-circle-check"></i> Creativos Ganadores (Menor CPL / Mayor CTR)
+                </div>
+                <div id="leaderboard-winners">
+                    <!-- Dynamic winner ads -->
+                </div>
+            </div>
+
+            <div class="leaderboard-card">
+                <div class="leaderboard-hdr" style="color: var(--danger);">
+                    <i class="ti ti-alert-triangle"></i> Oportunidades de Mejora (Rendimiento Crítico)
+                </div>
+                <div id="leaderboard-opportunities">
+                    <!-- Dynamic critical ads -->
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ROW 5: DETAILED TABLE -->
+        <div class="table-card">
+            <div class="table-card-hdr">Desglose Detallado de Rendimiento</div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Campaña ➔ Conjunto ➔ Anuncio</th>
+                            <th>Inversión</th>
+                            <th>Impresiones</th>
+                            <th>Clics (CTR)</th>
+                            <th>Visitas (Clic-to-Visita)</th>
+                            <th>Leads (CPL)</th>
+                            <th>Citas (CPA)</th>
+                            <th>Tasa Conversión (Cita/Lead)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="detailed-performance-tbody">
+                        <!-- Dynamic table rows -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- EMPTY STATE SECTION (HIDDEN BY DEFAULT) -->
+    <div class="empty-container" id="empty-state-area" style="display: none;">
+        <div class="empty-card">
+            <div class="empty-icon">
+                <i class="ti ti-chart-bar"></i>
+            </div>
+            <h2 class="empty-title">Sin Datos de Pauta</h2>
+            <p class="empty-desc">
+                No hemos encontrado campañas de Meta Ads ni anuncios configurados en la memoria del sistema. Para ver análisis de conversión y gráficos de embudo, debes crear campañas y subir resultados.
+            </p>
+            <button class="btn btn-primary" onclick="goToPauta()"><i class="ti ti-speakerphone"></i> Ir a Gestión de Pauta</button>
+        </div>
+    </div>
+
+    <!-- MODAL REGISTRO DE RESULTADOS ORGÁNICOS -->
+    <div class="overlay" id="modal-edit-organic-metrics">
+        <div class="modal">
+            <div class="modal-hdr">
+                <h3 class="modal-title"><i class="ti ti-chart-bar" style="color: var(--accent);"></i> Registrar Resultados de Publicación</h3>
+                <button class="modal-close" onclick="window.cerrarModal('edit-organic-metrics')"><i class="ti ti-x"></i></button>
+            </div>
+            <div class="modal-body flex-col" style="gap:15px; padding: 1.5rem;">
+                <input type="hidden" id="edit-metrics-id">
+                
+                <div class="field" style="margin-bottom: 0;">
+                    <span class="flabel" id="edit-metrics-title" style="font-weight: 600; color: var(--text2); display: block; word-break: break-all;">Título de Publicación</span>
+                </div>
+
+                <div class="flex-row" style="gap: 15px;">
+                    <div class="field" style="flex: 1; margin-bottom: 0;">
+                        <span class="flabel">Reproducciones / Vistas</span>
+                        <input type="number" id="edit-views" min="0" placeholder="ej: 1500" style="width: 100%;">
+                    </div>
+                    <div class="field" style="flex: 1; margin-bottom: 0;">
+                        <span class="flabel">Alcance (Reach)</span>
+                        <input type="number" id="edit-reach" min="0" placeholder="ej: 1200" style="width: 100%;">
+                    </div>
+                </div>
+
+                <div class="flex-row" style="gap: 15px;">
+                    <div class="field" style="flex: 1; margin-bottom: 0;">
+                        <span class="flabel">Nuevos Seguidores</span>
+                        <input type="number" id="edit-followers" min="0" placeholder="ej: 10" style="width: 100%;">
+                    </div>
+                    <div class="field" style="flex: 1; margin-bottom: 0;">
+                        <span class="flabel">Mensajes Recibidos (DM)</span>
+                        <input type="number" id="edit-dms" min="0" placeholder="ej: 4" style="width: 100%;">
+                    </div>
+                </div>
+
+                <div class="field" style="margin-bottom: 0;">
+                    <span class="flabel">Guardados</span>
+                    <input type="number" id="edit-saves" min="0" placeholder="ej: 25" style="width: 100%;">
+                </div>
+
+                <div style="font-size: 11px; color: var(--text3); display: flex; gap: 4px; align-items: flex-start;">
+                    <i class="ti ti-info-circle" style="color: var(--accent); margin-top: 1px;"></i>
+                    <span>Puedes actualizar estos números tantas veces como sea necesario a medida que el post siga acumulando interacciones.</span>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-ghost" onclick="window.cerrarModal('edit-organic-metrics')">Cancelar</button>
+                <button class="btn btn-primary" onclick="window.saveOrganicMetrics()">Guardar Resultados</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script type="module">
+        import { supabase } from '../supabase-client.js';
+
+        let campaigns = [];
+        let filterCampaignId = 'global';
+        let funnelChart = null;
+        let efficiencyChart = null;
+        let organicPieces = [];
+        const toastContainer = document.getElementById('toast-container');
+
+        // Theme management listener
+        window.addEventListener('message', (e) => {
+            if (e.data && e.data.type === 'THEME_CHANGE') {
+                const isLight = e.data.payload === 'light';
+                document.body.classList.toggle('light', isLight);
+                // Re-render charts to adapt styles
+                renderCharts();
+            }
+        });
+        window.parent.postMessage({ type: 'IFRAME_READY' }, '*');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadCampaignData();
+            // Default to publications tab
+            window.switchAnalisisTab('publicaciones');
+        });
+
+        // Bind global functions to window
+        window.onFilterChange = onFilterChange;
+        window.goToPauta = goToPauta;
+        window.switchAnalisisTab = switchAnalisisTab;
+        window.abrirModalMetrics = abrirModalMetrics;
+        window.cerrarModal = cerrarModal;
+        window.saveOrganicMetrics = saveOrganicMetrics;
+
+        // ── PESTAÑAS Y RENDIMIENTO ORGÁNICO ──
+        function switchAnalisisTab(tab) {
+            const pubTab = document.getElementById('tab-publicaciones');
+            const metTab = document.getElementById('tab-metricas');
+            const pubArea = document.getElementById('area-publicaciones');
+            const metArea = document.getElementById('main-content-area');
+            const emptyArea = document.getElementById('empty-state-area');
+            
+            const headerActions = document.querySelector('.vb-header-actions');
+            const headerBadges = document.querySelector('.vb-badges');
+            
+            if (tab === 'publicaciones') {
+                pubTab.className = 'btn btn-primary';
+                metTab.className = 'btn btn-outline';
+                pubArea.style.display = 'block';
+                metArea.style.display = 'none';
+                emptyArea.style.display = 'none';
+                
+                if (headerActions) headerActions.style.display = 'none';
+                if (headerBadges) headerBadges.style.display = 'none';
+                
+                loadOrganicContent();
+            } else {
+                pubTab.className = 'btn btn-outline';
+                metTab.className = 'btn btn-primary';
+                pubArea.style.display = 'none';
+                
+                if (headerActions) headerActions.style.display = 'flex';
+                if (headerBadges) headerBadges.style.display = 'flex';
+                
+                if (campaigns.length === 0) {
+                    metArea.style.display = 'none';
+                    emptyArea.style.display = 'flex';
+                } else {
+                    metArea.style.display = 'block';
+                    emptyArea.style.display = 'none';
+                    renderDashboard();
+                }
+            }
+        }
+
+        async function loadOrganicContent() {
+            try {
+                const { data, error } = await supabase
+                    .from('content_pieces')
+                    .select('*')
+                    .eq('status', 'publicado')
+                    .order('publish_date', { ascending: false });
+
+                if (error) throw error;
+                organicPieces = data || [];
+                renderOrganicContent();
+            } catch (err) {
+                console.error("Error loading organic pieces:", err);
+                showToast("Error al conectar con Supabase: " + err.message, "ti-alert-circle");
+            }
+        }
+
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+            return num;
+        }
+
+        function renderOrganicContent() {
+            let totalViews = 0, totalReach = 0, totalFollowers = 0, totalDms = 0, totalSaves = 0;
+            
+            organicPieces.forEach(p => {
+                const metrics = p.content_data?.metrics || {};
+                totalViews += parseInt(metrics.views) || 0;
+                totalReach += parseInt(metrics.reach) || 0;
+                totalFollowers += parseInt(metrics.followers) || 0;
+                totalDms += parseInt(metrics.dms) || 0;
+                totalSaves += parseInt(metrics.saves) || 0;
+            });
+
+            document.getElementById('org-kpi-views').textContent = formatNumber(totalViews);
+            document.getElementById('org-kpi-reach').textContent = formatNumber(totalReach);
+            document.getElementById('org-kpi-followers').textContent = formatNumber(totalFollowers);
+            document.getElementById('org-kpi-dms').textContent = formatNumber(totalDms);
+            document.getElementById('org-kpi-saves').textContent = formatNumber(totalSaves);
+
+            // Render list
+            const listContainer = document.getElementById('org-posts-list');
+            listContainer.innerHTML = '';
+            
+            if (organicPieces.length === 0) {
+                listContainer.innerHTML = `
+                    <div style="text-align:center; padding: 3rem; color: var(--text3);">
+                        <i class="ti ti-movie" style="font-size: 2.5rem; display:block; margin-bottom:0.8rem; color: var(--text3); opacity: 0.5;"></i>
+                        <strong>No hay publicaciones registradas</strong><br>
+                        Ve a la Bóveda o al Calendario para marcar creativos como "Publicado".
+                    </div>
+                `;
+            } else {
+                organicPieces.forEach(p => {
+                    const metrics = p.content_data?.metrics || {};
+                    let thumbUrl = '';
+                    let iconClass = p.type === 'reel' ? 'ti-movie' : 'ti-carousel-horizontal';
+                    if (p.type === 'carrusel' && p.content_data?.slides?.[0]?.bg) {
+                        const parts = p.content_data.slides[0].bg.split('/');
+                        thumbUrl = '../assets/images_database/' + parts[parts.length - 1];
+                    } else if (p.type === 'reel' && p.content_data?.brief?.imagen) {
+                        thumbUrl = '../assets/images_database/' + p.content_data.brief.imagen;
+                    }
+                    
+                    const itemHtml = `
+                        <div class="leaderboard-item" style="padding: 12px; border: 1px solid var(--border2); border-radius: var(--r-sm); display: flex; align-items: center; justify-content: space-between; gap: 15px; background: var(--surface); margin-bottom: 8px;">
+                            <div class="creative-info" style="flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px;">
+                                ${thumbUrl ? `<img class="creative-thumb" src="${thumbUrl}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` : ''}
+                                <div class="creative-thumb" style="display: ${thumbUrl ? 'none' : 'flex'}; align-items: center; justify-content: center; background: var(--surface3); color: var(--text3);"><i class="ti ${iconClass}"></i></div>
+                                <div class="creative-meta" style="min-width: 0; margin-left: 8px;">
+                                    <span class="creative-name" style="font-size: var(--fs-sm); font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;" title="${p.title}">${p.title}</span>
+                                    <span class="creative-details" style="font-size: 10px; color: var(--text3); display: block; margin-top: 2px;">
+                                        📅 ${p.publish_date || 'Sin fecha'} • <span style="text-transform: capitalize;">${p.type}</span> • ${p.pillar || 'General'}
+                                    </span>
+                                    <div class="flex-row" style="gap: 12px; margin-top: 6px; font-size: 11px; color: var(--text2); font-weight: 500;">
+                                        <span title="Reproducciones / Vistas"><i class="ti ti-eye" style="color: var(--info);"></i> ${formatNumber(metrics.views || 0)}</span>
+                                        <span title="Alcance"><i class="ti ti-users" style="color: var(--accent);"></i> ${formatNumber(metrics.reach || 0)}</span>
+                                        <span title="Seguidores"><i class="ti ti-user-plus" style="color: var(--teal);"></i> ${formatNumber(metrics.followers || 0)}</span>
+                                        <span title="Mensajes DM"><i class="ti ti-message-circle" style="color: var(--purple);"></i> ${formatNumber(metrics.dms || 0)}</span>
+                                        <span title="Guardados"><i class="ti ti-bookmark" style="color: var(--warning);"></i> ${formatNumber(metrics.saves || 0)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-outline" onclick="window.abrirModalMetrics('${p.id}')" style="padding: 0.35rem 0.75rem; font-size: 11px; flex-shrink: 0; border-color: var(--border3); font-weight: 600;"><i class="ti ti-edit"></i> Editar</button>
+                        </div>
+                    `;
+                    listContainer.innerHTML += itemHtml;
+                });
+            }
+
+            // Render leaderboard
+            const leaderboardContainer = document.getElementById('org-leaderboard-list');
+            leaderboardContainer.innerHTML = '';
+            
+            const sortedByViews = [...organicPieces].sort((a, b) => {
+                const aViews = a.content_data?.metrics?.views || 0;
+                const bViews = b.content_data?.metrics?.views || 0;
+                return bViews - aViews;
+            });
+            
+            const top5 = sortedByViews.slice(0, 5);
+            if (top5.length === 0 || (top5[0].content_data?.metrics?.views || 0) === 0) {
+                leaderboardContainer.innerHTML = `<div style="text-align:center; padding: 1.5rem; color: var(--text3); font-size: var(--fs-sm);">Ingresa visualizaciones en tus publicaciones para ver el ranking.</div>`;
+            } else {
+                top5.forEach((p, index) => {
+                    const views = p.content_data?.metrics?.views || 0;
+                    const saves = p.content_data?.metrics?.saves || 0;
+                    let trophyColor = index === 0 ? 'var(--warning)' : (index === 1 ? '#d1d5db' : (index === 2 ? '#b45309' : 'var(--text3)'));
+                    
+                    leaderboardContainer.innerHTML += `
+                        <div class="leaderboard-item" style="padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border3);">
+                            <div style="display:flex; align-items:center; gap: 8px; min-width: 0;">
+                                <span style="font-weight:bold; color: ${trophyColor}; font-size: 13px; width: 18px; display:inline-flex; align-items:center; justify-content:center;">
+                                    ${index < 3 ? '<i class="ti ti-trophy"></i>' : (index + 1)}
+                                </span>
+                                <span style="font-size:var(--fs-sm); font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px;" title="${p.title}">${p.title}</span>
+                            </div>
+                            <div style="text-align: right; font-size: var(--fs-xs);">
+                                <span style="color: var(--info); font-weight: 600;">👁️ ${formatNumber(views)}</span>
+                                <span style="color: var(--text3); margin-left: 6px;">💾 ${formatNumber(saves)}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            // Render pillars
+            const pillarContainer = document.getElementById('org-pillar-distribution');
+            pillarContainer.innerHTML = '';
+            
+            const pillarStats = {};
+            organicPieces.forEach(p => {
+                const pil = p.pillar || 'General';
+                if (!pillarStats[pil]) {
+                    pillarStats[pil] = { count: 0, views: 0, engagement: 0 };
+                }
+                pillarStats[pil].count++;
+                const metrics = p.content_data?.metrics || {};
+                pillarStats[pil].views += parseInt(metrics.views) || 0;
+                pillarStats[pil].engagement += (parseInt(metrics.followers) || 0) + (parseInt(metrics.dms) || 0) + (parseInt(metrics.saves) || 0);
+            });
+            
+            const pillarArray = Object.keys(pillarStats).map(name => ({
+                name,
+                ...pillarStats[name]
+            })).sort((a, b) => b.views - a.views);
+            
+            if (pillarArray.length === 0) {
+                pillarContainer.innerHTML = `<div style="text-align:center; padding: 1.5rem; color: var(--text3); font-size: var(--fs-sm);">Registra publicaciones para ver estadísticas por pilar.</div>`;
+            } else {
+                const maxViews = Math.max(...pillarArray.map(p => p.views), 1);
+                pillarArray.forEach(p => {
+                    const pct = Math.min(100, Math.round((p.views / maxViews) * 100));
+                    const pColor = p.name === 'Conversión directa' ? 'var(--pilar-conversion, #f55a8a)' :
+                                   (p.name === 'Educación premium' ? 'var(--pilar-educacion, #2abfb0)' :
+                                   (p.name === 'Contrarian / Mitos' ? 'var(--pilar-contrarian, #c9862a)' :
+                                   (p.name === 'Autoridad humana' ? 'var(--pilar-autoridad, #b48ef0)' :
+                                   (p.name === 'Transformación de vida' ? 'var(--pilar-transformacion, #e28743)' : 'var(--accent, #2abfb0)'))));
+                                  
+                    pillarContainer.innerHTML += `
+                        <div class="flex-col" style="gap: 4px; width: 100%;">
+                            <div class="flex-row space-between" style="font-size: 11px; color: var(--text);">
+                                <span style="font-weight: 600; display:flex; align-items:center; gap: 4px;">
+                                    <span style="width: 8px; height: 8px; border-radius: 50%; background: ${pColor}; display: inline-block;"></span>
+                                    ${p.name} (${p.count})
+                                </span>
+                                <span style="color: var(--text3); font-weight: 500;">👁️ ${formatNumber(p.views)}</span>
+                            </div>
+                            <div style="width: 100%; height: 6px; background: var(--surface3); border-radius: 3px; overflow: hidden;">
+                                <div style="width: ${pct}%; height: 100%; background: ${pColor}; border-radius: 3px; transition: width 0.5s ease;"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        function abrirModalMetrics(id) {
+            const piece = organicPieces.find(p => p.id === id);
+            if (!piece) {
+                showToast("Error: No se encontró la publicación en memoria", "ti-alert-circle");
+                return;
+            }
+            
+            document.getElementById('edit-metrics-id').value = id;
+            document.getElementById('edit-metrics-title').textContent = piece.title;
+            
+            const metrics = piece.content_data?.metrics || {};
+            document.getElementById('edit-views').value = metrics.views !== undefined ? metrics.views : '';
+            document.getElementById('edit-reach').value = metrics.reach !== undefined ? metrics.reach : '';
+            document.getElementById('edit-followers').value = metrics.followers !== undefined ? metrics.followers : '';
+            document.getElementById('edit-dms').value = metrics.dms !== undefined ? metrics.dms : '';
+            document.getElementById('edit-saves').value = metrics.saves !== undefined ? metrics.saves : '';
+            
+            document.getElementById('modal-edit-organic-metrics').classList.add('open');
+        }
+
+        function cerrarModal(modalName) {
+            document.getElementById(`modal-${modalName}`).classList.remove('open');
+        }
+
+        async function saveOrganicMetrics() {
+            const id = document.getElementById('edit-metrics-id').value;
+            const piece = organicPieces.find(p => p.id === id);
+            if (!piece) {
+                showToast("Error al guardar: Pieza no encontrada", "ti-alert-circle");
+                return;
+            }
+            
+            try {
+                const contentData = piece.content_data || {};
+                contentData.metrics = {
+                    views: parseInt(document.getElementById('edit-views').value) || 0,
+                    reach: parseInt(document.getElementById('edit-reach').value) || 0,
+                    followers: parseInt(document.getElementById('edit-followers').value) || 0,
+                    dms: parseInt(document.getElementById('edit-dms').value) || 0,
+                    saves: parseInt(document.getElementById('edit-saves').value) || 0
+                };
+                
+                const { error } = await supabase
+                    .from('content_pieces')
+                    .update({ content_data: contentData })
+                    .eq('id', id);
+                    
+                if (error) throw error;
+                
+                showToast("Métricas orgánicas guardadas con éxito", "ti-circle-check");
+                cerrarModal('edit-organic-metrics');
+                loadOrganicContent();
+            } catch (err) {
+                console.error("Error saving organic metrics:", err);
+                showToast("Error al guardar: " + err.message, "ti-alert-circle");
+            }
+        }
+
+        function showToast(msg, icon = 'ti-info-circle') {
+            const t = document.createElement('div');
+            t.className = 'toast';
+            t.innerHTML = `<i class="ti ${icon}"></i> <span>${msg}</span>`;
+            toastContainer.appendChild(t);
+            setTimeout(() => {
+                t.style.animation = 'none';
+                t.offsetHeight;
+                t.style.animation = 'slideIn 0.3s ease reverse forwards';
+                setTimeout(() => t.remove(), 300);
+            }, 3000);
+        }
+
+        function loadCampaignData() {
+            const stored = localStorage.getItem('content_os_pauta_campaigns');
+            if (stored) {
+                try {
+                    campaigns = JSON.parse(stored);
+                } catch(e) {
+                    campaigns = [];
+                }
+            } else {
+                campaigns = [];
+            }
+
+
+            if (campaigns.length === 0) {
+                document.getElementById('main-content-area').style.display = 'none';
+                document.getElementById('empty-state-area').style.display = 'flex';
+                document.getElementById('badge-campaign-count').innerHTML = `<i class="ti ti-chart-bar"></i> 0 Campañas`;
+            } else {
+                document.getElementById('main-content-area').style.display = 'block';
+                document.getElementById('empty-state-area').style.display = 'none';
+                
+                // Calculate parent metrics from child ads (Roll-up logic)
+                updateAllCalculations();
+                
+                // Populate Filter Selector
+                populateFilterSelector();
+                
+                // Render Dashboard
+                renderDashboard();
+            }
+        }
+
+        // Parent rollup logic
+        function updateAllCalculations() {
+            campaigns.forEach(c => {
+                c.spend = 0;
+                c.impressions = 0;
+                c.clicks = 0;
+                c.visits = 0;
+                c.leads = 0;
+                c.appointments = 0;
+
+                let abobudget = 0;
+                c.adsets = c.adsets || [];
+                c.adsets.forEach(as => {
+                    as.spend = 0;
+                    as.impressions = 0;
+                    as.clicks = 0;
+                    as.visits = 0;
+                    as.leads = 0;
+                    as.appointments = 0;
+
+                    as.ads = as.ads || [];
+                    as.ads.forEach(ad => {
+                        as.spend += parseFloat(ad.spend || 0);
+                        as.impressions += parseInt(ad.impressions || 0);
+                        as.clicks += parseInt(ad.clicks || 0);
+                        as.visits += parseInt(ad.visits || 0);
+                        as.leads += parseInt(ad.leads || 0);
+                        as.appointments += parseInt(ad.appointments || 0);
+                    });
+
+                    c.spend += as.spend;
+                    c.impressions += as.impressions;
+                    c.clicks += as.clicks;
+                    c.visits += as.visits;
+                    c.leads += as.leads;
+                    c.appointments += as.appointments;
+
+                    abobudget += parseFloat(as.budget || 0);
+                });
+
+                if (c.budget_type === 'ABO') {
+                    c.budget = abobudget;
+                }
+            });
+        }
+
+        function populateFilterSelector() {
+            const select = document.getElementById('select-campaign-filter');
+            const currentValue = select.value;
+            select.innerHTML = '<option value="global">Rendimiento Global</option>';
+            campaigns.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = `${c.name} (${c.platform})`;
+                select.appendChild(opt);
+            });
+            if (campaigns.find(c => c.id === currentValue)) {
+                select.value = currentValue;
+            } else {
+                select.value = 'global';
+                filterCampaignId = 'global';
+            }
+        }
+
+        function onFilterChange() {
+            filterCampaignId = document.getElementById('select-campaign-filter').value;
+            renderDashboard();
+        }
+
+        function renderDashboard() {
+            document.getElementById('badge-campaign-count').innerHTML = `<i class="ti ti-chart-bar"></i> ${campaigns.length} Campañas`;
+
+            // Filter campaigns
+            let targetCampaigns = campaigns;
+            if (filterCampaignId !== 'global') {
+                targetCampaigns = campaigns.filter(c => c.id === filterCampaignId);
+            }
+
+            // Consolidate totals
+            let totalDailyBudget = 0;
+            let totalSpend = 0;
+            let totalImpressions = 0;
+            let totalClicks = 0;
+            let totalVisits = 0;
+            let totalLeads = 0;
+            let totalAppointments = 0;
+
+            targetCampaigns.forEach(c => {
+                totalDailyBudget += parseFloat(c.budget || 0);
+                totalSpend += parseFloat(c.spend || 0);
+                totalImpressions += parseInt(c.impressions || 0);
+                totalClicks += parseInt(c.clicks || 0);
+                totalVisits += parseInt(c.visits || 0);
+                totalLeads += parseInt(c.leads || 0);
+                totalAppointments += parseInt(c.appointments || 0);
+            });
+
+            const ctr = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0;
+            const cpl = totalLeads > 0 ? (totalSpend / totalLeads) : 0;
+            const cpa = totalAppointments > 0 ? (totalSpend / totalAppointments) : 0;
+            const clickToLead = totalClicks > 0 ? (totalLeads / totalClicks) * 100 : 0;
+            const leadToAppt = totalLeads > 0 ? (totalAppointments / totalLeads) * 100 : 0;
+
+            // Inyectar KPIs
+            document.getElementById('kpi-budget').textContent = `$${Math.round(totalDailyBudget).toLocaleString('es-CO')}/d`;
+            document.getElementById('kpi-spend').textContent = `$${Math.round(totalSpend).toLocaleString('es-CO')}`;
+            document.getElementById('sub-clicks').innerHTML = `<i class="ti ti-mouse"></i> ${totalClicks.toLocaleString()} Clics Totales`;
+
+            document.getElementById('kpi-leads').textContent = totalLeads.toLocaleString();
+            document.getElementById('sub-cpl').innerHTML = `<i class="ti ti-coin"></i> $${Math.round(cpl).toLocaleString('es-CO')} CPL Promedio`;
+
+            document.getElementById('kpi-appointments').textContent = totalAppointments.toLocaleString();
+            document.getElementById('sub-cpa').innerHTML = `<i class="ti ti-check"></i> ${leadToAppt.toFixed(1)}% agendamiento`;
+
+            document.getElementById('kpi-ctr').textContent = `${ctr.toFixed(2)}%`;
+            document.getElementById('sub-ctr').innerHTML = `<i class="ti ti-trending-up" style="color: var(--accent);"></i> ${clickToLead.toFixed(1)}% clic a lead`;
+
+            // Render components
+            renderCharts(totalImpressions, totalClicks, totalVisits, totalLeads, totalAppointments, targetCampaigns);
+            renderDetailedTable(targetCampaigns);
+            renderLeaderboards(targetCampaigns);
+            generateAIAudit(targetCampaigns);
+        }
+
+        // Render visual Chart.js charts
+        function renderCharts(impressions, clicks, visits, leads, appointments, filteredCamps) {
+            const isLight = document.body.classList.contains('light');
+            const gridColor = isLight ? 'rgba(0,0,0,0.05)' : 'rgba(255,255,255,0.05)';
+            const textColor = isLight ? '#14262D' : '#F4F5F0';
+
+            // 1. Funnel Chart
+            if (funnelChart) funnelChart.destroy();
+            const ctxFunnel = document.getElementById('chart-funnel').getContext('2d');
+            funnelChart = new Chart(ctxFunnel, {
+                type: 'bar',
+                data: {
+                    labels: ['Impresiones', 'Clics', 'Visitas', 'Leads', 'Citas'],
+                    datasets: [{
+                        label: 'Conversión de Tráfico',
+                        data: [impressions, clicks, visits, leads, appointments],
+                        backgroundColor: [
+                            '#1f434e',
+                            '#1c857b',
+                            '#2abfb0',
+                            '#ccc2a7',
+                            '#c9862a'
+                        ],
+                        borderWidth: 0,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const val = context.raw;
+                                    let percentage = '100';
+                                    if (context.dataIndex > 0) {
+                                        const prev = context.dataset.data[context.dataIndex - 1];
+                                        percentage = prev > 0 ? ((val / prev) * 100).toFixed(1) : '0';
+                                    }
+                                    return `${context.label}: ${val.toLocaleString()} (${percentage}% de conversión)`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: gridColor },
+                            ticks: { color: textColor }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: { color: textColor }
+                        }
+                    }
+                }
+            });
+
+            // 2. Efficiency Chart (Spend vs Leads)
+            if (efficiencyChart) efficiencyChart.destroy();
+            const ctxEff = document.getElementById('chart-efficiency').getContext('2d');
+            
+            // Labels and datasets based on campaigns
+            const labels = filteredCamps.map(c => c.name.substring(0, 15) + '...');
+            const spends = filteredCamps.map(c => c.spend);
+            const generatedLeads = filteredCamps.map(c => c.leads);
+
+            efficiencyChart = new Chart(ctxEff, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Inversión (COP)',
+                            data: spends,
+                            backgroundColor: 'rgba(245, 90, 138, 0.7)',
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Leads de WhatsApp',
+                            data: generatedLeads,
+                            backgroundColor: 'rgba(42, 191, 176, 0.7)',
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: textColor, font: { size: 10 } }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: textColor }
+                        },
+                        y: {
+                            position: 'left',
+                            grid: { color: gridColor },
+                            ticks: { color: textColor },
+                            title: { display: true, text: 'Inversión (COP)', color: textColor }
+                        },
+                        y1: {
+                            position: 'right',
+                            grid: { display: false },
+                            ticks: { color: textColor },
+                            title: { display: true, text: 'Leads WhatsApp', color: textColor }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Leaderboards based on CPL & CTR
+        function renderLeaderboards(filteredCamps) {
+            const winnersDiv = document.getElementById('leaderboard-winners');
+            const oppDiv = document.getElementById('leaderboard-opportunities');
+
+            // Gather all ads from active scope
+            let allAds = [];
+            filteredCamps.forEach(c => {
+                c.adsets.forEach(as => {
+                    as.ads.forEach(ad => {
+                        allAds.push({
+                            ...ad,
+                            campaignName: c.name,
+                            adsetName: as.name,
+                            ctr: ad.impressions > 0 ? (ad.clicks / ad.impressions) * 100 : 0,
+                            cpl: ad.leads > 0 ? (ad.spend / ad.leads) : 9999
+                        });
+                    });
+                });
+            });
+
+            // Winner rankings: Sort by CPL ascending (lower cost), and CTR descending (more interest)
+            // Filtering out items with no spend or no leads to keep it meaningful
+            const candidates = allAds.filter(ad => ad.spend > 0);
+            
+            const winners = [...candidates]
+                .filter(ad => ad.leads > 0)
+                .sort((a, b) => a.cpl - b.cpl || b.ctr - a.ctr)
+                .slice(0, 3);
+
+            const opportunities = [...candidates]
+                .sort((a, b) => b.cpl - a.cpl || a.ctr - b.ctr)
+                .slice(0, 3);
+
+            // Render Winners
+            winnersDiv.innerHTML = '';
+            if (winners.length === 0) {
+                winnersDiv.innerHTML = `<div style="padding: 1.5rem; text-align: center; color: var(--text3); font-size: 13px;">No hay anuncios ganadores identificados aún (requiere leads > 0).</div>`;
+            } else {
+                winners.forEach(ad => {
+                    const thumb = ad.asset ? `../assets/images_database/${ad.asset}` : '';
+                    const imgTag = thumb ? `<img src="${thumb}" class="creative-thumb" onerror="this.src=''; this.style.display='none';">` : `<div class="creative-thumb" style="background: var(--surface2); display:flex; align-items:center; justify-content:center;"><i class="ti ti-photo" style="color:var(--text3);"></i></div>`;
+                    
+                    const div = document.createElement('div');
+                    div.className = 'leaderboard-item';
+                    div.innerHTML = `
+                        <div class="creative-info">
+                            ${imgTag}
+                            <div class="creative-meta">
+                                <span class="creative-name">${ad.name}</span>
+                                <span class="creative-details">${ad.campaignName.substring(0, 25)}...</span>
+                            </div>
+                        </div>
+                        <div class="creative-metrics">
+                            <span class="creative-metric-val">$${Math.round(ad.cpl).toLocaleString('es-CO')}</span>
+                            <span class="creative-metric-lbl">Costo por Lead</span>
+                        </div>
+                    `;
+                    winnersDiv.appendChild(div);
+                });
+            }
+
+            // Render Opportunities
+            oppDiv.innerHTML = '';
+            if (opportunities.length === 0) {
+                oppDiv.innerHTML = `<div style="padding: 1.5rem; text-align: center; color: var(--text3); font-size: 13px;">No hay anuncios con anomalías de costo.</div>`;
+            } else {
+                opportunities.forEach(ad => {
+                    const thumb = ad.asset ? `../assets/images_database/${ad.asset}` : '';
+                    const imgTag = thumb ? `<img src="${thumb}" class="creative-thumb" onerror="this.src=''; this.style.display='none';">` : `<div class="creative-thumb" style="background: var(--surface2); display:flex; align-items:center; justify-content:center;"><i class="ti ti-photo" style="color:var(--text3);"></i></div>`;
+
+                    const div = document.createElement('div');
+                    div.className = 'leaderboard-item';
+                    div.innerHTML = `
+                        <div class="creative-info">
+                            ${imgTag}
+                            <div class="creative-meta">
+                                <span class="creative-name">${ad.name}</span>
+                                <span class="creative-details">${ad.campaignName.substring(0, 25)}...</span>
+                            </div>
+                        </div>
+                        <div class="creative-metrics">
+                            <span class="creative-metric-val" style="color: var(--danger);">${ad.cpl === 9999 ? 'N/A' : '$' + Math.round(ad.cpl).toLocaleString('es-CO')}</span>
+                            <span class="creative-metric-lbl">CPL (CTR: ${ad.ctr.toFixed(2)}%)</span>
+                        </div>
+                    `;
+                    oppDiv.appendChild(div);
+                });
+            }
+        }
+
+        // Detailed tabular breakdown with indentation
+        function renderDetailedTable(filteredCamps) {
+            const tbody = document.getElementById('detailed-performance-tbody');
+            tbody.innerHTML = '';
+
+            filteredCamps.forEach(c => {
+                const ctr = c.impressions > 0 ? ((c.clicks / c.impressions) * 100).toFixed(2) : '0.00';
+                const clickToVisit = c.clicks > 0 ? ((c.visits / c.clicks) * 100).toFixed(0) : '0';
+                const cpl = c.leads > 0 ? Math.round(c.spend / c.leads).toLocaleString('es-CO') : '0';
+                const cpa = c.appointments > 0 ? Math.round(c.spend / c.appointments).toLocaleString('es-CO') : '0';
+                const conversion = c.leads > 0 ? ((c.appointments / c.leads) * 100).toFixed(1) : '0.0';
+
+                const trCamp = document.createElement('tr');
+                trCamp.className = 'row-campaign';
+                trCamp.innerHTML = `
+                    <td>
+                        <div style="font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                            <i class="ti ti-speakerphone" style="color: var(--accent);"></i>
+                            ${c.name}
+                        </div>
+                    </td>
+                    <td>$${Math.round(c.spend || 0).toLocaleString('es-CO')}</td>
+                    <td>${c.impressions.toLocaleString()}</td>
+                    <td>${c.clicks.toLocaleString()} (${ctr}% CTR)</td>
+                    <td>${c.visits.toLocaleString()} (${clickToVisit}% visit)</td>
+                    <td>${c.leads.toLocaleString()} ($${cpl} CPL)</td>
+                    <td>${c.appointments} ($${cpa} CPA)</td>
+                    <td>${conversion}% Cita/Lead</td>
+                `;
+                tbody.appendChild(trCamp);
+
+                c.adsets.forEach(as => {
+                    const asCtr = as.impressions > 0 ? ((as.clicks / as.impressions) * 100).toFixed(2) : '0.00';
+                    const asClickToVisit = as.clicks > 0 ? ((as.visits / as.clicks) * 100).toFixed(0) : '0';
+                    const asCpl = as.leads > 0 ? Math.round(as.spend / as.leads).toLocaleString('es-CO') : '0';
+                    const asCpa = as.appointments > 0 ? Math.round(as.spend / as.appointments).toLocaleString('es-CO') : '0';
+                    const asConversion = as.leads > 0 ? ((as.appointments / as.leads) * 100).toFixed(1) : '0.0';
+
+                    const trAs = document.createElement('tr');
+                    trAs.className = 'row-adset';
+                    trAs.innerHTML = `
+                        <td>
+                            <div style="padding-left: 20px; display: flex; align-items: center; gap: 6px;">
+                                <i class="ti ti-folder" style="color: var(--amber);"></i>
+                                ${as.name}
+                            </div>
+                        </td>
+                        <td>$${Math.round(as.spend || 0).toLocaleString('es-CO')}</td>
+                        <td>${as.impressions.toLocaleString()}</td>
+                        <td>${as.clicks.toLocaleString()} (${asCtr}% CTR)</td>
+                        <td>${as.visits.toLocaleString()} (${asClickToVisit}% visit)</td>
+                        <td>${as.leads.toLocaleString()} ($${asCpl} CPL)</td>
+                        <td>${as.appointments} ($${asCpa} CPA)</td>
+                        <td>${asConversion}% Cita/Lead</td>
+                    `;
+                    tbody.appendChild(trAs);
+
+                    as.ads.forEach(ad => {
+                        const adCtr = ad.impressions > 0 ? ((ad.clicks / ad.impressions) * 100).toFixed(2) : '0.00';
+                        const adClickToVisit = ad.clicks > 0 ? ((ad.visits / ad.clicks) * 100).toFixed(0) : '0';
+                        const adCpl = ad.leads > 0 ? Math.round(ad.spend / ad.leads).toLocaleString('es-CO') : '0';
+                        const adCpa = ad.appointments > 0 ? Math.round(ad.spend / ad.appointments).toLocaleString('es-CO') : '0';
+                        const adConversion = ad.leads > 0 ? ((ad.appointments / ad.leads) * 100).toFixed(1) : '0.0';
+
+                        const thumb = ad.asset ? `../assets/images_database/${ad.asset}` : '';
+                        const imgHTML = thumb ? `<img src="${thumb}" style="width: 24px; height: 24px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border);" onerror="this.style.display='none';">` : `<div style="width: 24px; height: 24px; border-radius: 4px; background: var(--surface2); display: flex; align-items: center; justify-content: center; border: 1px solid var(--border3);"><i class="ti ti-photo" style="font-size: 11px; color: var(--text3);"></i></div>`;
+
+                        const trAd = document.createElement('tr');
+                        trAd.className = 'row-ad';
+                        trAd.innerHTML = `
+                            <td>
+                                <div style="padding-left: 40px; display: flex; align-items: center; gap: 8px;">
+                                    ${imgHTML}
+                                    <span style="font-style: italic;">${ad.name}</span>
+                                </div>
+                            </td>
+                            <td>$${Math.round(ad.spend || 0).toLocaleString('es-CO')}</td>
+                            <td>${ad.impressions.toLocaleString()}</td>
+                            <td>${ad.clicks.toLocaleString()} (${adCtr}% CTR)</td>
+                            <td>${ad.visits.toLocaleString()} (${adClickToVisit}% visit)</td>
+                            <td>${ad.leads.toLocaleString()} ($${adCpl} CPL)</td>
+                            <td>${ad.appointments} ($${adCpa} CPA)</td>
+                            <td>${adConversion}% Cita/Lead</td>
+                        `;
+                        tbody.appendChild(trAd);
+                    });
+                });
+            });
+        }
+
+        // Dynamic Rule-Based AI Audit engine
+        function generateAIAudit(filteredCamps) {
+            const list = document.getElementById('audit-advisor-list');
+            list.innerHTML = '';
+
+            let recommendations = [];
+
+            filteredCamps.forEach(c => {
+                c.adsets.forEach(as => {
+                    as.ads.forEach(ad => {
+                        const ctr = ad.impressions > 0 ? (ad.clicks / ad.impressions) * 100 : 0;
+                        const cpl = ad.leads > 0 ? (ad.spend / ad.leads) : 0;
+                        const loadRate = ad.clicks > 0 ? (ad.visits / ad.clicks) * 100 : 0;
+                        const leadRate = ad.visits > 0 ? (ad.leads / ad.visits) * 100 : 0;
+
+                        // Only evaluate if there's significant spend to avoid noise
+                        if (ad.spend > 40000) {
+                            // Rule 1: Highly efficient creative
+                            if (cpl > 0 && cpl < 8000 && ad.leads > 5) {
+                                recommendations.push({
+                                    type: 'success',
+                                    icon: 'ti-circle-check',
+                                    message: `<strong>[Ganador]</strong> El anuncio <em>"${ad.name}"</em> en el conjunto <em>"${as.name}"</em> está rindiendo de manera sobresaliente con un CPL de <strong>$${Math.round(cpl).toLocaleString('es-CO')} COP</strong>. Te sugerimos aumentar su presupuesto o replicar el ángulo visual.`
+                                });
+                            }
+                            
+                            // Rule 2: Low Click-Through-Rate
+                            if (ctr > 0 && ctr < 1.5) {
+                                recommendations.push({
+                                    type: 'warning',
+                                    icon: 'ti-alert-triangle',
+                                    message: `<strong>[CTR Bajo]</strong> El anuncio <em>"${ad.name}"</em> tiene un CTR de apenas <strong>${ctr.toFixed(2)}%</strong> (umbral ideal: >1.5%). El gancho publicitario o la imagen del creativo no están deteniendo el scroll de la audiencia. Sugerimos renovar el gancho o usar otra foto de biblioteca.`
+                                });
+                            }
+
+                            // Rule 3: High Cost per Lead
+                            if (cpl > 18000) {
+                                recommendations.push({
+                                    type: 'danger',
+                                    icon: 'ti-alert-circle',
+                                    message: `<strong>[CPL Elevado]</strong> El costo de adquisición en WhatsApp de <em>"${ad.name}"</em> es crítico: <strong>$${Math.round(cpl).toLocaleString('es-CO')} COP</strong>. Considera reducir su porcentaje de distribución o pausarlo para evitar la fatiga presupuestaria.`
+                                });
+                            }
+
+                            // Rule 4: Poor Landing page load rate
+                            if (loadRate > 0 && loadRate < 60) {
+                                recommendations.push({
+                                    type: 'warning',
+                                    icon: 'ti-unlink',
+                                    message: `<strong>[Tasa de carga Landing]</strong> Solo el <strong>${loadRate.toFixed(0)}%</strong> de las personas que hacen clic en <em>"${ad.name}"</em> cargan la Landing Page. Esto indica tiempos de carga lentos en móviles o enlaces caídos. Revisa la landing.`
+                                });
+                            }
+                        }
+                    });
+                });
+            });
+
+            if (recommendations.length === 0) {
+                list.innerHTML = `
+                    <div class="audit-item audit-success">
+                        <i class="ti ti-circle-check"></i>
+                        <span><strong>Todo en orden:</strong> Tus campañas publicitarias y anuncios activos están operando dentro de los rangos óptimos de costo por lead y tasas de clics. Sigue monitoreando los resultados semanales.</span>
+                    </div>
+                `;
+            } else {
+                recommendations.forEach(rec => {
+                    const item = document.createElement('div');
+                    item.className = `audit-item audit-${rec.type}`;
+                    item.innerHTML = `
+                        <i class="ti ${rec.icon}"></i>
+                        <span>${rec.message}</span>
+                    `;
+                    list.appendChild(item);
+                });
+            }
+        }
+
+        function goToPauta() {
+            // Post message to navigation shell
+            window.parent.postMessage({
+                type: 'NAVIGATE',
+                payload: { module: 'pauta' }
+            }, '*');
+        }
+    </script>
+</body>
+</html>

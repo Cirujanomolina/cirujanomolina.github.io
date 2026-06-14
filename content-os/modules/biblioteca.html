@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bóveda de Creativos — Content OS</title>
+    <link rel="stylesheet" href="../design-system.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            font-family: var(--f-body);
+        }
+
+        .container {
+            flex: 1;
+            height: auto;
+            overflow-y: auto;
+            padding: clamp(1rem, 3vw, 2rem);
+        }
+
+        /* ── HEADER PREMIUM ── */
+        .vb-header {
+            background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 2rem;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            flex-shrink: 0;
+        }
+        .vb-header::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: var(--accent);
+            opacity: 0.04;
+            pointer-events: none;
+        }
+        .vb-header::after {
+            content: '';
+            position: absolute;
+            bottom: -60px;
+            left: 5%;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: var(--beige);
+            opacity: 0.03;
+            pointer-events: none;
+        }
+        .vb-header-main {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 1;
+            min-width: 0;
+        }
+        .vb-header-actions {
+            z-index: 1;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .vb-title {
+            font-family: var(--f-display);
+            font-size: clamp(22px, 3vw, 30px);
+            font-weight: 300;
+            color: var(--text);
+            line-height: 1.1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin: 0;
+        }
+        .vb-title em {
+            color: var(--accent);
+            font-style: italic;
+        }
+        .vb-badges {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .vb-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 11px;
+            border-radius: 20px;
+            background: rgba(42, 191, 176, 0.1);
+            border: 1px solid rgba(42, 191, 176, 0.25);
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--accent);
+        }
+
+        /* ── SEARCH & FILTERS BAR ── */
+        .filters-panel {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: var(--r);
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+        .filter-field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            min-width: 150px;
+        }
+        .filter-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text2);
+        }
+        .filter-field input, .filter-field select {
+            padding: 0.5rem 0.75rem;
+            background: var(--bg);
+            border: 1px solid var(--border2);
+            color: var(--text);
+            border-radius: var(--r-sm);
+            font-family: var(--f-body);
+            font-size: var(--fs-sm);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .filter-field input:focus, .filter-field select:focus {
+            border-color: var(--accent);
+        }
+
+        /* ── CREATIVES GRID ── */
+        .creatives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .creative-card {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: var(--r);
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s;
+        }
+        .creative-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(42, 191, 176, 0.1);
+        }
+        
+        .card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+        .format-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .badge-reel {
+            background: rgba(91, 163, 245, 0.12);
+            color: var(--info);
+        }
+        .badge-carrusel {
+            background: rgba(42, 191, 176, 0.12);
+            color: var(--accent);
+        }
+
+        .card-visual {
+            width: 100%;
+            height: 160px;
+            border-radius: var(--r-sm);
+            overflow: hidden;
+            background: var(--bg2);
+            position: relative;
+            margin-bottom: 0.75rem;
+            border: 1px solid var(--border3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .visual-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: var(--text3);
+        }
+        .visual-placeholder i {
+            font-size: 2rem;
+        }
+
+        .card-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            margin-bottom: 1rem;
+        }
+        .card-title {
+            font-family: var(--f-body);
+            font-size: var(--fs-md);
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.3;
+        }
+        .card-pillar-row {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-top: 2px;
+        }
+        .pillar-tag {
+            font-size: 9px;
+            font-weight: 600;
+            padding: 2px 7px;
+            border-radius: 12px;
+            text-transform: uppercase;
+        }
+        .card-hook-desc {
+            font-size: 11px;
+            color: var(--text2);
+            font-style: italic;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        .card-bottom-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            color: var(--text3);
+            padding-top: 8px;
+            border-top: 1px solid var(--border3);
+            margin-bottom: 0.75rem;
+        }
+        .status-pill {
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 6px;
+        }
+        .card-actions button {
+            flex: 1;
+            padding: 0.4rem;
+            font-size: var(--fs-xs);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        /* ── TOASTS ── */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 2000;
+        }
+        .toast {
+            background: var(--surface3);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--r-sm);
+            font-size: var(--fs-sm);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: slideIn 0.3s ease forwards;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            grid-column: 1 / -1;
+            background: var(--surface);
+            border: 1px dashed var(--border);
+            border-radius: var(--r);
+            padding: 4rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 1.25rem;
+        }
+        .empty-icon {
+            font-size: 3rem;
+            color: var(--accent);
+            background: var(--teal-bg);
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ── MODALS ── */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 30, 36, 0.85);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s;
+        }
+        .overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            width: 90%;
+            max-width: 460px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+</head>
+<body class="dark">
+
+    <!-- CABECERA -->
+    <header class="vb-header">
+        <div class="vb-header-main">
+            <h1 class="vb-title">Bóveda de <em>Creativos</em></h1>
+            <div class="vb-badges">
+                <span class="vb-badge" id="badge-total"><i class="ti ti-lock"></i> 0 Creativos</span>
+                <span class="vb-badge" id="badge-reels" style="background: rgba(91,163,245,0.08); border-color: rgba(91,163,245,0.2); color: var(--info);"><i class="ti ti-movie"></i> 0 Reels</span>
+                <span class="vb-badge" id="badge-carruseles" style="background: rgba(42, 191, 176, 0.08); border-color: rgba(42, 191, 176, 0.2); color: var(--accent);"><i class="ti ti-carousel-horizontal"></i> 0 Carruseles</span>
+            </div>
+        </div>
+        <div class="vb-header-actions">
+            <button class="btn btn-primary" onclick="window.crearNuevo('reel')"><i class="ti ti-plus"></i> Nuevo Reel</button>
+            <button class="btn btn-outline" onclick="window.crearNuevo('carrusel')"><i class="ti ti-plus"></i> Nuevo Carrusel</button>
+        </div>
+    </header>
+
+    <!-- CONTAINER PRINCIPAL -->
+    <div class="container fade-in">
+        
+        <!-- ROW 1: FILTROS -->
+        <div class="filters-panel">
+            <div class="filter-field" style="flex: 2;">
+                <span class="filter-label">Buscar Creativo</span>
+                <input type="text" id="search-text" oninput="window.filtrarYRenderizar()" placeholder="Buscar por título, gancho o pilar...">
+            </div>
+            <div class="filter-field">
+                <span class="filter-label">Formato</span>
+                <select id="filter-format" onchange="window.filtrarYRenderizar()">
+                    <option value="all">Todos los formatos</option>
+                    <option value="reel">Reels (Video)</option>
+                    <option value="carrusel">Carrusel Studio</option>
+                </select>
+            </div>
+            <div class="filter-field">
+                <span class="filter-label">Estado</span>
+                <select id="filter-status" onchange="window.filtrarYRenderizar()">
+                    <option value="all">Todos los estados</option>
+                    <option value="en_creacion">Borrador / Creación</option>
+                    <option value="revision">En Revisión</option>
+                    <option value="listo">Listo / Terminado</option>
+                    <option value="publicado">Publicado</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- ROW 2: GRID DE TARJETAS -->
+        <div class="creatives-grid" id="creatives-container">
+            <!-- Loading state initially -->
+            <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text3);">
+                <i class="ti ti-loader ti-spin" style="font-size: 2.5rem; color: var(--accent); display: block; margin-bottom: 1rem;"></i>
+                Cargando tu bóveda de contenidos...
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL 1: PROGRAMAR EN CALENDARIO -->
+    <div class="overlay" id="modal-programar">
+        <div class="modal">
+            <div class="modal-hdr">
+                <h3 class="modal-title"><i class="ti ti-calendar-event" style="color: var(--accent);"></i> Programar en Calendario</h3>
+                <button class="modal-close" onclick="window.cerrarModal('programar')"><i class="ti ti-x"></i></button>
+            </div>
+            <div class="modal-body flex-col" style="gap:15px; padding: 1.5rem;">
+                <input type="hidden" id="prog-id">
+                <div class="field">
+                    <span class="flabel">Fecha de Publicación</span>
+                    <input type="date" id="prog-date" required>
+                </div>
+                <div class="field">
+                    <span class="flabel">Estado a asignar</span>
+                    <select id="prog-status">
+                        <option value="listo">Listo</option>
+                        <option value="publicado">Publicado</option>
+                        <option value="revision">Revisión</option>
+                    </select>
+                </div>
+                <div style="font-size: 11px; color: var(--text3); display: flex; gap: 4px; align-items: flex-start;">
+                    <i class="ti ti-info-circle" style="color: var(--accent); margin-top: 1px;"></i>
+                    <span>Al guardar, el creativo se posicionará en el día correspondiente en tu Calendario Editorial.</span>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-ghost" onclick="window.cerrarModal('programar')">Cancelar</button>
+                <button class="btn btn-primary" onclick="window.saveProgramar()">Guardar Fecha</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: PAUTAR COMO ANUNCIO (PAID MEDIA) -->
+    <div class="overlay" id="modal-pautar">
+        <div class="modal">
+            <div class="modal-hdr">
+                <h3 class="modal-title"><i class="ti ti-speakerphone" style="color: var(--accent);"></i> Promocionar en Pauta</h3>
+                <button class="modal-close" onclick="window.cerrarModal('pautar')"><i class="ti ti-x"></i></button>
+            </div>
+            <div class="modal-body flex-col" style="gap:15px; padding: 1.5rem;">
+                <input type="hidden" id="pautar-id">
+                
+                <div class="field">
+                    <span class="flabel">Campaña de Destino</span>
+                    <select id="pautar-campaign" onchange="window.onPautarCampaignChange()" required>
+                        <option value="">-- Seleccionar Campaña --</option>
+                    </select>
+                </div>
+                
+                <div class="field">
+                    <span class="flabel">Conjunto de Anuncios (Ad Set)</span>
+                    <select id="pautar-adset" required>
+                        <option value="">-- Selecciona una campaña primero --</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <span class="flabel">Nombre del Anuncio</span>
+                    <input type="text" id="pautar-ad-name" placeholder="ej: Reel 1 - Promocionado" required>
+                </div>
+
+                <div style="font-size: 11px; color: var(--text3); display: flex; gap: 4px; align-items: flex-start;">
+                    <i class="ti ti-info-circle" style="color: var(--accent); margin-top: 1px;"></i>
+                    <span>Se creará un anuncio nuevo dentro del AdSet seleccionado utilizando la imagen del creativo, el gancho y el copy de esta pieza.</span>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn btn-ghost" onclick="window.cerrarModal('pautar')">Cancelar</button>
+                <button class="btn btn-primary" onclick="window.savePautar()">Crear Anuncio de Pauta</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script type="module">
+        import { supabase } from '../supabase-client.js';
+
+        async function logActivity(action, details) {
+            const activeUser = JSON.parse(localStorage.getItem('content_os_user') || '{}');
+            if (!activeUser.email) return;
+            try {
+                await supabase.from('audit_logs').insert({
+                    user_email: activeUser.email,
+                    user_name: activeUser.name,
+                    action: action,
+                    details: details
+                });
+            } catch (err) {
+                console.error("Error logging activity:", err);
+            }
+        }
+
+        let allPieces = [];
+        let filteredPieces = [];
+        let campaignsList = [];
+
+        // Escuchar el cambio de tema del shell
+        window.addEventListener('message', (e) => {
+            if (e.data && e.data.type === 'THEME_CHANGE') {
+                document.body.classList.toggle('light', e.data.payload === 'light');
+            }
+        });
+        window.parent.postMessage({ type: 'IFRAME_READY' }, '*');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadLibraryContent();
+        });
+
+        // Query database
+        async function loadLibraryContent() {
+            try {
+                const { data, error } = await supabase
+                    .from('content_pieces')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                allPieces = data || [];
+                window.filtrarYRenderizar();
+
+            } catch(e) {
+                console.error("Error loading library items:", e);
+                showToast("Fallo al conectar con la base de datos de Supabase", "ti-alert-circle");
+                document.getElementById('creatives-container').innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 3rem 1rem; border: 1px dashed var(--danger); border-radius: var(--r); background: rgba(245,90,138,0.02); color: var(--danger);">
+                        <i class="ti ti-alert-triangle" style="font-size: 2rem; display: block; margin-bottom: 0.5rem;"></i>
+                        <strong>Error al cargar Bóveda:</strong><br>
+                        ${e.message || "Supabase offline"}<br><br>
+                        <button class="btn btn-outline" style="margin-top: 10px;" onclick="location.reload()"><i class="ti ti-refresh"></i> Reintentar Cargar</button>
+                    </div>
+                `;
+            }
+        }
+
+        window.filtrarYRenderizar = () => {
+            const search = document.getElementById('search-text').value.toLowerCase();
+            const format = document.getElementById('filter-format').value;
+            const status = document.getElementById('filter-status').value;
+
+            filteredPieces = allPieces.filter(p => {
+                const matchesSearch = p.title.toLowerCase().includes(search) || 
+                                      (p.pillar && p.pillar.toLowerCase().includes(search)) ||
+                                      (p.content_data?.hooks?.hook_a?.verbal && p.content_data.hooks.hook_a.verbal.toLowerCase().includes(search)) ||
+                                      (p.content_data?.brief?.historias && p.content_data.brief.historias.toLowerCase().includes(search));
+                
+                const matchesFormat = format === 'all' || p.type === format;
+                const matchesStatus = status === 'all' || p.status === status;
+
+                return matchesSearch && matchesFormat && matchesStatus;
+            });
+
+            // Update badges
+            const reelsCount = allPieces.filter(p => p.type === 'reel').length;
+            const carrouselsCount = allPieces.filter(p => p.type === 'carrusel').length;
+            document.getElementById('badge-total').innerHTML = `<i class="ti ti-lock"></i> ${allPieces.length} Creativos`;
+            document.getElementById('badge-reels').innerHTML = `<i class="ti ti-movie"></i> ${reelsCount} Reels`;
+            document.getElementById('badge-carruseles').innerHTML = `<i class="ti ti-carousel-horizontal"></i> ${carrouselsCount} Carruseles`;
+
+            renderCards();
+        };
+
+        function renderCards() {
+            const container = document.getElementById('creatives-container');
+            container.innerHTML = '';
+
+            if (filteredPieces.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon"><i class="ti ti-lock"></i></div>
+                        <h3 class="empty-title">Sin Creativos Guardados</h3>
+                        <p class="empty-desc">No se encontraron piezas guardadas que coincidan con los filtros. Crea un creativo desde sus constructores para verlo acumulado aquí.</p>
+                        <div class="flex-row" style="gap: 8px;">
+                            <button class="btn btn-primary" onclick="window.crearNuevo('reel')"><i class="ti ti-movie"></i> Crear Reel</button>
+                            <button class="btn btn-outline" onclick="window.crearNuevo('carrusel')"><i class="ti ti-carousel-horizontal"></i> Crear Carrusel</button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredPieces.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'creative-card';
+
+                // Resolve preview image filename
+                let assetName = '';
+                if (p.type === 'carrusel' && p.content_data?.slides && p.content_data.slides[0]) {
+                    const bg = p.content_data.slides[0].bg;
+                    if (bg) {
+                        const parts = bg.split('/');
+                        assetName = parts[parts.length - 1];
+                    }
+                } else if (p.type === 'reel') {
+                    assetName = p.content_data?.brief?.imagen || '';
+                }
+
+                const assetPath = assetName ? `../assets/images_database/${assetName}` : '';
+                const imgHTML = assetPath ? `<img src="${assetPath}" onerror="this.parentNode.innerHTML='<div class=\"visual-placeholder\"><i class=\"ti ti-photo\"></i><span>Imagen no disponible</span></div>';">` : `
+                    <div class="visual-placeholder">
+                        <i class="ti ${p.type === 'reel' ? 'ti-movie' : 'ti-carousel-horizontal'}"></i>
+                        <span>Sin imagen asignada</span>
+                    </div>
+                `;
+
+                // Status formatting
+                const statusLabel = p.status === 'en_creacion' ? 'Borrador' : (p.status === 'revision' ? 'Revisión' : (p.status === 'listo' ? 'Listo' : 'Publicado'));
+                const statusColor = p.status === 'en_creacion' ? 'var(--text3)' : (p.status === 'revision' ? 'var(--amber)' : (p.status === 'listo' ? 'var(--success)' : 'var(--info)'));
+                const statusBg = p.status === 'en_creacion' ? 'rgba(106, 143, 152, 0.15)' : (p.status === 'revision' ? 'rgba(201, 134, 42, 0.15)' : (p.status === 'listo' ? 'rgba(39, 174, 96, 0.15)' : 'rgba(91, 163, 245, 0.15)'));
+
+                // Extract Hook snippet
+                let hookText = '';
+                if (p.type === 'carrusel' && p.content_data?.slides && p.content_data.slides[0]) {
+                    hookText = p.content_data.slides[0].title1 || p.content_data.slides[0].line1 || '';
+                } else if (p.type === 'reel') {
+                    hookText = p.content_data?.hooks?.hook_a?.verbal || '';
+                }
+
+                // Pillar color mapping
+                const pColor = p.pillar === 'Conversión directa' ? 'var(--pilar-conversion)' :
+                               (p.pillar === 'Educación premium' ? 'var(--pilar-educacion)' :
+                               (p.pillar === 'Contrarian / Mitos' ? 'var(--pilar-contrarian)' :
+                               (p.pillar === 'Autoridad humana' ? 'var(--pilar-autoridad)' :
+                               (p.pillar === 'Transformación de vida' ? 'var(--pilar-transformacion)' : 'var(--pilar-validacion)'))));
+
+                const dateHTML = p.publish_date ? `📅 ${p.publish_date}` : '❌ Sin fecha';
+
+                // Organic stats snippet if published and metrics exist
+                let organicStatsHTML = '';
+                if (p.status === 'publicado' && p.content_data?.metrics) {
+                    const m = p.content_data.metrics;
+                    if (m.views || m.followers || m.dms || m.saves) {
+                        organicStatsHTML = `
+                            <div style="display: flex; gap: 10px; font-size: 10px; color: var(--text2); margin-top: -4px; margin-bottom: 8px; font-weight: 600;">
+                                <span title="Vistas"><i class="ti ti-eye" style="color: var(--info);"></i> ${m.views || 0}</span>
+                                <span title="Seguidores"><i class="ti ti-user-plus" style="color: var(--teal);"></i> ${m.followers || 0}</span>
+                                <span title="DMs"><i class="ti ti-message-circle" style="color: var(--purple);"></i> ${m.dms || 0}</span>
+                                <span title="Guardados"><i class="ti ti-bookmark" style="color: var(--warning);"></i> ${m.saves || 0}</span>
+                            </div>
+                        `;
+                    }
+                }
+
+                card.innerHTML = `
+                    <div>
+                        <div class="card-top">
+                            <span class="format-badge ${p.type === 'reel' ? 'badge-reel' : 'badge-carrusel'}">
+                                <i class="ti ${p.type === 'reel' ? 'ti-movie' : 'ti-carousel-horizontal'}"></i> ${p.type}
+                            </span>
+                            <span class="pillar-tag" style="background: rgba(42,191,176,0.06); border: 1px solid ${pColor}; color: ${pColor}">${p.pillar || 'General'}</span>
+                        </div>
+
+                        <div class="card-visual">
+                            ${imgHTML}
+                        </div>
+
+                        <div class="card-body">
+                            <span class="card-title">${p.title}</span>
+                            ${hookText ? `<span class="card-hook-desc">"${hookText.replace(/<[^>]*>/g, '')}"</span>` : ''}
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="card-bottom-meta">
+                            <span>${dateHTML}</span>
+                            <span class="status-pill" style="background: ${statusBg}; color: ${statusColor}; position: relative; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; gap: 4px;">
+                                ${statusLabel} <i class="ti ti-chevron-down" style="font-size: 10px; opacity: 0.8;"></i>
+                                <select style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; font-size: 16px;" onchange="window.changePieceStatus('${p.id}', this.value)">
+                                    <option value="en_creacion" ${p.status === 'en_creacion' ? 'selected' : ''}>Borrador</option>
+                                    <option value="revision" ${p.status === 'revision' ? 'selected' : ''}>Revisión</option>
+                                    <option value="listo" ${p.status === 'listo' ? 'selected' : ''}>Listo</option>
+                                    <option value="publicado" ${p.status === 'publicado' ? 'selected' : ''}>Publicado</option>
+                                </select>
+                            </span>
+                        </div>
+                        ${organicStatsHTML}
+
+                        <div class="card-actions">
+                            <button class="btn btn-outline" onclick="window.editarPiece('${p.id}', '${p.type}')" title="Editar"><i class="ti ti-edit"></i> Editar</button>
+                            <button class="btn btn-outline" onclick="window.abrirModalProgramar('${p.id}', '${p.publish_date || ''}')" title="Agendar"><i class="ti ti-calendar"></i> Agendar</button>
+                            <button class="btn btn-outline" onclick="window.abrirModalPautar('${p.id}', '${p.title}', '${assetName}', '${hookText.replace(/'/g, "\\'")}')" title="Pautar"><i class="ti ti-speakerphone"></i> Pautar</button>
+                            <button class="btn btn-ghost" onclick="window.deletePiece('${p.id}')" title="Eliminar" style="color: var(--danger); flex: 0.4;"><i class="ti ti-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // Action: Edit Redirection
+        window.editarPiece = (id, type) => {
+            // Store target ID in localStorage for constructors
+            localStorage.setItem('pending_edit_piece_id', id);
+            const targetModule = type === 'reel' ? 'constructor-reels' : 'carousel-studio';
+            
+            // Post NAVIGATE to shell parent
+            window.parent.postMessage({
+                type: 'NAVIGATE',
+                payload: { module: targetModule }
+            }, '*');
+        };
+
+        // Action: Create New Redirection
+        window.crearNuevo = (type) => {
+            localStorage.removeItem('pending_edit_piece_id');
+            const targetModule = type === 'reel' ? 'constructor-reels' : 'carousel-studio';
+            window.parent.postMessage({
+                type: 'NAVIGATE',
+                payload: { module: targetModule }
+            }, '*');
+        };
+
+        // Action: Change status of creative piece directly
+        window.changePieceStatus = async (id, newStatus) => {
+            try {
+                const piece = allPieces.find(p => p.id === id);
+                const title = piece ? piece.title : 'Creativo';
+                const updateData = { status: newStatus };
+                if (newStatus === 'publicado') {
+                    // Automatically assign today's publish date if empty
+                    if (piece && !piece.publish_date) {
+                        const today = new Date().toISOString().split('T')[0];
+                        updateData.publish_date = today;
+                    }
+                }
+                
+                const { error } = await supabase
+                    .from('content_pieces')
+                    .update(updateData)
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                showToast("Estado actualizado correctamente", "ti-check");
+                await logActivity('Edición', `Se cambió el estado del creativo "${title}" a: ${newStatus}`);
+                loadLibraryContent(); // reload grid
+            } catch(e) {
+                console.error("Error updating status:", e);
+                showToast("Fallo al actualizar el estado: " + e.message, "ti-alert-circle");
+            }
+        };
+
+        // Action: Delete Piece
+        window.deletePiece = async (id) => {
+            if (confirm("¿Estás seguro de que deseas eliminar este creativo de la Bóveda permanentemente?")) {
+                try {
+                    const piece = allPieces.find(p => p.id === id);
+                    const title = piece ? piece.title : 'Creativo';
+                    const { error } = await supabase
+                        .from('content_pieces')
+                        .delete()
+                        .eq('id', id);
+
+                    if (error) throw error;
+
+                    showToast("Creativo eliminado de la Bóveda", "ti-trash");
+                    await logActivity('Eliminación', `Se eliminó el creativo "${title}" de la Bóveda.`);
+                    loadLibraryContent(); // reload
+                } catch(e) {
+                    console.error("Error deleting piece:", e);
+                    showToast("Error al eliminar de Supabase: " + e.message, "ti-alert-circle");
+                }
+            }
+        };
+
+        // Modal triggers
+        window.abrirModalProgramar = (id, currentDate) => {
+            document.getElementById('prog-id').value = id;
+            document.getElementById('prog-date').value = currentDate;
+            document.getElementById('modal-programar').classList.add('open');
+        };
+
+        window.cerrarModal = (modalName) => {
+            document.getElementById(`modal-${modalName}`).classList.remove('open');
+        };
+
+        window.saveProgramar = async () => {
+            const id = document.getElementById('prog-id').value;
+            const date = document.getElementById('prog-date').value;
+            const status = document.getElementById('prog-status').value;
+
+            if (!date) {
+                showToast("Por favor selecciona una fecha de publicación", "ti-alert-circle");
+                return;
+            }
+
+            try {
+                const piece = allPieces.find(p => p.id === id);
+                const title = piece ? piece.title : 'Creativo';
+                // Map select status to DB status
+                const dbStatus = status === 'listo' ? 'listo' : (status === 'publicado' ? 'publicado' : 'revision');
+
+                const { error } = await supabase
+                    .from('content_pieces')
+                    .update({ publish_date: date, status: dbStatus })
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                showToast("Fecha agendada con éxito en el Calendario", "ti-check");
+                window.cerrarModal('programar');
+                await logActivity('Edición', `Se agendó el creativo "${title}" para el ${date} (Estado: ${dbStatus})`);
+                loadLibraryContent(); // Reload grid
+
+            } catch(e) {
+                console.error("Error updating publish date:", e);
+                showToast("Fallo al guardar en Supabase: " + e.message, "ti-alert-circle");
+            }
+        };
+
+        // Paid media integrations
+        window.abrirModalPautar = (id, title, assetName, hook) => {
+            document.getElementById('pautar-id').value = id;
+            document.getElementById('pautar-ad-name').value = title;
+            
+            // Stash details on window object
+            window.pautarAsset = assetName;
+            window.pautarHook = hook;
+
+            // Load campaigns from localStorage
+            const stored = localStorage.getItem('content_os_pauta_campaigns');
+            if (stored) {
+                try {
+                    campaignsList = JSON.parse(stored);
+                } catch(e) {
+                    campaignsList = [];
+                }
+            } else {
+                campaignsList = [];
+            }
+
+            const select = document.getElementById('pautar-campaign');
+            select.innerHTML = '<option value="">-- Seleccionar Campaña --</option>';
+
+            if (campaignsList.length === 0) {
+                showToast("No tienes campañas de Meta Ads creadas en Pauta aún", "ti-alert-circle");
+                return;
+            }
+
+            campaignsList.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.textContent = `${c.name} (${c.platform})`;
+                select.appendChild(opt);
+            });
+
+            document.getElementById('modal-pautar').classList.add('open');
+        };
+
+        window.onPautarCampaignChange = () => {
+            const campId = document.getElementById('pautar-campaign').value;
+            const selectAdSet = document.getElementById('pautar-adset');
+            selectAdSet.innerHTML = '<option value="">-- Seleccionar Conjunto --</option>';
+
+            if (!campId) return;
+
+            const c = campaignsList.find(item => item.id === campId);
+            if (c && c.adsets) {
+                c.adsets.forEach(as => {
+                    const opt = document.createElement('option');
+                    opt.value = as.id;
+                    opt.textContent = `${as.name} (${as.targeting})`;
+                    selectAdSet.appendChild(opt);
+                });
+            }
+        };
+
+        window.savePautar = async () => {
+            const campId = document.getElementById('pautar-campaign').value;
+            const adsetId = document.getElementById('pautar-adset').value;
+            const adName = document.getElementById('pautar-ad-name').value.trim();
+
+            if (!campId || !adsetId || !adName) {
+                showToast("Por favor completa todos los campos del formulario", "ti-alert-circle");
+                return;
+            }
+
+            // Load piece description/copy text from active filtered pieces
+            const id = document.getElementById('pautar-id').value;
+            const piece = allPieces.find(p => p.id === id);
+            
+            let copyText = '';
+            if (piece) {
+                if (piece.type === 'carrusel' && piece.content_data?.slides) {
+                    // Combine slide titles
+                    copyText = piece.content_data.slides.map((s, idx) => `<h4>Slide ${idx+1}</h4><p>${s.title1 || s.line1 || ''}</p><p>${s.body || ''}</p>`).join('');
+                } else if (piece.type === 'reel') {
+                    copyText = `<h4>Reel Caption</h4><p>${piece.content_data?.copy || ''}</p>`;
+                }
+            }
+
+            // Locate campaign and adset in localstorage array
+            const camp = campaignsList.find(c => c.id === campId);
+            if (camp) {
+                const adset = camp.adsets.find(as => as.id === adsetId);
+                if (adset) {
+                    adset.ads = adset.ads || [];
+                    const newAd = {
+                        id: 'ad_lib_' + new Date().getTime(),
+                        name: adName,
+                        status: 'Activa',
+                        asset: window.pautarAsset || '',
+                        hook: window.pautarHook || '',
+                        copy: copyText,
+                        spend: 0,
+                        impressions: 0,
+                        clicks: 0,
+                        visits: 0,
+                        leads: 0,
+                        appointments: 0
+                    };
+                    adset.ads.push(newAd);
+
+                    // Save back to local storage
+                    localStorage.setItem('content_os_pauta_campaigns', JSON.stringify(campaignsList));
+                    
+                    showToast("¡Anuncio pautado creado con éxito!", "ti-check");
+                    await logActivity('Pauta', `Se envió el creativo "${piece ? piece.title : adName}" como anuncio de pauta a la campaña: "${camp.name}"`);
+                    window.cerrarModal('pautar');
+                } else {
+                    showToast("AdSet no encontrado", "ti-alert-circle");
+                }
+            } else {
+                showToast("Campaña no encontrada", "ti-alert-circle");
+            }
+        };
+
+        // Toast feedback
+        function showToast(msg, icon = 'ti-info-circle') {
+            const t = document.createElement('div');
+            t.className = 'toast';
+            t.innerHTML = `<i class="ti ${icon}"></i> <span>${msg}</span>`;
+            toastContainer.appendChild(t);
+            setTimeout(() => {
+                t.style.animation = 'none';
+                t.offsetHeight;
+                t.style.animation = 'slideIn 0.3s ease reverse forwards';
+                setTimeout(() => t.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

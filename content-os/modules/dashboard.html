@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Content OS</title>
+    <link rel="stylesheet" href="../design-system.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--f-body);
+        }
+        .container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* ── HEADER PREMIUM ── */
+        .vb-header {
+            background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 2rem;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            flex-shrink: 0;
+        }
+        .vb-header::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: var(--accent);
+            opacity: 0.04;
+            pointer-events: none;
+        }
+        .vb-header-main {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 1;
+            min-width: 0;
+        }
+        .vb-title {
+            font-family: var(--f-display);
+            font-size: clamp(22px, 3vw, 30px);
+            font-weight: 300;
+            color: var(--text);
+            line-height: 1.1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .vb-title em {
+            color: var(--accent);
+            font-style: italic;
+        }
+        .vb-badges {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .vb-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 11px;
+            border-radius: 20px;
+            background: rgba(42, 191, 176, 0.1);
+            border: 1px solid rgba(42, 191, 176, 0.25);
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--accent);
+        }
+
+        /* ── FILTROS ── */
+        .filter-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filter-group {
+            flex: 1;
+            min-width: 180px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        .filter-group select {
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            color: var(--text);
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--r-sm);
+            font-size: var(--fs-sm);
+            cursor: pointer;
+            width: 100%;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .filter-group select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--teal-bg);
+        }
+        .filter-group select:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ── KPI GRID ── */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+        @media (max-width: 900px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 500px) {
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .kpi-card {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: var(--r);
+            padding: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .kpi-card:hover {
+            border-color: var(--border);
+            transform: translateY(-2px);
+        }
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--accent);
+            opacity: 0.7;
+        }
+        .kpi-card:nth-child(2)::before { background: var(--info); }
+        .kpi-card:nth-child(3)::before { background: var(--purple); }
+        .kpi-card:nth-child(4)::before { background: var(--warning); }
+
+        .kpi-title {
+            font-size: var(--fs-xs);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text2);
+            font-weight: 600;
+        }
+        .kpi-val {
+            font-family: var(--f-display);
+            font-size: 2.25rem;
+            line-height: 1;
+            color: var(--text);
+            font-weight: 500;
+        }
+        .kpi-sub {
+            font-size: var(--fs-xs);
+            color: var(--text3);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        /* ── MAIN GRID ── */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1.7fr 1.3fr;
+            gap: 1.5rem;
+        }
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Utility columns */
+        .flex-col {
+            display: flex;
+            flex-direction: column;
+        }
+        .flex-row {
+            display: flex;
+            align-items: center;
+        }
+        .space-between {
+            justify-content: space-between;
+        }
+
+        /* List Items styling */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--border2);
+            color: var(--text2);
+        }
+        .btn-ghost:hover {
+            background: var(--surface2);
+            color: var(--text);
+            border-color: var(--border);
+        }
+        .btn-ghost.active {
+            background: var(--teal-bg);
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        /* Interactive/Tactile Enhancements */
+        .clickable-card {
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+        }
+        .clickable-card:hover {
+            border-color: var(--border) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(42, 191, 176, 0.05);
+        }
+        .pipeline-item {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .pipeline-item:hover {
+            background: var(--surface3) !important;
+            transform: translateX(4px);
+            border-color: var(--border) !important;
+        }
+        .card-title[onclick]:hover {
+            color: var(--accent) !important;
+        }
+    </style>
+</head>
+<body>
+    <header class="vb-header">
+        <div class="vb-header-main">
+            <h1 class="vb-title">Dashboard <em>Molina</em></h1>
+            <div class="vb-badges">
+                <span class="vb-badge"><i class="ti ti-activity"></i> Centro de Control</span>
+                <span class="vb-badge"><i class="ti ti-brand-instagram"></i> @cirujanomolina</span>
+                <span class="vb-badge" id="supabase-status-badge"><i class="ti ti-loader"></i> Conectando Supabase...</span>
+            </div>
+        </div>
+        <div class="vb-header-actions">
+            <button class="btn btn-primary" onclick="window.testDbConnection()">
+                <i class="ti ti-database"></i> Test Supabase
+            </button>
+        </div>
+    </header>
+
+    <div class="container fade-in" data-module="dashboard">
+        
+        <!-- Conmutador de Período -->
+        <div class="timeframe-switcher-row" style="display: flex; justify-content: space-between; align-items: center; background: var(--surface); border: 1px solid var(--border2); padding: 0.75rem 1.25rem; border-radius: var(--r); margin-bottom: 0.25rem; flex-wrap: wrap; gap: 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <i class="ti ti-calendar-time" style="color: var(--accent); font-size: 1.25rem;"></i>
+                <span style="font-weight: 500; font-size: var(--fs-sm); color: var(--text);">Período de Visualización:</span>
+                <span id="current-period-label" style="font-weight: 600; font-size: var(--fs-sm); color: var(--accent); background: var(--teal-bg); padding: 2px 8px; border-radius: 4px;">Junio 2026</span>
+            </div>
+            <div class="timeframe-buttons" style="display: flex; gap: 4px; background: var(--surface2); padding: 3px; border-radius: var(--r-sm); border: 1px solid var(--border3);">
+                <button class="btn btn-ghost btn-sm" id="tf-semanal" onclick="window.switchTimeframe('semanal')">Semanal</button>
+                <button class="btn btn-ghost btn-sm active" id="tf-mensual" onclick="window.switchTimeframe('mensual')">Mensual</button>
+                <button class="btn btn-ghost btn-sm" id="tf-anual" onclick="window.switchTimeframe('anual')">Anual</button>
+            </div>
+        </div>
+        
+        <!-- SECCIÓN PRINCIPAL -->
+        <div class="main-grid">
+            
+            <!-- COLUMNA IZQUIERDA: KPIs Y GRÁFICOS -->
+            <div class="flex-col" style="gap: 1.5rem;">
+                
+                <!-- KPI GRID (Dentro de la columna izquierda) -->
+                <div class="kpi-grid">
+                    <div class="kpi-card" onclick="window.navigateToModule('pauta')" title="Ver Pauta (Meta Ads)">
+                        <div class="kpi-title">Inversión Publicitaria</div>
+                        <div class="kpi-val" id="kpi-spend">$0</div>
+                        <div class="kpi-sub" id="kpi-spend-sub"><i class="ti ti-cash"></i> Meta Ads Activo</div>
+                    </div>
+                    <div class="kpi-card" onclick="window.navigateToModule('pauta')" title="Ver Pauta (Meta Ads)">
+                        <div class="kpi-title">Costo por Lead (CPL)</div>
+                        <div class="kpi-val" id="kpi-cpl">$0</div>
+                        <div class="kpi-sub" id="kpi-cpl-sub"><i class="ti ti-users"></i> Inversión / Leads</div>
+                    </div>
+                    <div class="kpi-card" onclick="window.navigateToModule('biblioteca')" title="Ver Bóveda de Creativos">
+                        <div class="kpi-title">Bóveda de Creativos</div>
+                        <div class="kpi-val" id="kpi-vault">0</div>
+                        <div class="kpi-sub" id="kpi-vault-sub"><i class="ti ti-lock"></i> 0 Reels | 0 Carruseles</div>
+                    </div>
+                    <div class="kpi-card" onclick="window.navigateToModule('analisis')" title="Ver Análisis de Conversión">
+                        <div class="kpi-title">Conversión de Leads</div>
+                        <div class="kpi-val" id="kpi-conv">0%</div>
+                        <div class="kpi-sub" id="kpi-conv-sub"><i class="ti ti-calendar-event"></i> 0 Citas de 0 Leads</div>
+                    </div>
+                </div>
+
+                <div class="card" style="min-height: 420px; display: flex; flex-direction: column;">
+                    <div class="card-head" style="margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                        <div class="card-title" style="display: flex; align-items: center; gap: 6px; cursor: pointer;" onclick="window.navigateToModule('analisis')" title="Ver Análisis Completo"><i class="ti ti-chart-line" style="color: var(--accent);"></i> Rendimiento</div>
+                        
+                        <!-- Pestañas para Gráficos -->
+                        <div style="display: flex; gap: 4px;">
+                            <button class="btn btn-ghost active" id="tab-funnel-btn" onclick="window.switchDashboardTab('funnel')">Embudo</button>
+                            <button class="btn btn-ghost" id="tab-efficiency-btn" onclick="window.switchDashboardTab('efficiency')">Eficiencia</button>
+                            <button class="btn btn-ghost" id="tab-format-btn" onclick="window.switchDashboardTab('format')">Por Formato</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Fila de filtros compactos inline -->
+                    <div class="filter-compact-row" style="display: flex; gap: 6px; padding: 0.25rem 0 0.5rem 0; border-bottom: 1px solid var(--border3); margin-bottom: 0.5rem; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 130px;">
+                            <select id="filter-campaign" style="font-size: 11px; padding: 3px 6px; height: 26px; border-radius: 4px; background: var(--surface2); border: 1px solid var(--border2); color: var(--text); width: 100%; cursor: pointer;">
+                                <option value="global">Campaña: Todas</option>
+                            </select>
+                        </div>
+                        <div style="flex: 1; min-width: 130px;">
+                            <select id="filter-adset" disabled style="font-size: 11px; padding: 3px 6px; height: 26px; border-radius: 4px; background: var(--surface2); border: 1px solid var(--border2); color: var(--text); width: 100%; cursor: pointer;">
+                                <option value="global">Conjunto: Todos</option>
+                            </select>
+                        </div>
+                        <div style="flex: 1; min-width: 130px;">
+                            <select id="filter-ad" disabled style="font-size: 11px; padding: 3px 6px; height: 26px; border-radius: 4px; background: var(--surface2); border: 1px solid var(--border2); color: var(--text); width: 100%; cursor: pointer;">
+                                <option value="global">Anuncio: Todos</option>
+                            </select>
+                        </div>
+                        <div style="flex: 0.8; min-width: 100px;">
+                            <select id="filter-format" style="font-size: 11px; padding: 3px 6px; height: 26px; border-radius: 4px; background: var(--surface2); border: 1px solid var(--border2); color: var(--text); width: 100%; cursor: pointer;">
+                                <option value="all">Formato: Todos</option>
+                                <option value="reel">Reels</option>
+                                <option value="carrusel">Carruseles</option>
+                                <option value="imagen">Imágenes</option>
+                                <option value="video">Videos</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div style="flex: 1; position: relative; min-height: 280px; display: flex; align-items: center; justify-content: center; width: 100%;">
+                        <canvas id="chart-dashboard-canvas" style="max-height: 290px;"></canvas>
+                        <div id="chart-empty-state" style="display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 0.5rem; color: var(--text3); padding: 2rem;">
+                            <i class="ti ti-chart-bar" style="font-size: 2.5rem; color: var(--border2);"></i>
+                            <div style="font-size: var(--fs-md); font-weight: 600; color: var(--text2);">Sin Datos de Pauta</div>
+                            <div style="font-size: var(--fs-xs); max-width: 280px; line-height: 1.4;">Registra métricas en la pantalla de Pauta para visualizar el rendimiento aquí.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- COLUMNA DERECHA: ESTRATEGIA Y PIPELINE -->
+            <div class="flex-col" style="gap: 1.5rem;">
+                
+                <!-- Tarjeta: Estrategia de este Mes -->
+                <div class="card clickable-card" id="strategy-card" onclick="window.navigateToModule('estrategia')" title="Ir a Estrategia" style="transition: border-color 0.2s, transform 0.2s; border-top: 4px solid var(--border2);">
+                    <div class="card-head" style="position: relative; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+                        <div class="card-title" style="display: flex; align-items: center; gap: 6px;">
+                            <i class="ti ti-target" style="color: var(--amber);" id="strategy-icon-view"></i>
+                            <span id="strategy-month-name">Estrategia</span>
+                            <span id="strategy-view-title" style="color: var(--text3); font-size: 11px; font-weight: normal; margin-left: 4px;">— Contenido</span>
+                        </div>
+                        <div style="display: flex; gap: 4px; align-items: center; z-index: 10;">
+                            <span class="badge" id="strategy-badge-pauta" style="display: none; background: rgba(39, 174, 96, 0.1); color: var(--success); border: 1px solid rgba(39, 174, 96, 0.25); font-size: 9px; padding: 2px 6px;">PAUTA</span>
+                            <span class="badge" id="strategy-badge-fase" style="background: var(--teal-bg); color: var(--accent); border: 1px solid var(--border);">FASE</span>
+                            <div style="display: flex; gap: 2px; border-left: 1px solid var(--border3); padding-left: 6px; margin-left: 4px;">
+                                <button class="btn-icon" onclick="window.toggleStrategyView(event)" style="padding: 2px; font-size: 1.15rem; cursor: pointer; color: var(--text2); background: transparent; border: none; outline: none; display: flex; align-items: center; justify-content: center;" title="Cambiar Vista Strategy"><i class="ti ti-chevron-left"></i></button>
+                                <button class="btn-icon" onclick="window.toggleStrategyView(event)" style="padding: 2px; font-size: 1.15rem; cursor: pointer; color: var(--text2); background: transparent; border: none; outline: none; display: flex; align-items: center; justify-content: center;" title="Cambiar Vista Strategy"><i class="ti ti-chevron-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex-col" style="gap: 0.75rem; margin-top: 0.25rem;">
+                        <!-- Shared Objective section -->
+                        <div class="flex-col" style="gap: 0.3rem;">
+                            <div class="flabel" style="font-size: 9px; letter-spacing: 0.05em;">Objetivo y Enfoque</div>
+                            <div id="strategy-objective" style="font-size: var(--fs-sm); color: var(--text); font-weight: 500; line-height: 1.35;">Cargando enfoque de estrategia...</div>
+                            <div id="strategy-enfoque" style="font-size: 11px; color: var(--text3); line-height: 1.35; display: none; font-style: italic;"></div>
+                        </div>
+
+                        <hr style="border: 0; border-top: 1px solid var(--border3);">
+
+                        <!-- Vista 1: Metas de Contenido -->
+                        <div class="flex-col" id="strategy-view-content" style="gap: 0.6rem;">
+                            <div class="flabel" style="font-size: 9px; letter-spacing: 0.05em;">Volumen Planificado y Publicado</div>
+                            <div class="flex-col" id="strategy-content-list" style="gap: 0.6rem;">
+                                <!-- Content stats loaded dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Vista 2: Metas de Resultados -->
+                        <div class="flex-col" id="strategy-view-kpis" style="display: none; gap: 0.6rem;">
+                            <div class="flabel" style="font-size: 9px; letter-spacing: 0.05em;">Metas de Resultados y KPIs</div>
+                            <div class="flex-col" id="strategy-kpis-list" style="gap: 0.6rem;">
+                                <!-- KPIs loaded dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta Dinámica: Pipeline de Contenido (Creativos en Espera / Próximos a Publicar) -->
+                <div class="card" id="pipeline-card">
+                    <div class="card-head">
+                        <div class="card-title" style="display: flex; align-items: center; gap: 6px; cursor: pointer;" onclick="window.navigateToPipelineModule()" title="Ver Vista Completa">
+                            <i class="ti ti-movie" style="color: var(--info);" id="pipeline-card-icon"></i>
+                            <span id="pipeline-card-title-text">Creativos en Espera</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 6px;">
+                            <span class="badge" id="pipeline-card-badge" style="background: rgba(91, 163, 245, 0.1); color: var(--info); border: 1px solid rgba(91, 163, 245, 0.25);">Pendientes</span>
+                            <div style="display: flex; gap: 2px; border-left: 1px solid var(--border3); padding-left: 6px; margin-left: 4px;">
+                                <button class="btn-icon" onclick="window.togglePipelineView()" style="padding: 2px; font-size: 1.15rem; cursor: pointer; color: var(--text2);" title="Cambiar Vista"><i class="ti ti-chevron-left"></i></button>
+                                <button class="btn-icon" onclick="window.togglePipelineView()" style="padding: 2px; font-size: 1.15rem; cursor: pointer; color: var(--text2);" title="Cambiar Vista"><i class="ti ti-chevron-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex-col" id="pipeline-card-content" style="gap: 0.6rem; margin-top: 0.25rem;">
+                        <!-- dynamic list -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { supabase, testConnection } from '../supabase-client.js';
+
+        // ── NAVEGACIÓN Y MENSAJES HACIA EL PADRE ──
+        window.navigateToModule = (moduleName) => {
+            if (window.parent) {
+                window.parent.postMessage({ type: 'NAVIGATE', payload: { module: moduleName } }, '*');
+            }
+        };
+        window.navigateToPipelineModule = () => {
+            const target = window.activePipelineView === 'espera' ? 'biblioteca' : 'calendario-editorial';
+            window.navigateToModule(target);
+        };
+
+        // ── SEMILLERO DE RESPALDO (SEED DATA) ──
+        const SEED_CAMPAIGNS = [
+            {
+                id: "c1",
+                name: "Bariátrica - Recupera tu vida (Tráfico Frío)",
+                platform: "Meta Ads Manager",
+                status: "Activa",
+                objective: "Conversión / Leads",
+                adsets: [
+                    {
+                        id: "as1",
+                        name: "Conjunto 1 - Mujeres 35-55 (Dolor de Rodilla)",
+                        status: "Activa",
+                        ads: [
+                            {
+                                id: "ad1",
+                                name: "Reel 1 - Dolor Articular y Peso",
+                                status: "Activa",
+                                asset: "dr_molina_clinica.jpg",
+                                spend: 840000,
+                                impressions: 32000,
+                                clicks: 940,
+                                visits: 680,
+                                leads: 84,
+                                appointments: 11
+                            },
+                            {
+                                id: "ad2",
+                                name: "Imagen - Transformación Caso María",
+                                status: "Activa",
+                                asset: "caso_maria.jpg",
+                                spend: 560000,
+                                impressions: 16500,
+                                clicks: 480,
+                                visits: 300,
+                                leads: 40,
+                                appointments: 3
+                            }
+                        ]
+                    },
+                    {
+                        id: "as2",
+                        name: "Conjunto 2 - Hombres 40-60 (Salud Cardiovascular)",
+                        status: "Activa",
+                        ads: [
+                            {
+                                id: "ad3",
+                                name: "Video - Remisión de Diabetes Tipo 2",
+                                status: "Activa",
+                                asset: "dr_molina_quirofano.jpg",
+                                spend: 720000,
+                                impressions: 18400,
+                                clicks: 520,
+                                visits: 410,
+                                leads: 82,
+                                appointments: 12
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        let campaigns = [];
+        window.currentTimeframe = 'mensual'; // 'semanal', 'mensual', 'anual'
+        window.activeStrategyView = 'content'; // 'content' (Vista 1), 'kpis' (Vista 2)
+        window.activeYear = 2026;
+        window.activeMonthIdx = 5; // Junio (5, 0-indexed)
+        window.activeWeekNum = 2; // Semana 2 (Junio 8-14)
+        let strategyState = null;
+
+        // Helper to get date ranges for the current period
+        function getTimeframeDates(timeframe, year = 2026, monthIdx = 5, weekNum = 2) {
+            const pad = (n) => String(n).padStart(2, '0');
+            let start, end, label;
+            const shortMonths = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+            const fullMonths = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+            if (timeframe === 'semanal') {
+                let startDay = 1;
+                let endDay = 7;
+                if (weekNum === 2) { startDay = 8; endDay = 14; }
+                else if (weekNum === 3) { startDay = 15; endDay = 21; }
+                else if (weekNum === 4) {
+                    startDay = 22;
+                    endDay = new Date(year, monthIdx + 1, 0).getDate();
+                }
+                start = `${year}-${pad(monthIdx + 1)}-${pad(startDay)}`;
+                end = `${year}-${pad(monthIdx + 1)}-${pad(endDay)}`;
+                label = `Semana ${weekNum} (${startDay}–${endDay} ${shortMonths[monthIdx]})`;
+            } else if (timeframe === 'mensual') {
+                const lastDay = new Date(year, monthIdx + 1, 0).getDate();
+                start = `${year}-${pad(monthIdx + 1)}-01`;
+                end = `${year}-${pad(monthIdx + 1)}-${pad(lastDay)}`;
+                label = `${fullMonths[monthIdx]} ${year}`;
+            } else { // anual
+                start = `${year}-01-01`;
+                end = `${year}-12-31`;
+                label = `Año ${year}`;
+            }
+            return { start, end, label };
+        }
+
+        window.switchTimeframe = (level) => {
+            window.currentTimeframe = level;
+            
+            // Update active buttons styling
+            document.getElementById('tf-semanal').classList.toggle('active', level === 'semanal');
+            document.getElementById('tf-mensual').classList.toggle('active', level === 'mensual');
+            document.getElementById('tf-anual').classList.toggle('active', level === 'anual');
+            
+            // Re-apply filters (which scales campaigns & updates KPIs and chart)
+            window.applyFilters();
+            
+            // Re-load/render strategy plan & published counts
+            loadStrategy();
+        };
+
+        window.toggleStrategyView = (event) => {
+            if (event) event.stopPropagation(); // Avoid parent card navigation!
+            window.activeStrategyView = window.activeStrategyView === 'content' ? 'kpis' : 'content';
+            
+            renderStrategyBody();
+        };
+
+        let currentFilteredData = {
+            spend: 0,
+            impressions: 0,
+            clicks: 0,
+            visits: 0,
+            leads: 0,
+            appointments: 0,
+            adList: []
+        };
+        let dashboardChart = null;
+        let currentTab = 'funnel';
+
+        // ── RENDERIZA Y CALCULA TEMA CLARO/OSCURO ──
+        window.addEventListener('message', (e) => {
+            if (e.data && e.data.type === 'THEME_CHANGE') {
+                const isLight = e.data.payload === 'light';
+                document.body.classList.toggle('light', isLight);
+                window.renderActiveChart();
+            }
+        });
+        window.parent.postMessage({ type: 'IFRAME_READY' }, '*');
+
+        // ── INICIALIZACIÓN ──
+        window.addEventListener('DOMContentLoaded', async () => {
+            // 1. Probar conexión y actualizar badge
+            const connected = await testConnection();
+            const badge = document.getElementById('supabase-status-badge');
+            if (connected) {
+                badge.innerHTML = '<i class="ti ti-database"></i> Supabase Conectado';
+                badge.style.background = 'rgba(39, 174, 96, 0.1)';
+                badge.style.borderColor = 'rgba(39, 174, 96, 0.25)';
+                badge.style.color = 'var(--success)';
+            } else {
+                badge.innerHTML = '<i class="ti ti-alert-triangle"></i> Supabase Sin Conexión';
+                badge.style.background = 'rgba(245, 90, 138, 0.1)';
+                badge.style.borderColor = 'rgba(245, 90, 138, 0.25)';
+                badge.style.color = 'var(--danger)';
+            }
+
+            // 2. Cargar campañas
+            loadCampaignsData();
+
+            // 3. Inicializar selectores de filtros
+            initFilterSelectors();
+
+            // 4. Calcular inicial y pintar gráficos
+            window.applyFilters();
+
+            // 5. Cargar datos de Supabase (Bóveda y Estrategia)
+            loadBovedaStats();
+            loadStrategy();
+        });
+
+        // Test Connection button
+        window.testDbConnection = async () => {
+            const btn = document.querySelector('.btn-primary');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="ti ti-loader"></i> Probando...';
+            const connected = await testConnection();
+            
+            if (connected) {
+                btn.innerHTML = '<i class="ti ti-check"></i> Conectado!';
+                btn.style.background = 'var(--success)';
+                btn.style.color = '#fff';
+            } else {
+                btn.innerHTML = '<i class="ti ti-alert-circle"></i> Error de Conexión';
+                btn.style.background = 'var(--danger)';
+                btn.style.color = '#fff';
+            }
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.background = '';
+                btn.style.color = '';
+            }, 3000);
+
+            // Recargar datos por si acaso
+            loadBovedaStats();
+            loadStrategy();
+        };
+
+        // ── CARGAR METRICAS DE PAUTA ──
+        function loadCampaignsData() {
+            const stored = localStorage.getItem('content_os_pauta_campaigns');
+            if (stored) {
+                try {
+                    campaigns = JSON.parse(stored);
+                } catch(e) {
+                    campaigns = [];
+                }
+            } else {
+                campaigns = [];
+            }
+        }
+
+        // Inicializa los options del primer selector
+        function initFilterSelectors() {
+            const campSel = document.getElementById('filter-campaign');
+            campSel.innerHTML = '<option value="global">Campaña: Todas</option>';
+            campaigns.forEach(c => {
+                campSel.innerHTML += `<option value="${c.id}">${c.name}</option>`;
+            });
+
+            document.getElementById('filter-adset').disabled = true;
+            document.getElementById('filter-ad').disabled = true;
+        }
+
+        // Lógica para determinar el formato de un anuncio
+        function getAdFormat(ad) {
+            const name = (ad.name || "").toLowerCase();
+            const asset = (ad.asset || "").toLowerCase();
+            if (name.includes('reel')) return 'reel';
+            if (name.includes('carrusel') || name.includes('slide')) return 'carrusel';
+            if (name.includes('imagen') || name.includes('foto') || name.includes('img') || asset.endsWith('.jpg') || asset.endsWith('.jpeg') || asset.endsWith('.png')) return 'imagen';
+            if (name.includes('video') || name.includes('mp4') || name.includes('mov')) return 'video';
+            return 'otro';
+        }
+
+        // ── APLICAR FILTROS Y RECALCULAR ──
+        window.applyFilters = () => {
+            const campVal = document.getElementById('filter-campaign').value;
+            const adsetVal = document.getElementById('filter-adset').value;
+            const adVal = document.getElementById('filter-ad').value;
+            const formatVal = document.getElementById('filter-format').value;
+
+            // Compute scaling factor based on selected timeframe
+            let scaleFactor = 0.3; // Default is mensual (30%)
+            if (window.currentTimeframe === 'semanal') {
+                scaleFactor = 0.075;
+            } else if (window.currentTimeframe === 'anual') {
+                scaleFactor = 1.0;
+            }
+
+            let totalSpend = 0;
+            let totalImpressions = 0;
+            let totalClicks = 0;
+            let totalVisits = 0;
+            let totalLeads = 0;
+            let totalAppointments = 0;
+            let matchingAds = [];
+
+            campaigns.forEach(c => {
+                if (campVal !== 'global' && c.id !== campVal) return;
+                
+                const adsetsObj = c.adsets || [];
+                adsetsObj.forEach(as => {
+                    if (adsetVal !== 'global' && as.id !== adsetVal) return;
+                    
+                    const adsObj = as.ads || [];
+                    adsObj.forEach(ad => {
+                        if (adVal !== 'global' && ad.id !== adVal) return;
+                        
+                        // Filtro de formato
+                        if (formatVal !== 'all') {
+                            const fmt = getAdFormat(ad);
+                            if (fmt !== formatVal) return;
+                        }
+
+                        // Apply timeframe scaleFactor to metrics
+                        totalSpend += parseFloat(ad.spend || 0) * scaleFactor;
+                        totalImpressions += Math.round(parseInt(ad.impressions || 0) * scaleFactor);
+                        totalClicks += Math.round(parseInt(ad.clicks || 0) * scaleFactor);
+                        totalVisits += Math.round(parseInt(ad.visits || 0) * scaleFactor);
+                        totalLeads += Math.round(parseInt(ad.leads || 0) * scaleFactor);
+                        totalAppointments += Math.round(parseInt(ad.appointments || 0) * scaleFactor);
+
+                        // Store scaled ad object
+                        const scaledAd = {
+                            ...ad,
+                            spend: parseFloat(ad.spend || 0) * scaleFactor,
+                            impressions: Math.round(parseInt(ad.impressions || 0) * scaleFactor),
+                            clicks: Math.round(parseInt(ad.clicks || 0) * scaleFactor),
+                            visits: Math.round(parseInt(ad.visits || 0) * scaleFactor),
+                            leads: Math.round(parseInt(ad.leads || 0) * scaleFactor),
+                            appointments: Math.round(parseInt(ad.appointments || 0) * scaleFactor)
+                        };
+                        matchingAds.push(scaledAd);
+                    });
+                });
+            });
+
+            currentFilteredData = {
+                spend: totalSpend,
+                impressions: totalImpressions,
+                clicks: totalClicks,
+                visits: totalVisits,
+                leads: totalLeads,
+                appointments: totalAppointments,
+                adList: matchingAds
+            };
+
+            // Update current period label dynamically
+            const dates = getTimeframeDates(window.currentTimeframe, window.activeYear, window.activeMonthIdx, window.activeWeekNum);
+            const labelEl = document.getElementById('current-period-label');
+            if (labelEl) {
+                labelEl.textContent = dates.label;
+            }
+
+            updateKPIGrid();
+            window.renderActiveChart();
+        };
+
+        // Escucha eventos para cascada
+        document.getElementById('filter-campaign').addEventListener('change', (e) => {
+            const campId = e.target.value;
+            const adsetSel = document.getElementById('filter-adset');
+            const adSel = document.getElementById('filter-ad');
+
+            adsetSel.innerHTML = '<option value="global">Conjunto: Todos</option>';
+            adSel.innerHTML = '<option value="global">Anuncio: Todos</option>';
+            adSel.disabled = true;
+
+            if (campId === 'global') {
+                adsetSel.disabled = true;
+            } else {
+                adsetSel.disabled = false;
+                const camp = campaigns.find(c => c.id === campId);
+                if (camp && camp.adsets) {
+                    camp.adsets.forEach(as => {
+                        adsetSel.innerHTML += `<option value="${as.id}">${as.name}</option>`;
+                    });
+                }
+            }
+            window.applyFilters();
+        });
+
+        document.getElementById('filter-adset').addEventListener('change', (e) => {
+            const adsetId = e.target.value;
+            const campId = document.getElementById('filter-campaign').value;
+            const adSel = document.getElementById('filter-ad');
+
+            adSel.innerHTML = '<option value="global">Anuncio: Todos</option>';
+
+            if (adsetId === 'global') {
+                adSel.disabled = true;
+            } else {
+                adSel.disabled = false;
+                const camp = campaigns.find(c => c.id === campId);
+                if (camp && camp.adsets) {
+                    const adset = camp.adsets.find(as => as.id === adsetId);
+                    if (adset && adset.ads) {
+                        adset.ads.forEach(ad => {
+                            adSel.innerHTML += `<option value="${ad.id}">${ad.name}</option>`;
+                        });
+                    }
+                }
+            }
+            window.applyFilters();
+        });
+
+        document.getElementById('filter-ad').addEventListener('change', window.applyFilters);
+        document.getElementById('filter-format').addEventListener('change', window.applyFilters);
+
+        // ── ACTUALIZAR TARJETAS BENTO KPI ──
+        function updateKPIGrid() {
+            // Inversión
+            document.getElementById('kpi-spend').textContent = `$${Math.round(currentFilteredData.spend).toLocaleString('es-CO')}`;
+            const campVal = document.getElementById('filter-campaign').value;
+            if (campVal !== 'global') {
+                const camp = campaigns.find(c => c.id === campVal);
+                document.getElementById('kpi-spend-sub').innerHTML = `<i class="ti ti-cash"></i> ${camp ? camp.platform : 'Meta Ads'}`;
+            } else {
+                document.getElementById('kpi-spend-sub').innerHTML = `<i class="ti ti-cash"></i> Meta Ads Activo`;
+            }
+
+            // CPL
+            const cpl = currentFilteredData.leads > 0 ? (currentFilteredData.spend / currentFilteredData.leads) : 0;
+            document.getElementById('kpi-cpl').textContent = `$${Math.round(cpl).toLocaleString('es-CO')}`;
+            document.getElementById('kpi-cpl-sub').innerHTML = `<i class="ti ti-users"></i> ${currentFilteredData.leads} Leads Generados`;
+
+            // Conversión
+            const conv = currentFilteredData.leads > 0 ? ((currentFilteredData.appointments / currentFilteredData.leads) * 100) : 0;
+            document.getElementById('kpi-conv').textContent = `${conv.toFixed(1)}%`;
+            document.getElementById('kpi-conv-sub').innerHTML = `<i class="ti ti-calendar-event"></i> ${currentFilteredData.appointments} Citas de ${currentFilteredData.leads} Leads`;
+        }
+
+        // ── MANEJO DE PESTAÑAS Y GRÁFICOS ──
+        window.switchDashboardTab = (tab) => {
+            currentTab = tab;
+            document.getElementById('tab-funnel-btn').classList.toggle('active', tab === 'funnel');
+            document.getElementById('tab-efficiency-btn').classList.toggle('active', tab === 'efficiency');
+            document.getElementById('tab-format-btn').classList.toggle('active', tab === 'format');
+            window.renderActiveChart();
+        };
+
+        window.renderActiveChart = () => {
+            if (dashboardChart) {
+                dashboardChart.destroy();
+                dashboardChart = null;
+            }
+
+            const canvas = document.getElementById('chart-dashboard-canvas');
+            const emptyState = document.getElementById('chart-empty-state');
+
+            if (campaigns.length === 0) {
+                if (canvas) canvas.style.display = 'none';
+                if (emptyState) emptyState.style.display = 'flex';
+                return;
+            } else {
+                if (canvas) canvas.style.display = 'block';
+                if (emptyState) emptyState.style.display = 'none';
+            }
+
+            const ctx = canvas.getContext('2d');
+            const isLight = document.body.classList.contains('light');
+            const gridColor = isLight ? 'rgba(20, 38, 45, 0.06)' : 'rgba(255, 255, 255, 0.05)';
+            const textColor = isLight ? '#14262D' : '#F4F5F0';
+
+            if (currentTab === 'funnel') {
+                const data = [
+                    currentFilteredData.impressions,
+                    currentFilteredData.clicks,
+                    currentFilteredData.visits,
+                    currentFilteredData.leads,
+                    currentFilteredData.appointments
+                ];
+
+                dashboardChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Impresiones', 'Clics', 'Visitas', 'Leads', 'Citas'],
+                        datasets: [{
+                            label: 'Conversión de Tráfico',
+                            data: data,
+                            backgroundColor: [
+                                '#1F434E',
+                                '#1C857B',
+                                '#2ABFB0',
+                                '#CCC2A7',
+                                '#F55A8A'
+                            ],
+                            borderRadius: 4,
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const val = context.raw;
+                                        if (context.dataIndex > 0) {
+                                            const prevVal = context.dataset.data[context.dataIndex - 1];
+                                            const pct = prevVal > 0 ? ((val / prevVal) * 100).toFixed(1) : 0;
+                                            return `${context.label}: ${val.toLocaleString()} (${pct}% conversión)`;
+                                        }
+                                        return `${context.label}: ${val.toLocaleString()}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { color: gridColor },
+                                ticks: { color: textColor }
+                            },
+                            y: {
+                                grid: { display: false },
+                                ticks: { color: textColor, font: { weight: '600' } }
+                            }
+                        }
+                    }
+                });
+
+            } else if (currentTab === 'efficiency') {
+                const campVal = document.getElementById('filter-campaign').value;
+                const adsetVal = document.getElementById('filter-adset').value;
+
+                // Scale factor for chart
+                let scaleFactor = 0.3;
+                if (window.currentTimeframe === 'semanal') scaleFactor = 0.075;
+                else if (window.currentTimeframe === 'anual') scaleFactor = 1.0;
+
+                let labels = [];
+                let spends = [];
+                let appointments = [];
+
+                if (campVal === 'global') {
+                    campaigns.forEach(c => {
+                        labels.push(c.name.length > 18 ? c.name.substring(0, 15) + '...' : c.name);
+                        
+                        let spend = 0, appts = 0;
+                        const adsetsObj = c.adsets || [];
+                        adsetsObj.forEach(as => {
+                            const adsObj = as.ads || [];
+                            adsObj.forEach(ad => {
+                                spend += parseFloat(ad.spend || 0) * scaleFactor;
+                                appts += Math.round(parseInt(ad.appointments || 0) * scaleFactor);
+                            });
+                        });
+                        spends.push(spend);
+                        appointments.push(appts);
+                    });
+                } else if (adsetVal === 'global') {
+                    const camp = campaigns.find(c => c.id === campVal);
+                    if (camp && camp.adsets) {
+                        camp.adsets.forEach(as => {
+                            labels.push(as.name.length > 18 ? as.name.substring(0, 15) + '...' : as.name);
+                            
+                            let spend = 0, appts = 0;
+                            const adsObj = as.ads || [];
+                            adsObj.forEach(ad => {
+                                spend += parseFloat(ad.spend || 0) * scaleFactor;
+                                appts += Math.round(parseInt(ad.appointments || 0) * scaleFactor);
+                            });
+                            spends.push(spend);
+                            appointments.push(appts);
+                        });
+                    }
+                } else {
+                    const camp = campaigns.find(c => c.id === campVal);
+                    if (camp && camp.adsets) {
+                        const adset = camp.adsets.find(as => as.id === adsetVal);
+                        if (adset && adset.ads) {
+                            adset.ads.forEach(ad => {
+                                labels.push(ad.name.length > 18 ? ad.name.substring(0, 15) + '...' : ad.name);
+                                spends.push(parseFloat(ad.spend || 0) * scaleFactor);
+                                appointments.push(Math.round(parseInt(ad.appointments || 0) * scaleFactor));
+                            });
+                        }
+                    }
+                }
+
+                dashboardChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Gasto (COP)',
+                                data: spends,
+                                backgroundColor: 'rgba(245, 90, 138, 0.75)',
+                                borderColor: 'var(--danger)',
+                                borderWidth: 1,
+                                borderRadius: 4,
+                                yAxisID: 'y'
+                            },
+                            {
+                                label: 'Citas',
+                                data: appointments,
+                                type: 'line',
+                                borderColor: 'var(--teal)',
+                                backgroundColor: 'var(--teal)',
+                                borderWidth: 2,
+                                tension: 0.3,
+                                pointRadius: 4,
+                                yAxisID: 'y1'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: { mode: 'index', intersect: false },
+                        plugins: {
+                            legend: { labels: { color: textColor, font: { family: 'var(--f-body)' } } }
+                        },
+                        scales: {
+                            x: {
+                                grid: { color: gridColor },
+                                ticks: { color: textColor }
+                            },
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                title: { display: true, text: 'Inversión ($)', color: textColor },
+                                grid: { color: gridColor },
+                                ticks: { color: textColor }
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: { display: true, text: 'Citas Valoración', color: textColor },
+                                grid: { drawOnChartArea: false },
+                                ticks: { color: textColor, stepSize: 1 }
+                            }
+                        }
+                    }
+                });
+
+            } else if (currentTab === 'format') {
+                const formatData = {
+                    reel: { spend: 0, clicks: 0, impressions: 0 },
+                    carrusel: { spend: 0, clicks: 0, impressions: 0 },
+                    imagen: { spend: 0, clicks: 0, impressions: 0 },
+                    video: { spend: 0, clicks: 0, impressions: 0 },
+                    otro: { spend: 0, clicks: 0, impressions: 0 }
+                };
+
+                currentFilteredData.adList.forEach(ad => {
+                    const fmt = getAdFormat(ad);
+                    formatData[fmt].spend += parseFloat(ad.spend || 0);
+                    formatData[fmt].clicks += parseInt(ad.clicks || 0);
+                    formatData[fmt].impressions += parseInt(ad.impressions || 0);
+                });
+
+                const labelsMap = { reel: 'Reels', carrusel: 'Carruseles', imagen: 'Imágenes', video: 'Videos', otro: 'Otros' };
+                const activeLabels = [];
+                const activeSpends = [];
+                const activeCTRs = [];
+
+                Object.keys(formatData).forEach(k => {
+                    const item = formatData[k];
+                    if (item.spend > 0 || item.impressions > 0) {
+                        activeLabels.push(labelsMap[k]);
+                        activeSpends.push(item.spend);
+                        const ctr = item.impressions > 0 ? ((item.clicks / item.impressions) * 100) : 0;
+                        activeCTRs.push(ctr);
+                    }
+                });
+
+                if (activeSpends.length === 0) {
+                    activeLabels.push('Sin anuncios');
+                    activeSpends.push(1);
+                    activeCTRs.push(0);
+                }
+
+                dashboardChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: activeLabels,
+                        datasets: [{
+                            data: activeSpends,
+                            backgroundColor: [
+                                '#2ABFB0',
+                                '#5BA3F5',
+                                '#CCC2A7',
+                                '#B48EF0',
+                                '#6A8F98'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'right', labels: { color: textColor } },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const spend = context.raw;
+                                        const ctr = activeCTRs[context.dataIndex] || 0;
+                                        return ` Inversión: $${Math.round(spend).toLocaleString('es-CO')} COP (CTR: ${ctr.toFixed(2)}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        };
+
+        // ── CARGAR DATOS DE SUPABASE (BOVEDA DE CREATIVOS) ──
+        async function loadBovedaStats() {
+            try {
+                const { data, error } = await supabase
+                    .from('content_pieces')
+                    .select('*');
+                if (error) throw error;
+
+                const pieces = data || [];
+                const reels = pieces.filter(p => p.type === 'reel').length;
+                const carruseles = pieces.filter(p => p.type === 'carrusel').length;
+                const total = pieces.length;
+
+                document.getElementById('kpi-vault').textContent = total;
+                document.getElementById('kpi-vault-sub').innerHTML = `<i class="ti ti-lock"></i> ${reels} Reels | ${carruseles} Carruseles`;
+
+                renderContentPipeline(pieces);
+            } catch(err) {
+                console.error('Error al cargar métricas de la Bóveda:', err);
+                document.getElementById('kpi-vault').textContent = "—";
+            }
+        }
+
+        let allContentPieces = [];
+        window.activePipelineView = 'espera';
+
+        window.togglePipelineView = () => {
+            window.activePipelineView = window.activePipelineView === 'espera' ? 'publicar' : 'espera';
+            renderPipelineView();
+        };
+
+        function renderPipelineView() {
+            const pieces = allContentPieces;
+            const container = document.getElementById('pipeline-card-content');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const iconEl = document.getElementById('pipeline-card-icon');
+            const titleEl = document.getElementById('pipeline-card-title-text');
+            const badgeEl = document.getElementById('pipeline-card-badge');
+
+            if (window.activePipelineView === 'espera') {
+                if (iconEl) {
+                    iconEl.className = 'ti ti-movie';
+                    iconEl.style.color = 'var(--info)';
+                }
+                if (titleEl) titleEl.textContent = 'Creativos en Espera';
+                if (badgeEl) {
+                    badgeEl.textContent = 'Pendientes';
+                    badgeEl.style.background = 'rgba(91, 163, 245, 0.1)';
+                    badgeEl.style.color = 'var(--info)';
+                    badgeEl.style.borderColor = 'rgba(91, 163, 245, 0.25)';
+                }
+
+                const enEspera = pieces
+                    .filter(p => p.status === 'revision' || p.status === 'en_creacion')
+                    .sort((a, b) => new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at))
+                    .slice(0, 3);
+
+                if (enEspera.length === 0) {
+                    container.innerHTML = `<div style="text-align: center; color: var(--text3); font-size: var(--fs-xs); padding: 1.5rem; border: 1px dashed var(--border2); border-radius: var(--r-sm);">No hay creativos pendientes de revisión.</div>`;
+                } else {
+                    enEspera.forEach(p => {
+                        const icon = p.type === 'reel' ? 'ti-movie' : 'ti-carousel-horizontal';
+                        const statusLabel = p.status === 'revision' ? 'En Revisión' : 'Borrador';
+                        const pillarColor = p.pillar ? `var(--pilar-${p.pillar.toLowerCase()})` : 'var(--text3)';
+                        const badgeBg = p.status === 'revision' ? 'rgba(245, 211, 90, 0.1)' : 'rgba(91, 163, 245, 0.1)';
+                        const badgeText = p.status === 'revision' ? 'var(--warning)' : 'var(--info)';
+                        
+                        container.innerHTML += `
+                            <div class="flex-row space-between pipeline-item" onclick="window.navigateToModule('biblioteca')" title="Ver en Bóveda de Creativos" style="padding: 0.65rem 0.8rem; background: var(--surface2); border-radius: var(--r-sm); border-left: 3px solid ${pillarColor};">
+                                <div class="flex-col" style="gap: 2px;">
+                                    <span style="font-size: var(--fs-sm); font-weight: 500; color: var(--text);">${p.title}</span>
+                                    <div class="flex-row" style="gap: 6px; font-size: 10px; color: var(--text3);">
+                                        <span><i class="ti ${icon}"></i> ${p.type.toUpperCase()}</span>
+                                        <span>•</span>
+                                        <span>${p.pillar || 'General'}</span>
+                                    </div>
+                                </div>
+                                <span class="badge" style="background: ${badgeBg}; color: ${badgeText}; border: 1px solid rgba(255,255,255,0.03); font-size: 9px; padding: 2px 6px; border-radius: 8px;">
+                                    ${statusLabel}
+                                </span>
+                            </div>
+                        `;
+                    });
+                }
+            } else {
+                if (iconEl) {
+                    iconEl.className = 'ti ti-calendar';
+                    iconEl.style.color = 'var(--purple)';
+                }
+                if (titleEl) titleEl.textContent = 'Próximos a Publicar';
+                if (badgeEl) {
+                    badgeEl.textContent = 'Calendario';
+                    badgeEl.style.background = 'rgba(180, 142, 240, 0.1)';
+                    badgeEl.style.color = 'var(--purple)';
+                    badgeEl.style.borderColor = 'rgba(180, 142, 240, 0.25)';
+                }
+
+                const todayStr = new Date().toISOString().split('T')[0];
+                const aPublicar = pieces
+                    .filter(p => p.publish_date && p.publish_date >= todayStr)
+                    .sort((a, b) => new Date(a.publish_date) - new Date(b.publish_date))
+                    .slice(0, 3);
+
+                if (aPublicar.length === 0) {
+                    container.innerHTML = `<div style="text-align: center; color: var(--text3); font-size: var(--fs-xs); padding: 1.5rem; border: 1px dashed var(--border2); border-radius: var(--r-sm);">No hay publicaciones programadas.</div>`;
+                } else {
+                    aPublicar.forEach(p => {
+                        const icon = p.type === 'reel' ? 'ti-movie' : 'ti-carousel-horizontal';
+                        const dateObj = new Date(p.publish_date + 'T00:00:00');
+                        const dateFormatted = dateObj.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+                        const pillarColor = p.pillar ? `var(--pilar-${p.pillar.toLowerCase()})` : 'var(--text3)';
+
+                        container.innerHTML += `
+                            <div class="flex-row space-between pipeline-item" onclick="window.navigateToModule('calendario-editorial')" title="Ver en Calendario" style="padding: 0.65rem 0.8rem; background: var(--surface2); border-radius: var(--r-sm); border-left: 3px solid ${pillarColor};">
+                                <div class="flex-col" style="gap: 2px;">
+                                    <span style="font-size: var(--fs-sm); font-weight: 500; color: var(--text);">${p.title}</span>
+                                    <div class="flex-row" style="gap: 6px; font-size: 10px; color: var(--text3);">
+                                        <span><i class="ti ${icon}"></i> ${p.type.toUpperCase()}</span>
+                                    </div>
+                                </div>
+                                <span style="font-size: var(--fs-sm); color: var(--accent); font-weight: 600;">
+                                    <i class="ti ti-calendar-event"></i> ${dateFormatted}
+                                </span>
+                            </div>
+                        `;
+                    });
+                }
+            }
+        }
+
+        function renderContentPipeline(pieces) {
+            allContentPieces = pieces;
+            renderPipelineView();
+        }
+
+        let publishedPiecesList = [];
+        let actualLeadsCount = 0;
+
+        // ── CARGAR ESTRATEGIA ACTIVA Y ACTUALIZAR ──
+        async function loadStrategy() {
+            try {
+                // Fetch annual plan which holds monthly & weekly configurations
+                if (!strategyState) {
+                    const { data, error } = await supabase
+                        .from('strategy_plans')
+                        .select('*')
+                        .eq('type', 'anual')
+                        .eq('period_name', '2026')
+                        .limit(1);
+                    if (error) throw error;
+                    if (data && data.length > 0) {
+                        strategyState = data[0].plan_data || {};
+                    }
+                }
+
+                // Compute dates range for selected timeframe
+                const dates = getTimeframeDates(window.currentTimeframe, window.activeYear, window.activeMonthIdx, window.activeWeekNum);
+
+                // Fetch real published pieces and leads count in parallel
+                const [piecesRes, leadsRes] = await Promise.all([
+                    supabase
+                        .from('content_pieces')
+                        .select('type, status, publish_date, content_data')
+                        .eq('status', 'publicado')
+                        .gte('publish_date', dates.start)
+                        .lte('publish_date', dates.end),
+                    supabase
+                        .from('leads')
+                        .select('*', { count: 'exact', head: true })
+                        .gte('first_contact_date', dates.start)
+                        .lte('first_contact_date', dates.end)
+                ]);
+
+                if (!piecesRes.error) {
+                    publishedPiecesList = piecesRes.data || [];
+                } else {
+                    console.error('Error fetching published pieces:', piecesRes.error);
+                    publishedPiecesList = [];
+                }
+
+                if (!leadsRes.error) {
+                    actualLeadsCount = leadsRes.count || 0;
+                } else {
+                    console.error('Error fetching leads count:', leadsRes.error);
+                    actualLeadsCount = 0;
+                }
+
+                renderStrategyBody();
+            } catch(err) {
+                console.error('Error al cargar estrategia:', err);
+                document.getElementById('strategy-objective').textContent = "Error al conectar con la estrategia en Supabase.";
+            }
+        }
+
+        function renderStrategyBody() {
+            const MESES = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            const currentMonthName = MESES[window.activeMonthIdx];
+
+            // 1. Update Card Headers & Subtitles based on timeframe and active view
+            const monthNameEl = document.getElementById('strategy-month-name');
+            if (monthNameEl) {
+                if (window.currentTimeframe === 'semanal') {
+                    monthNameEl.textContent = `Sem. ${window.activeWeekNum} de ${currentMonthName}`;
+                } else if (window.currentTimeframe === 'mensual') {
+                    monthNameEl.textContent = currentMonthName;
+                } else {
+                    monthNameEl.textContent = `Plan ${window.activeYear}`;
+                }
+            }
+
+            const viewTitleEl = document.getElementById('strategy-view-title');
+            if (viewTitleEl) {
+                viewTitleEl.textContent = window.activeStrategyView === 'content' ? '— Contenido' : '— Resultados';
+            }
+
+            const iconViewEl = document.getElementById('strategy-icon-view');
+            if (iconViewEl) {
+                iconViewEl.className = window.activeStrategyView === 'content' ? 'ti ti-target' : 'ti ti-chart-bar';
+            }
+
+            // Show/Hide View containers
+            const viewContentEl = document.getElementById('strategy-view-content');
+            const viewKpisEl = document.getElementById('strategy-view-kpis');
+            if (viewContentEl) viewContentEl.style.display = window.activeStrategyView === 'content' ? 'flex' : 'none';
+            if (viewKpisEl) viewKpisEl.style.display = window.activeStrategyView === 'kpis' ? 'flex' : 'none';
+
+            // 2. Extract plans & calculate targets with fallbacks
+            const anual = strategyState?.anual || {};
+            const monthData = strategyState?.meses?.[window.activeMonthIdx] || {};
+            const weekKey = `${window.activeMonthIdx}-${window.activeWeekNum}`;
+            const weekData = strategyState?.semanas?.[weekKey] || {};
+
+            let plannedReels = 0;
+            let plannedCars = 0;
+            let plannedStories = 0;
+            let plannedPautaBudget = 0;
+            let activeFase = 'none';
+            let objectiveText = '';
+            let enfoqueText = '';
+
+            if (window.currentTimeframe === 'anual') {
+                activeFase = anual.fase || 'ignite';
+                objectiveText = anual.obj || 'Sin objetivo anual definido.';
+                enfoqueText = anual.notas || '';
+                plannedReels = parseInt(anual.reels || 36);
+                plannedCars = parseInt(anual.cars || 12);
+                plannedStories = parseInt(anual.hist || 180);
+                
+                // Sum all budgets of months that have active pauta
+                plannedPautaBudget = strategyState?.meses?.reduce((sum, m) => sum + (m.pauta ? parseInt(m.presupuesto || 0) : 0), 0) || 0;
+            } else if (window.currentTimeframe === 'mensual') {
+                activeFase = monthData.fase && monthData.fase !== 'none' ? monthData.fase : (anual.fase || 'ignite');
+                objectiveText = monthData.obj || 'Sin objetivo definido para este mes.';
+                enfoqueText = monthData.enfoque || '';
+                plannedReels = parseInt(monthData.reels) > 0 ? parseInt(monthData.reels) : Math.round(parseInt(anual.reels || 36) / 12);
+                plannedCars = parseInt(monthData.cars) > 0 ? parseInt(monthData.cars) : Math.round(parseInt(anual.cars || 12) / 12);
+                plannedStories = parseInt(monthData.hist) > 0 ? parseInt(monthData.hist) * 4 : Math.round(parseInt(anual.hist || 180) / 12);
+                plannedPautaBudget = monthData.pauta ? parseInt(monthData.presupuesto || 0) : 0;
+            } else { // semanal
+                activeFase = monthData.fase && monthData.fase !== 'none' ? monthData.fase : (anual.fase || 'ignite');
+                objectiveText = weekData.enfoque || 'Sin enfoque definido para esta semana.';
+                enfoqueText = weekData.cta || '';
+                
+                // Count from schedule days
+                let weekReels = 0;
+                let weekCars = 0;
+                let weekHist = 0;
+                const days = ['lun', 'mar', 'mie', 'jue', 'vie', 'sab', 'dom'];
+                days.forEach(d => {
+                    const dayData = weekData['day_data_' + d];
+                    if (dayData && dayData.tipo) {
+                        const t = dayData.tipo.toLowerCase();
+                        if (t === 'reel') weekReels++;
+                        else if (t === 'carrusel') weekCars++;
+                        else if (t === 'story' || t === 'historia') weekHist++;
+                    }
+                });
+
+                // Fallbacks if counts are 0
+                if (weekReels === 0) {
+                    const mReels = parseInt(monthData.reels) > 0 ? parseInt(monthData.reels) : parseInt(anual.reels || 36) / 12;
+                    plannedReels = Math.max(1, Math.round(mReels / 4));
+                } else {
+                    plannedReels = weekReels;
+                }
+
+                if (weekCars === 0) {
+                    const mCars = parseInt(monthData.cars) > 0 ? parseInt(monthData.cars) : parseInt(anual.cars || 12) / 12;
+                    plannedCars = Math.max(1, Math.round(mCars / 4));
+                } else {
+                    plannedCars = weekCars;
+                }
+
+                if (weekHist === 0) {
+                    plannedStories = parseInt(monthData.hist) > 0 ? parseInt(monthData.hist) : Math.max(2, Math.round(parseInt(anual.hist || 180) / 52));
+                } else {
+                    plannedStories = weekHist;
+                }
+
+                plannedPautaBudget = monthData.pauta ? Math.round(parseInt(monthData.presupuesto || 0) / 4) : 0;
+            }
+
+            // Style objective & focus texts
+            const objEl = document.getElementById('strategy-objective');
+            const enfEl = document.getElementById('strategy-enfoque');
+            if (objEl) {
+                objEl.textContent = objectiveText;
+            }
+            if (enfEl) {
+                if (enfoqueText && enfoqueText.trim()) {
+                    enfEl.textContent = enfoqueText;
+                    enfEl.style.display = 'block';
+                } else {
+                    enfEl.style.display = 'none';
+                }
+            }
+
+            // Style predominant phase top border and badge
+            const PHASE_LABELS = {
+                ignite: 'Ignite',
+                auth: 'Authority',
+                conv: 'Conversion',
+                cons: 'Consolidación',
+                none: 'Sin Definir'
+            };
+            const PHASE_COLORS = {
+                ignite: '#2ABFB0',
+                auth: '#b48ef0',
+                conv: '#f55a8a',
+                cons: '#5ba3f5',
+                none: 'var(--border2)'
+            };
+            const faseText = PHASE_LABELS[activeFase] || 'Sin Definir';
+            const faseBadge = document.getElementById('strategy-badge-fase');
+            if (faseBadge) {
+                faseBadge.textContent = `FASE: ${faseText.toUpperCase()}`;
+                faseBadge.style.borderColor = PHASE_COLORS[activeFase];
+                faseBadge.style.color = PHASE_COLORS[activeFase];
+                faseBadge.style.background = `rgba(${activeFase === 'ignite' ? '42,191,176' : activeFase === 'auth' ? '180,142,240' : activeFase === 'conv' ? '245,90,138' : activeFase === 'cons' ? '91,163,245' : '128,128,128'}, 0.1)`;
+            }
+
+            const cardEl = document.getElementById('strategy-card');
+            if (cardEl) {
+                cardEl.style.borderTop = `4px solid ${PHASE_COLORS[activeFase] || 'var(--border2)'}`;
+            }
+
+            // Style Pauta Badge
+            const pautaBadge = document.getElementById('strategy-badge-pauta');
+            if (pautaBadge) {
+                if (plannedPautaBudget > 0) {
+                    pautaBadge.style.display = 'inline-flex';
+                    pautaBadge.textContent = `PAUTA ($${Math.round(plannedPautaBudget).toLocaleString('es-CO')} COP)`;
+                } else {
+                    pautaBadge.style.display = 'none';
+                }
+            }
+
+            // 3. Render View 1: Content stats
+            const actualReels = publishedPiecesList.filter(p => p.type === 'reel').length;
+            const actualCars = publishedPiecesList.filter(p => p.type === 'carrusel').length;
+            const actualStories = publishedPiecesList.filter(p => p.type === 'story').length;
+            const actualSpend = currentFilteredData.spend || 0;
+
+            const contentContainer = document.getElementById('strategy-content-list');
+            if (contentContainer) {
+                contentContainer.innerHTML = '';
+
+                const contentItems = [
+                    { label: 'Reels', actual: actualReels, planned: plannedReels, icon: 'ti-movie', color: 'var(--info)' },
+                    { label: 'Carruseles', actual: actualCars, planned: plannedCars, icon: 'ti-carousel-horizontal', color: 'var(--purple)' },
+                    { label: 'Historias', actual: actualStories, planned: plannedStories, icon: 'ti-brand-instagram', color: 'var(--accent)' },
+                    { label: 'Pauta (Presupuesto)', actual: actualSpend, planned: plannedPautaBudget, isCurrency: true, icon: 'ti-cash', color: 'var(--success)' }
+                ];
+
+                contentItems.forEach(item => {
+                    let labelText = '';
+                    let pct = 0;
+                    let isMet = false;
+
+                    if (item.isCurrency) {
+                        labelText = `$${Math.round(item.actual).toLocaleString('es-CO')} / $${Math.round(item.planned).toLocaleString('es-CO')}`;
+                        pct = item.planned > 0 ? Math.min(100, Math.round((item.actual / item.planned) * 100)) : 0;
+                        isMet = item.actual >= item.planned && item.planned > 0;
+                    } else {
+                        labelText = `${item.actual} / ${item.planned}`;
+                        pct = item.planned > 0 ? Math.min(100, Math.round((item.actual / item.planned) * 100)) : 0;
+                        isMet = item.actual >= item.planned && item.planned > 0;
+                    }
+
+                    const checkHtml = isMet ? '<span style="color: var(--success); font-weight: bold; margin-left: 4px; display: inline-flex; align-items: center;" title="Meta cumplida"><i class="ti ti-circle-check"></i></span>' : '';
+                    
+                    const barHtml = item.planned > 0 ? `
+                        <div style="width: 100%; height: 5px; background: var(--surface3); border-radius: 3px; overflow: hidden; border: 1px solid rgba(255,255,255,0.01);">
+                            <div style="width: ${pct}%; height: 100%; background: ${item.color}; border-radius: 3px; transition: width 0.6s ease;"></div>
+                        </div>
+                    ` : `
+                        <div style="width: 100%; height: 5px; background: var(--surface3); border-radius: 3px; overflow: hidden; opacity: 0.3;"></div>
+                    `;
+
+                    contentContainer.innerHTML += `
+                        <div class="flex-col" style="gap: 3px;">
+                            <div class="flex-row space-between" style="font-size: 11px;">
+                                <span style="color: var(--text2); display: flex; align-items: center; gap: 4px;">
+                                    <i class="ti ${item.icon}" style="color: ${item.color}"></i> ${item.label}
+                                </span>
+                                <span style="font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 4px;">
+                                    ${labelText} ${checkHtml}
+                                </span>
+                            </div>
+                            ${barHtml}
+                        </div>
+                    `;
+                });
+            }
+
+            // 4. Render View 2: KPI stats
+            let targetSeg = 0, targetDm = 0, targetCon = 0, targetGua = 0;
+            const kpis = monthData.kpis || {};
+
+            if (window.currentTimeframe === 'anual') {
+                targetSeg = anual.kpis?.seg || 20000;
+                targetDm = anual.kpis?.dm || 60;
+                targetCon = anual.kpis?.con || 20;
+                targetGua = anual.kpis?.gua || 500;
+            } else if (window.currentTimeframe === 'mensual') {
+                targetSeg = kpis.seg || Math.round((anual.kpis?.seg || 20000) / 12);
+                targetDm = kpis.dm || Math.round((anual.kpis?.dm || 60) / 12);
+                targetCon = kpis.con || Math.round((anual.kpis?.con || 20) / 12);
+                targetGua = kpis.gua || Math.round((anual.kpis?.gua || 500) / 12);
+            } else { // semanal
+                const mSeg = kpis.seg || Math.round((anual.kpis?.seg || 20000) / 12);
+                const mDm = kpis.dm || Math.round((anual.kpis?.dm || 60) / 12);
+                const mCon = kpis.con || Math.round((anual.kpis?.con || 20) / 12);
+                const mGua = kpis.gua || Math.round((anual.kpis?.gua || 500) / 12);
+                targetSeg = Math.round(mSeg / 4);
+                targetDm = Math.round(mDm / 4);
+                targetCon = Math.round(mCon / 4);
+                targetGua = Math.round(mGua / 4);
+            }
+
+            // Aggregate organic metrics from publishedPiecesList (real data from Supabase)
+            let actualSeg = 0;
+            let actualDm = 0;
+            let actualGua = 0;
+
+            publishedPiecesList.forEach(p => {
+                const metrics = p.content_data?.metrics || {};
+                actualSeg += parseInt(metrics.followers) || 0;
+                actualDm += parseInt(metrics.dms) || 0;
+                actualGua += parseInt(metrics.saves) || 0;
+            });
+
+            const kpisContainer = document.getElementById('strategy-kpis-list');
+            if (kpisContainer) {
+                kpisContainer.innerHTML = '';
+
+                const kpiItems = [
+                    { label: 'Nuevos Seguidores', actual: actualSeg, target: targetSeg, icon: 'ti-users-plus', color: 'var(--info)' },
+                    { label: 'Mensajes Recibidos (DM)', actual: actualDm, target: targetDm, icon: 'ti-message-circle', color: 'var(--purple)' },
+                    { label: 'Leads de Consulta', actual: actualLeadsCount, target: targetCon, icon: 'ti-message-dots', color: 'var(--teal)' },
+                    { label: 'Guardados / Alcance', actual: actualGua, target: targetGua, icon: 'ti-bookmark', color: 'var(--warning)' }
+                ];
+
+                kpiItems.forEach(item => {
+                    let labelText = '';
+                    let pct = 0;
+                    let isMet = false;
+
+                    if (item.target > 0) {
+                        pct = Math.min(100, Math.round((item.actual / item.target) * 100));
+                        labelText = `${item.actual} / ${item.target} (${pct}%)`;
+                        isMet = item.actual >= item.target;
+                    } else {
+                        labelText = `${item.actual} (Sin meta)`;
+                    }
+
+                    const checkHtml = isMet ? '<span style="color: var(--success); font-weight: bold; margin-left: 4px; display: inline-flex; align-items: center;" title="Meta cumplida"><i class="ti ti-circle-check"></i></span>' : '';
+                    
+                    const barHtml = item.target > 0 ? `
+                        <div style="width: 100%; height: 5px; background: var(--surface3); border-radius: 3px; overflow: hidden; border: 1px solid rgba(255,255,255,0.01);">
+                            <div style="width: ${pct}%; height: 100%; background: ${item.color}; border-radius: 3px; transition: width 0.6s ease;"></div>
+                        </div>
+                    ` : `
+                        <div style="width: 100%; height: 5px; background: var(--surface3); border-radius: 3px; overflow: hidden; opacity: 0.3;"></div>
+                    `;
+
+                    kpisContainer.innerHTML += `
+                        <div class="flex-col" style="gap: 3px;">
+                            <div class="flex-row space-between" style="font-size: 11px;">
+                                <span style="color: var(--text2); display: flex; align-items: center; gap: 4px;">
+                                    <i class="ti ${item.icon}" style="color: ${item.color}"></i> ${item.label}
+                                </span>
+                                <span style="font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 4px;">
+                                    ${labelText} ${checkHtml}
+                                </span>
+                            </div>
+                            ${barHtml}
+                        </div>
+                    `;
+                });
+            }
+        }
+    </script>
+</body>
+</html>

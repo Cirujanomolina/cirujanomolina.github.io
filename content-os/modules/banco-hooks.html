@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content OS — Banco de Hooks · Dr. Molina</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=Archivo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+<link rel="stylesheet" href="../design-system.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f-body);background:var(--bg);color:var(--text);font-size:14px;transition:background .3s,color .3s;display: flex;flex-direction: column;height: 100vh;overflow: hidden;}
+.app{display:flex;flex-direction:column;flex: 1;min-height: 0;overflow: hidden;}
+
+/* ── HEADER PREMIUM ── */
+.vb-header {
+  background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 1.25rem 2rem;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-shrink: 0;
+}
+.vb-header::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  right: -100px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.04;
+  pointer-events: none;
+}
+.vb-header::after {
+  content: '';
+  position: absolute;
+  bottom: -60px;
+  left: 5%;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: var(--text2);
+  opacity: 0.03;
+  pointer-events: none;
+}
+.vb-header-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 1;
+  min-width: 0;
+}
+.vb-header-actions {
+  z-index: 1;
+  flex-shrink: 0;
+}
+.vb-title {
+  font-family: var(--f-display);
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 300;
+  color: var(--text);
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.vb-title em {
+  color: var(--accent);
+  font-style: italic;
+}
+.vb-badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.vb-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 11px;
+  border-radius: 20px;
+  background: rgba(42, 191, 176, 0.1);
+  border: 1px solid rgba(42, 191, 176, 0.25);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+/* ── NAV TABS ── */
+.vb-nav{
+  position:sticky;top:0;z-index:20;
+  background:var(--bg2);border-bottom:1px solid var(--border2);
+  padding:0 20px;
+  display:flex;gap:0;overflow-x:auto;
+  flex-shrink: 0;
+}
+.vb-nav::-webkit-scrollbar{height:0}
+.vbt{
+  flex:0 0 auto;padding:14px 18px;
+  font-size:12px;font-weight:400;color:var(--text3);
+  cursor:pointer;border-bottom:2px solid transparent;
+  transition:all .15s;display:flex;align-items:center;gap:6px;
+  white-space:nowrap;user-select:none;
+}
+.vbt i{font-size:14px}
+.vbt:hover{color:var(--text)}
+.vbt.on{color:var(--accent);border-bottom-color:var(--accent);font-weight:500}
+
+.btn{padding:8px 14px;border-radius:var(--r-sm);font-family:var(--f-body);font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text2);transition:all .15s;display:inline-flex;align-items:center;gap:6px;outline:none}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn:disabled{opacity:0.5;cursor:not-allowed}
+.btn-p{background:var(--accent);color:#14262D;border-color:var(--accent);font-weight:600}
+.btn-p:hover{background:#22a89a;color:#14262D}
+
+/* METRICS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin: 0 20px 16px}
+.stat-card{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-lg);padding:12px 14px;display:flex;align-items:center;gap:10px}
+.stat-icon{width:36px;height:36px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.stat-val{font-family:var(--f-display);font-size:24px;font-weight:600;color:var(--text);line-height:1}
+.stat-key{font-size:10px;color:var(--text2);margin-top:2px;text-transform:uppercase;letter-spacing:.05em}
+
+/* TOOLBAR */
+.toolbar{padding:10px 20px;border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--bg);position:sticky;top:57px;z-index:15}
+.search-wrap{position:relative;flex:1;min-width:150px}
+.search-wrap i{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--text2);pointer-events:none}
+.search-wrap input{width:100%;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-sm);padding:7px 10px 7px 32px;color:var(--text);font-family:var(--f-body);font-size:12px;outline:none;transition:border .15s}
+.search-wrap input:focus{border-color:var(--accent)}
+.fsel{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-sm);padding:7px 10px;color:var(--text);font-family:var(--f-body);font-size:11px;outline:none;cursor:pointer}
+.fsel:focus{border-color:var(--accent)}
+.fsel option{background:var(--surface2)}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:18px 20px}
+
+/* GRID */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+.hook-card{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-lg);padding:18px;transition:all .2s;display:flex;flex-direction:column;gap:12px;position:relative}
+.hook-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.hc-handle{font-family:var(--f-display);font-size:11px;color:var(--text3);letter-spacing:0.05em;display:flex;justify-content:space-between;align-items:center}
+.hc-text{font-family:var(--f-display);font-size:18px;font-weight:400;color:var(--text);line-height:1.2;font-style:normal;min-height:44px}
+.hc-text em{color:var(--accent);font-style:italic;font-weight:500}
+.hc-badges{display:flex;flex-wrap:wrap;gap:5px}
+.hbadge{font-size:9px;padding:3px 7px;border-radius:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.02em;position:relative;cursor:help}
+.hbadge::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 140%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 12px;
+  border-radius: var(--r-sm);
+  font-family: var(--f-body);
+  font-size: 11px;
+  font-weight: 400;
+  text-transform: none;
+  white-space: normal;
+  width: 220px;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease 3s;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+  line-height: 1.4;
+  text-align: left;
+}
+.hbadge::before {
+  content: "";
+  position: absolute;
+  bottom: 122%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: var(--bg3) transparent transparent transparent;
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease 3s;
+}
+.hbadge:hover::after, .hbadge:hover::before {
+  opacity: 1;
+}
+.hbadge-pilar{color:var(--accent);border:1px solid rgba(42,191,176,.2);background:rgba(42,191,176,.08)}
+.hbadge-motor{color:var(--info);border:1px solid rgba(91,163,245,.2);background:rgba(91,163,245,.08)}
+.hbadge-format{color:var(--purple);border:1px solid rgba(180,142,240,.2);background:rgba(180,142,240,.08)}
+.hc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:4px;padding-top:10px;border-top:1px solid var(--border3)}
+.hc-date{font-size:10px;color:var(--text3)}
+.hc-actions{display:flex;gap:6px}
+.hab{width:26px;height:26px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer;transition:all .15s;color:var(--text2);border:1px solid var(--border2);background:var(--surface2)}
+.hab:hover{border-color:var(--accent);color:var(--accent)}
+.hab.del:hover{border-color:var(--danger);color:var(--danger)}
+.hab.copy:hover{background:rgba(42,191,176,.15);border-color:var(--accent);color:var(--accent)}
+
+/* GENERATOR TABS SPECIFIC */
+.gen-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 20px;
+  min-height: calc(100vh - 120px);
+}
+@media(max-width: 900px){
+  .gen-layout {
+    grid-template-columns: 1fr;
+  }
+}
+.gen-panel-left {
+  background: var(--surface);
+  border-right: 1px solid var(--border2);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.gen-panel-right {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+/* DROPZONE */
+.dropzone {
+  border: 2px dashed var(--border);
+  border-radius: var(--r-lg);
+  padding: 20px;
+  text-align: center;
+  background: var(--surface2);
+  cursor: pointer;
+  transition: all .2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.dropzone:hover, .dropzone.dragover {
+  border-color: var(--accent);
+  background: rgba(42,191,176,0.04);
+}
+.dropzone i {
+  font-size: 24px;
+  color: var(--text3);
+  transition: color .2s;
+}
+.dropzone:hover i, .dropzone.dragover i {
+  color: var(--accent);
+}
+.dropzone-text {
+  font-size: 11px;
+  color: var(--text2);
+}
+.dropzone-fileinfo {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-top: 4px;
+  display: none;
+}
+
+/* GENERATED HOOK CARDS */
+.gen-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--r-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  transition: border .2s;
+}
+.gen-card:hover {
+  border-color: var(--accent);
+}
+.gen-card-title {
+  font-family: var(--f-display);
+  font-size: 16px;
+  line-height: 1.25;
+  color: var(--text);
+}
+.gen-card-title em {
+  color: var(--accent);
+  font-style: italic;
+  font-weight: 500;
+}
+.gen-card-reason {
+  font-size: 11px;
+  color: var(--text2);
+  font-style: italic;
+  border-left: 2px solid var(--border);
+  padding-left: 8px;
+  margin-top: 4px;
+}
+.gen-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid var(--border3);
+  padding-top: 10px;
+  margin-top: 4px;
+}
+
+/* OVERLAYS & MODALS */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;padding:16px}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-lg);width:100%;max-width:520px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.5);transform:translateY(20px);transition:transform .22s;display:flex;flex-direction:column}
+.overlay.open .modal{transform:translateY(0)}
+.modal-hdr{padding:16px 20px 12px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg2);z-index:1}
+.modal-title{font-family:var(--f-display);font-size:18px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
+.modal-close{width:28px;height:28px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:15px;transition:all .15s;border:1px solid var(--border2)}
+.modal-close:hover{border-color:var(--danger);color:var(--danger)}
+.modal-body{padding:18px 20px;overflow-y:auto;flex:1}
+.modal-foot{padding:12px 20px 16px;display:flex;gap:8px;justify-content:flex-end;border-top:1px solid var(--border2);background:var(--bg2)}
+
+/* FORM FIELDS */
+.field{margin-bottom:14px}
+.flabel{font-size:10px;font-weight:600;color:var(--text2);margin-bottom:5px;letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;gap:5px}
+input[type=text],textarea,select{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:8px 10px;color:var(--text);font-family:var(--f-body);font-size:12px;outline:none;transition:border .15s}
+input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+textarea{resize:vertical;line-height:1.5}
+select option{background:var(--bg2);color:var(--text)}
+
+/* TOAST */
+@keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--accent);color:#14262D;padding:10px 16px;border-radius:var(--r-sm);font-size:12px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.3);animation:toastIn .2s ease;max-width:320px}
+
+/* SPINNER & LOADING STATES */
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{display:inline-block;width:12px;height:12px;border:1.8px solid rgba(42,191,176,.3);border-top-color:var(--accent);border-radius:50%;animation:spin .65s linear infinite;flex-shrink:0}
+.loading-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  gap: 12px;
+  color: var(--text2);
+  font-style: italic;
+  font-size: 12px;
+  border: 1px dashed var(--border2);
+  border-radius: var(--r-lg);
+  background: var(--surface2);
+}
+.loading-box .spin {
+  width: 24px;
+  height: 24px;
+  border-width: 2.5px;
+}
+
+/* EMPTY STATES */
+.empty-st{text-align:center;padding:48px 20px;color:var(--text2);border:1px dashed var(--border2);border-radius:var(--r-lg);background:var(--surface2)}
+.empty-st i{font-size:28px;display:block;margin-bottom:10px;opacity:.25;color:var(--accent)}
+.empty-st p{font-size:11px;font-style:italic}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.hook-card, .gen-card{animation:fadeIn .22s ease both}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+</style>
+</head>
+<body>
+<header class="vb-header">
+  <div class="vb-header-main">
+    <h1 class="vb-title">Banco de <em>Hooks</em></h1>
+    <div class="vb-badges">
+      <span class="vb-badge"><i class="ti ti-anchor"></i> Ganchos Copywriting</span>
+      <span class="vb-badge"><i class="ti ti-brand-instagram"></i> @cirujanomolina</span>
+      <span class="vb-badge"><i class="ti ti-database"></i> Supabase Conectado</span>
+    </div>
+  </div>
+  <div class="vb-header-actions">
+    <button class="btn btn-p" id="btn-nuevo-hook" onclick="openModal()"><i class="fa-solid fa-plus"></i>Nuevo Gancho</button>
+  </div>
+</header>
+
+<div class="vb-nav">
+  <div class="vbt on" id="btn-tab-banco" onclick="switchTab('banco')">
+    <i class="fa-solid fa-folder-open"></i> Banco Guardado
+  </div>
+  <div class="vbt" id="btn-tab-gen" onclick="switchTab('gen')">
+    <i class="fa-solid fa-wand-magic-sparkles"></i> Generador con IA
+  </div>
+</div>
+
+<div class="app">
+  <!-- PANE 1: BANCO -->
+  <div class="tab-pane active" id="pane-banco">
+    
+    <!-- METRICAS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(42,191,176,.12)"><i class="fa-solid fa-database" style="color:var(--accent)"></i></div>
+        <div><div class="stat-val" id="st-total">0</div><div class="stat-key">Total Hooks</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(91,163,245,.12)"><i class="fa-solid fa-shield-heart" style="color:var(--info)"></i></div>
+        <div><div class="stat-val" id="st-culpa">0</div><div class="stat-key">Val. Culpa</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(201,134,42,.12)"><i class="fa-solid fa-bolt" style="color:var(--amber)"></i></div>
+        <div><div class="stat-val" id="st-disonancia">0</div><div class="stat-key">Disonancia</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(180,142,240,.12)"><i class="fa-solid fa-eye-slash" style="color:var(--purple)"></i></div>
+        <div><div class="stat-val" id="st-dolor">0</div><div class="stat-key">Dolor Silencioso</div></div>
+      </div>
+    </div>
+
+    <!-- FILTROS -->
+    <div class="toolbar">
+      <div class="search-wrap"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="fil-search" placeholder="Buscar ganchos..." oninput="applyFilters()"></div>
+      <select class="fsel" id="fil-pilar" onchange="applyFilters()">
+        <option value="">Todos los pilares</option>
+        <option>Validación emocional</option><option>Educación premium</option><option>Contrarian / Mitos</option><option>Autoridad humana</option><option>Transformación de vida</option><option>Conversión directa</option>
+      </select>
+      <select class="fsel" id="fil-emocion" onchange="applyFilters()">
+        <option value="">Todos los motores</option>
+        <option>Validación de culpa</option><option>Disonancia cognitiva</option><option>Dolor silencioso</option><option>Curiosity Gap</option><option>Efecto Cotilla</option><option>Confesión vulnerable</option><option>Promesa numérica concreta</option><option>Pregunta provocativa</option><option>Listicle puro</option><option>Otros</option>
+      </select>
+      <select class="fsel" id="fil-formato" onchange="applyFilters()">
+        <option value="">Todos los formatos</option>
+        <option>Voz en Off + B-Roll</option><option>Pantalla Verde + Análisis</option><option>Ranking de 3 (Comparación)</option><option>Metáfora Visual</option><option>Faceless IA</option><option>Espacio Único</option>
+      </select>
+    </div>
+
+    <!-- CONTENIDO GRID -->
+    <div class="content">
+      <div class="card-grid" id="hooks-grid"></div>
+    </div>
+  </div>
+
+  <!-- PANE 2: GENERADOR -->
+  <div class="tab-pane" id="pane-gen">
+    <div class="gen-layout">
+      <!-- CONFIG PANEL LEFT -->
+      <div class="gen-panel-left">
+        <div style="height: 10px;"></div>
+        
+        <div class="field">
+          <div class="flabel">Tema / Concepto central</div>
+          <textarea id="g-contexto" rows="4" placeholder="Ej: Por qué comer menos no te baja de peso a largo plazo debido a que el metabolismo adaptativo baja el gasto calórico de tu cuerpo..."></textarea>
+        </div>
+
+        <div class="field">
+          <div class="flabel">O cargar PDF / TXT para extraer contexto</div>
+          <div class="dropzone" id="g-dropzone" onclick="document.getElementById('g-fileinput').click()">
+            <i class="fa-solid fa-file-pdf"></i>
+            <div class="dropzone-text">Arrastra tu archivo aquí o haz clic para subir</div>
+            <div class="dropzone-fileinfo" id="g-fileinfo"></div>
+            <input type="file" id="g-fileinput" accept=".txt,.md,.pdf" style="display:none" onchange="handleFileSelect(this)">
+          </div>
+          <!-- Hidden textarea to store extracted PDF text -->
+          <textarea id="g-extracted-text" style="display:none"></textarea>
+        </div>
+
+        <div class="field">
+          <div class="flabel">Pilar del Gancho (Opcional)</div>
+          <select id="g-pilar">
+            <option value="">— Dejar que IA decida —</option>
+            <option>Validación emocional</option><option>Educación premium</option><option>Contrarian / Mitos</option><option>Autoridad humana</option><option>Transformación de vida</option><option>Conversión directa</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <div class="flabel">Motor de Atención (Opcional)</div>
+          <select id="g-emocion">
+            <option value="">— Dejar que IA decida —</option>
+            <option>Validación de culpa</option><option>Disonancia cognitiva</option><option>Dolor silencioso</option><option>Curiosity Gap</option><option>Efecto Cotilla</option><option>Confesión vulnerable</option><option>Promesa numérica concreta</option><option>Pregunta provocativa</option><option>Listicle puro</option>
+          </select>
+        </div>
+
+        <button class="btn btn-p" id="btn-generar" onclick="generateAIHooks()" style="width:100%; justify-content:center; padding:10px"><i class="fa-solid fa-wand-magic-sparkles"></i>Generar Ganchos Virales</button>
+      </div>
+
+      <!-- RESULTS PANEL RIGHT -->
+      <div class="gen-panel-right">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px">
+          <h2 style="font-family:var(--f-display); font-size:18px; font-weight:500">Ganchos Propuestos</h2>
+          <button class="btn" id="btn-clear-gen" onclick="clearGenOutput()" style="font-size:10px; padding:4px 8px; display:none">Limpiar</button>
+        </div>
+        
+        <div id="gen-output-container">
+          <div class="empty-st" id="gen-empty">
+            <i class="fa-solid fa-sparkles"></i>
+            <p>Ingresa un tema o carga un documento en el panel izquierdo para generar opciones adaptadas a la marca.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL AGREGAR/EDITAR GANCHO -->
+<div class="overlay" id="hookOverlay">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title" id="mTitle"><i class="fa-solid fa-anchor" style="color:var(--accent)"></i>Nuevo gancho</div>
+      <div class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></div>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="f-id">
+      
+      <div class="field">
+        <div class="flabel">Texto del Gancho (Usa _palabra_ para itálica/Teal) <span style="color:var(--danger)">*</span></div>
+        <textarea id="f-text" rows="3" placeholder="Ej: No es falta de _voluntad_. Es biología." required></textarea>
+      </div>
+
+      <div class="field">
+        <div class="flabel">Pilar de Contenido</div>
+        <select id="f-pilar">
+          <option value="Validación emocional">Validación emocional</option>
+          <option value="Educación premium">Educación premium</option>
+          <option value="Contrarian / Mitos">Contrarian / Mitos</option>
+          <option value="Autoridad humana">Autoridad humana</option>
+          <option value="Transformación de vida">Transformación de vida</option>
+          <option value="Conversión directa">Conversión directa</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <div class="flabel">Motor de Atención / Emoción</div>
+        <select id="f-emocion">
+          <option value="Validación de culpa">Validación de culpa</option>
+          <option value="Disonancia cognitiva">Disonancia cognitiva</option>
+          <option value="Dolor silencioso">Dolor silencioso</option>
+          <option value="Curiosity Gap">Curiosity Gap</option>
+          <option value="Efecto Cotilla">Efecto Cotilla</option>
+          <option value="Confesión vulnerable">Confesión vulnerable</option>
+          <option value="Promesa numérica concreta">Promesa numérica concreta</option>
+          <option value="Pregunta provocativa">Pregunta provocativa</option>
+          <option value="Listicle puro">Listicle puro</option>
+          <option value="Otros">Otros</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <div class="flabel">Formato Sugerido</div>
+        <select id="f-formato">
+          <option value="Voz en Off + B-Roll">Voz en Off + B-Roll</option>
+          <option value="Pantalla Verde + Análisis">Pantalla Verde + Análisis</option>
+          <option value="Ranking de 3 (Comparación)">Ranking de 3 (Comparación)</option>
+          <option value="Metáfora Visual">Metáfora Visual</option>
+          <option value="Faceless IA">Faceless IA</option>
+          <option value="Espacio Único">Espacio Único</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-p" onclick="saveHook()"><i class="fa-solid fa-floppy-disk"></i>Guardar Gancho</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMAR BORRADO -->
+<div class="overlay" id="confirmOverlay">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-hdr">
+      <div class="modal-title" style="font-size:16px"><i class="fa-solid fa-triangle-exclamation" style="color:var(--warning)"></i><span>¿Eliminar gancho?</span></div>
+      <div class="modal-close" onclick="closeConfirm()"><i class="fa-solid fa-xmark"></i></div>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:16px" id="confMsg">¿Estás seguro de que deseas eliminar este gancho? Esta acción no se puede deshacer.</p>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn" onclick="closeConfirm()">Cancelar</button>
+        <button class="btn" style="border-color:var(--danger);color:var(--danger)" onclick="runConfirm()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PDF.JS LIBRARY -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+<script>
+  // Setup global worker
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+</script>
+
+<!-- SCRIPT MODULE -->
+<script type="module">
+import { supabase } from '../supabase-client.js';
+
+// DATA
+let HOOKS = [];
+let filtered = [];
+let currentTab = 'banco';
+let editingId = null;
+let pendingConfirm = null;
+let activeToast = null;
+
+// SEED HOOKS (Brand Specific)
+const SEED_HOOKS = [
+  {
+    text: "No es falta de _voluntad_. Es biología.",
+    pillar: "Validación emocional",
+    emotion: "Validación de culpa",
+    format_suggested: "Voz en Off + B-Roll"
+  },
+  {
+    text: "La cirugía bariátrica _NO_ es la salida fácil.",
+    pillar: "Contrarian / Mitos",
+    emotion: "Disonancia cognitiva",
+    format_suggested: "Pantalla Verde + Análisis"
+  },
+  {
+    text: "Existe un dolor que nadie te pregunta: cómo te sientes _contigo misma_.",
+    pillar: "Validación emocional",
+    emotion: "Dolor silencioso",
+    format_suggested: "Espacio Único"
+  },
+  {
+    text: "Ozempic no va a _resolver_ lo que tú crees.",
+    pillar: "Contrarian / Mitos",
+    emotion: "Disonancia cognitiva",
+    format_suggested: "Pantalla Verde + Análisis"
+  },
+  {
+    text: "Lo que _más pesa_ no siempre se mide en kilos.",
+    pillar: "Transformación de vida",
+    emotion: "Dolor silencioso",
+    format_suggested: "Espacio Único"
+  },
+  {
+    text: "Tu cuerpo no está _fallando_. Tu cuerpo está luchando.",
+    pillar: "Validación emocional",
+    emotion: "Validación de culpa",
+    format_suggested: "Voz en Off + B-Roll"
+  },
+  {
+    text: "Hay personas _perdiendo años_ de vida por miedo a operarse.",
+    pillar: "Transformación de vida",
+    emotion: "Disonancia cognitiva",
+    format_suggested: "Espacio Único"
+  },
+  {
+    text: "Si has intentado todo y _nada funciona_, esto es para ti.",
+    pillar: "Validación emocional",
+    emotion: "Validación de culpa",
+    format_suggested: "Voz en Off + B-Roll"
+  },
+  {
+    text: "Cuándo fue la última vez que te miraste al espejo _sin juzgarte_.",
+    pillar: "Transformación de vida",
+    emotion: "Dolor silencioso",
+    format_suggested: "Espacio Único"
+  },
+  {
+    text: "Cobré la _mitad_ de lo que valía. Después entendí esto.",
+    pillar: "Autoridad humana",
+    emotion: "Confesión vulnerable",
+    format_suggested: "Voz en Off + B-Roll"
+  },
+  {
+    text: "No necesitas más herramientas. Necesitas _mejores procesos_.",
+    pillar: "Educación premium",
+    emotion: "Contrarian punzante",
+    format_suggested: "Ranking de 3 (Comparación)"
+  },
+  {
+    text: "Subí mis precios _40%_ en 30 días. Sin perder clientes.",
+    pillar: "Conversión directa",
+    emotion: "Promesa numérica concreta",
+    format_suggested: "Voz en Off + B-Roll"
+  },
+  {
+    text: "¿Por qué tus clientes _no te recomiendan_?",
+    pillar: "Autoridad humana",
+    emotion: "Pregunta provocativa",
+    format_suggested: "Espacio Único"
+  },
+  {
+    text: "_3 errores_ que cometen 9 de 10 emprendedores.",
+    pillar: "Educación premium",
+    emotion: "Listicle puro",
+    format_suggested: "Ranking de 3 (Comparación)"
+  }
+];
+
+// GLOSSARY EXPLANATIONS FOR TOOLTIPS
+const EXPLANATIONS = {
+  // Pilares
+  'Validación emocional': 'Hacer sentir al paciente visto y no juzgado. Desmontar la culpa biológica de la obesidad.',
+  'Educación premium': 'Explicar la ciencia del metabolismo y tratamientos bariátricos con claridad y autoridad médica.',
+  'Contrarian / Mitos': 'Desafiar creencias populares y desinformación (ej. Ozempic, dietas milagro) con ciencia sólida.',
+  'Autoridad humana': 'Mostrar calidez clínica, el detrás de escena del quirófano y congresos, y la solidez del equipo.',
+  'Transformación de vida': 'Enfocarse en recuperar la identidad, movilidad y calidad de vida, no en la pérdida de peso.',
+  'Conversión directa': 'Llamado a la acción sutil para iniciar una conversación o agendar la consulta de pre-evaluación.',
+
+  // Motores emocionales / Psicología
+  'Validación de culpa': 'Rompe el autoataque del paciente explicando que la obesidad es una enfermedad biológica regulada.',
+  'Disonancia cognitiva': 'Propuestas contracorriente que desafían dogmas instalados para forzar la interrupción del patrón.',
+  'Dolor silencioso': 'Nombra dolores y vergüenzas (ej. evitar fotos) que el paciente sufre a solas y nadie dice en redes.',
+  'Curiosity Gap': 'Abre una brecha entre lo que el paciente sabe y lo que le falta saber, guardando el "Cómo" técnico.',
+  'Efecto Cotilla': 'Apalanca la autoridad y familiaridad de figuras públicas, marcas o conceptos compartidos.',
+  'Confesión vulnerable': 'Historia personal de errores y aprendizajes clínicos que construye empatía inmediata.',
+  'Promesa numérica concreta': 'Establece un beneficio claro y medible en un tiempo determinado para derribar objeciones.',
+  'Pregunta provocativa': 'Interrogación directa que despierta curiosidad y cuestiona el comportamiento o creencias del usuario.',
+  'Listicle puro': 'Formato de lista estructurada de fácil escaneo y alto índice de guardados.',
+  'Otros': 'Categoría general para otros tipos de ganchos.',
+
+  // Formatos
+  'Voz en Off + B-Roll': 'Video dinámico con tomas de apoyo fluidas (B-roll) y guion de voz rítmico grabado por separado.',
+  'Pantalla Verde + Análisis': 'El doctor analiza noticias o videos con su silueta superpuesta, aportando profundidad humana.',
+  'Ranking de 3 (Comparación)': 'Compara tres niveles (Malo, Bueno, Excelente) facilitando la síntesis visual de información.',
+  'Metáfora Visual': 'Explica conceptos abstractos usando un objeto físico en pantalla que acapara el 80% de la toma.',
+  'Faceless IA': 'Videos sin rostro del doctor usando avatares hiperrealistas de nicho y lipsync sincronizado.',
+  'Espacio Único': 'Vídeo con fondo estético repetido que genera recordación de marca y consistencia cinemática.'
+};
+
+function getExplanation(val) {
+  if (!val) return '';
+  return EXPLANATIONS[val.trim()] || '';
+}
+
+// LOAD HOOKS
+async function loadHooks() {
+  try {
+    const { data, error } = await supabase
+      .from('hooks')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    if (data && data.length > 0) {
+      HOOKS = data;
+    } else {
+      // Seed default hooks if database is completely empty
+      HOOKS = [];
+      for(const hook of SEED_HOOKS) {
+        const newHook = await saveHookToSupabase(hook);
+        if (newHook) HOOKS.push(newHook);
+      }
+    }
+  } catch (e) {
+    console.error('Error loading hooks from Supabase:', e);
+    let detail = e.message || '';
+    if (e.details) detail += (detail ? ' - ' : '') + e.details;
+    if (e.code) detail += ` (Código: ${e.code})`;
+    if (!detail) detail = typeof e === 'object' ? JSON.stringify(e) : String(e);
+    showToast(`⚠️ Error de conexión con Supabase: ${detail}. Cargando datos de respaldo.`);
+    
+    // Fallback: Use seed hooks local in-memory
+    HOOKS = SEED_HOOKS.map((h, i) => ({ id: `local-${i}`, ...h, created_at: new Date().toISOString() }));
+  }
+
+  filtered = [...HOOKS];
+  renderAll();
+}
+
+// SAVE TO SUPABASE HELPER
+async function saveHookToSupabase(hook) {
+  const row = {
+    text: hook.text,
+    pillar: hook.pillar,
+    emotion: hook.emotion,
+    format_suggested: hook.format_suggested
+  };
+
+  const isNew = !hook.id || String(hook.id).startsWith('local-');
+
+  try {
+    if (isNew) {
+      const { data, error } = await supabase
+        .from('hooks')
+        .insert([row])
+        .select();
+      if (error) throw error;
+      return data[0];
+    } else {
+      const { data, error } = await supabase
+        .from('hooks')
+        .update(row)
+        .eq('id', hook.id)
+        .select();
+      if (error) throw error;
+      return data[0];
+    }
+  } catch (err) {
+    console.error('Error saving hook to Supabase:', err);
+    let detail = err.message || '';
+    if (err.details) detail += (detail ? ' - ' : '') + err.details;
+    if (err.code) detail += ` (Código: ${err.code})`;
+    if (!detail) detail = typeof err === 'object' ? JSON.stringify(err) : String(err);
+    showToast(`⚠️ Error en Supabase: ${detail}`);
+    
+    // For local fallback: return modified hook object
+    if (isNew) {
+      hook.id = `local-${Date.now()}`;
+    }
+    return hook;
+  }
+}
+
+// DELETE FROM SUPABASE
+async function deleteHookFromSupabase(id) {
+  if (String(id).startsWith('local-')) return true;
+  
+  try {
+    const { error } = await supabase
+      .from('hooks')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+    return true;
+  } catch (err) {
+    console.error('Error deleting hook from Supabase:', err);
+    let detail = err.message || '';
+    if (err.details) detail += (detail ? ' - ' : '') + err.details;
+    if (err.code) detail += ` (Código: ${err.code})`;
+    if (!detail) detail = typeof err === 'object' ? JSON.stringify(err) : String(err);
+    showToast(`⚠️ Error al eliminar en Supabase: ${detail}`);
+    return false;
+  }
+}
+
+// RENDER & FILTERS
+function applyFilters() {
+  const query = document.getElementById('fil-search').value.toLowerCase().trim();
+  const pilar = document.getElementById('fil-pilar').value;
+  const emocion = document.getElementById('fil-emocion').value;
+  const formato = document.getElementById('fil-formato').value;
+
+  filtered = HOOKS.filter(h => {
+    const mQuery = !query || h.text.toLowerCase().includes(query) || (h.pillar && h.pillar.toLowerCase().includes(query));
+    const mPilar = !pilar || h.pillar === pilar;
+    const mEmocion = !emocion || h.emotion === emocion;
+    const mFormat = !formato || h.format_suggested === formato;
+    return mQuery && mPilar && mEmocion && mFormat;
+  });
+
+  renderGrid();
+  updateStats();
+}
+
+function formatHookText(txt) {
+  // Regex to turn _word_ into <em style="color:var(--accent)">word</em>
+  return txt.replace(/_([^_]+)_/g, '<em>$1</em>').replace(/\*([^*]+)\*/g, '<em>$1</em>');
+}
+
+function hookCardHTML(hook) {
+  const cleanText = hook.text.replace(/"/g, '&quot;');
+  return `<div class="hook-card" data-id="${hook.id}">
+    <div class="hc-handle">
+      <span>@cirujanomolina</span>
+      <i class="fa-solid fa-share-nodes" style="opacity:0.4; font-size:10px"></i>
+    </div>
+    <div class="hc-text">${formatHookText(hook.text)}</div>
+    <div class="hc-badges">
+      <span class="hbadge hbadge-pilar" data-tooltip="${getExplanation(hook.pillar)}">${hook.pillar}</span>
+      <span class="hbadge hbadge-motor" data-tooltip="${getExplanation(hook.emotion)}">${hook.emotion}</span>
+      <span class="hbadge hbadge-format" data-tooltip="${getExplanation(hook.format_suggested)}">${hook.format_suggested}</span>
+    </div>
+    <div class="hc-foot">
+      <span class="hc-date">${hook.created_at ? new Date(hook.created_at).toLocaleDateString('es-ES') : 'Plantilla'}</span>
+      <div class="hc-actions">
+        <button class="hab copy" onclick="copyHook('${cleanText}')" title="Copiar Gancho"><i class="fa-solid fa-copy"></i></button>
+        <button class="hab" onclick="openById('${hook.id}')" title="Editar"><i class="fa-solid fa-pen"></i></button>
+        <button class="hab del" onclick="askDelete('${hook.id}')" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderGrid() {
+  const grid = document.getElementById('hooks-grid');
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div style="grid-column: 1/-1" class="empty-st">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <p>No se encontraron ganchos con los filtros actuales.</p>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = filtered.map(hookCardHTML).join('');
+}
+
+function updateStats() {
+  document.getElementById('st-total').textContent = HOOKS.length;
+  document.getElementById('st-culpa').textContent = HOOKS.filter(h => h.emotion === 'Validación de culpa').length;
+  document.getElementById('st-disonancia').textContent = HOOKS.filter(h => h.emotion === 'Disonancia cognitiva').length;
+  document.getElementById('st-dolor').textContent = HOOKS.filter(h => h.emotion === 'Dolor silencioso').length;
+}
+
+function renderAll() {
+  renderGrid();
+  updateStats();
+}
+
+// TABS SWITCHING
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.vbt').forEach(btn => btn.classList.remove('on'));
+  document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+  
+  const activeBtn = document.getElementById(`btn-tab-${tab}`);
+  if (activeBtn) activeBtn.classList.add('on');
+  
+  const activePane = document.getElementById(`pane-${tab}`);
+  if (activePane) activePane.classList.add('active');
+  
+  const btnNuevo = document.getElementById('btn-nuevo-hook');
+  if (btnNuevo) {
+    btnNuevo.style.display = (tab === 'banco') ? 'inline-flex' : 'none';
+  }
+}
+
+// MODAL ADD/EDIT
+function openModal(id = null) {
+  editingId = id;
+  const overlay = document.getElementById('hookOverlay');
+  const title = document.getElementById('mTitle');
+  
+  if (id) {
+    title.innerHTML = '<i class="fa-solid fa-pen" style="color:var(--accent)"></i>Editar Gancho';
+    const hook = HOOKS.find(h => String(h.id) === String(id));
+    if (hook) {
+      document.getElementById('f-id').value = hook.id;
+      document.getElementById('f-text').value = hook.text;
+      document.getElementById('f-pilar').value = hook.pillar || 'Validación emocional';
+      document.getElementById('f-emocion').value = hook.emotion || 'Validación de culpa';
+      document.getElementById('f-formato').value = hook.format_suggested || 'Voz en Off + B-Roll';
+    }
+  } else {
+    title.innerHTML = '<i class="fa-solid fa-plus" style="color:var(--accent)"></i>Nuevo Gancho';
+    document.getElementById('f-id').value = '';
+    document.getElementById('f-text').value = '';
+    document.getElementById('f-pilar').value = 'Validación emocional';
+    document.getElementById('f-emocion').value = 'Validación de culpa';
+    document.getElementById('f-formato').value = 'Voz en Off + B-Roll';
+  }
+  
+  overlay.classList.add('open');
+  overlay.onclick = e => { if (e.target === overlay) closeModal(); };
+}
+
+function closeModal() {
+  document.getElementById('hookOverlay').classList.remove('open');
+  editingId = null;
+}
+
+async function saveHook() {
+  const txtEl = document.getElementById('f-text');
+  const text = txtEl.value.trim();
+  
+  if (!text) {
+    txtEl.style.borderColor = 'var(--danger)';
+    setTimeout(() => txtEl.style.borderColor = '', 1500);
+    txtEl.focus();
+    return;
+  }
+  
+  const hook = {
+    id: editingId || null,
+    text,
+    pillar: document.getElementById('f-pilar').value,
+    emotion: document.getElementById('f-emocion').value,
+    format_suggested: document.getElementById('f-formato').value
+  };
+
+  const saved = await saveHookToSupabase(hook);
+  
+  if (editingId) {
+    const idx = HOOKS.findIndex(h => String(h.id) === String(editingId));
+    if (idx > -1) HOOKS[idx] = saved;
+    showToast('Gancho actualizado ✅');
+  } else {
+    HOOKS.unshift(saved);
+    showToast('Gancho creado y guardado en Supabase ✅');
+  }
+  
+  closeModal();
+  applyFilters();
+}
+
+function openById(id) {
+  openModal(id);
+}
+
+// DELETE HOOK
+function askDelete(id) {
+  const hook = HOOKS.find(h => String(h.id) === String(id));
+  if(!hook) return;
+  
+  document.getElementById('confMsg').textContent = `¿Estás seguro de que deseas eliminar permanentemente el gancho: "${hook.text.replace(/_/g,'')}"?`;
+  
+  pendingConfirm = async () => {
+    const success = await deleteHookFromSupabase(id);
+    if (success) {
+      HOOKS = HOOKS.filter(h => String(h.id) !== String(id));
+      showToast('Gancho eliminado');
+      applyFilters();
+    }
+    closeConfirm();
+  };
+  
+  const ov = document.getElementById('confirmOverlay');
+  ov.classList.add('open');
+  ov.onclick = e => { if (e.target === ov) closeConfirm(); };
+}
+
+function closeConfirm() {
+  document.getElementById('confirmOverlay').classList.remove('open');
+  pendingConfirm = null;
+}
+
+function runConfirm() {
+  if (pendingConfirm) pendingConfirm();
+}
+
+// FILE READING & PDF EXTRACTION
+function handleFileSelect(input) {
+  const file = input.files[0];
+  if (!file) return;
+  processFile(file);
+}
+
+function processFile(file) {
+  const fileInfo = document.getElementById('g-fileinfo');
+  fileInfo.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+  fileInfo.style.display = 'block';
+  
+  const dropzone = document.getElementById('g-dropzone');
+  dropzone.classList.add('dragover');
+  
+  const reader = new FileReader();
+  
+  if (file.name.endsWith('.pdf')) {
+    extractTextFromPDF(file).then(text => {
+      document.getElementById('g-extracted-text').value = text;
+      showToast('📄 PDF procesado con éxito. Texto extraído.');
+    }).catch(err => {
+      console.error(err);
+      showToast('❌ Error al procesar el PDF. Asegúrate de que no esté protegido.');
+      fileInfo.textContent = 'Error al cargar PDF';
+    });
+  } else {
+    reader.onload = e => {
+      document.getElementById('g-extracted-text').value = e.target.result;
+      showToast('📄 Archivo de texto cargado.');
+    };
+    reader.readAsText(file);
+  }
+}
+
+async function extractTextFromPDF(file) {
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+  let text = '';
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    const strings = content.items.map(item => item.str);
+    text += strings.join(' ') + '\n';
+  }
+  return text;
+}
+
+// SETUP DROPZONE EVENTS
+const dropzone = document.getElementById('g-dropzone');
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('dragover'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+dropzone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropzone.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file) {
+    processFile(file);
+  }
+});
+
+// AI HOOK GENERATOR LICE
+async function generateAIHooks() {
+  const theme = document.getElementById('g-contexto').value.trim();
+  const pdfText = document.getElementById('g-extracted-text').value.trim();
+  
+  if (!theme && !pdfText) {
+    document.getElementById('g-contexto').focus();
+    showToast('⚠️ Escribe un tema o carga un documento primero');
+    return;
+  }
+  
+  const outputContainer = document.getElementById('gen-output-container');
+  outputContainer.innerHTML = `<div class="loading-box">
+    <div class="spin"></div>
+    <span>Analizando guías de marca y redactando ganchos de alta retención...</span>
+  </div>`;
+  
+  const pilar = document.getElementById('g-pilar').value;
+  const emocion = document.getElementById('g-emocion').value;
+  
+  const contextText = (theme ? `TEMA DEL USUARIO: ${theme}\n` : '') + (pdfText ? `TEXTO DEL DOCUMENTO CARGADO:\n${pdfText.slice(0, 8000)}` : '');
+  
+  const pilarConstraint = pilar ? `Forzar pilar de contenido: "${pilar}".` : 'Elige los pilares más adecuados para los ganchos.';
+  const emocionConstraint = emocion ? `Forzar motor emocional: "${emocion}".` : 'Elige los motores emocionales (Validación de culpa, Disonancia cognitiva, Dolor silencioso) más aptos.';
+  
+  const prompt = `Eres el Director Creativo de Copywriting del Dr. Juan Santiago Molina (@cirujanomolina), cirujano bariátrico premium en Medellín.
+Tu objetivo es generar ganchos (hooks) de alto impacto y alta retención basados estrictamente en el "Manual de Ingeniería de Ganchos" y la "Guía Maestra de Formatos y Hooks".
+
+REGLAS DE ORO DE COPYWRITING:
+1. PROHIBIDOS los ganchos genéricos de marketing tradicional (ej. "3 tips para bajar de peso", "5 consejos sobre...", "Cómo lograr X"). Son invisibles y causan desinterés. Queremos ideas poderosas y punzantes que paren el scroll.
+2. Cada gancho debe apelar a los Tres Deseos Primarios: Salud/Longevidad (sobrevivir, evitar dolor, dejar enfermedades metabólicas) o Sexo/Relaciones (atractivo, validación social, volver a tomarse fotos familiares, verse al espejo sin vergüenza).
+3. Cada gancho debe aplicar uno de estos 3 Motores Emocionales de la marca Molina:
+   - VALIDACIÓN DE CULPA: Romper el autoataque del paciente. La obesidad es una enfermedad biológica, no falta de voluntad.
+     (Ej: "No es falta de voluntad. Es biología.", "Tu cuerpo no está fallando. Tu cuerpo está luchando.")
+   - DISONANCIA COGNITIVA: Ideas contracorriente que chocan con creencias comunes o dogmas para forzar a detener el scroll.
+     (Ej: "La cirugía bariátrica NO es la salida fácil.", "Ozempic no va a resolver lo que tú crees.", "Hay personas perdiendo años de vida por miedo a operarse.")
+   - DOLOR SILENCIOSO: Nombrar heridas emocionales que el paciente bariátrico sufre en silencio y nadie se atreve a decir en redes.
+     (Ej: "Existe un dolor que nadie te pregunta: cómo te sientes contigo misma.", "Lo que más pesa no siempre se mide en kilos.", "Cuándo fue la última vez que te miraste al espejo sin juzgarte.")
+4. RESPETO Y EMPATÍA CLÍNICA: Tocamos dolores y heridas reales (vergüenza social, pérdida de identidad, agotamiento por dietas fallidas), pero SIEMPRE con el máximo respeto y calidez médica. NUNCA ridiculizar, juzgar ni humillar al paciente.
+5. REGLA STOP-STACK (TÉCNICA):
+   - El gancho escrito debe tener máximo 12 palabras.
+   - La información crítica y el dolor/contraste debe estar en las primeras 6 palabras.
+   - Sin saludos, sin disclaimers, sin signos de exclamación ("!"), sin emojis. Entrada directa al conflicto.
+   - Debes envolver exactamente 1 o 2 palabras clave en _itálica_ (usando guiones bajos) para resaltar visualmente en color Teal.
+
+CONTEXTO DE GENERACIÓN:
+${contextText}
+
+CONFIGURACIÓN DE PARÁMETROS:
+- ${pilarConstraint}
+- ${emocionConstraint}
+
+Genera exactamente 5 ganchos candidatos aplicando las directrices anteriores.
+SOLO responde con un objeto JSON puro, sin bloques de código markdown, sin texto extra, para que pueda ser parseado directamente en Javascript. Estructura requerida:
+{
+  "hooks": [
+    {
+      "text": "Texto del gancho con _énfasis_ en itálica",
+      "pillar": "Validación emocional|Educación premium|Contrarian / Mitos|Autoridad humana|Transformación de vida|Conversión directa",
+      "emotion": "Validación de culpa|Disonancia cognitiva|Dolor silencioso|Curiosity Gap|Efecto Cotilla",
+      "format_suggested": "Voz en Off + B-Roll|Pantalla Verde + Análisis|Ranking de 3 (Comparación)|Metáfora Visual|Faceless IA|Espacio Único",
+      "razon": "Frase corta (1 oración) de por qué este gancho es estratégico y respeta las guías"
+    }
+  ]
+}`;
+
+  const apiKey = localStorage.getItem('gemini_api_key') || "AIzaSyDoFbsWJclf_aLUT7hJLF9mz86frAlJeec";
+  
+  try {
+    const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { response_mime_type: "application/json" }
+      })
+    });
+    
+    if(!res.ok) throw new Error("API responded with code " + res.status);
+    const data = await res.json();
+    const textoJSON = data.candidates[0].content.parts[0].text;
+    const json = JSON.parse(textoJSON);
+    
+    if (json.hooks && json.hooks.length > 0) {
+      document.getElementById('btn-clear-gen').style.display = 'block';
+      outputContainer.innerHTML = json.hooks.map((h, i) => {
+        const cleanText = h.text.replace(/"/g, '&quot;');
+        return `<div class="gen-card">
+          <div class="hc-handle">
+            <span>Propuesta #${i+1}</span>
+            <span style="font-size:9px; font-weight:700; color:var(--accent)">@cirujanomolina</span>
+          </div>
+          <div class="gen-card-title">${formatHookText(h.text)}</div>
+          <div class="hc-badges" style="margin-top:2px">
+            <span class="hbadge hbadge-pilar" data-tooltip="${getExplanation(h.pillar)}">${h.pillar}</span>
+            <span class="hbadge hbadge-motor" data-tooltip="${getExplanation(h.emotion)}">${h.emotion}</span>
+            <span class="hbadge hbadge-format" data-tooltip="${getExplanation(h.format_suggested)}">${h.format_suggested}</span>
+          </div>
+          <div class="gen-card-reason"><strong>Análisis:</strong> ${h.razon}</div>
+          <div class="gen-card-actions">
+            <button class="btn" style="padding:4px 8px; font-size:10px" onclick="copyHook('${cleanText}')"><i class="fa-solid fa-copy"></i> Copiar</button>
+            <button class="btn btn-p" style="padding:4px 8px; font-size:10px" id="btn-save-gen-${i}" onclick="saveGeneratedHook(${JSON.stringify(h).replace(/"/g, '&quot;')}, ${i})"><i class="fa-solid fa-bookmark"></i> Guardar en Banco</button>
+          </div>
+        </div>`;
+      }).join('');
+      showToast('✨ Ganchos generados con éxito');
+    } else {
+      throw new Error("Formato JSON de hooks vacío o inválido");
+    }
+    
+  } catch (err) {
+    console.error(err);
+    outputContainer.innerHTML = `<div class="empty-st" style="border-color:var(--danger)">
+      <i class="fa-solid fa-triangle-exclamation" style="color:var(--danger)"></i>
+      <p>Error al conectar con la IA de Gemini. Verifica tu conexión de red o vuelve a intentarlo.</p>
+      <button class="btn" style="margin-top:12px; font-size:11px" onclick="generateAIHooks()"><i class="fa-solid fa-rotate"></i> Reintentar</button>
+    </div>`;
+    showToast('⚠️ Error en la generación por IA');
+  }
+}
+
+// SAVE GENERATED HOOK DIRECTLY TO DATABASE
+async function saveGeneratedHook(hookData, cardIndex) {
+  const btn = document.getElementById(`btn-save-gen-${cardIndex}`);
+  const origText = btn.innerHTML;
+  btn.innerHTML = '<span class="spin"></span> Guardando...';
+  btn.disabled = true;
+  
+  const saved = await saveHookToSupabase(hookData);
+  HOOKS.unshift(saved);
+  applyFilters();
+  
+  btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Guardado';
+  btn.style.background = 'var(--success)';
+  btn.style.color = '#fff';
+  btn.style.borderColor = 'var(--success)';
+  
+  showToast('Gancho guardado en tu base de datos Supabase ✅');
+  
+  setTimeout(() => {
+    btn.innerHTML = origText;
+    btn.style.background = '';
+    btn.style.color = '';
+    btn.style.borderColor = '';
+    btn.disabled = false;
+  }, 2500);
+}
+
+function clearGenOutput() {
+  document.getElementById('g-contexto').value = '';
+  document.getElementById('g-extracted-text').value = '';
+  document.getElementById('g-fileinput').value = '';
+  document.getElementById('g-fileinfo').style.display = 'none';
+  document.getElementById('g-dropzone').classList.remove('dragover');
+  
+  document.getElementById('gen-output-container').innerHTML = `<div class="empty-st" id="gen-empty">
+    <i class="fa-solid fa-sparkles"></i>
+    <p>Ingresa un tema o carga un documento en el panel izquierdo para generar opciones adaptadas a la marca.</p>
+  </div>`;
+  document.getElementById('btn-clear-gen').style.display = 'none';
+}
+
+// HELPERS
+function copyHook(text) {
+  const plainText = text.replace(/_([^_]+)_/g, '$1').replace(/\*([^*]+)\*/g, '$1');
+  navigator.clipboard.writeText(plainText).then(() => {
+    showToast('Gancho copiado al portapapeles ✅');
+  }).catch(err => {
+    console.error('Error al copiar:', err);
+    showToast('❌ No se pudo copiar automáticamente');
+  });
+}
+
+function showToast(msg){
+  if(activeToast){activeToast.remove();activeToast=null;}
+  const t=document.createElement('div');t.className='toast';t.textContent=msg;
+  document.body.appendChild(t);activeToast=t;
+  setTimeout(()=>{t.remove();if(activeToast===t)activeToast=null;},3000);
+}
+
+// THEMING
+let isLight = false;
+window.addEventListener('message', (e) => {
+  if (e.data && e.data.type === 'THEME_CHANGE') {
+    isLight = e.data.payload === 'light';
+    document.body.classList.toggle('light', isLight);
+  }
+});
+
+// BIND TO WINDOW
+window.switchTab = switchTab;
+window.openModal = openModal;
+window.closeModal = closeModal;
+window.saveHook = saveHook;
+window.openById = openById;
+window.askDelete = askDelete;
+window.closeConfirm = closeConfirm;
+window.runConfirm = runConfirm;
+window.applyFilters = applyFilters;
+window.copyHook = copyHook;
+window.handleFileSelect = handleFileSelect;
+window.generateAIHooks = generateAIHooks;
+window.saveGeneratedHook = saveGeneratedHook;
+window.clearGenOutput = clearGenOutput;
+
+// INIT
+loadHooks().then(() => {
+  if (window.parent) {
+    window.parent.postMessage({ type: 'IFRAME_READY' }, '*');
+  }
+});
+</script>
+</body>
+</html>

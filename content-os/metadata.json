@@ -1,0 +1,100 @@
+{
+    "dr_molina_quirofano.jpg": {
+        "photo_type": "Quirófano/Cirugía",
+        "subject": "Dr. Molina con paciente",
+        "mood": "Clínico/Blanco",
+        "safe_space": "top-right",
+        "suggested_filename": "dr_molina_quirofano.jpg"
+    },
+    "dr_molina_quirofano_1.jpg": {
+        "photo_type": "Quirófano/Cirugía",
+        "subject": "Dr. Molina con paciente",
+        "mood": "Clínico/Blanco",
+        "safe_space": "top-left",
+        "suggested_filename": "dr_molina_quirofano.jpg"
+    },
+    "dr_molina_cirugia_robotica.jpg": {
+        "photo_type": "Quirófano/Cirugía",
+        "subject": "Dr. Molina solo",
+        "mood": "Clínico/Blanco",
+        "safe_space": "top-left",
+        "suggested_filename": "dr_molina_cirugia_robotica.jpg"
+    },
+    "dr_molina_quirofano_2.jpg": {
+        "photo_type": "Quirófano/Cirugía",
+        "subject": "Dr. Molina con paciente",
+        "mood": "Clínico/Blanco",
+        "safe_space": "top-left",
+        "suggested_filename": "dr_molina_quirofano.jpg"
+    },
+    "dr_molina_hospital_exterior.jpg": {
+        "photo_type": "Retrato casual",
+        "subject": "Dr. Molina solo",
+        "mood": "Neutro/Brillante",
+        "safe_space": "top-left",
+        "suggested_filename": "dr_molina_hospital_exterior.jpg"
+    },
+    "dr_molina_con_colega.jpg": {
+        "photo_type": "Retrato casual",
+        "subject": "Dr. Molina con paciente",
+        "mood": "Cálido/Humano",
+        "safe_space": "top-right",
+        "suggested_filename": "dr_molina_con_colega.jpg"
+    },
+    "dr_molina_equipo_medico.jpg": {
+        "photo_type": "Quirófano/Cirugía",
+        "subject": "Dr. Molina solo",
+        "mood": "Cálido/Humano",
+        "safe_space": "top-right",
+        "suggested_filename": "dr_molina_equipo_medico.jpg"
+    },
+    "manos_instrumentos_cirugia.jpg": {
+        "photo_type": "Quirófano/Cirugía",
+        "subject": "Manos/Instrumentos",
+        "mood": "Oscuro/Cinemático",
+        "safe_space": "top-left",
+        "suggested_filename": "manos_instrumentos_cirugia.jpg"
+    },
+    "quirofano_vacio.jpg": {
+        "photo_type": "Quirófano/Cirugía",
+        "subject": "Objetos",
+        "mood": "Clínico/Blanco",
+        "safe_space": "left-half",
+        "suggested_filename": "quirofano_vacio.jpg"
+    },
+    "dr_molina_retrato_clinico.jpg": {
+        "photo_type": "Retrato clínico",
+        "subject": "Dr. Molina solo",
+        "mood": "Neutro/Brillante",
+        "safe_space": "top-left",
+        "suggested_filename": "dr_molina_retrato_clinico.jpg"
+    },
+    "dr_molina_quirofano_3.jpg": {
+        "photo_type": "Quirófano/Cirugía",
+        "subject": "Dr. Molina solo",
+        "mood": "Clínico/Blanco",
+        "safe_space": "right-half",
+        "suggested_filename": "dr_molina_quirofano.jpg"
+    },
+    "dr_molina_clinica.jpg": {
+        "photo_type": "Retrato clínico",
+        "subject": "Dr. Molina solo",
+        "mood": "Clínico/Blanco",
+        "safe_space": "top-left",
+        "suggested_filename": "dr_molina_clinica.jpg"
+    },
+    "dr_molina_clinica_1.jpg": {
+        "photo_type": "Retrato clínico",
+        "subject": "Dr. Molina solo",
+        "mood": "Clínico/Blanco",
+        "safe_space": "left-half",
+        "suggested_filename": "dr_molina_clinica.jpg"
+    },
+    "retrato_casual_grupo.jpg": {
+        "photo_type": "Retrato casual",
+        "subject": "Otro",
+        "mood": "Neutro/Brillante",
+        "safe_space": "none",
+        "suggested_filename": "retrato_casual_grupo.jpg"
+    }
+}

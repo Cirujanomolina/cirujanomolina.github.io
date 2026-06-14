@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración — Content OS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../design-system.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            font-family: var(--f-body);
+        }
+        
+        .container {
+            flex: 1;
+            height: auto;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        /* ── HEADER PREMIUM ── */
+        .vb-header {
+            background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 2rem;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            flex-shrink: 0;
+        }
+        .vb-header::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: var(--accent);
+            opacity: 0.04;
+            pointer-events: none;
+        }
+        .vb-header::after {
+            content: '';
+            position: absolute;
+            bottom: -60px;
+            left: 5%;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: var(--beige);
+            opacity: 0.03;
+            pointer-events: none;
+        }
+        .vb-header-main {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 1;
+            min-width: 0;
+        }
+        .vb-header-actions {
+            z-index: 1;
+            flex-shrink: 0;
+        }
+        .vb-title {
+            font-family: var(--f-display);
+            font-size: clamp(22px, 3vw, 30px);
+            font-weight: 300;
+            color: var(--text);
+            line-height: 1.1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin: 0;
+        }
+        .vb-title em {
+            color: var(--accent);
+            font-style: italic;
+        }
+        .vb-badges {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .vb-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 11px;
+            border-radius: 20px;
+            background: rgba(42, 191, 176, 0.1);
+            border: 1px solid rgba(42, 191, 176, 0.25);
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--accent);
+        }
+        
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .config-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .config-card-title {
+            font-family: var(--f-display);
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--border2);
+            padding-bottom: 10px;
+            margin-bottom: 5px;
+        }
+        
+        .config-card-title i {
+            color: var(--accent);
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: var(--fs-sm);
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--border2);
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--text2);
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: var(--text);
+            font-weight: 600;
+            text-align: right;
+            word-break: break-all;
+        }
+
+        .badge {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+        
+        .badge-success {
+            background: rgba(46, 204, 113, 0.15);
+            color: #2ecc71;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .badge-danger {
+            background: rgba(231, 76, 60, 0.15);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .field {
+            margin-bottom: 1rem;
+        }
+        
+        .field label {
+            display: block;
+            font-size: 11px;
+            color: var(--text2);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+        
+        .field input {
+            width: 100%;
+            padding: 10px;
+            background: var(--bg);
+            border: 1px solid var(--border2);
+            color: var(--text);
+            border-radius: var(--radius);
+            font-family: var(--f-body);
+            font-size: var(--fs-sm);
+        }
+        
+        .field input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: var(--radius);
+            border: none;
+            font-family: var(--f-body);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            justify-content: center;
+        }
+        
+        .btn-primary {
+            background: var(--accent);
+            color: #14262D;
+        }
+        .btn-primary:hover {
+            filter: brightness(1.1);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+        .btn-outline:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .status-box {
+            background: rgba(42, 191, 176, 0.06);
+            border-left: 3px solid var(--accent);
+            padding: 12px;
+            border-radius: 0 var(--radius) var(--radius) 0;
+            font-size: var(--fs-xs);
+            color: var(--text2);
+            line-height: 1.4;
+        }
+
+        /* Estilos del explorador de carpetas */
+        .folder-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border2);
+            cursor: pointer;
+            transition: all 0.15s;
+            font-size: 13px;
+            color: var(--text);
+        }
+        .folder-item:last-child {
+            border-bottom: none;
+        }
+        .folder-item:hover {
+            background: var(--surface2);
+        }
+        .folder-item.restricted {
+            opacity: 0.65;
+        }
+        .folder-item.restricted:hover {
+            background: rgba(231, 76, 60, 0.05);
+        }
+    </style>
+</head>
+<body>
+    <header class="vb-header">
+        <div class="vb-header-main">
+            <h1 class="vb-title">Configuración del <em>Sistema</em></h1>
+            <div class="vb-badges">
+                <span class="vb-badge"><i class="ti ti-settings"></i> Parámetros</span>
+                <span class="vb-badge"><i class="ti ti-key"></i> Clave Gemini</span>
+                <span class="vb-badge"><i class="ti ti-folder"></i> Sandbox Assets</span>
+            </div>
+        </div>
+        <div class="vb-header-actions">
+        </div>
+    </header>
+
+    <div class="container fade-in" data-module="configuracion">
+        <!-- TABS DE CONFIGURACIÓN -->
+        <div class="tabs" style="margin-bottom: 1.5rem; display: flex; gap: 1rem; border-bottom: 1px solid var(--border2);">
+            <button class="tab active" id="tab-system" style="padding: 0.75rem 0.5rem; font-weight: 600; cursor: pointer;"><i class="ti ti-settings"></i> Configuración de Sistema</button>
+            <button class="tab" id="tab-activity" style="padding: 0.75rem 0.5rem; font-weight: 600; cursor: pointer;"><i class="ti ti-history"></i> Historial de Actividad</button>
+        </div>
+
+        <div id="section-system">
+            <div class="config-grid">
+                <!-- TARJETA 1: SERVIDOR LOCAL Y DIRECCIONAMIENTO DE ASSETS -->
+                <div class="config-card">
+                    <h2 class="config-card-title"><i class="ti ti-device-laptop"></i> Servidor Local & Directorio</h2>
+                    <div class="status-box">
+                        <i class="ti ti-shield-lock" style="color:var(--accent); font-size: 14px;"></i>
+                        <strong>Seguridad Restringida:</strong> El re-escaneo y renombrado de archivos por parte del motor local está estrictamente limitado a la carpeta <code>assets/</code> de tu proyecto o sus subcarpetas, garantizando que el sistema no acceda a otras rutas privadas.
+                    </div>
+
+                    <div class="field" style="margin-bottom: 0.5rem;">
+                        <label>Ruta de la Carpeta de Assets</label>
+                        <div style="position:relative; display:flex; gap:8px;">
+                            <input type="text" id="assets-path-input" placeholder="Calculando..." readonly style="font-family:monospace; font-size:11px;">
+                            <button class="btn btn-outline" style="padding: 10px;" onclick="openFolderBrowser()" title="Explorar Carpetas"><i class="ti ti-folder"></i></button>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; flex-direction:column; gap:8px;">
+                        <div class="info-row">
+                            <span class="info-label">Estado del Servidor:</span>
+                            <span class="info-value" id="server-status"><span class="badge badge-danger">Desconectado</span></span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Fotos en Base de Datos:</span>
+                            <span class="info-value" id="count-images">0</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Logos Detectados:</span>
+                            <span class="info-value" id="count-logos">0</span>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:10px; margin-top:5px;">
+                        <button class="btn btn-primary" style="flex:1;" onclick="saveAssetsDirectory()"><i class="ti ti-device-floppy"></i> Guardar Ruta</button>
+                        <button class="btn btn-outline" style="flex:1;" onclick="checkBackendConnection()"><i class="ti ti-refresh"></i> Verificar Conexión</button>
+                    </div>
+                </div>
+
+                <!-- TARJETA 2: CLAVE API GEMINI -->
+                <div class="config-card">
+                    <h2 class="config-card-title"><i class="ti ti-key"></i> Clave API Google Gemini</h2>
+                    <div class="status-box" style="border-left-color: var(--accent);">
+                        <i class="ti ti-lock" style="color:var(--accent); font-size: 14px;"></i>
+                        <strong>Privacidad Garantizada:</strong> Tu API Key se almacena localmente en la memoria de tu navegador (localStorage). Nunca se comparte con servidores externos de terceros.
+                    </div>
+                    
+                    <div class="field">
+                        <label>API Key de Gemini</label>
+                        <div style="position:relative; display:flex; gap:8px;">
+                            <input type="password" id="gemini-key" placeholder="AIzaSy...">
+                            <button class="btn btn-outline" style="padding: 10px;" onclick="toggleKeyVisibility()" title="Mostrar/Ocultar"><i class="ti ti-eye" id="eye-icon"></i></button>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn btn-primary" style="flex:1;" onclick="saveApiKey()"><i class="ti ti-device-floppy"></i> Guardar Clave</button>
+                        <button class="btn btn-outline" style="flex:1;" onclick="testApiKey()" id="btn-test-key"><i class="ti ti-flask"></i> Probar Conexión</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TARJETA 3: ESTADO E INDEXACIÓN DE FOTOS -->
+            <div class="config-card" style="margin-bottom: 2rem;">
+                <h2 class="config-card-title"><i class="ti ti-scan"></i> Indexación con IA & Biblioteca</h2>
+                <p style="font-size: 13px; color: var(--text2); line-height: 1.4; margin: 0;">
+                    Cuando añadas nuevas fotografías en formato <strong>JPG, PNG o WebP</strong> a la carpeta de imágenes, presiona el botón inferior. La Inteligencia Artificial analizará la composición de cada imagen, identificará los sujetos, el estado de iluminación y determinará qué zonas vacías tiene la foto (espacio seguro) para que al diseñar el carrusel se recomiende la imagen óptima automáticamente según la distribución del texto.
+                </p>
+                <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border2); padding-top:15px; margin-top:5px; flex-wrap:wrap; gap:15px;">
+                    <div style="font-size:12px; color:var(--text3);" id="scan-status-text">
+                        Haz clic en escanear para buscar nuevas fotografías no analizadas.
+                    </div>
+                    <button class="btn btn-primary" onclick="rescanAssetsIa()" id="btn-scan-main" style="padding:10px 20px;">
+                        <i class="ti ti-wand"></i> Escanear e Indexar con Gemini
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DE HISTORIAL DE ACTIVIDAD -->
+        <div id="section-activity" style="display: none;">
+            <div class="config-card" style="width: 100%; max-width: 100%; margin-bottom: 2rem;">
+                <h2 class="config-card-title"><i class="ti ti-history"></i> Registro de Actividad del Sistema</h2>
+                <p style="font-size: 13px; color: var(--text2); margin-top: -5px; margin-bottom: 10px;">
+                    Listado en tiempo real de las últimas 100 acciones realizadas por los colaboradores de la plataforma. Esta sección es de solo lectura.
+                </p>
+                
+                <!-- Filtros -->
+                <div style="display: flex; gap: 12px; margin-bottom: 1rem; align-items: flex-end; flex-wrap: wrap; background: var(--bg2); padding: 12px; border-radius: var(--r-sm); border: 1px solid var(--border2);">
+                    <div class="field" style="margin: 0; flex: 1; min-width: 200px;">
+                        <label style="font-size: 10px; color: var(--text3); font-weight: 600; text-transform: uppercase;">Buscar por Colaborador</label>
+                        <input type="text" id="log-search-user" placeholder="Nombre o correo..." style="padding: 8px 10px; font-size: 12px; background: var(--bg);">
+                    </div>
+                    <div class="field" style="margin: 0; width: 220px;">
+                        <label style="font-size: 10px; color: var(--text3); font-weight: 600; text-transform: uppercase;">Filtrar por Acción</label>
+                        <select id="log-filter-action" style="padding: 8px 10px; font-size: 12px; background: var(--bg);">
+                            <option value="">Todas las acciones</option>
+                            <option value="Inicio de Sesión">Inicio de Sesión</option>
+                            <option value="Cierre de Sesión">Cierre de Sesión</option>
+                            <option value="Registro de Cuenta">Registro de Cuenta</option>
+                            <option value="Creación">Creación</option>
+                            <option value="Edición">Edición</option>
+                            <option value="Eliminación">Eliminación</option>
+                            <option value="Aprobación">Aprobación</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="btn-refresh-logs" style="padding: 9px 15px; font-size: 12px;"><i class="ti ti-refresh"></i> Actualizar Logs</button>
+                </div>
+
+                <div id="logs-loading" style="text-align: center; padding: 2rem; color: var(--text2);">
+                    <i class="ti ti-loader ti-spin" style="font-size: 2rem; color: var(--accent);"></i>
+                    <p style="margin-top: 8px; font-size: 13px;">Cargando registro de actividad...</p>
+                </div>
+
+                <!-- Tabla de Logs -->
+                <div id="logs-table-container" style="display: none; overflow-x: auto; border: 1px solid var(--border2); border-radius: var(--r-sm); background: var(--bg);">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px; text-align: left;">
+                        <thead>
+                            <tr style="background: var(--surface2); border-bottom: 1px solid var(--border2); color: var(--text2);">
+                                <th style="padding: 10px 12px; font-weight: 600; width: 160px;">Fecha y Hora</th>
+                                <th style="padding: 10px 12px; font-weight: 600; width: 220px;">Colaborador</th>
+                                <th style="padding: 10px 12px; font-weight: 600; width: 180px;">Acción</th>
+                                <th style="padding: 10px 12px; font-weight: 600;">Detalles</th>
+                            </tr>
+                        </thead>
+                        <tbody id="log-table-body">
+                            <!-- Filas dinámicas -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="logs-empty" style="display: none; text-align: center; padding: 3rem; color: var(--text2);">
+                    <i class="ti ti-history" style="font-size: 2.5rem; color: var(--text3); margin-bottom: 10px; display: block;"></i>
+                    <p style="margin: 0; font-size: 13px;">No se encontraron registros que coincidan con los filtros.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EXPLORADOR DE CARPETAS -->
+    <div id="folder-modal" class="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(4px); z-index:1000; align-items:center; justify-content:center; padding: 20px;">
+        <div class="modal-content" style="background:var(--surface); border:1px solid var(--border); border-radius:var(--r); width:100%; max-width:600px; padding:1.5rem; display:flex; flex-direction:column; gap:1.25rem; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+            <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border2); padding-bottom:12px;">
+                <h3 style="font-family:var(--f-display); font-size:1.2rem; font-weight:600; color:var(--text); margin:0; display:flex; align-items:center; gap:8px;">
+                    <i class="ti ti-folder-open" style="color:var(--accent);"></i> Seleccionar Carpeta
+                </h3>
+                <button onclick="closeFolderBrowser()" style="background:transparent; border:none; color:var(--text2); cursor:pointer; font-size:1.25rem; display:flex; align-items:center; justify-content:center; margin-left:auto;"><i class="ti ti-x"></i></button>
+            </div>
+            
+            <div style="font-size:12.5px; color:var(--text2); line-height:1.4;">
+                Navega por las carpetas de tu proyecto. El permiso de escaneo e indexación está restringido estrictamente a la carpeta <code style="color:var(--accent);">assets</code> y sus subcarpetas.
+            </div>
+
+            <!-- RUTA ACTUAL -->
+            <div style="background:var(--bg); border:1px solid var(--border2); padding:10px; border-radius:var(--radius); font-family:monospace; font-size:11px; color:var(--text); display:flex; align-items:center; gap:6px; word-break:break-all;">
+                <i class="ti ti-folder" style="color:var(--text3);"></i> <span id="modal-current-path">/</span>
+            </div>
+
+            <!-- CONTENIDO DE CARPETAS -->
+            <div id="modal-folder-list" style="max-height:280px; overflow-y:auto; border:1px solid var(--border2); border-radius:var(--radius); background:var(--bg); display:flex; flex-direction:column;">
+                <!-- Rellenado por JS -->
+            </div>
+
+            <!-- BOTONES -->
+            <div style="display:flex; gap:12px; justify-content:flex-end; border-top:1px solid var(--border2); padding-top:15px; margin-top:5px;">
+                <button class="btn btn-outline" onclick="closeFolderBrowser()">Cancelar</button>
+                <button class="btn btn-primary" onclick="selectCurrentFolder()" id="btn-confirm-folder"><i class="ti ti-check"></i> Seleccionar Carpeta</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { supabase } from '../supabase-client.js';
+
+        const DEFAULT_KEY = "AIzaSyDoFbsWJclf_aLUT7hJLF9mz86frAlJeec";
+        let modalSelectedPath = "";
+        let modalSelectedPathCompatible = false;
+        let allLogs = [];
+
+
+        // Escuchar el cambio de tema del shell
+        window.addEventListener('message', (e) => {
+            if (e.data && e.data.type === 'THEME_CHANGE') {
+                document.body.classList.toggle('light', e.data.payload === 'light');
+            }
+        });
+        window.parent.postMessage({ type: 'IFRAME_READY' }, '*');
+
+        // Cargar claves e información al iniciar
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedKey = localStorage.getItem('gemini_api_key') || DEFAULT_KEY;
+            document.getElementById('gemini-key').value = savedKey;
+            
+            checkBackendConnection();
+        });
+
+        window.toggleKeyVisibility = () => {
+            const input = document.getElementById('gemini-key');
+            const icon = document.getElementById('eye-icon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'ti ti-eye-off';
+            } else {
+                input.type = 'password';
+                icon.className = 'ti ti-eye';
+            }
+        };
+
+        window.saveApiKey = () => {
+            const keyVal = document.getElementById('gemini-key').value.trim();
+            if (!keyVal) {
+                alert("Por favor introduce una clave válida.");
+                return;
+            }
+            localStorage.setItem('gemini_api_key', keyVal);
+            alert("Clave API de Gemini guardada correctamente.");
+        };
+
+        window.testApiKey = async () => {
+            const keyVal = document.getElementById('gemini-key').value.trim();
+            const btn = document.getElementById('btn-test-key');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="ti ti-loader ti-spin"></i> Conectando...';
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={keyVal}`.replace('{keyVal}', keyVal), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: "Di 'OK' para verificar la conexión de la clave" }] }] })
+                });
+
+                if (res.ok) {
+                    alert("¡Prueba de conexión Exitosa!\nTu API Key de Gemini responde correctamente.");
+                } else {
+                    const err = await res.json();
+                    alert("Error en la conexión: " + (err.error?.message || "Código HTTP " + res.status));
+                }
+            } catch (e) {
+                alert("Fallo al conectar con Google Gemini: " + e.message);
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        };
+
+        window.checkBackendConnection = async () => {
+            const statusBadge = document.getElementById('server-status');
+            const pathInput = document.getElementById('assets-path-input');
+            const imgCount = document.getElementById('count-images');
+            const logoCount = document.getElementById('count-logos');
+            
+            try {
+                // Primero obtenemos la configuración de directorios
+                const configRes = await fetch('/api/config');
+                if (!configRes.ok) throw new Error("Offline");
+                const configData = await configRes.json();
+                
+                pathInput.value = configData.assets_dir;
+                
+                // Luego listamos los assets cargados desde esa ruta
+                const res = await fetch('/api/assets');
+                if (!res.ok) throw new Error("Offline");
+                const data = await res.json();
+                
+                statusBadge.innerHTML = '<span class="badge badge-success">Conectado</span>';
+                imgCount.textContent = data.images ? data.images.length : 0;
+                logoCount.textContent = data.logos ? data.logos.length : 0;
+            } catch (e) {
+                statusBadge.innerHTML = '<span class="badge badge-danger">Desconectado</span>';
+                pathInput.value = "Servidor API local no detectado";
+                imgCount.textContent = "0";
+                logoCount.textContent = "0";
+            }
+        };
+
+        // Explorador de Carpetas Modal
+        window.openFolderBrowser = async () => {
+            const modal = document.getElementById('folder-modal');
+            modal.style.display = 'flex';
+            
+            // Cargar directorios desde la raíz del proyecto
+            await navigateFolder("");
+        };
+
+        window.closeFolderBrowser = () => {
+            const modal = document.getElementById('folder-modal');
+            modal.style.display = 'none';
+        };
+
+        window.navigateFolder = async (path) => {
+            const listContainer = document.getElementById('modal-folder-list');
+            const pathSpan = document.getElementById('modal-current-path');
+            
+            listContainer.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text3);"><i class="ti ti-loader ti-spin" style="font-size:20px;"></i> Cargando carpetas...</div>';
+            
+            try {
+                const res = await fetch('/api/list-folders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ dir: path })
+                });
+                
+                if (!res.ok) throw new Error("Fallo al listar carpetas");
+                const data = await res.json();
+                
+                pathSpan.textContent = data.current_dir;
+                modalSelectedPath = data.current_dir;
+                
+                // Comprobamos si la carpeta actual es compatible o descendiente directa de assets
+                // En el backend, validate_assets_path devuelve true si la carpeta actual está dentro del sandbox de assets.
+                // Sin embargo, para poder seleccionarla, comprobaremos si la carpeta actual es assets o subcarpeta de esta.
+                // Haremos una llamada de control sencilla o usaremos la estructura.
+                // En nuestro explorador virtual, permitiremos navegar por todo el proyecto pero solo 'assets/' o hijos serán seleccionables.
+                // Vamos a ver si el backend nos marca si la carpeta actual es compatible:
+                // Para saber si la actual es compatible, podemos mirar si el path contiene "assets" (con separadores apropiados)
+                // O hacer que la comprobación la realice el botón de confirmación.
+                
+                const isCurrentCompatible = data.current_dir.replace(/\\/g, '/').endsWith('/assets') || data.current_dir.replace(/\\/g, '/').includes('/assets/');
+                modalSelectedPathCompatible = isCurrentCompatible;
+                
+                const confirmBtn = document.getElementById('btn-confirm-folder');
+                if (isCurrentCompatible) {
+                    confirmBtn.disabled = false;
+                    confirmBtn.style.opacity = "1";
+                    confirmBtn.style.cursor = "pointer";
+                } else {
+                    confirmBtn.disabled = true;
+                    confirmBtn.style.opacity = "0.5";
+                    confirmBtn.style.cursor = "not-allowed";
+                }
+
+                listContainer.innerHTML = "";
+                
+                // Botón para subir de nivel si no estamos en la raíz del proyecto
+                if (data.parent_dir) {
+                    const upItem = document.createElement('div');
+                    upItem.className = 'folder-item';
+                    upItem.innerHTML = `
+                        <i class="ti ti-arrow-back-up" style="color:var(--text3); font-size:16px;"></i>
+                        <span style="flex:1; font-style:italic;">Subir un nivel (..)</span>
+                    `;
+                    upItem.onclick = () => navigateFolder(data.parent_dir);
+                    listContainer.appendChild(upItem);
+                }
+                
+                if (data.folders.length === 0) {
+                    const emptyItem = document.createElement('div');
+                    emptyItem.style.padding = '15px';
+                    emptyItem.style.textAlign = 'center';
+                    emptyItem.style.color = 'var(--text3)';
+                    emptyItem.style.fontSize = '12px';
+                    emptyItem.textContent = "No hay subcarpetas en este directorio.";
+                    listContainer.appendChild(emptyItem);
+                } else {
+                    data.folders.forEach(folder => {
+                        const item = document.createElement('div');
+                        // Si la carpeta de destino o sus hijos están dentro de assets:
+                        const isCompatible = folder.is_assets_compatible;
+                        item.className = `folder-item ${isCompatible ? 'allowed' : 'restricted'}`;
+                        item.innerHTML = `
+                            <i class="ti ${isCompatible ? 'ti-folder-check' : 'ti-folder'}" style="color:${isCompatible ? 'var(--accent)' : 'var(--text3)'}; font-size:16px;"></i>
+                            <span style="flex:1; font-weight:500;">${folder.name}</span>
+                            ${isCompatible ? '<span style="font-size:10px; color:var(--accent); background:rgba(42,191,176,0.1); padding:2px 6px; border-radius:4px;">Permitida</span>' : '<span style="font-size:10px; color:var(--text3); background:rgba(255,255,255,0.05); padding:2px 6px; border-radius:4px;">Bloqueada</span>'}
+                        `;
+                        item.onclick = () => navigateFolder(folder.path);
+                        listContainer.appendChild(item);
+                    });
+                }
+            } catch (e) {
+                listContainer.innerHTML = `<div style="padding:20px; text-align:center; color:#e74c3c;"><i class="ti ti-alert-triangle"></i> Error al cargar carpetas: ${e.message}</div>`;
+            }
+        };
+
+        window.selectCurrentFolder = () => {
+            if (!modalSelectedPathCompatible) {
+                alert("Acceso denegado: Por seguridad, solo se permite seleccionar la carpeta 'assets' o subcarpetas de ella.");
+                return;
+            }
+            document.getElementById('assets-path-input').value = modalSelectedPath;
+            closeFolderBrowser();
+        };
+
+        window.saveAssetsDirectory = async () => {
+            const pathVal = document.getElementById('assets-path-input').value.trim();
+            if (!pathVal || pathVal.startsWith("Servidor API")) {
+                alert("Por favor selecciona una ruta de carpeta válida primero.");
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/save-config', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ assets_dir: pathVal })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || "Fallo en el servidor");
+                }
+                
+                alert("¡Directorio de assets guardado y configurado con éxito!");
+                checkBackendConnection();
+            } catch (e) {
+                alert("Error al guardar configuración: " + e.message);
+            }
+        };
+
+        window.rescanAssetsIa = async () => {
+            const keyVal = document.getElementById('gemini-key').value.trim();
+            const btn = document.getElementById('btn-scan-main');
+            const statusText = document.getElementById('scan-status-text');
+            const originalText = btn.innerHTML;
+            
+            btn.innerHTML = '<i class="ti ti-loader ti-spin"></i> Indexando Biblioteca...';
+            btn.disabled = true;
+            statusText.textContent = "Analizando imágenes en segundo plano. Esto puede tardar unos segundos por foto...";
+
+            try {
+                const response = await fetch('/api/rescan', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ api_key: keyVal })
+                });
+                
+                if (!response.ok) {
+                    const data = await response.json();
+                    throw new Error(data.error || "Error en el servidor local");
+                }
+                
+                const data = await response.json();
+                alert(`¡Indexación Completada con éxito!\nSe encontraron y analizaron ${data.new_analyses} nuevas imágenes.`);
+                
+                if (data.errors && data.errors.length > 0) {
+                    console.warn(data.errors);
+                    alert("Hubo algunas advertencias:\n" + data.errors.join("\n"));
+                }
+                
+                statusText.textContent = `Último escaneo completado. Analizadas ${data.new_analyses} fotos nuevas.`;
+                checkBackendConnection();
+            } catch (e) {
+                alert("Error al ejecutar indexación: " + e.message);
+                statusText.textContent = "Ocurrió un error al indexar. Asegúrate de que el servidor local esté en ejecución y la ruta sea correcta.";
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        };
+
+        // ── CONTROL DE PESTAÑAS Y LOGS DE AUDITORÍA ──
+        const tabSystem = document.getElementById('tab-system');
+        const tabActivity = document.getElementById('tab-activity');
+        const sectionSystem = document.getElementById('section-system');
+        const sectionActivity = document.getElementById('section-activity');
+
+        tabSystem.addEventListener('click', () => {
+            tabSystem.classList.add('active');
+            tabActivity.classList.remove('active');
+            sectionSystem.style.display = 'block';
+            sectionActivity.style.display = 'none';
+        });
+
+        tabActivity.addEventListener('click', () => {
+            tabActivity.classList.add('active');
+            tabSystem.classList.remove('active');
+            sectionSystem.style.display = 'none';
+            sectionActivity.style.display = 'block';
+            loadAuditLogs();
+        });
+
+        async function loadAuditLogs() {
+            const loading = document.getElementById('logs-loading');
+            const tableContainer = document.getElementById('logs-table-container');
+            const empty = document.getElementById('logs-empty');
+            
+            loading.style.display = 'block';
+            tableContainer.style.display = 'none';
+            empty.style.display = 'none';
+
+            try {
+                const { data, error } = await supabase
+                    .from('audit_logs')
+                    .select('*')
+                    .order('created_at', { ascending: false })
+                    .limit(100);
+
+                if (error) throw error;
+
+                allLogs = data || [];
+                applyLogFilters();
+            } catch (err) {
+                console.error("Error loading logs:", err);
+                loading.style.display = 'none';
+                empty.style.display = 'block';
+                empty.innerHTML = `<i class="ti ti-alert-triangle" style="color: var(--danger); font-size: 2rem;"></i><p style="margin-top: 8px;">Error al cargar logs: ${err.message}</p>`;
+            }
+        }
+
+        function applyLogFilters() {
+            const searchVal = document.getElementById('log-search-user').value.toLowerCase().trim();
+            const actionVal = document.getElementById('log-filter-action').value;
+            const tbody = document.getElementById('log-table-body');
+            const tableContainer = document.getElementById('logs-table-container');
+            const empty = document.getElementById('logs-empty');
+            const loading = document.getElementById('logs-loading');
+
+            loading.style.display = 'none';
+            tbody.innerHTML = '';
+
+            let filtered = allLogs;
+
+            if (searchVal) {
+                filtered = filtered.filter(log => 
+                    (log.user_name && log.user_name.toLowerCase().includes(searchVal)) || 
+                    (log.user_email && log.user_email.toLowerCase().includes(searchVal))
+                );
+            }
+
+            if (actionVal) {
+                filtered = filtered.filter(log => 
+                    log.action && log.action.toLowerCase().includes(actionVal.toLowerCase())
+                );
+            }
+
+            if (filtered.length === 0) {
+                tableContainer.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+
+            tableContainer.style.display = 'block';
+            empty.style.display = 'none';
+
+            filtered.forEach(log => {
+                const tr = document.createElement('tr');
+                tr.style.borderBottom = '1px solid var(--border2)';
+                tr.style.transition = 'background 0.2s';
+                tr.addEventListener('mouseenter', () => tr.style.background = 'var(--surface)');
+                tr.addEventListener('mouseleave', () => tr.style.background = 'transparent');
+
+                // Format date nicely
+                const dateObj = new Date(log.created_at);
+                const formattedDate = dateObj.toLocaleDateString('es-CO', {
+                    day: '2-digit',
+                    month: 'short',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                });
+
+                // Format action badge
+                let badgeClass = 'badge-info';
+                if (log.action.includes('Inicio') || log.action.includes('Aprobación') || log.action.includes('Registro')) badgeClass = 'badge-success';
+                if (log.action.includes('Cierre') || log.action.includes('Eliminación')) badgeClass = 'badge-danger';
+                if (log.action.includes('Edición') || log.action.includes('Actualizar')) badgeClass = 'badge-warning';
+
+                tr.innerHTML = `
+                    <td style="padding: 10px 12px; color: var(--text2); font-family: monospace;">${formattedDate}</td>
+                    <td style="padding: 10px 12px;">
+                        <div style="font-weight: 500;">${log.user_name}</div>
+                        <div style="font-size: 11px; color: var(--text3);">${log.user_email}</div>
+                    </td>
+                    <td style="padding: 10px 12px;"><span class="badge ${badgeClass}">${log.action}</span></td>
+                    <td style="padding: 10px 12px; color: var(--text2); font-size: 12px;">${log.details || ''}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Bind filter event listeners
+        document.getElementById('log-search-user').addEventListener('input', applyLogFilters);
+        document.getElementById('log-filter-action').addEventListener('change', applyLogFilters);
+        document.getElementById('btn-refresh-logs').addEventListener('click', loadAuditLogs);
+    </script>
+</body>
+</html>

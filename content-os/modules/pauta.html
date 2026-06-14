@@ -1,0 +1,2083 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pauta — Content OS</title>
+    <link rel="stylesheet" href="../design-system.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            font-family: var(--f-body);
+        }
+
+        .container {
+            flex: 1;
+            height: auto;
+            overflow-y: auto;
+            padding: clamp(1rem, 3vw, 2rem);
+        }
+
+        /* ── HEADER PREMIUM ── */
+        .vb-header {
+            background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 2rem;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            flex-shrink: 0;
+        }
+        .vb-header::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: var(--accent);
+            opacity: 0.04;
+            pointer-events: none;
+        }
+        .vb-header::after {
+            content: '';
+            position: absolute;
+            bottom: -60px;
+            left: 5%;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: var(--beige);
+            opacity: 0.03;
+            pointer-events: none;
+        }
+        .vb-header-main {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 1;
+            min-width: 0;
+        }
+        .vb-header-actions {
+            z-index: 1;
+            flex-shrink: 0;
+        }
+        .vb-title {
+            font-family: var(--f-display);
+            font-size: clamp(22px, 3vw, 30px);
+            font-weight: 300;
+            color: var(--text);
+            line-height: 1.1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin: 0;
+        }
+        .vb-title em {
+            color: var(--accent);
+            font-style: italic;
+        }
+        .vb-badges {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .vb-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 11px;
+            border-radius: 20px;
+            background: rgba(42, 191, 176, 0.1);
+            border: 1px solid rgba(42, 191, 176, 0.25);
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--accent);
+        }
+
+        /* ── BENTO KPI GRID ── */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        @media (max-width: 1024px) {
+            .kpi-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (max-width: 600px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        .kpi-card {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: var(--r);
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .kpi-card:hover {
+            border-color: var(--accent);
+            background: var(--surface2);
+            transform: translateY(-2px);
+        }
+        .kpi-card.active {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--teal-bg);
+        }
+        .kpi-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text2);
+        }
+        .kpi-val {
+            font-family: var(--f-display);
+            font-size: 1.75rem;
+            line-height: 1.1;
+            color: var(--accent);
+            font-weight: 500;
+        }
+        .kpi-sub {
+            font-size: 11px;
+            color: var(--text3);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* ── BENTO MAIN GRID ── */
+        .layout-main {
+            display: grid;
+            grid-template-columns: 1.8fr 1fr;
+            gap: 1.5rem;
+            align-items: start;
+            margin-bottom: 2rem;
+        }
+        .layout-main.hide-right {
+            grid-template-columns: 1fr;
+        }
+        .layout-main.hide-right #col-pauta-right {
+            display: none !important;
+        }
+        #col-pauta-right .ai-grid {
+            grid-template-columns: 1fr;
+        }
+        #col-pauta-right .tabs {
+            margin-bottom: 0.75rem;
+        }
+        @media (max-width: 1024px) {
+            .layout-main {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ── HIERARCHICAL TABLE ── */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: var(--r-sm);
+            border: 1px solid var(--border2);
+            background: var(--surface);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: var(--fs-sm);
+        }
+        th, td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border3);
+        }
+        th {
+            background: var(--surface2);
+            font-weight: 600;
+            color: var(--text2);
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.05em;
+        }
+        tr {
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        
+        /* Hierarchy level stylings */
+        .campaign-row {
+            background: var(--surface2) !important;
+            border-left: 3px solid var(--accent);
+        }
+        .campaign-row:hover {
+            background: var(--surface3) !important;
+        }
+        .adset-row {
+            background: var(--surface) !important;
+            border-left: 3px dashed var(--text3);
+            font-size: 0.95em;
+        }
+        .adset-row:hover {
+            background: var(--surface2) !important;
+        }
+        .ad-row {
+            background: transparent !important;
+            border-left: 3px solid transparent;
+            font-size: 0.9em;
+        }
+        .ad-row:hover {
+            background: var(--surface2) !important;
+        }
+
+        tr.selected-row {
+            background: var(--teal-bg) !important;
+            box-shadow: inset 0 0 0 1px var(--accent);
+        }
+
+        /* Collapsible elements chevrons */
+        .toggle-icon {
+            cursor: pointer;
+            color: var(--accent);
+            font-size: 12px;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .toggle-icon:hover {
+            background: rgba(42, 191, 176, 0.15);
+        }
+
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        .badge-active {
+            background: rgba(39, 174, 96, 0.15);
+            color: var(--success);
+        }
+        .badge-paused {
+            background: rgba(201, 134, 42, 0.15);
+            color: var(--amber);
+        }
+        .badge-draft {
+            background: rgba(106, 143, 152, 0.15);
+            color: var(--text3);
+        }
+
+        .actions-cell {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* ── FUNNEL CSS VISUALIZER ── */
+        .funnel-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 1rem 0;
+        }
+        .funnel-level {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.65rem 1rem;
+            border-radius: var(--r-sm);
+            color: #fff;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            position: relative;
+            cursor: pointer;
+        }
+        .funnel-level:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 15px rgba(42, 191, 176, 0.2);
+        }
+        
+        .funnel-l1 { width: 100%; background: linear-gradient(90deg, #1f434e, #2abfb0); }
+        .funnel-l2 { width: 85%; background: linear-gradient(90deg, #1c3641, #24a093); }
+        .funnel-l3 { width: 70%; background: linear-gradient(90deg, #182f38, #1c857b); }
+        .funnel-l4 { width: 55%; background: linear-gradient(90deg, #14262d, #146961); }
+        .funnel-l5 { width: 40%; background: linear-gradient(90deg, #0f1e24, #0e504a); border: 1px solid var(--accent); }
+
+        .funnel-label {
+            font-size: 10px;
+            font-weight: 600;
+            opacity: 0.95;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .funnel-val {
+            font-family: var(--f-display);
+            font-size: 1.25rem;
+            font-weight: 500;
+            line-height: 1.2;
+        }
+        .funnel-pct {
+            font-size: 9px;
+            opacity: 0.8;
+        }
+        .funnel-connector {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--accent);
+            font-size: 10px;
+            font-weight: 600;
+            gap: 1px;
+            line-height: 1;
+            padding: 2px 0;
+        }
+        .funnel-connector i {
+            font-size: 11px;
+        }
+
+        /* ── AI GENERATOR STYLE ── */
+        .ai-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        @media (max-width: 600px) {
+            .ai-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .ai-output-area {
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            border-radius: var(--r-sm);
+            padding: 1rem;
+            max-height: 250px;
+            overflow-y: auto;
+            font-size: var(--fs-sm);
+            line-height: 1.6;
+            white-space: pre-wrap;
+            position: relative;
+        }
+        
+        .ai-output-area h4 {
+            color: var(--accent);
+            font-family: var(--f-display);
+            font-size: var(--fs-lg);
+            margin-bottom: 0.4rem;
+            border-bottom: 1px dashed var(--border2);
+            padding-bottom: 4px;
+            margin-top: 0.6rem;
+        }
+        .ai-output-area h4:first-child {
+            margin-top: 0;
+        }
+
+        /* ── TOASTS ── */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 2000;
+        }
+        .toast {
+            background: var(--surface3);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--r-sm);
+            font-size: var(--fs-sm);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: slideIn 0.3s ease forwards;
+        }
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* ── LIGHT MODE COMPATIBILITY ── */
+        body.light .funnel-level {
+            color: #fff;
+        }
+    </style>
+</head>
+<body class="dark">
+
+    <!-- CABECERA -->
+    <header class="vb-header">
+        <div class="vb-header-main">
+            <h1 class="vb-title">Gestión de <em>Pauta</em></h1>
+            <div class="vb-badges">
+                <span class="vb-badge" id="badge-campaigns"><i class="ti ti-speakerphone"></i> 0 Campañas</span>
+                <span class="vb-badge"><i class="ti ti-brand-meta"></i> Meta Ads</span>
+                <span class="vb-badge"><i class="ti ti-hierarchy"></i> Estructura Jerárquica</span>
+            </div>
+        </div>
+        <div class="vb-header-actions" style="display: flex; gap: 10px;">
+            <button class="btn btn-ghost" id="btn-toggle-sidebar" onclick="window.togglePautaSidebar()" title="Ocultar/Mostrar panel lateral"><i class="ti ti-eye-off"></i> <span id="toggle-sidebar-text">Ocultar Lateral</span></button>
+            <button class="btn btn-primary" onclick="openCampaignModal()"><i class="ti ti-plus"></i> Nueva Campaña</button>
+        </div>
+    </header>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="container fade-in">
+        
+        <!-- ROW 1: KPI CARDS -->
+        <div class="kpi-grid">
+            <div class="kpi-card" id="kpi-card-spend" onclick="clearSelection()">
+                <div class="kpi-title">Inversión Acumulada</div>
+                <div class="kpi-val" id="kpi-spend">$0.00</div>
+                <div class="kpi-sub" id="sub-budget"><i class="ti ti-wallet"></i> Presupuesto Diario: $0</div>
+            </div>
+            <div class="kpi-card" onclick="clearSelection()">
+                <div class="kpi-title">Clics Totales</div>
+                <div class="kpi-val" id="kpi-clicks">0</div>
+                <div class="kpi-sub" id="sub-ctr"><i class="ti ti-trending-up"></i> 0.00% CTR</div>
+            </div>
+            <div class="kpi-card" onclick="clearSelection()">
+                <div class="kpi-title">Visitas Landing</div>
+                <div class="kpi-val" id="kpi-visits">0</div>
+                <div class="kpi-sub" id="sub-visits-rate"><i class="ti ti-link"></i> 0% de Clics</div>
+            </div>
+            <div class="kpi-card" onclick="clearSelection()">
+                <div class="kpi-title">Leads WhatsApp</div>
+                <div class="kpi-val" id="kpi-leads">0</div>
+                <div class="kpi-sub" id="sub-cpl"><i class="ti ti-coin"></i> $0.00 CPL</div>
+            </div>
+            <div class="kpi-card" onclick="clearSelection()">
+                <div class="kpi-title">Citas Agendadas</div>
+                <div class="kpi-val" id="kpi-appointments">0</div>
+                <div class="kpi-sub" id="sub-conv"><i class="ti ti-check"></i> 0.00% Cita/Lead</div>
+            </div>
+        </div>
+
+        <!-- ROW 2: MAIN GRID (CAMPAS & EMBUDO) -->
+        <div class="layout-main" id="layout-pauta-main">
+            
+            <!-- COLUMNA IZQUIERDA: TABLA -->
+            <div class="flex-col" id="col-pauta-left">
+                
+                <!-- CARD TABLA -->
+                <div class="card">
+                    <div class="card-head">
+                        <div class="card-title">Campañas en Circulación</div>
+                        <div class="flex-row" style="gap: 8px;">
+                            <input type="text" id="campaign-search" placeholder="Buscar campaña..." style="max-width: 180px; padding: 0.4rem 0.6rem;" oninput="renderCampaigns()">
+                            <select id="campaign-filter-status" style="max-width: 120px; padding: 0.4rem 0.6rem;" onchange="renderCampaigns()">
+                                <option value="Todos">Todos</option>
+                                <option value="Activa">Activa</option>
+                                <option value="Pausada">Pausada</option>
+                                <option value="Borrador">Borrador</option>
+                            </select>
+                            <button class="btn btn-ghost" id="btn-load-seed" onclick="loadSeedCampaigns()" style="padding: 0.4rem 0.6rem;" title="Cargar campañas de ejemplo"><i class="ti ti-database-import"></i> Cargar Ejemplo</button>
+                            <button class="btn btn-ghost" id="btn-clear-all" onclick="clearAllCampaigns()" style="padding: 0.4rem 0.6rem; color: var(--danger); display: none;" title="Borrar todas las campañas"><i class="ti ti-trash"></i> Limpiar Todo</button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Campaña ➔ Conjunto ➔ Anuncio</th>
+                                    <th>Estado</th>
+                                    <th>Diario</th>
+                                    <th>Inversión</th>
+                                    <th>Clics (CTR)</th>
+                                    <th>Leads (CPL)</th>
+                                    <th>Citas</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="campaigns-tbody">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- COLUMNA DERECHA: EMBUDO Y GENERADOR (TABS) -->
+            <div class="flex-col" id="col-pauta-right">
+                <!-- Selector de pestañas -->
+                <div class="tabs" style="border-bottom: 1px solid var(--border2); padding-bottom: 2px;">
+                    <button class="tab active" id="tab-funnel" onclick="window.switchRightTab('funnel')">
+                        <i class="ti ti-funnel"></i> Embudo de Tráfico
+                    </button>
+                    <button class="tab" id="tab-generator" onclick="window.switchRightTab('generator')">
+                        <i class="ti ti-sparkles"></i> Redactor IA
+                    </button>
+                </div>
+
+                <!-- CARD EMBUDO -->
+                <div class="card" id="card-pauta-funnel">
+                    <div class="card-head">
+                        <div class="card-title"><i class="ti ti-funnel" style="color: var(--accent);"></i> Embudo de Tráfico</div>
+                        <button class="btn btn-ghost" id="clear-campaign-filter" style="display: none; padding: 0.25rem 0.6rem; font-size: 11px;" onclick="clearSelection()">
+                            <i class="ti ti-x"></i> Quitar Filtro
+                        </button>
+                    </div>
+                    
+                    <div id="funnel-filter-desc" style="font-size: 11px; color: var(--text3); border-bottom: 1px dashed var(--border2); padding-bottom: 6px; margin-top: -6px;">
+                        Mostrando rendimiento combinado global.
+                    </div>
+
+                    <div class="funnel-container">
+                        <!-- Impresiones -->
+                        <div class="funnel-level funnel-l1" title="Visualizaciones totales del anuncio">
+                            <span class="funnel-label">Impresiones</span>
+                            <span class="funnel-val" id="fn-impressions">0</span>
+                            <span class="funnel-pct">100% del alcance</span>
+                        </div>
+                        
+                        <!-- Clics -->
+                        <div class="funnel-connector">
+                            <i class="ti ti-chevron-down"></i>
+                            <span id="fn-ctr">0.00% CTR</span>
+                        </div>
+                        <div class="funnel-level funnel-l2" title="Usuarios que hicieron clic en el enlace">
+                            <span class="funnel-label">Clics</span>
+                            <span class="funnel-val" id="fn-clicks">0</span>
+                            <span class="funnel-pct" id="fn-clicks-pct">0% del tráfico</span>
+                        </div>
+                        
+                        <!-- Visitas Landing -->
+                        <div class="funnel-connector">
+                            <i class="ti ti-chevron-down"></i>
+                            <span id="fn-click-to-visit">0% cargaron landing</span>
+                        </div>
+                        <div class="funnel-level funnel-l3" title="Visitas reales que cargaron la página de aterrizaje">
+                            <span class="funnel-label">Visitas Landing</span>
+                            <span class="funnel-val" id="fn-visits">0</span>
+                            <span class="funnel-pct" id="fn-visits-pct">0% del tráfico</span>
+                        </div>
+                        
+                        <!-- Leads WhatsApp -->
+                        <div class="funnel-connector">
+                            <i class="ti ti-chevron-down"></i>
+                            <span id="fn-visit-to-lead">0% tasa conversión</span>
+                        </div>
+                        <div class="funnel-level funnel-l4" title="Usuarios que iniciaron chat de WhatsApp">
+                            <span class="funnel-label">Leads WhatsApp</span>
+                            <span class="funnel-val" id="fn-leads">0</span>
+                            <span class="funnel-pct" id="fn-leads-pct">0% del tráfico</span>
+                        </div>
+                        
+                        <!-- Citas Agendadas -->
+                        <div class="funnel-connector">
+                            <i class="ti ti-chevron-down"></i>
+                            <span id="fn-lead-to-appointment">0% conversión final</span>
+                        </div>
+                        <div class="funnel-level funnel-l5" title="Pacientes que agendaron cita formal">
+                            <span class="funnel-label">Citas Agendadas</span>
+                            <span class="funnel-val" id="fn-appointments">0</span>
+                            <span class="funnel-pct" id="fn-appointments-pct">0% del tráfico</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD GENERADOR DE COPY (GEMINI) -->
+                <div class="card" id="card-pauta-generator" style="display: none;">
+                    <div class="card-head">
+                        <div class="card-title"><i class="ti ti-sparkles" style="color: var(--accent);"></i> Redactor de Anuncios por IA</div>
+                    </div>
+                    
+                    <div class="ai-grid">
+                        <div class="flex-col" style="gap: 10px;">
+                            <div class="field">
+                                <span class="flabel">Tema del Anuncio</span>
+                                <select id="ai-topic">
+                                    <option value="Cirugía de Bypass Gástrico vs Manga Gástrica">Bypass Gástrico vs Manga Gástrica</option>
+                                    <option value="Remisión de Diabetes Tipo 2 con Cirugía Metabólica">Remisión de Diabetes y Salud Metabólica</option>
+                                    <option value="Dolor de espalda y rodillas por sobrepeso (Alivio)">Dolor articular / Espalda por sobrepeso</option>
+                                    <option value="Testimonio de vida bariátrica (Empezar de nuevo)">Autoestima y cambio de vida bariatrica</option>
+                                    <option value="Beneficios de salud cardiovascular post-cirugía">Salud Cardiovascular y Peso</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <span class="flabel">Formato Creativo</span>
+                                <select id="ai-format">
+                                    <option value="Video Corto / Reel (Guion estructurado + Copy principal)">Guion & Copy de Reel / Tiktok</option>
+                                    <option value="Imagen única con copy largo persuasivo">Imagen única / Copy Largo</option>
+                                    <option value="Diapositivas de Carrusel Educativo (Textos cortos por slide)">Carrusel Educativo (Diapositivas)</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <span class="flabel">Ángulo de Enfoque</span>
+                                <select id="ai-angle">
+                                    <option value="Educativo y con Autoridad Científica (Explicar el por qué)">Educativo & Autoridad Médica</option>
+                                    <option value="Empático y enfocado en dolores cotidianos (Comprensión)">Empático enfocado en la rutina</option>
+                                    <option value="Testimonios reales y la transformación a largo plazo">Casos de Éxito / Transformación</option>
+                                    <option value="Llamado directo a la acción para agendar por WhatsApp">Llamado directo a consulta médica</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <span class="flabel">Enfoque Adicional / Oferta</span>
+                                <input type="text" id="ai-keywords" placeholder="ej: Doctor Molina, WhatsApp link, agendar consulta">
+                            </div>
+                            <div class="field">
+                                <span class="flabel">Asignar al Anuncio</span>
+                                <select id="ai-target-ad">
+                                    <option value="">-- No asignar (Solo copiar) --</option>
+                                </select>
+                            </div>
+                            <div style="display: flex; gap: 8px; margin-top: 5px;">
+                                <button class="btn btn-primary" onclick="generateCopyByGemini()" id="btn-ai-generate" style="flex: 1.3;">
+                                    <i class="ti ti-cpu"></i> Generar Copy con Gemini
+                                </button>
+                                <button class="btn btn-outline" id="btn-save-to-ad" onclick="saveAIGeneratedCopyToAd()" disabled style="flex: 1;" title="Guardar directamente en el anuncio seleccionado">
+                                    <i class="ti ti-device-floppy"></i> Guardar en Ad
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- PANEL DE PREVISUALIZACION DENTRO DEL GENERADOR -->
+                        <div class="flex-col" style="gap: 10px;">
+                            <span class="flabel">Resultado Generado</span>
+                            <div class="ai-output-area" id="ai-output">
+                                <div style="text-align: center; color: var(--text3); padding: 3rem 1rem;">
+                                    <i class="ti ti-wand" style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;"></i>
+                                    Introduce los parámetros y haz clic en "Generar Copy con Gemini" para redactar tu anuncio.
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                                <button class="btn btn-ghost" id="btn-copy-ad" onclick="copyAdText()" disabled><i class="ti ti-copy"></i> Copiar Texto</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- MODAL DINAMICO GENERAL (PAUTA MODAL) -->
+    <div class="overlay" id="pauta-modal">
+        <div class="modal">
+            <div class="modal-hdr">
+                <h3 class="modal-title" id="pauta-modal-title">Editar Elemento</h3>
+                <button class="modal-close" onclick="closePautaModal()"><i class="ti ti-x"></i></button>
+            </div>
+            <div class="modal-body flex-col" id="pauta-modal-body">
+                <!-- Dynamically populated by JS -->
+            </div>
+            <div class="modal-foot" id="pauta-modal-foot">
+                <!-- Dynamically populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script type="module">
+        import { supabase } from '../supabase-client.js';
+
+        async function logActivity(action, details) {
+            const activeUser = JSON.parse(localStorage.getItem('content_os_user') || '{}');
+            if (!activeUser.email) return;
+            try {
+                await supabase.from('audit_logs').insert({
+                    user_email: activeUser.email,
+                    user_name: activeUser.name,
+                    action: action,
+                    details: details
+                });
+            } catch (err) {
+                console.error("Error logging activity:", err);
+            }
+        }
+
+        // Gemini API Configuration
+        const DEFAULT_KEY = "AIzaSyDoFbsWJclf_aLUT7hJLF9mz86frAlJeec";
+
+        // Seed jerárquico detallado de Meta Ads
+        const SEED_CAMPAIGNS = [
+            {
+                id: "c1",
+                name: "Bariátrica - Recupera tu vida (Tráfico Frío)",
+                platform: "Meta Ads Manager",
+                status: "Activa",
+                objective: "Conversión / Leads",
+                budget_type: "CBO",
+                budget: 140000.0,
+                adsets: [
+                    {
+                        id: "as1",
+                        name: "Conjunto 1 - Mujeres 35-55 (Dolor de Rodilla)",
+                        status: "Activa",
+                        targeting: "Mujeres 35-55, Obesidad, Dolor de rodilla",
+                        placement: "Instagram Feed/Stories",
+                        budget: 0,
+                        ads: [
+                            {
+                                id: "ad1",
+                                name: "Reel 1 - Dolor Articular y Peso",
+                                status: "Activa",
+                                asset: "dr_molina_clinica.jpg",
+                                hook: "Por qué tus rodillas no aguantan más",
+                                copy: "<h4>Gancho Visual</h4><p>Dr. Molina señalando una articulación en pantalla.</p><h4>Cuerpo del Anuncio</h4><p>El sobrepeso no es solo estética, es sobrecargar tus rodillas con el triple de tu peso real en cada paso. Con la cirugía bariátrica, no solo bajas de peso, recuperas la libertad de caminar sin dolor.</p><h4>CTA</h4><p>Toca abajo para agendar tu consulta de valoración en WhatsApp.</p>",
+                                spend: 840000.0,
+                                impressions: 32000,
+                                clicks: 940,
+                                visits: 680,
+                                leads: 84,
+                                appointments: 11
+                            },
+                            {
+                                id: "ad2",
+                                name: "Imagen - Transformación Caso María",
+                                status: "Activa",
+                                asset: "caso_maria.jpg",
+                                hook: "Volver a jugar con mis hijos",
+                                copy: "<h4>Gancho</h4><p>Foto comparativa de María antes y después.</p><h4>Cuerpo</h4><p>María sufría de fatiga crónica y dolor lumbar constante. Hoy, 35 kg menos, corre en el parque. La cirugía de bypass gástrico cambió su salud.</p><h4>CTA</h4><p>Escríbenos para una cita de valoración.</p>",
+                                spend: 560000.0,
+                                impressions: 16500,
+                                clicks: 480,
+                                visits: 300,
+                                leads: 40,
+                                appointments: 3
+                            }
+                        ]
+                    },
+                    {
+                        id: "as2",
+                        name: "Conjunto 2 - Hombres 40-60 (Salud Cardiovascular)",
+                        status: "Activa",
+                        targeting: "Hombres 40-60, Diabetes, Riesgo cardíaco",
+                        placement: "Facebook Feed",
+                        budget: 0,
+                        ads: [
+                            {
+                                id: "ad3",
+                                name: "Video - Remisión de Diabetes Tipo 2",
+                                status: "Activa",
+                                asset: "dr_molina_quirofano.jpg",
+                                hook: "Dejar la insulina es posible",
+                                copy: "<h4>Gancho</h4><p>Dr. Molina operando con laparoscopia.</p><h4>Cuerpo</h4><p>¿Sabías que la cirugía bariátrica puede normalizar tus niveles de azúcar en sangre a los pocos días? Controla la diabetes y reduce el riesgo cardiovascular.</p><h4>CTA</h4><p>Consulta personalizada vía WhatsApp.</p>",
+                                spend: 720000.0,
+                                impressions: 18400,
+                                clicks: 520,
+                                visits: 410,
+                                leads: 82,
+                                appointments: 12
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "c2",
+                name: "Manga Gástrica - Obesidad y Reflujo (ABO)",
+                platform: "Instagram Ads",
+                status: "Pausada",
+                objective: "Conversión / Leads",
+                budget_type: "ABO",
+                budget: 0,
+                adsets: [
+                    {
+                        id: "as3",
+                        name: "Conjunto 3 - Hombres/Mujeres 25-45 (Reflujo y Acidez)",
+                        status: "Pausada",
+                        targeting: "Hombres/Mujeres 25-45, Reflujo, acidez",
+                        placement: "Instagram Stories/Reels",
+                        budget: 60000.0,
+                        ads: [
+                            {
+                                id: "ad4",
+                                name: "Reel - Acidez constante",
+                                status: "Pausada",
+                                asset: "instrumental.jpg",
+                                hook: "Duermes sentado por el reflujo?",
+                                copy: "<h4>Gancho</h4><p>Paciente durmiendo incómodo.</p><h4>Cuerpo</h4><p>La acidez y el reflujo crónico dañan tu esófago. La manga gástrica o bypass pueden resolver este problema de raíz mientras logras un peso saludable.</p><h4>CTA</h4><p>Agenda consulta por WhatsApp.</p>",
+                                spend: 360000.0,
+                                impressions: 8500,
+                                clicks: 210,
+                                visits: 145,
+                                leads: 18,
+                                appointments: 1
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        let campaigns = [];
+        let selectedType = 'global'; // 'global', 'campaign', 'adset', 'ad'
+        let selectedId = null;
+
+        const collapsedCampaigns = new Set();
+        const collapsedAdsets = new Set();
+
+        const pautaModal = document.getElementById('pauta-modal');
+        const toastContainer = document.getElementById('toast-container');
+
+        let libraryImages = [];
+
+        async function fetchLibraryImages() {
+            try {
+                const res = await fetch('/api/assets');
+                if (res.ok) {
+                    const data = await res.json();
+                    libraryImages = data.images || [];
+                }
+            } catch(e) {
+                console.warn("Error loading images list from server", e);
+            }
+        }
+
+        // Escuchar cambio de tema
+        window.addEventListener('message', (e) => {
+            if (e.data && e.data.type === 'THEME_CHANGE') {
+                document.body.classList.toggle('light', e.data.payload === 'light');
+            }
+        });
+        window.parent.postMessage({ type: 'IFRAME_READY' }, '*');
+
+        // On Load
+        window.addEventListener('DOMContentLoaded', async () => {
+            await fetchLibraryImages();
+            initData();
+        });
+
+        // Right sidebar toggle
+        window.togglePautaSidebar = () => {
+            const layout = document.getElementById('layout-pauta-main');
+            const btn = document.getElementById('btn-toggle-sidebar');
+            const isHidden = layout.classList.toggle('hide-right');
+            
+            localStorage.setItem('content_os_pauta_sidebar_hidden', isHidden ? 'true' : 'false');
+            
+            if (isHidden) {
+                btn.innerHTML = '<i class="ti ti-eye"></i> <span id="toggle-sidebar-text">Mostrar Lateral</span>';
+            } else {
+                btn.innerHTML = '<i class="ti ti-eye-off"></i> <span id="toggle-sidebar-text">Ocultar Lateral</span>';
+            }
+        };
+
+        // Right column tab switching
+        window.switchRightTab = (tab) => {
+            const tabFunnel = document.getElementById('tab-funnel');
+            const tabGen = document.getElementById('tab-generator');
+            const cardFunnel = document.getElementById('card-pauta-funnel');
+            const cardGen = document.getElementById('card-pauta-generator');
+
+            if (tab === 'funnel') {
+                tabFunnel.classList.add('active');
+                tabGen.classList.remove('active');
+                cardFunnel.style.display = 'flex';
+                cardGen.style.display = 'none';
+            } else {
+                tabFunnel.classList.remove('active');
+                tabGen.classList.add('active');
+                cardFunnel.style.display = 'none';
+                cardGen.style.display = 'flex';
+            }
+            localStorage.setItem('content_os_pauta_active_tab', tab);
+        };
+
+        function initData() {
+            const stored = localStorage.getItem('content_os_pauta_campaigns');
+            if (stored) {
+                try {
+                    campaigns = JSON.parse(stored);
+                    // Auto-convert old USD values to COP if we detect them
+                    let hasUSDValues = false;
+                    campaigns.forEach(c => {
+                        if (c.budget > 0 && c.budget < 1000) hasUSDValues = true;
+                        c.adsets.forEach(as => {
+                            if (as.budget > 0 && as.budget < 1000) hasUSDValues = true;
+                            as.ads.forEach(ad => {
+                                if (ad.spend > 0 && ad.spend < 1000) hasUSDValues = true;
+                            });
+                        });
+                    });
+                    if (hasUSDValues) {
+                        campaigns.forEach(c => {
+                            if (c.budget > 0 && c.budget < 1000) c.budget = c.budget * 4000;
+                            c.adsets.forEach(as => {
+                                if (as.budget > 0 && as.budget < 1000) as.budget = as.budget * 4000;
+                                as.ads.forEach(ad => {
+                                    if (ad.spend > 0 && ad.spend < 1000) ad.spend = ad.spend * 4000;
+                                });
+                            });
+                        });
+                        saveToStorage();
+                    }
+                } catch(e) {
+                    campaigns = [];
+                    saveToStorage();
+                }
+            } else {
+                campaigns = [];
+                saveToStorage();
+            }
+            selectedType = 'global';
+            selectedId = null;
+            renderAll();
+
+            // Initialize right sidebar state from localStorage
+            const sidebarHidden = localStorage.getItem('content_os_pauta_sidebar_hidden') === 'true';
+            const layout = document.getElementById('layout-pauta-main');
+            const btn = document.getElementById('btn-toggle-sidebar');
+            if (sidebarHidden) {
+                layout.classList.add('hide-right');
+                btn.innerHTML = '<i class="ti ti-eye"></i> <span id="toggle-sidebar-text">Mostrar Lateral</span>';
+            } else {
+                layout.classList.remove('hide-right');
+                btn.innerHTML = '<i class="ti ti-eye-off"></i> <span id="toggle-sidebar-text">Ocultar Lateral</span>';
+            }
+
+            const activeTab = localStorage.getItem('content_os_pauta_active_tab') || 'funnel';
+            window.switchRightTab(activeTab);
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('content_os_pauta_campaigns', JSON.stringify(campaigns));
+        }
+
+        function renderAll() {
+            updateCalculations();
+            renderCampaigns();
+        }
+
+        // Render hierarchy in table rows
+        window.renderCampaigns = () => {
+            const tbody = document.getElementById('campaigns-tbody');
+            const search = document.getElementById('campaign-search').value.toLowerCase();
+            const statusFilter = document.getElementById('campaign-filter-status').value;
+
+            // Toggle load/clear buttons based on campaigns count
+            const btnLoad = document.getElementById('btn-load-seed');
+            const btnClear = document.getElementById('btn-clear-all');
+            if (btnLoad && btnClear) {
+                if (campaigns.length === 0) {
+                    btnLoad.style.display = 'inline-flex';
+                    btnClear.style.display = 'none';
+                } else {
+                    btnLoad.style.display = 'none';
+                    btnClear.style.display = 'inline-flex';
+                }
+            }
+
+            tbody.innerHTML = '';
+
+            if (campaigns.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text3); padding: 2rem;">No se encontraron campañas. Carga datos de ejemplo o crea una campaña desde cero.</td></tr>`;
+                return;
+            }
+
+            // Loop to render Campaign -> AdSet -> Ad
+            campaigns.forEach(c => {
+                const matchesSearch = c.name.toLowerCase().includes(search);
+                const matchesStatus = statusFilter === 'Todos' || c.status === statusFilter;
+                
+                if (!matchesStatus && statusFilter !== 'Todos') return;
+
+                // Rollup math summary
+                const ctr = c.impressions > 0 ? ((c.clicks / c.impressions) * 100).toFixed(2) : '0.00';
+                const cpl = c.leads > 0 ? Math.round(c.spend / c.leads).toLocaleString('es-CO') : '0';
+                const isSelected = selectedType === 'campaign' && selectedId === c.id;
+                const cStatusClass = c.status === 'Activa' ? 'badge-active' : c.status === 'Pausada' ? 'badge-paused' : 'badge-draft';
+                const isCollapsed = collapsedCampaigns.has(c.id);
+
+                const cTr = document.createElement('tr');
+                cTr.className = 'campaign-row';
+                if (isSelected) cTr.classList.add('selected-row');
+
+                cTr.innerHTML = `
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 4px;">
+                            <i class="ti ${isCollapsed ? 'ti-chevron-right' : 'ti-chevron-down'} toggle-icon" onclick="window.toggleCampaignCollapse('${c.id}', event)"></i>
+                            <i class="ti ti-speakerphone" style="color: var(--accent);"></i>
+                            <div>
+                                <div style="font-weight:600;color:var(--text);">${c.name}</div>
+                                <div style="font-size:10px;color:var(--text3);">${c.platform} — ${c.objective}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="badge-status ${cStatusClass}">${c.status}</span></td>
+                    <td>$${Math.round(c.budget || 0).toLocaleString('es-CO')}/d (${c.budget_type})</td>
+                    <td>$${Math.round(c.spend || 0).toLocaleString('es-CO')}</td>
+                    <td>
+                        <div>${c.clicks}</div>
+                        <div style="font-size:10px;color:var(--text3);">${ctr}% CTR</div>
+                    </td>
+                    <td>
+                        <div>${c.leads}</div>
+                        <div style="font-size:10px;color:var(--text3);">$${cpl} CPL</div>
+                    </td>
+                    <td>${c.appointments}</td>
+                    <td class="actions-cell" onclick="event.stopPropagation();">
+                        <button class="btn-icon" onclick="window.openAdSetModal('', '${c.id}')" title="Añadir Conjunto"><i class="ti ti-folder-plus"></i></button>
+                        <button class="btn-icon" onclick="window.openCampaignModal('${c.id}')" title="Editar Campaña"><i class="ti ti-pencil"></i></button>
+                        <button class="btn-icon" onclick="window.deleteCampaign('${c.id}')" title="Eliminar" style="color:var(--danger);"><i class="ti ti-trash"></i></button>
+                    </td>
+                `;
+                cTr.onclick = () => selectItem('campaign', c.id);
+                tbody.appendChild(cTr);
+
+                if (isCollapsed) return;
+
+                c.adsets.forEach(as => {
+                    const asCtr = as.impressions > 0 ? ((as.clicks / as.impressions) * 100).toFixed(2) : '0.00';
+                    const asCpl = as.leads > 0 ? Math.round(as.spend / as.leads).toLocaleString('es-CO') : '0';
+                    const isAsSelected = selectedType === 'adset' && selectedId === as.id;
+                    const asStatusClass = as.status === 'Activa' ? 'badge-active' : as.status === 'Pausada' ? 'badge-paused' : 'badge-draft';
+                    const isAsCollapsed = collapsedAdsets.has(as.id);
+
+                    const asTr = document.createElement('tr');
+                    asTr.className = 'adset-row';
+                    if (isAsSelected) asTr.classList.add('selected-row');
+
+                    const budgetText = c.budget_type === 'CBO' ? 'CBO' : `$${Math.round(as.budget || 0).toLocaleString('es-CO')}/d`;
+
+                    asTr.innerHTML = `
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 4px; padding-left: 20px;">
+                                <i class="ti ${isAsCollapsed ? 'ti-chevron-right' : 'ti-chevron-down'} toggle-icon" onclick="window.toggleAdsetCollapse('${as.id}', event)"></i>
+                                <i class="ti ti-folder" style="color: var(--amber);"></i>
+                                <div>
+                                    <div style="font-weight:600;color:var(--text);">${as.name}</div>
+                                    <div style="font-size:10px;color:var(--text3);">${as.targeting} | ${as.placement}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge-status ${asStatusClass}">${as.status}</span></td>
+                        <td>${budgetText}</td>
+                        <td>$${Math.round(as.spend || 0).toLocaleString('es-CO')}</td>
+                        <td>
+                            <div>${as.clicks}</div>
+                            <div style="font-size:10px;color:var(--text3);">${asCtr}% CTR</div>
+                        </td>
+                        <td>
+                            <div>${as.leads}</div>
+                            <div style="font-size:10px;color:var(--text3);">$${asCpl} CPL</div>
+                        </td>
+                        <td>${as.appointments}</td>
+                        <td class="actions-cell" onclick="event.stopPropagation();">
+                            <button class="btn-icon" onclick="window.openAdModal('', '${as.id}')" title="Añadir Anuncio"><i class="ti ti-circle-plus"></i></button>
+                            <button class="btn-icon" onclick="window.openAdSetModal('${as.id}', '${c.id}')" title="Editar Conjunto"><i class="ti ti-pencil"></i></button>
+                            <button class="btn-icon" onclick="window.deleteAdSet('${as.id}')" title="Eliminar" style="color:var(--danger);"><i class="ti ti-trash"></i></button>
+                        </td>
+                    `;
+                    asTr.onclick = () => selectItem('adset', as.id);
+                    tbody.appendChild(asTr);
+
+                    if (isAsCollapsed) return;
+
+                    as.ads.forEach(ad => {
+                        const adCtr = ad.impressions > 0 ? ((ad.clicks / ad.impressions) * 100).toFixed(2) : '0.00';
+                        const adCpl = ad.leads > 0 ? Math.round(ad.spend / ad.leads).toLocaleString('es-CO') : '0';
+                        const isAdSelected = selectedType === 'ad' && selectedId === ad.id;
+                        const adStatusClass = ad.status === 'Activa' ? 'badge-active' : ad.status === 'Pausada' ? 'badge-paused' : 'badge-draft';
+
+                        const adTr = document.createElement('tr');
+                        adTr.className = 'ad-row';
+                        if (isAdSelected) adTr.classList.add('selected-row');
+
+                        const assetPath = ad.asset ? `../assets/images_database/${ad.asset}` : '';
+                        const imgHTML = assetPath ? `<img src="${assetPath}" style="width: 32px; height: 32px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border);" onerror="this.style.display='none';">` : `<div style="width: 32px; height: 32px; border-radius: 4px; background: var(--surface2); display: flex; align-items: center; justify-content: center; border: 1px solid var(--border3);"><i class="ti ti-photo" style="font-size: 14px; color: var(--text3);"></i></div>`;
+
+                        adTr.innerHTML = `
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px; padding-left: 40px;">
+                                    ${imgHTML}
+                                    <div>
+                                        <div style="font-weight:500;color:var(--text);font-style:italic;">${ad.name}</div>
+                                        <div style="font-size:10px;color:var(--text3);">Hook: ${ad.hook || 'Ninguno'}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="badge-status ${adStatusClass}">${ad.status}</span></td>
+                            <td>—</td>
+                            <td>$${Math.round(ad.spend || 0).toLocaleString('es-CO')}</td>
+                            <td>
+                                <div>${ad.clicks}</div>
+                                <div style="font-size:10px;color:var(--text3);">${adCtr}% CTR</div>
+                            </td>
+                            <td>
+                                <div>${ad.leads}</div>
+                                <div style="font-size:10px;color:var(--text3);">$${adCpl} CPL</div>
+                            </td>
+                            <td>${ad.appointments}</td>
+                            <td class="actions-cell" onclick="event.stopPropagation();">
+                                <button class="btn-icon" onclick="window.openAdModal('${ad.id}', '${as.id}')" title="Editar Anuncio"><i class="ti ti-pencil"></i></button>
+                                <button class="btn-icon" onclick="window.deleteAd('${ad.id}')" title="Eliminar" style="color:var(--danger);"><i class="ti ti-trash"></i></button>
+                                ${ad.copy ? `<button class="btn-icon" onclick="window.copyAdCopyText('${ad.id}')" title="Copiar Copy" style="color:var(--accent);"><i class="ti ti-copy"></i></button>` : ''}
+                            </td>
+                        `;
+                        adTr.onclick = () => selectItem('ad', ad.id);
+                        tbody.appendChild(adTr);
+                    });
+                });
+            });
+
+            updateAdSelectorForIA();
+        };
+
+        // Select an item for drill-down KPIs/Funnel
+        window.selectItem = (type, id) => {
+            if (selectedType === type && selectedId === id) {
+                selectedType = 'global';
+                selectedId = null;
+            } else {
+                selectedType = type;
+                selectedId = id;
+            }
+            updateCalculations();
+            renderCampaigns();
+        };
+
+        window.clearSelection = () => {
+            selectedType = 'global';
+            selectedId = null;
+            updateCalculations();
+            renderCampaigns();
+        };
+
+        // Collapse / Expand Toggles
+        window.toggleCampaignCollapse = (id, event) => {
+            event.stopPropagation();
+            if (collapsedCampaigns.has(id)) {
+                collapsedCampaigns.delete(id);
+            } else {
+                collapsedCampaigns.add(id);
+            }
+            renderCampaigns();
+        };
+
+        window.toggleAdsetCollapse = (id, event) => {
+            event.stopPropagation();
+            if (collapsedAdsets.has(id)) {
+                collapsedAdsets.delete(id);
+            } else {
+                collapsedAdsets.add(id);
+            }
+            renderCampaigns();
+        };
+
+        // Recalcular KPIs y Embudo sumando en cascada
+        function updateCalculations() {
+            let totalCampaignsCount = 0;
+
+            // Roll-up Math de anuncios hacia conjuntos y campañas
+            campaigns.forEach(c => {
+                c.spend = 0;
+                c.impressions = 0;
+                c.clicks = 0;
+                c.visits = 0;
+                c.leads = 0;
+                c.appointments = 0;
+                totalCampaignsCount++;
+
+                let abobudget = 0;
+
+                c.adsets = c.adsets || [];
+                c.adsets.forEach(a => {
+                    a.spend = 0;
+                    a.impressions = 0;
+                    a.clicks = 0;
+                    a.visits = 0;
+                    a.leads = 0;
+                    a.appointments = 0;
+
+                    a.ads = a.ads || [];
+                    a.ads.forEach(ad => {
+                        a.spend += parseFloat(ad.spend || 0);
+                        a.impressions += parseInt(ad.impressions || 0);
+                        a.clicks += parseInt(ad.clicks || 0);
+                        a.visits += parseInt(ad.visits || 0);
+                        a.leads += parseInt(ad.leads || 0);
+                        a.appointments += parseInt(ad.appointments || 0);
+                    });
+
+                    c.spend += a.spend;
+                    c.impressions += a.impressions;
+                    c.clicks += a.clicks;
+                    c.visits += a.visits;
+                    c.leads += a.leads;
+                    c.appointments += a.appointments;
+
+                    abobudget += parseFloat(a.budget || 0);
+                });
+
+                if (c.budget_type === 'ABO') {
+                    c.budget = abobudget;
+                }
+            });
+
+            // Seleccionar anuncios objetivo para los cálculos según el filtro
+            let targetAds = [];
+            let filterText = 'Mostrando rendimiento combinado global.';
+            let filterActive = false;
+
+            if (selectedType === 'campaign' && selectedId) {
+                const c = campaigns.find(item => item.id === selectedId);
+                if (c) {
+                    c.adsets.forEach(as => {
+                        targetAds = targetAds.concat(as.ads || []);
+                    });
+                    filterText = `<span style="color: var(--accent); font-weight: 600;">Filtrado por Campaña:</span> ${c.name}`;
+                    filterActive = true;
+                } else {
+                    selectedType = 'global';
+                    selectedId = null;
+                }
+            } else if (selectedType === 'adset' && selectedId) {
+                let found = null;
+                campaigns.forEach(c => {
+                    const as = c.adsets.find(item => item.id === selectedId);
+                    if (as) found = as;
+                });
+                if (found) {
+                    targetAds = found.ads || [];
+                    filterText = `<span style="color: var(--accent); font-weight: 600;">Filtrado por Conjunto:</span> ${found.name}`;
+                    filterActive = true;
+                } else {
+                    selectedType = 'global';
+                    selectedId = null;
+                }
+            } else if (selectedType === 'ad' && selectedId) {
+                let found = null;
+                campaigns.forEach(c => {
+                    c.adsets.forEach(as => {
+                        const ad = as.ads.find(item => item.id === selectedId);
+                        if (ad) found = ad;
+                    });
+                });
+                if (found) {
+                    targetAds = [found];
+                    filterText = `<span style="color: var(--accent); font-weight: 600;">Filtrado por Anuncio:</span> ${found.name}`;
+                    filterActive = true;
+                } else {
+                    selectedType = 'global';
+                    selectedId = null;
+                }
+            }
+
+            if (!filterActive) {
+                // Combinar todos los anuncios de todas las campañas
+                campaigns.forEach(c => {
+                    c.adsets.forEach(as => {
+                        targetAds = targetAds.concat(as.ads || []);
+                    });
+                });
+            }
+
+            // Calcular agregados
+            let totalSpend = 0;
+            let totalImpressions = 0;
+            let totalClicks = 0;
+            let totalVisits = 0;
+            let totalLeads = 0;
+            let totalAppointments = 0;
+
+            targetAds.forEach(ad => {
+                totalSpend += parseFloat(ad.spend || 0);
+                totalImpressions += parseInt(ad.impressions || 0);
+                totalClicks += parseInt(ad.clicks || 0);
+                totalVisits += parseInt(ad.visits || 0);
+                totalLeads += parseInt(ad.leads || 0);
+                totalAppointments += parseInt(ad.appointments || 0);
+            });
+
+            // Tasas
+            const ctr = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0;
+            const clickToVisit = totalClicks > 0 ? (totalVisits / totalClicks) * 100 : 0;
+            const visitToLead = totalVisits > 0 ? (totalLeads / totalVisits) * 100 : 0;
+            const leadToAppt = totalLeads > 0 ? (totalAppointments / totalLeads) * 100 : 0;
+            const cpl = totalLeads > 0 ? totalSpend / totalLeads : 0;
+            const overallConv = totalLeads > 0 ? (totalAppointments / totalLeads) * 100 : 0;
+
+            // Determinar etiqueta de presupuesto para la tarjeta Bento
+            let budgetText = '';
+            if (selectedType === 'campaign') {
+                const c = campaigns.find(item => item.id === selectedId);
+                budgetText = `Presupuesto: $${Math.round(c.budget || 0).toLocaleString('es-CO')}/d (${c.budget_type})`;
+                document.getElementById('kpi-card-spend').classList.add('active');
+            } else if (selectedType === 'adset') {
+                let found = null;
+                campaigns.forEach(c => {
+                    const as = c.adsets.find(item => item.id === selectedId);
+                    if (as) {
+                        if (c.budget_type === 'CBO') {
+                            found = { budget: c.budget, type: 'CBO (Campaña)' };
+                        } else {
+                            found = { budget: as.budget, type: 'ABO (Conjunto)' };
+                        }
+                    }
+                });
+                budgetText = `Presupuesto: $${found && found.budget ? Math.round(found.budget).toLocaleString('es-CO') : '0'}/d (${found ? found.type : ''})`;
+                document.getElementById('kpi-card-spend').classList.add('active');
+            } else if (selectedType === 'ad') {
+                budgetText = 'Presupuesto: N/A (Anuncio)';
+                document.getElementById('kpi-card-spend').classList.add('active');
+            } else {
+                let globalDaily = 0;
+                campaigns.forEach(c => {
+                    globalDaily += parseFloat(c.budget || 0);
+                });
+                budgetText = `Presupuesto Diario: $${Math.round(globalDaily || 0).toLocaleString('es-CO')}`;
+                document.getElementById('kpi-card-spend').classList.remove('active');
+            }
+
+            // Inyectar en KPIs
+            document.getElementById('badge-campaigns').innerHTML = `<i class="ti ti-speakerphone"></i> ${totalCampaignsCount} Campañas`;
+            document.getElementById('kpi-spend').textContent = `$${Math.round(totalSpend).toLocaleString('es-CO')}`;
+            document.getElementById('sub-budget').innerHTML = `<i class="ti ti-wallet"></i> ${budgetText}`;
+
+            document.getElementById('kpi-clicks').textContent = totalClicks.toLocaleString();
+            document.getElementById('sub-ctr').innerHTML = `<i class="ti ti-trending-up" style="color:var(--success)"></i> ${ctr.toFixed(2)}% CTR`;
+
+            document.getElementById('kpi-visits').textContent = totalVisits.toLocaleString();
+            document.getElementById('sub-visits-rate').innerHTML = `<i class="ti ti-link"></i> ${clickToVisit.toFixed(0)}% de clics`;
+
+            document.getElementById('kpi-leads').textContent = totalLeads.toLocaleString();
+            document.getElementById('sub-cpl').innerHTML = `<i class="ti ti-coin"></i> $${Math.round(cpl).toLocaleString('es-CO')} CPL`;
+
+            document.getElementById('kpi-appointments').textContent = totalAppointments.toLocaleString();
+            document.getElementById('sub-conv').innerHTML = `<i class="ti ti-check"></i> ${overallConv.toFixed(1)}% Cita/Lead`;
+
+            // Inyectar en Funnel
+            document.getElementById('funnel-filter-desc').innerHTML = filterText;
+            document.getElementById('clear-campaign-filter').style.display = filterActive ? 'inline-flex' : 'none';
+
+            document.getElementById('fn-impressions').textContent = totalImpressions.toLocaleString();
+            
+            document.getElementById('fn-ctr').textContent = `${ctr.toFixed(2)}% CTR`;
+            document.getElementById('fn-clicks').textContent = totalClicks.toLocaleString();
+            document.getElementById('fn-clicks-pct').textContent = totalImpressions > 0 ? `${((totalClicks / totalImpressions) * 100).toFixed(1)}% CTR` : '0% del total';
+
+            document.getElementById('fn-click-to-visit').textContent = `${clickToVisit.toFixed(0)}% carga de landing`;
+            document.getElementById('fn-visits').textContent = totalVisits.toLocaleString();
+            document.getElementById('fn-visits-pct').textContent = totalImpressions > 0 ? `${((totalVisits / totalImpressions) * 100).toFixed(1)}% del total` : '0% del total';
+
+            document.getElementById('fn-visit-to-lead').textContent = `${visitToLead.toFixed(1)}% conversión WhatsApp`;
+            document.getElementById('fn-leads').textContent = totalLeads.toLocaleString();
+            document.getElementById('fn-leads-pct').textContent = totalImpressions > 0 ? `${((totalLeads / totalImpressions) * 100).toFixed(1)}% del total` : '0% del total';
+
+            document.getElementById('fn-lead-to-appointment').textContent = `${leadToAppt.toFixed(1)}% agendamiento cita`;
+            document.getElementById('fn-appointments').textContent = totalAppointments.toLocaleString();
+            document.getElementById('fn-appointments-pct').textContent = totalImpressions > 0 ? `${((totalAppointments / totalImpressions) * 100).toFixed(2)}% del total` : '0% del total';
+        }
+
+        // Dynamically populate target ad dropdown in AI panel
+        function updateAdSelectorForIA() {
+            const select = document.getElementById('ai-target-ad');
+            if (!select) return;
+            
+            const prevVal = select.value;
+            select.innerHTML = '<option value="">-- No asignar (Solo copiar) --</option>';
+            
+            campaigns.forEach(c => {
+                c.adsets.forEach(as => {
+                    as.ads.forEach(ad => {
+                        const opt = document.createElement('option');
+                        opt.value = ad.id;
+                        opt.textContent = `${c.name.substring(0, 15)}... ➔ ${as.name.substring(0, 15)}... ➔ ${ad.name}`;
+                        select.appendChild(opt);
+                    });
+                });
+            });
+            
+            select.value = prevVal;
+        }
+
+        // DYNAMIC NESTED CRUD MODALS
+        window.closePautaModal = () => {
+            pautaModal.classList.remove('open');
+        };
+
+        // 1. Campaign Modal Open/Save
+        window.openCampaignModal = (id = '') => {
+            const isEdit = !!id;
+            let c = { name: '', platform: 'Meta Ads Manager', status: 'Activa', objective: 'Conversión / Leads', budget_type: 'CBO', budget: 15.0 };
+            if (isEdit) {
+                c = campaigns.find(item => item.id === id);
+            }
+            
+            const title = document.getElementById('pauta-modal-title');
+            const body = document.getElementById('pauta-modal-body');
+            const foot = document.getElementById('pauta-modal-foot');
+            
+            title.textContent = isEdit ? 'Editar Campaña' : 'Nueva Campaña';
+            
+            body.innerHTML = `
+                <div class="field">
+                    <span class="flabel">Nombre de la Campaña</span>
+                    <input type="text" id="m-camp-name" value="${c.name}" placeholder="ej: Bypass - Dolor de Rodilla" required>
+                </div>
+                <div class="ai-grid" style="gap:10px;">
+                    <div class="field">
+                        <span class="flabel">Plataforma</span>
+                        <select id="m-camp-platform">
+                            <option value="Meta Ads Manager" ${c.platform === 'Meta Ads Manager' ? 'selected' : ''}>Meta Ads Manager</option>
+                            <option value="Instagram Ads" ${c.platform === 'Instagram Ads' ? 'selected' : ''}>Instagram Ads</option>
+                            <option value="Facebook Ads" ${c.platform === 'Facebook Ads' ? 'selected' : ''}>Facebook Ads</option>
+                            <option value="Google Ads" ${c.platform === 'Google Ads' ? 'selected' : ''}>Google Ads</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <span class="flabel">Estado</span>
+                        <select id="m-camp-status">
+                            <option value="Activa" ${c.status === 'Activa' ? 'selected' : ''}>Activa</option>
+                            <option value="Pausada" ${c.status === 'Pausada' ? 'selected' : ''}>Pausada</option>
+                            <option value="Borrador" ${c.status === 'Borrador' ? 'selected' : ''}>Borrador</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="ai-grid" style="gap:10px;">
+                    <div class="field">
+                        <span class="flabel">Objetivo Principal</span>
+                        <select id="m-camp-objective">
+                            <option value="Conversión / Leads" ${c.objective === 'Conversión / Leads' ? 'selected' : ''}>Conversión / Leads</option>
+                            <option value="Tráfico" ${c.objective === 'Tráfico' ? 'selected' : ''}>Tráfico</option>
+                            <option value="Reconocimiento" ${c.objective === 'Reconocimiento' ? 'selected' : ''}>Reconocimiento</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <span class="flabel">Optimización de Presupuesto</span>
+                        <select id="m-camp-budget-type" onchange="window.toggleCampBudgetField()">
+                            <option value="CBO" ${c.budget_type === 'CBO' ? 'selected' : ''}>CBO (Campaña)</option>
+                            <option value="ABO" ${c.budget_type === 'ABO' ? 'selected' : ''}>ABO (Conjunto de anuncios)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field" id="m-camp-budget-wrapper">
+                    <span class="flabel">Presupuesto Diario (COP)</span>
+                    <input type="number" id="m-camp-budget" value="${c.budget}" min="0" step="5000">
+                </div>
+            `;
+            
+            foot.innerHTML = `
+                <button class="btn btn-ghost" onclick="closePautaModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="window.saveCampaignRow('${id}')">Guardar Campaña</button>
+            `;
+            
+            pautaModal.classList.add('open');
+            window.toggleCampBudgetField();
+        };
+
+        window.toggleCampBudgetField = () => {
+            const typeSelect = document.getElementById('m-camp-budget-type');
+            const wrapper = document.getElementById('m-camp-budget-wrapper');
+            if (typeSelect && wrapper) {
+                wrapper.style.display = typeSelect.value === 'CBO' ? 'flex' : 'none';
+            }
+        };
+
+        window.saveCampaignRow = async (id = '') => {
+            const name = document.getElementById('m-camp-name').value.trim();
+            const platform = document.getElementById('m-camp-platform').value;
+            const status = document.getElementById('m-camp-status').value;
+            const objective = document.getElementById('m-camp-objective').value;
+            const budget_type = document.getElementById('m-camp-budget-type').value;
+            const budget = budget_type === 'CBO' ? (parseFloat(document.getElementById('m-camp-budget').value) || 0) : 0;
+            
+            if (!name) {
+                showToast('Por favor escribe un nombre para la campaña', 'ti-alert-circle');
+                return;
+            }
+            
+            if (id) {
+                campaigns = campaigns.map(c => c.id === id ? {
+                    ...c, name, platform, status, objective, budget_type, budget: budget_type === 'CBO' ? budget : c.budget
+                } : c);
+                showToast('Campaña actualizada con éxito', 'ti-check');
+                await logActivity('Edición', `Se actualizó la campaña de pauta "${name}" (${platform})`);
+            } else {
+                const newC = {
+                    id: 'c_' + new Date().getTime(),
+                    name, platform, status, objective, budget_type, budget,
+                    adsets: [],
+                    created_at: new Date().toISOString().split('T')[0]
+                };
+                campaigns.push(newC);
+                showToast('Nueva Campaña creada', 'ti-circle-plus');
+                await logActivity('Creación', `Se creó la nueva campaña de pauta "${name}" (${platform})`);
+            }
+            
+            saveToStorage();
+            closePautaModal();
+            renderAll();
+        };
+
+        window.deleteCampaign = async (id) => {
+            if (confirm("¿Estás seguro de que deseas eliminar esta campaña y todos sus conjuntos de anuncios y anuncios vinculados?")) {
+                const c = campaigns.find(item => item.id === id);
+                const name = c ? c.name : 'Campaña';
+                campaigns = campaigns.filter(c => c.id !== id);
+                if (selectedType === 'campaign' && selectedId === id) {
+                    selectedType = 'global';
+                    selectedId = null;
+                }
+                saveToStorage();
+                showToast('Campaña eliminada permanentemente', 'ti-trash');
+                await logActivity('Eliminación', `Se eliminó la campaña de pauta "${name}" y todos sus conjuntos/anuncios asociados`);
+                renderAll();
+            }
+        };
+
+        // 2. AdSet Modal Open/Save
+        window.openAdSetModal = (id = '', campaignId = '') => {
+            const isEdit = !!id;
+            let as = { name: '', status: 'Activa', targeting: 'Mujeres 35-55', placement: 'Instagram Stories/Reels', budget: 15.0 };
+            
+            const c = campaigns.find(item => item.id === campaignId);
+            if (!c) {
+                showToast('Campaña madre no encontrada', 'ti-alert-circle');
+                return;
+            }
+            
+            if (isEdit) {
+                as = c.adsets.find(item => item.id === id);
+            }
+            
+            const title = document.getElementById('pauta-modal-title');
+            const body = document.getElementById('pauta-modal-body');
+            const foot = document.getElementById('pauta-modal-foot');
+            
+            title.textContent = isEdit ? 'Editar Conjunto de Anuncios' : 'Nuevo Conjunto de Anuncios';
+            
+            const showsBudgetField = c.budget_type === 'ABO';
+            
+            body.innerHTML = `
+                <input type="hidden" id="m-adset-camp-id" value="${campaignId}">
+                <div class="field">
+                    <span class="flabel">Nombre del Conjunto</span>
+                    <input type="text" id="m-adset-name" value="${as.name}" placeholder="ej: Público Frío - Obesidad y Rodillas" required>
+                </div>
+                <div class="field">
+                    <span class="flabel">Segmentación (Edades / Intereses)</span>
+                    <input type="text" id="m-adset-targeting" value="${as.targeting}" placeholder="ej: Mujeres 35-55, Intereses: Bypass Gástrico" required>
+                </div>
+                <div class="ai-grid" style="gap:10px;">
+                    <div class="field">
+                        <span class="flabel">Ubicaciones (Placements)</span>
+                        <input type="text" id="m-adset-placement" value="${as.placement}" placeholder="ej: Instagram Feed e Historias" required>
+                    </div>
+                    <div class="field">
+                        <span class="flabel">Estado</span>
+                        <select id="m-adset-status">
+                            <option value="Activa" ${as.status === 'Activa' ? 'selected' : ''}>Activa</option>
+                            <option value="Pausada" ${as.status === 'Pausada' ? 'selected' : ''}>Pausada</option>
+                            <option value="Borrador" ${as.status === 'Borrador' ? 'selected' : ''}>Borrador</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="field" style="display: ${showsBudgetField ? 'flex' : 'none'};">
+                    <span class="flabel">Presupuesto Diario (COP)</span>
+                    <input type="number" id="m-adset-budget" value="${as.budget}" min="0" step="5000">
+                </div>
+                ${!showsBudgetField ? `<div style="font-size: 11px; color: var(--text3); margin-top: 5px;"><i class="ti ti-info-circle"></i> El presupuesto se optimiza y distribuye a nivel de Campaña (CBO) automáticamente.</div>` : ''}
+            `;
+            
+            foot.innerHTML = `
+                <button class="btn btn-ghost" onclick="closePautaModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="window.saveAdSetRow('${id}')">Guardar Conjunto</button>
+            `;
+            
+            pautaModal.classList.add('open');
+        };
+
+        window.saveAdSetRow = async (id = '') => {
+            const campaignId = document.getElementById('m-adset-camp-id').value;
+            const name = document.getElementById('m-adset-name').value.trim();
+            const targeting = document.getElementById('m-adset-targeting').value.trim();
+            const placement = document.getElementById('m-adset-placement').value.trim();
+            const status = document.getElementById('m-adset-status').value;
+            
+            const c = campaigns.find(item => item.id === campaignId);
+            if (!c) return;
+            
+            const budgetInput = document.getElementById('m-adset-budget');
+            const budget = budgetInput ? (parseFloat(budgetInput.value) || 0) : 0;
+            
+            if (!name) {
+                showToast('Por favor escribe un nombre para el conjunto de anuncios', 'ti-alert-circle');
+                return;
+            }
+            
+            if (id) {
+                c.adsets = c.adsets.map(as => as.id === id ? {
+                    ...as, name, targeting, placement, status, budget
+                } : as);
+                showToast('Conjunto de anuncios actualizado', 'ti-check');
+                await logActivity('Edición', `Se actualizó el conjunto de anuncios "${name}" en la campaña "${c.name}"`);
+            } else {
+                const newAs = {
+                    id: 'as_' + new Date().getTime(),
+                    name, targeting, placement, status, budget,
+                    ads: []
+                };
+                c.adsets.push(newAs);
+                showToast('Conjunto de anuncios creado con éxito', 'ti-circle-plus');
+                await logActivity('Creación', `Se creó el conjunto de anuncios "${name}" en la campaña "${c.name}"`);
+            }
+            
+            saveToStorage();
+            closePautaModal();
+            renderAll();
+        };
+
+        window.deleteAdSet = async (id) => {
+            if (confirm("¿Estás seguro de que deseas eliminar este conjunto de anuncios y todos sus anuncios asociados?")) {
+                let name = 'Conjunto';
+                campaigns.forEach(c => {
+                    const found = c.adsets.find(item => item.id === id);
+                    if (found) name = found.name;
+                });
+                campaigns.forEach(c => {
+                    c.adsets = c.adsets.filter(as => as.id !== id);
+                });
+                if (selectedType === 'adset' && selectedId === id) {
+                    selectedType = 'global';
+                    selectedId = null;
+                }
+                saveToStorage();
+                showToast('Conjunto de anuncios eliminado', 'ti-trash');
+                await logActivity('Eliminación', `Se eliminó el conjunto de anuncios "${name}"`);
+                renderAll();
+            }
+        };
+
+        // 3. Ad Modal Open/Save
+        window.openAdModal = (id = '', adsetId = '') => {
+            const isEdit = !!id;
+            let ad = { name: '', status: 'Activa', asset: '', hook: '', spend: 0.0, impressions: 0, clicks: 0, visits: 0, leads: 0, appointments: 0, copy: '' };
+            
+            let parentAdSet = null;
+            campaigns.forEach(c => {
+                const found = c.adsets.find(item => item.id === adsetId);
+                if (found) parentAdSet = found;
+            });
+            
+            if (!parentAdSet) {
+                showToast('Conjunto de anuncios padre no encontrado', 'ti-alert-circle');
+                return;
+            }
+            
+            if (isEdit) {
+                ad = parentAdSet.ads.find(item => item.id === id);
+            }
+            
+            const title = document.getElementById('pauta-modal-title');
+            const body = document.getElementById('pauta-modal-body');
+            const foot = document.getElementById('pauta-modal-foot');
+            
+            title.textContent = isEdit ? 'Editar Anuncio' : 'Nuevo Anuncio';
+            
+            let assetSelectHTML = `<select id="m-ad-asset" onchange="window.updateModalAssetPreview()" style="width: 100%; padding: 0.4rem 0.6rem; background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: var(--r-sm);">`;
+            assetSelectHTML += `<option value="" ${!ad.asset ? 'selected' : ''}>-- Sin imagen --</option>`;
+            if (libraryImages && libraryImages.length > 0) {
+                libraryImages.forEach(img => {
+                    assetSelectHTML += `<option value="${img.name}" ${ad.asset === img.name ? 'selected' : ''}>${img.name}</option>`;
+                });
+            } else {
+                const fallbacks = [
+                    "dr_molina_clinica.jpg",
+                    "dr_molina_quirofano.jpg",
+                    "dr_molina_cirugia_robotica.jpg",
+                    "dr_molina_equipo_medico.jpg",
+                    "dr_molina_retrato_clinico.jpg",
+                    "quirofano_vacio.jpg"
+                ];
+                fallbacks.forEach(name => {
+                    assetSelectHTML += `<option value="${name}" ${ad.asset === name ? 'selected' : ''}>${name}</option>`;
+                });
+            }
+            assetSelectHTML += `</select>`;
+
+            body.innerHTML = `
+                <input type="hidden" id="m-ad-adset-id" value="${adsetId}">
+                <div class="field">
+                    <span class="flabel">Nombre del Anuncio</span>
+                    <input type="text" id="m-ad-name" value="${ad.name}" placeholder="ej: Reel 1 - Explicación Bypass" required>
+                </div>
+                <div class="ai-grid" style="gap:10px; align-items: end;">
+                    <div class="field" style="flex: 1;">
+                        <span class="flabel">Creativo / Imagen de Biblioteca</span>
+                        ${assetSelectHTML}
+                    </div>
+                    <div id="modal-asset-preview-container" style="width: 50px; height: 50px; border-radius: 6px; border: 1px solid var(--border); overflow: hidden; display: flex; align-items: center; justify-content: center; background: var(--surface2); margin-bottom: 2px; flex-shrink: 0;">
+                        <img id="modal-asset-preview" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                        <i id="modal-asset-icon" class="ti ti-photo" style="font-size: 18px; color: var(--text3);"></i>
+                    </div>
+                </div>
+                <div class="ai-grid" style="gap:10px;">
+                    <div class="field">
+                        <span class="flabel">Gancho / Hook Relacionado</span>
+                        <input type="text" id="m-ad-hook" value="${ad.hook}" placeholder="ej: Hook #2 - Disonancia Cognitiva">
+                    </div>
+                    <div class="field">
+                        <span class="flabel">Estado</span>
+                        <select id="m-ad-status">
+                            <option value="Activa" ${ad.status === 'Activa' ? 'selected' : ''}>Activa</option>
+                            <option value="Pausada" ${ad.status === 'Pausada' ? 'selected' : ''}>Pausada</option>
+                            <option value="Borrador" ${ad.status === 'Borrador' ? 'selected' : ''}>Borrador</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="ai-grid" style="gap:10px;">
+                    <div class="field">
+                        <span class="flabel">Inversión Acumulada (COP)</span>
+                        <input type="number" id="m-ad-spend" value="${ad.spend}" min="0" step="5000" required>
+                    </div>
+                </div>
+                
+                <div style="border-top: 1px solid var(--border2); padding-top: 10px; margin-top: 5px;">
+                    <h4 style="font-size: 11px; font-weight: 600; color: var(--text2); margin-bottom: 8px; text-transform: uppercase;">Métricas del Anuncio</h4>
+                    <div class="ai-grid" style="gap:10px; margin-bottom:8px;">
+                        <div class="field">
+                            <span class="flabel">Impresiones</span>
+                            <input type="number" id="m-ad-impressions" value="${ad.impressions}" min="0">
+                        </div>
+                        <div class="field">
+                            <span class="flabel">Clics en el Enlace</span>
+                            <input type="number" id="m-ad-clicks" value="${ad.clicks}" min="0">
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                        <div class="field">
+                            <span class="flabel">Visitas Landing</span>
+                            <input type="number" id="m-ad-visits" value="${ad.visits}" min="0">
+                        </div>
+                        <div class="field">
+                            <span class="flabel">Leads WhatsApp</span>
+                            <input type="number" id="m-ad-leads" value="${ad.leads}" min="0">
+                        </div>
+                        <div class="field">
+                            <span class="flabel">Citas</span>
+                            <input type="number" id="m-ad-appointments" value="${ad.appointments}" min="0">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="field" style="margin-top: 10px;">
+                    <span class="flabel">Texto del Anuncio (Copy)</span>
+                    <textarea id="m-ad-copy" style="min-height: 120px; font-family: monospace; font-size: 11px;" placeholder="Genera un copy usando IA y asígnalo, o redacta uno manualmente...">${ad.copy || ''}</textarea>
+                </div>
+            `;
+            
+            foot.innerHTML = `
+                <button class="btn btn-ghost" onclick="closePautaModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="window.saveAdRow('${id}')">Guardar Anuncio</button>
+            `;
+            
+            pautaModal.classList.add('open');
+            window.updateModalAssetPreview();
+        };
+
+        window.updateModalAssetPreview = () => {
+            const val = document.getElementById('m-ad-asset').value;
+            const img = document.getElementById('modal-asset-preview');
+            const icon = document.getElementById('modal-asset-icon');
+            if (val) {
+                img.src = `../assets/images_database/${val}`;
+                img.style.display = 'block';
+                icon.style.display = 'none';
+            } else {
+                img.src = '';
+                img.style.display = 'none';
+                icon.style.display = 'block';
+            }
+        };
+
+        window.saveAdRow = async (id = '') => {
+            const adsetId = document.getElementById('m-ad-adset-id').value;
+            const name = document.getElementById('m-ad-name').value.trim();
+            const asset = document.getElementById('m-ad-asset').value.trim();
+            const hook = document.getElementById('m-ad-hook').value.trim();
+            const spend = parseFloat(document.getElementById('m-ad-spend').value) || 0;
+            const status = document.getElementById('m-ad-status').value;
+            
+            const impressions = parseInt(document.getElementById('m-ad-impressions').value) || 0;
+            const clicks = parseInt(document.getElementById('m-ad-clicks').value) || 0;
+            const visits = parseInt(document.getElementById('m-ad-visits').value) || 0;
+            const leads = parseInt(document.getElementById('m-ad-leads').value) || 0;
+            const appointments = parseInt(document.getElementById('m-ad-appointments').value) || 0;
+            const copy = document.getElementById('m-ad-copy').value;
+            
+            let parentAdSet = null;
+            campaigns.forEach(c => {
+                const found = c.adsets.find(item => item.id === adsetId);
+                if (found) parentAdSet = found;
+            });
+            
+            if (!parentAdSet) return;
+            
+            if (!name) {
+                showToast('Por favor escribe un nombre para el anuncio', 'ti-alert-circle');
+                return;
+            }
+            
+            if (id) {
+                parentAdSet.ads = parentAdSet.ads.map(ad => ad.id === id ? {
+                    ...ad, name, asset, hook, spend, status, impressions, clicks, visits, leads, appointments, copy
+                } : ad);
+                showToast('Anuncio actualizado', 'ti-check');
+                await logActivity('Edición', `Se actualizó el anuncio de pauta "${name}" en el conjunto "${parentAdSet.name}"`);
+            } else {
+                const newAd = {
+                    id: 'ad_' + new Date().getTime(),
+                    name, asset, hook, spend, status, impressions, clicks, visits, leads, appointments, copy
+                };
+                parentAdSet.ads.push(newAd);
+                showToast('Anuncio creado con éxito', 'ti-circle-plus');
+                await logActivity('Creación', `Se creó el anuncio de pauta "${name}" en el conjunto "${parentAdSet.name}"`);
+            }
+            
+            saveToStorage();
+            closePautaModal();
+            renderAll();
+        };
+
+        window.deleteAd = async (id) => {
+            if (confirm("¿Estás seguro de que deseas eliminar este anuncio?")) {
+                let name = 'Anuncio';
+                campaigns.forEach(c => {
+                    c.adsets.forEach(as => {
+                        const found = as.ads.find(ad => ad.id === id);
+                        if (found) name = found.name;
+                    });
+                });
+                campaigns.forEach(c => {
+                    c.adsets.forEach(as => {
+                        as.ads = as.ads.filter(ad => ad.id !== id);
+                    });
+                });
+                if (selectedType === 'ad' && selectedId === id) {
+                    selectedType = 'global';
+                    selectedId = null;
+                }
+                saveToStorage();
+                showToast('Anuncio eliminado', 'ti-trash');
+                await logActivity('Eliminación', `Se eliminó el anuncio de pauta "${name}"`);
+                renderAll();
+            }
+        };
+
+        // Copiar el copy asignado a un anuncio directamente al portapapeles
+        window.copyAdCopyText = (id) => {
+            let foundAd = null;
+            campaigns.forEach(c => {
+                c.adsets.forEach(as => {
+                    as.ads.forEach(ad => {
+                        if (ad.id === id) foundAd = ad;
+                    });
+                });
+            });
+            
+            if (foundAd && foundAd.copy) {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = foundAd.copy;
+                const text = tempDiv.innerText || tempDiv.textContent;
+                
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('¡Texto del anuncio copiado!', 'ti-copy');
+                }).catch(err => {
+                    showToast('No se pudo copiar el texto', 'ti-alert-circle');
+                });
+            }
+        };
+
+        // Seed y Limpieza
+        window.loadSeedCampaigns = async () => {
+            campaigns = JSON.parse(JSON.stringify(SEED_CAMPAIGNS));
+            collapsedCampaigns.clear();
+            collapsedAdsets.clear();
+            saveToStorage();
+            showToast('Campañas jerárquicas de ejemplo cargadas', 'ti-check');
+            await logActivity('Creación', `Se cargaron las campañas de pauta de ejemplo (Seed)`);
+            renderAll();
+        };
+
+        window.clearAllCampaigns = async () => {
+            if (confirm('¿Estás seguro de que deseas eliminar la jerarquía de campañas completa y dejar todas las métricas en cero?')) {
+                campaigns = [];
+                selectedType = 'global';
+                selectedId = null;
+                collapsedCampaigns.clear();
+                collapsedAdsets.clear();
+                saveToStorage();
+                showToast('Base de datos de pauta reiniciada a cero', 'ti-trash');
+                await logActivity('Eliminación', `Se eliminó la jerarquía completa de pauta`);
+                renderAll();
+            }
+        };
+
+        // Toast feedback
+        function showToast(msg, icon = 'ti-info-circle') {
+            const t = document.createElement('div');
+            t.className = 'toast';
+            t.innerHTML = `<i class="ti ${icon}"></i> <span>${msg}</span>`;
+            toastContainer.appendChild(t);
+            setTimeout(() => {
+                t.style.animation = 'none';
+                t.offsetHeight;
+                t.style.animation = 'slideIn 0.3s ease reverse forwards';
+                setTimeout(() => t.remove(), 300);
+            }, 3000);
+        }
+
+        // GEMINI AI AD COPYWRITER
+        window.generateCopyByGemini = async () => {
+            const topic = document.getElementById('ai-topic').value;
+            const format = document.getElementById('ai-format').value;
+            const angle = document.getElementById('ai-angle').value;
+            const keywords = document.getElementById('ai-keywords').value.trim();
+            const btn = document.getElementById('btn-ai-generate');
+            const btnSave = document.getElementById('btn-save-to-ad');
+            const output = document.getElementById('ai-output');
+
+            const keyVal = localStorage.getItem('gemini_api_key') || DEFAULT_KEY;
+            
+            btn.innerHTML = '<i class="ti ti-loader ti-spin"></i> Generando con Gemini...';
+            btn.disabled = true;
+            btnSave.disabled = true;
+            output.innerHTML = `<div style="text-align: center; padding: 3rem 1rem;"><i class="ti ti-loader ti-spin" style="font-size: 2.5rem; color: var(--accent); display: block; margin-bottom: 0.5rem;"></i> Redactando copy persuasivo y estructurado...</div>`;
+
+            const promptText = `
+Escribe un anuncio publicitario de alto rendimiento para Meta/Instagram Ads en español. El cliente es el Dr. Molina, cirujano bariátrico y metabólico premium.
+
+INFORMACIÓN PARA EL ANUNCIO:
+- Tema/Tratamiento: ${topic}
+- Formato del Anuncio: ${format}
+- Ángulo y Enfoque: ${angle}
+- Palabras clave / Oferta: ${keywords ? keywords : "WhatsApp directo para agendar valoración médica"}
+
+REGLAS DE COPYWRITING A SEGUIR:
+1. Tono premium, empático, científico y ético. Evita el sensacionalismo o palabras burdas sobre el peso. Habla de ganar salud, movilidad, longevidad y alivio.
+2. Estructura del Copy (Formato "Stop-Stack"):
+   - GANCHO VISUAL (Visual Hook): Frase corta para poner en el video/imagen (máximo 2 alternativas impactantes).
+   - CUERPO DEL ANUNCIO (Body Copy): Párrafos muy cortos (1-2 líneas), con espacios claros. Empieza tocando un dolor/situación real de forma empática. Presenta la solución médica (cirugía metabólica o bariátrica) explicando un beneficio científico/físico sencillo.
+   - LLAMADA A LA ACCIÓN (CTA): Directa, clara e instando a hacer clic en el enlace para chatear con el equipo médico por WhatsApp.
+3. Formato visual: Usa emojis sobrios de forma estratégica (ej: 🩺, 📱, ✨, 📈). Utiliza cursiva o negrita simulada para resaltar palabras clave si es un reel.
+4. Devuelve el resultado estructurado en HTML limpio usando únicamente etiquetas <h4> y <p> para que se vea premium.
+`;
+
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${keyVal}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: promptText }] }]
+                    })
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw new Error(err.error?.message || "Error HTTP " + res.status);
+                }
+
+                const data = await res.json();
+                const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (responseText) {
+                    let cleanText = responseText;
+                    if (cleanText.includes("```html")) {
+                        cleanText = cleanText.split("```html")[1].split("```")[0].trim();
+                    } else if (cleanText.includes("```")) {
+                        cleanText = cleanText.split("```")[1].split("```")[0].trim();
+                    }
+                    output.innerHTML = cleanText;
+                    document.getElementById('btn-copy-ad').disabled = false;
+                    btnSave.disabled = false;
+                    showToast('Copy redactado exitosamente por IA', 'ti-wand');
+                } else {
+                    throw new Error("No se recibió contenido de Gemini");
+                }
+            } catch (e) {
+                console.error(e);
+                output.innerHTML = `
+                    <div style="padding: 1rem; border: 1px dashed var(--danger); border-radius: var(--r-sm); background: rgba(245,90,138,0.05); color: var(--danger); font-size: 13px;">
+                        <i class="ti ti-alert-triangle" style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem;"></i>
+                        <strong>Error al conectar con la IA de Gemini:</strong><br>
+                        ${e.message}<br><br>
+                        <span style="color: var(--text3);">Tip: Revisa tu API Key de Gemini en el módulo de "Configuración del Sistema".</span>
+                    </div>
+                `;
+                document.getElementById('btn-copy-ad').disabled = true;
+                btnSave.disabled = true;
+            } finally {
+                btn.innerHTML = '<i class="ti ti-cpu"></i> Generar Copy con Gemini';
+                btn.disabled = false;
+            }
+        };
+
+        window.saveAIGeneratedCopyToAd = async () => {
+            const adId = document.getElementById('ai-target-ad').value;
+            const output = document.getElementById('ai-output');
+            const copyText = output.innerHTML;
+            
+            if (!adId) {
+                showToast('Por favor selecciona un anuncio de destino en el desplegable', 'ti-alert-circle');
+                return;
+            }
+            
+            let foundAd = null;
+            campaigns.forEach(c => {
+                c.adsets.forEach(as => {
+                    as.ads.forEach(ad => {
+                        if (ad.id === adId) {
+                            ad.copy = copyText;
+                            foundAd = ad;
+                        }
+                    });
+                });
+            });
+            
+            if (foundAd) {
+                saveToStorage();
+                showToast(`Copy asignado con éxito al anuncio: "${foundAd.name}"`, 'ti-check');
+                await logActivity('Edición', `Se asignó copy generado por IA al anuncio de pauta "${foundAd.name}"`);
+                renderCampaigns();
+            } else {
+                showToast('Anuncio de destino no encontrado', 'ti-alert-circle');
+            }
+        };
+
+        window.copyAdText = () => {
+            const output = document.getElementById('ai-output');
+            const textToCopy = output.innerText || output.textContent;
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showToast('¡Texto copiado al portapapeles!', 'ti-copy');
+            }).catch(err => {
+                showToast('No se pudo copiar el texto', 'ti-alert-circle');
+            });
+        };
+    </script>
+</body>
+</html>

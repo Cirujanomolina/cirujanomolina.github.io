@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Estrategia — @cirujanomolina</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1e24;--bg2:#14262D;--bg3:#1F434E;
+  --sf:#182f38;--sf2:#1c3641;--sf3:#213e4b;
+  --tx:#F4F5F0;--tx2:#9db8c0;--tx3:#6a8f98;
+  --tl:#2ABFB0;--tl2:rgba(42,191,176,.12);--tl3:rgba(42,191,176,.06);
+  --be:#CCC2A7;--br:rgba(42,191,176,.15);--br2:rgba(244,245,240,.07);--br3:rgba(244,245,240,.04);
+  --am:#C9862A;--r:12px;--rsm:8px;--rlg:16px;
+  --ignite:#2ABFB0;--auth:#b48ef0;--conv:#f5935a;--cons:#5ba3f5;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Archivo',sans-serif;background:var(--bg);color:var(--tx);font-size:13px;line-height:1.5;min-height:100vh}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(42,191,176,.2);border-radius:4px}
+
+/* ── HEADER ── */
+.header{background:linear-gradient(135deg,var(--bg2) 0%,var(--bg3) 100%);border-bottom:1px solid var(--br);padding:2rem 2rem 1.75rem;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;top:-80px;right:-80px;width:260px;height:260px;border-radius:50%;background:var(--tl);opacity:.04;pointer-events:none}
+.h-eye{font-size:10px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:var(--tl);margin-bottom:5px}
+.h-title{font-family:'Cormorant Garamond',serif;font-size:clamp(24px,4vw,40px);font-weight:300;color:var(--tx);line-height:1.1;margin-bottom:6px}
+.h-title em{color:var(--tl);font-style:italic}
+.h-sub{font-size:12.5px;font-weight:300;color:var(--tx2);line-height:1.6;margin-bottom:1rem}
+.h-badges{display:flex;gap:6px;flex-wrap:wrap}
+.h-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:20px;background:rgba(42,191,176,.1);border:1px solid rgba(42,191,176,.25);font-size:11px;font-weight:500;color:var(--tl)}
+
+/* ── LEVEL TABS ── */
+.level-bar{background:var(--bg2);border-bottom:1px solid var(--br2);padding:0 2rem;display:flex;gap:0;position:sticky;top:0;z-index:30;overflow-x:auto}
+.level-bar::-webkit-scrollbar{height:0}
+.ltab{flex:0 0 auto;padding:14px 20px;font-size:12px;font-weight:400;color:var(--tx3);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;display:flex;align-items:center;gap:7px;white-space:nowrap;user-select:none}
+.ltab i{font-size:15px}
+.ltab:hover{color:var(--tx)}
+.ltab.on{color:var(--tl);border-bottom-color:var(--tl);font-weight:500}
+
+/* ── PANELS ── */
+.panel{display:none;max-width:1000px;margin:0 auto;padding:2rem 2rem 5rem}
+.panel.on{display:block}
+
+/* ── SAVE BAR ── */
+.save-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(15,30,36,.95);backdrop-filter:blur(8px);border-top:1px solid var(--br2);padding:12px 2rem;display:flex;align-items:center;justify-content:space-between;z-index:40;flex-wrap:wrap;gap:8px}
+.save-status{font-size:11.5px;color:var(--tx3);display:flex;align-items:center;gap:6px}
+.save-status i{font-size:13px;color:var(--tl)}
+.save-btns{display:flex;gap:8px}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--rsm);font-family:'Archivo',sans-serif;font-size:11px;font-weight:500;cursor:pointer;border:1px solid var(--br2);background:transparent;color:var(--tx2);transition:all .15s;white-space:nowrap}
+.btn:hover{border-color:var(--tl);color:var(--tl);background:var(--tl3)}
+.btn i{font-size:13px}
+.btn-p{background:var(--tl);color:var(--bg2);border-color:var(--tl);font-weight:600}
+.btn-p:hover{background:#22a89a;color:var(--bg2)}
+.btn-sm{padding:5px 10px;font-size:10.5px}
+.btn-ghost{background:transparent;border:1px dashed var(--br2);color:var(--tx3)}
+.btn-ghost:hover{border-color:var(--tl);color:var(--tl);background:var(--tl3)}
+
+/* ── SECTION ── */
+.sec{margin-bottom:2rem}
+.sec-label{font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--tl);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.sec-label i{font-size:12px}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--tx);margin-bottom:4px}
+.sec-title em{color:var(--tl);font-style:italic}
+.sec-desc{font-size:12px;font-weight:300;color:var(--tx3);line-height:1.6}
+.divider{height:1px;background:var(--br2);margin:1.75rem 0}
+
+/* ── CARDS ── */
+.card{background:var(--sf);border:1px solid var(--br2);border-radius:var(--rlg);padding:1.25rem;margin-bottom:1rem}
+.card:last-child{margin-bottom:0}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--tx);display:flex;align-items:center;gap:7px}
+.card-title i{font-size:13px;color:var(--tl)}
+
+/* ── EDITABLE FIELDS ── */
+.flbl{font-size:10px;font-weight:500;color:var(--tx3);margin-bottom:5px;letter-spacing:1.2px;text-transform:uppercase;display:block}
+.ef{width:100%;background:var(--sf2);border:1px solid var(--br2);border-radius:var(--rsm);padding:9px 12px;color:var(--tx);font-family:'Archivo',sans-serif;font-size:12.5px;outline:none;transition:border-color .15s,background .15s;resize:none;line-height:1.55}
+.ef:focus{border-color:rgba(42,191,176,.4);background:var(--sf3)}
+.ef::placeholder{color:var(--tx3);font-size:11.5px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.frow3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.field{margin-bottom:12px}
+.field:last-child{margin-bottom:0}
+
+/* ── FASE CARDS ── */
+.fase-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:5px}
+.fase-card{padding:12px;border-radius:var(--r);border:2px solid var(--br2);cursor:pointer;transition:all .18s;text-align:center;user-select:none}
+.fase-card:hover{transform:translateY(-2px)}
+.fase-card.on{transform:translateY(-2px)}
+.fc-icon{font-size:20px;margin-bottom:5px;display:block}
+.fc-name{font-size:11.5px;font-weight:600;letter-spacing:.5px;display:block;margin-bottom:3px}
+.fc-desc{font-size:10px;font-weight:300;color:var(--tx3);line-height:1.35}
+.fc-ignite{border-color:rgba(42,191,176,.2)}
+.fc-ignite:hover,.fc-ignite.on{border-color:var(--ignite);background:rgba(42,191,176,.1)}
+.fc-ignite .fc-name{color:var(--ignite)}
+.fc-auth{border-color:rgba(180,142,240,.2)}
+.fc-auth:hover,.fc-auth.on{border-color:var(--auth);background:rgba(180,142,240,.08)}
+.fc-auth .fc-name{color:var(--auth)}
+.fc-conv{border-color:rgba(245,147,90,.2)}
+.fc-conv:hover,.fc-conv.on{border-color:var(--conv);background:rgba(245,147,90,.08)}
+.fc-conv .fc-name{color:var(--conv)}
+.fc-cons{border-color:rgba(91,163,245,.2)}
+.fc-cons:hover,.fc-cons.on{border-color:var(--cons);background:rgba(91,163,245,.08)}
+.fc-cons .fc-name{color:var(--cons)}
+
+/* ── PILAR CHIPS ── */
+.pilar-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}
+.pilar-chip{padding:6px 13px;border-radius:20px;font-size:11px;border:1px solid var(--br2);cursor:pointer;transition:all .15s;color:var(--tx2);user-select:none;display:inline-flex;align-items:center;gap:5px}
+.pilar-chip:hover{border-color:var(--tl);color:var(--tl)}
+.pilar-chip.on{font-weight:500}
+.pc1.on{border-color:var(--tl);color:var(--tl);background:var(--tl2)}
+.pc2.on{border-color:#5ba3f5;color:#5ba3f5;background:rgba(91,163,245,.1)}
+.pc3.on{border-color:#f5935a;color:#f5935a;background:rgba(245,147,90,.09)}
+.pc4.on{border-color:#b48ef0;color:#b48ef0;background:rgba(180,142,240,.09)}
+.pc5.on{border-color:var(--be);color:var(--be);background:rgba(204,194,167,.09)}
+.pc6.on{border-color:#f55a8a;color:#f55a8a;background:rgba(245,90,138,.09)}
+
+/* ── KPI INPUTS ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:5px}
+.kpi-card{background:var(--sf2);border:1px solid var(--br2);border-radius:var(--r);padding:12px;transition:border-color .15s}
+.kpi-card:focus-within{border-color:rgba(42,191,176,.35)}
+.kpi-icon{font-size:18px;color:var(--tl);margin-bottom:5px;display:block}
+.kpi-lbl{font-size:9.5px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;color:var(--tx3);display:block;margin-bottom:6px}
+.kpi-inp{width:100%;background:transparent;border:none;outline:none;font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--tl);line-height:1;padding:0}
+.kpi-inp::placeholder{color:rgba(42,191,176,.25);font-size:22px}
+.kpi-unit{font-size:10px;color:var(--tx3);margin-top:3px;display:block}
+
+/* ── NUMBER STEPPER ── */
+.stepper{display:flex;align-items:center;gap:8px;margin-top:5px}
+.step-btn{width:28px;height:28px;border-radius:7px;background:var(--sf2);border:1px solid var(--br2);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--tx2);font-size:16px;transition:all .15s;user-select:none;flex-shrink:0}
+.step-btn:hover{border-color:var(--tl);color:var(--tl);background:var(--tl3)}
+.step-val{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--tl);min-width:40px;text-align:center}
+.step-lbl{font-size:11px;color:var(--tx3)}
+
+/* ── MONTH GRID ── */
+.month-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.month-card{background:var(--sf);border:1px solid var(--br2);border-radius:var(--rlg);padding:1rem;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
+.month-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.mc-ignite::before{background:var(--ignite)}
+.mc-auth::before{background:var(--auth)}
+.mc-conv::before{background:var(--conv)}
+.mc-cons::before{background:var(--cons)}
+.mc-none::before{background:var(--br2)}
+.month-card:hover{border-color:rgba(42,191,176,.3);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.month-card.active{border-color:var(--tl);box-shadow:0 0 0 2px rgba(42,191,176,.2)}
+.mc-num{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--tx3);margin-bottom:4px}
+.mc-name{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--tx);margin-bottom:5px;line-height:1.2}
+.mc-fase{font-size:10px;font-weight:500;padding:2px 8px;border-radius:10px;display:inline-block;margin-bottom:8px}
+.mc-fase.ignite{background:rgba(42,191,176,.12);color:var(--ignite);border:1px solid rgba(42,191,176,.25)}
+.mc-fase.auth{background:rgba(180,142,240,.1);color:var(--auth);border:1px solid rgba(180,142,240,.2)}
+.mc-fase.conv{background:rgba(245,147,90,.1);color:var(--conv);border:1px solid rgba(245,147,90,.2)}
+.mc-fase.cons{background:rgba(91,163,245,.1);color:var(--cons);border:1px solid rgba(91,163,245,.2)}
+.mc-fase.none{background:var(--sf2);color:var(--tx3);border:1px solid var(--br2)}
+.mc-kpis{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px}
+.mc-kpi{background:var(--sf2);border-radius:5px;padding:5px 7px}
+.mc-kpi-val{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:300;color:var(--tl);line-height:1}
+.mc-kpi-lbl{font-size:9px;color:var(--tx3)}
+.mc-pills{display:flex;flex-wrap:wrap;gap:3px}
+.mc-pill{font-size:9px;padding:2px 6px;border-radius:8px;background:var(--sf2);color:var(--tx3)}
+.mc-edit-btn{position:absolute;top:8px;right:8px;width:24px;height:24px;border-radius:6px;background:transparent;border:none;color:var(--tx3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .12s;opacity:0}
+.month-card:hover .mc-edit-btn{opacity:1}
+.mc-edit-btn:hover{background:var(--sf2);color:var(--tl)}
+
+/* ── MONTH DETAIL ── */
+.month-detail{background:var(--sf);border:1px solid var(--br);border-radius:var(--rlg);padding:1.5rem;margin-bottom:1rem;display:none}
+.month-detail.on{display:block}
+.md-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:8px}
+.md-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--tx)}
+.md-title em{color:var(--tl);font-style:italic}
+
+/* ── WEEK CARDS ── */
+.week-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:8px}
+.week-card{background:var(--sf2);border:1px solid var(--br2);border-radius:var(--r);padding:10px 12px;cursor:pointer;transition:all .15s}
+.week-card:hover{border-color:rgba(42,191,176,.3)}
+.week-card.active{border-color:var(--tl)}
+.wc-num{font-size:9.5px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--tl);margin-bottom:3px}
+.wc-focus{font-size:12px;font-weight:500;color:var(--tx);margin-bottom:4px}
+.wc-sub{font-size:10.5px;color:var(--tx3);line-height:1.4}
+
+/* ── WEEK DETAIL ── */
+.week-detail{background:var(--sf2);border:1px solid var(--br);border-radius:var(--rlg);padding:1.25rem;margin-top:10px;display:none}
+.week-detail.on{display:block}
+
+/* ── DAY SCHEDULE ── */
+.day-row{display:flex;gap:10px;align-items:stretch;margin-bottom:7px}
+.day-label{width:52px;background:var(--bg2);border-radius:var(--rsm);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:var(--tx2);text-align:center;padding:4px;flex-shrink:0;min-height:48px}
+.day-content{flex:1;background:var(--sf3);border-radius:var(--rsm);padding:7px 10px;border:1px solid var(--br3)}
+.day-type{font-size:9px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--tl);margin-bottom:3px}
+.day-inp{width:100%;background:transparent;border:none;outline:none;font-family:'Archivo',sans-serif;font-size:11.5px;color:var(--tx);resize:none;line-height:1.45;padding:0}
+.day-inp::placeholder{color:var(--tx3)}
+
+/* ── CONTENT TYPE CHIPS ── */
+.ctype-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+.ctype{padding:5px 11px;border-radius:20px;font-size:11px;border:1px solid var(--br2);cursor:pointer;transition:all .15s;color:var(--tx2);user-select:none}
+.ctype:hover{border-color:var(--tl);color:var(--tl)}
+.ctype.on{background:var(--tl);color:var(--bg2);border-color:var(--tl);font-weight:600}
+
+/* ── PAUTA TOGGLE ── */
+.toggle-row{display:flex;align-items:center;gap:10px}
+.toggle-track{width:36px;height:20px;background:var(--br2);border-radius:20px;position:relative;cursor:pointer;transition:background .2s;flex-shrink:0}
+.toggle-track.on{background:var(--tl)}
+.toggle-dot{width:14px;height:14px;background:var(--tx3);border-radius:50%;position:absolute;top:3px;left:3px;transition:all .2s}
+.toggle-track.on .toggle-dot{left:19px;background:var(--bg2)}
+.toggle-lbl{font-size:12px;color:var(--tx2)}
+
+/* ── OTHER INPUT ── */
+.other-row{display:flex;gap:6px;margin-top:6px}
+.other-inp{flex:1;background:var(--sf2);border:1px solid var(--br2);border-radius:var(--rsm);padding:6px 10px;color:var(--tx);font-family:'Archivo',sans-serif;font-size:11.5px;outline:none;transition:border-color .15s}
+.other-inp:focus{border-color:rgba(42,191,176,.4)}
+.other-inp::placeholder{color:var(--tx3)}
+
+/* ── MOBILE ── */
+@media(max-width:640px){
+  .header{padding:1.5rem 1rem}
+  .level-bar{padding:0 1rem}
+  .panel{padding:1.25rem 1rem 4rem}
+  .fase-grid{grid-template-columns:1fr 1fr}
+  .frow,.frow3{grid-template-columns:1fr}
+  .month-grid{grid-template-columns:1fr 1fr}
+  .save-bar{padding:10px 1rem}
+}
+@media(max-width:400px){.month-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="h-eye">Constructor de Estrategia · @cirujanomolina</div>
+  <div class="h-title">Estrategia <em>Instagram</em></div>
+  <div class="h-sub">Anual → Mensual → Semanal. Todo en cascada. Todo editable.</div>
+  <div class="h-badges">
+    <span class="h-badge"><i class="ti ti-calendar"></i> 2026</span>
+    <span class="h-badge"><i class="ti ti-target"></i> 20K seguidores</span>
+    <span class="h-badge"><i class="ti ti-stethoscope"></i> 10 cirugías/mes</span>
+  </div>
+</div>
+
+<!-- LEVEL TABS -->
+<div class="level-bar">
+  <div class="ltab on" onclick="goLevel('anual',this)"><i class="ti ti-planet"></i>Anual</div>
+  <div class="ltab"    onclick="goLevel('mensual',this)"><i class="ti ti-calendar-month"></i>Mensual</div>
+  <div class="ltab"    onclick="goLevel('semanal',this)"><i class="ti ti-calendar-week"></i>Semanal</div>
+</div>
+
+<!-- ══════════════════════════════════
+     PANEL: ANUAL
+══════════════════════════════════ -->
+<div class="panel on" id="p-anual">
+
+  <div class="sec" style="margin-bottom:1.5rem">
+    <div class="sec-label"><i class="ti ti-planet"></i> Visión anual</div>
+    <div class="sec-title">Plan <em>2026</em></div>
+    <div class="sec-desc">Define el norte del año. Todo lo mensual y semanal se desprende de aquí.</div>
+  </div>
+
+  <!-- FASE DEL AÑO -->
+  <div class="card">
+    <div class="card-head"><div class="card-title"><i class="ti ti-rocket"></i>Fase del año</div></div>
+    <div class="fase-grid" id="fase-anual">
+      <div class="fase-card fc-ignite on" onclick="selectFase(this,'fase-anual')">
+        <span class="fc-icon">🔥</span>
+        <span class="fc-name">IGNITE</span>
+        <span class="fc-desc">Encender la marca. Identidad emocional. Entrenar el algoritmo.</span>
+      </div>
+      <div class="fase-card fc-auth" onclick="selectFase(this,'fase-anual')">
+        <span class="fc-icon">🛡️</span>
+        <span class="fc-name">AUTHORITY</span>
+        <span class="fc-desc">Construir percepción de expertise médico premium.</span>
+      </div>
+      <div class="fase-card fc-conv" onclick="selectFase(this,'fase-anual')">
+        <span class="fc-icon">⚡</span>
+        <span class="fc-name">CONVERSION</span>
+        <span class="fc-desc">Transformar atención en consultas y cirugías.</span>
+      </div>
+      <div class="fase-card fc-cons" onclick="selectFase(this,'fase-anual')">
+        <span class="fc-icon">🌊</span>
+        <span class="fc-name">CONSOLIDACIÓN</span>
+        <span class="fc-desc">Escalar y sostener lo que ya funciona.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- OBJETIVO ANUAL -->
+  <div class="card">
+    <div class="card-head"><div class="card-title"><i class="ti ti-target"></i>Objetivo principal del año</div></div>
+    <label class="flbl">Define en una frase qué quieres lograr este año</label>
+    <textarea class="ef" rows="2" id="obj-anual" placeholder="Ej: Posicionarme como el referente bariátrico premium en Medellín con 20.000 seguidores calificados y 10 cirugías mensuales provenientes de Instagram."></textarea>
+  </div>
+
+  <!-- KPIs ANUALES -->
+  <div class="card">
+    <div class="card-head"><div class="card-title"><i class="ti ti-chart-bar"></i>KPIs anuales — metas al finalizar el año</div></div>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <i class="ti ti-users kpi-icon"></i>
+        <span class="kpi-lbl">Seguidores meta</span>
+        <input class="kpi-inp" type="number" placeholder="20000" id="kpi-seg">
+        <span class="kpi-unit">seguidores totales</span>
+      </div>
+      <div class="kpi-card">
+        <i class="ti ti-stethoscope kpi-icon"></i>
+        <span class="kpi-lbl">Cirugías / mes</span>
+        <input class="kpi-inp" type="number" placeholder="10" id="kpi-cir">
+        <span class="kpi-unit">desde Instagram</span>
+      </div>
+      <div class="kpi-card">
+        <i class="ti ti-message kpi-icon"></i>
+        <span class="kpi-lbl">DMs / mes</span>
+        <input class="kpi-inp" type="number" placeholder="60" id="kpi-dm">
+        <span class="kpi-unit">mensajes calificados</span>
+      </div>
+      <div class="kpi-card">
+        <i class="ti ti-calendar-check kpi-icon"></i>
+        <span class="kpi-lbl">Consultas / mes</span>
+        <input class="kpi-inp" type="number" placeholder="20" id="kpi-con">
+        <span class="kpi-unit">provenientes de IG</span>
+      </div>
+      <div class="kpi-card">
+        <i class="ti ti-bookmark kpi-icon"></i>
+        <span class="kpi-lbl">Guardados / mes</span>
+        <input class="kpi-inp" type="number" placeholder="500" id="kpi-gua">
+        <span class="kpi-unit">acumulados mensual</span>
+      </div>
+      <div class="kpi-card">
+        <i class="ti ti-share kpi-icon"></i>
+        <span class="kpi-lbl">Compartidos / mes</span>
+        <input class="kpi-inp" type="number" placeholder="300" id="kpi-sha">
+        <span class="kpi-unit">acumulados mensual</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PILARES ANUALES -->
+  <div class="card">
+    <div class="card-head"><div class="card-title"><i class="ti ti-layout-columns"></i>Pilares dominantes del año</div></div>
+    <span class="flbl">Selecciona los pilares que más trabajarás (puedes seleccionar varios)</span>
+    <div class="pilar-grid">
+      <div class="pilar-chip pc1 on" onclick="this.classList.toggle('on')"><i class="ti ti-heart-handshake" style="font-size:12px"></i>Validación emocional</div>
+      <div class="pilar-chip pc2 on" onclick="this.classList.toggle('on')"><i class="ti ti-microscope" style="font-size:12px"></i>Educación premium</div>
+      <div class="pilar-chip pc3" onclick="this.classList.toggle('on')"><i class="ti ti-flame" style="font-size:12px"></i>Contrarian / Mitos</div>
+      <div class="pilar-chip pc4 on" onclick="this.classList.toggle('on')"><i class="ti ti-stethoscope" style="font-size:12px"></i>Autoridad humana</div>
+      <div class="pilar-chip pc5" onclick="this.classList.toggle('on')"><i class="ti ti-stars" style="font-size:12px"></i>Transformación de vida</div>
+      <div class="pilar-chip pc6" onclick="this.classList.toggle('on')"><i class="ti ti-message-circle" style="font-size:12px"></i>Conversión directa</div>
+    </div>
+  </div>
+
+  <!-- VOLUMEN DE CONTENIDO -->
+  <div class="card">
+    <div class="card-head"><div class="card-title"><i class="ti ti-video"></i>Volumen de contenido anual planificado</div></div>
+    <div class="frow3">
+      <div class="field">
+        <label class="flbl">Reels / año</label>
+        <div class="stepper">
+          <div class="step-btn" onclick="step('reels-anual',-1)">−</div>
+          <div class="step-val" id="reels-anual">36</div>
+          <div class="step-btn" onclick="step('reels-anual',1)">+</div>
+          <span class="step-lbl">reels</span>
+        </div>
+      </div>
+      <div class="field">
+        <label class="flbl">Carruseles / año</label>
+        <div class="stepper">
+          <div class="step-btn" onclick="step('cars-anual',-1)">−</div>
+          <div class="step-val" id="cars-anual">12</div>
+          <div class="step-btn" onclick="step('cars-anual',1)">+</div>
+          <span class="step-lbl">carruseles</span>
+        </div>
+      </div>
+      <div class="field">
+        <label class="flbl">Historias / año</label>
+        <div class="stepper">
+          <div class="step-btn" onclick="step('hist-anual',-1)">−</div>
+          <div class="step-val" id="hist-anual">180</div>
+          <div class="step-btn" onclick="step('hist-anual',1)">+</div>
+          <span class="step-lbl">historias</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTAS ANUALES -->
+  <div class="card">
+    <div class="card-head"><div class="card-title"><i class="ti ti-notes"></i>Notas y contexto</div></div>
+    <textarea class="ef" rows="4" placeholder="Escribe cualquier contexto, restricción, oportunidad o nota relevante para este año. Ej: Q1 enfocado en autoridad, Q3 tiene congreso médico, etc."></textarea>
+  </div>
+
+  <div style="display:flex;justify-content:flex-end;margin-top:1rem">
+    <button class="btn btn-p" onclick="goLevel('mensual',document.querySelectorAll('.ltab')[1])">
+      Planificar meses <i class="ti ti-arrow-right"></i>
+    </button>
+  </div>
+
+</div><!-- /p-anual -->
+
+<!-- ══════════════════════════════════
+     PANEL: MENSUAL
+══════════════════════════════════ -->
+<div class="panel" id="p-mensual">
+
+  <div class="sec" style="margin-bottom:1.5rem">
+    <div class="sec-label"><i class="ti ti-calendar-month"></i> Planificación mensual</div>
+    <div class="sec-title">Los <em>12 meses</em></div>
+    <div class="sec-desc">Haz clic en cualquier mes para editarlo en detalle. El color de la barra superior indica la fase.</div>
+  </div>
+
+  <!-- MONTH GRID -->
+  <div class="month-grid" id="month-grid"></div>
+
+  <!-- MONTH DETAIL -->
+  <div class="month-detail" id="month-detail">
+    <div class="md-header">
+      <div class="md-title" id="md-title">Enero <em>2026</em></div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-sm" onclick="prevMonth()"><i class="ti ti-chevron-left"></i> Anterior</button>
+        <button class="btn btn-sm" onclick="nextMonth()">Siguiente <i class="ti ti-chevron-right"></i></button>
+        <button class="btn btn-sm" onclick="closeMonthDetail()"><i class="ti ti-x"></i></button>
+      </div>
+    </div>
+
+    <!-- FASE DEL MES -->
+    <div class="field">
+      <label class="flbl">Fase de este mes</label>
+      <div class="fase-grid" id="fase-mes" style="grid-template-columns:repeat(4,1fr)">
+        <div class="fase-card fc-ignite" onclick="selectFase(this,'fase-mes')"><span class="fc-icon">🔥</span><span class="fc-name">IGNITE</span><span class="fc-desc">Encender</span></div>
+        <div class="fase-card fc-auth" onclick="selectFase(this,'fase-mes')"><span class="fc-icon">🛡️</span><span class="fc-name">AUTHORITY</span><span class="fc-desc">Autoridad</span></div>
+        <div class="fase-card fc-conv" onclick="selectFase(this,'fase-mes')"><span class="fc-icon">⚡</span><span class="fc-name">CONVERSION</span><span class="fc-desc">Convertir</span></div>
+        <div class="fase-card fc-cons" onclick="selectFase(this,'fase-mes')"><span class="fc-icon">🌊</span><span class="fc-name">CONSOLID.</span><span class="fc-desc">Escalar</span></div>
+      </div>
+    </div>
+
+    <div class="frow" style="margin-top:12px">
+      <div class="field">
+        <label class="flbl">Objetivo del mes</label>
+        <textarea class="ef" rows="2" id="md-obj" placeholder="Ej: Publicar el primer caso clínico simplificado y llegar a 2.000 seguidores nuevos."></textarea>
+      </div>
+      <div class="field">
+        <label class="flbl">Enfoque temático</label>
+        <textarea class="ef" rows="2" id="md-enfoque" placeholder="Ej: Mes del metabolismo — 4 reels sobre por qué el cuerpo recupera el peso."></textarea>
+      </div>
+    </div>
+
+    <!-- KPIs DEL MES -->
+    <div class="field">
+      <label class="flbl">KPIs del mes</label>
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <i class="ti ti-user-plus kpi-icon" style="font-size:15px"></i>
+          <span class="kpi-lbl">Seguidores nuevos</span>
+          <input class="kpi-inp" type="number" id="md-kpi-seg" placeholder="500" style="font-size:22px">
+        </div>
+        <div class="kpi-card">
+          <i class="ti ti-message kpi-icon" style="font-size:15px"></i>
+          <span class="kpi-lbl">DMs calificados</span>
+          <input class="kpi-inp" type="number" id="md-kpi-dm" placeholder="20" style="font-size:22px">
+        </div>
+        <div class="kpi-card">
+          <i class="ti ti-calendar-check kpi-icon" style="font-size:15px"></i>
+          <span class="kpi-lbl">Consultas</span>
+          <input class="kpi-inp" type="number" id="md-kpi-con" placeholder="5" style="font-size:22px">
+        </div>
+        <div class="kpi-card">
+          <i class="ti ti-bookmark kpi-icon" style="font-size:15px"></i>
+          <span class="kpi-lbl">Guardados</span>
+          <input class="kpi-inp" type="number" id="md-kpi-gua" placeholder="150" style="font-size:22px">
+        </div>
+      </div>
+    </div>
+
+    <!-- PILARES DEL MES -->
+    <div class="field">
+      <label class="flbl">Pilares dominantes este mes</label>
+      <div class="pilar-grid" id="md-pilares">
+        <div class="pilar-chip pc1" onclick="this.classList.toggle('on')">Validación emocional</div>
+        <div class="pilar-chip pc2" onclick="this.classList.toggle('on')">Educación premium</div>
+        <div class="pilar-chip pc3" onclick="this.classList.toggle('on')">Contrarian / Mitos</div>
+        <div class="pilar-chip pc4" onclick="this.classList.toggle('on')">Autoridad humana</div>
+        <div class="pilar-chip pc5" onclick="this.classList.toggle('on')">Transformación de vida</div>
+        <div class="pilar-chip pc6" onclick="this.classList.toggle('on')">Conversión directa</div>
+      </div>
+    </div>
+
+    <!-- VOLUMEN MENSUAL -->
+    <div class="field">
+      <label class="flbl">Volumen de contenido del mes</label>
+      <div class="frow3">
+        <div>
+          <label class="flbl" style="font-size:9px;margin-bottom:3px">Reels</label>
+          <div class="stepper"><div class="step-btn" onclick="step('md-reels',-1)">−</div><div class="step-val" id="md-reels">3</div><div class="step-btn" onclick="step('md-reels',1)">+</div></div>
+        </div>
+        <div>
+          <label class="flbl" style="font-size:9px;margin-bottom:3px">Carruseles</label>
+          <div class="stepper"><div class="step-btn" onclick="step('md-cars',-1)">−</div><div class="step-val" id="md-cars">1</div><div class="step-btn" onclick="step('md-cars',1)">+</div></div>
+        </div>
+        <div>
+          <label class="flbl" style="font-size:9px;margin-bottom:3px">Historias / semana</label>
+          <div class="stepper"><div class="step-btn" onclick="step('md-hist',-1)">−</div><div class="step-val" id="md-hist">5</div><div class="step-btn" onclick="step('md-hist',1)">+</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAUTA -->
+    <div class="field">
+      <label class="flbl">Pauta activa este mes</label>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:5px">
+        <div class="toggle-row">
+          <div class="toggle-track" id="pauta-toggle" onclick="this.classList.toggle('on')"><div class="toggle-dot"></div></div>
+          <span class="toggle-lbl">Activar pauta</span>
+        </div>
+        <div class="field" style="margin-bottom:0;flex:1;min-width:120px">
+          <input class="ef" type="number" id="md-presupuesto" placeholder="150" style="padding:6px 10px;font-size:12px">
+          <label class="flbl" style="font-size:9px;margin-top:3px">USD presupuesto</label>
+        </div>
+        <div class="field" style="margin-bottom:0;flex:2;min-width:160px">
+          <div class="ctype-row">
+            <div class="ctype" onclick="this.classList.toggle('on')">Video views</div>
+            <div class="ctype" onclick="this.classList.toggle('on')">Engagement</div>
+            <div class="ctype" onclick="this.classList.toggle('on')">DM directo</div>
+            <div class="ctype" onclick="this.classList.toggle('on')">Retargeting</div>
+          </div>
+          <label class="flbl" style="font-size:9px;margin-top:4px">Tipo de campaña</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA PRINCIPAL -->
+    <div class="field">
+      <label class="flbl">CTA principal del mes</label>
+      <div class="ctype-row">
+        <div class="ctype" onclick="selectCtype(this,'.cta-chips')">Comenta QUIERO SABER</div>
+        <div class="ctype" onclick="selectCtype(this,'.cta-chips')">Comenta CANDIDATO</div>
+        <div class="ctype" onclick="selectCtype(this,'.cta-chips')">Enlace en bio</div>
+        <div class="ctype" onclick="selectCtype(this,'.cta-chips')">Comparte esto</div>
+        <div class="ctype" onclick="selectCtype(this,'.cta-chips')">Escríbeme</div>
+      </div>
+      <div class="cta-chips"></div>
+      <div class="other-row">
+        <input class="other-inp" placeholder="Otro CTA personalizado...">
+        <button class="btn btn-sm" onclick="addOther(this,'ctype-row')"><i class="ti ti-plus"></i></button>
+      </div>
+    </div>
+
+    <!-- NOTAS DEL MES -->
+    <div class="field">
+      <label class="flbl">Notas del mes</label>
+      <textarea class="ef" rows="3" id="md-notas" placeholder="Congresos, fechas especiales, restricciones de agenda, oportunidades de contenido específicas de este mes..."></textarea>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;margin-top:8px">
+      <button class="btn btn-p btn-sm" onclick="saveMonth()"><i class="ti ti-device-floppy"></i> Guardar mes</button>
+    </div>
+
+  </div><!-- /month-detail -->
+
+</div><!-- /p-mensual -->
+
+<!-- ══════════════════════════════════
+     PANEL: SEMANAL
+══════════════════════════════════ -->
+<div class="panel" id="p-semanal">
+
+  <div class="sec" style="margin-bottom:1.5rem">
+    <div class="sec-label"><i class="ti ti-calendar-week"></i> Planificación semanal</div>
+    <div class="sec-title">Semana a <em>semana</em></div>
+    <div class="sec-desc">Selecciona el mes y luego la semana para planificar día a día.</div>
+  </div>
+
+  <!-- MES SELECTOR -->
+  <div class="field" style="margin-bottom:1.5rem">
+    <label class="flbl">Selecciona el mes</label>
+    <div style="display:flex;flex-wrap:wrap;gap:6px" id="sem-month-selector"></div>
+  </div>
+
+  <!-- WEEK SELECTOR -->
+  <div class="field" style="margin-bottom:1.5rem" id="sem-week-wrap" style="display:none">
+    <label class="flbl">Selecciona la semana</label>
+    <div class="week-grid" id="sem-week-grid">
+      <div class="week-card" onclick="openWeekDetail(this,1)">
+        <div class="wc-num">Semana 1</div>
+        <div class="wc-focus" id="wf-1">Sin definir</div>
+        <div class="wc-sub">Días 1–7 del mes</div>
+      </div>
+      <div class="week-card" onclick="openWeekDetail(this,2)">
+        <div class="wc-num">Semana 2</div>
+        <div class="wc-focus" id="wf-2">Sin definir</div>
+        <div class="wc-sub">Días 8–14 del mes</div>
+      </div>
+      <div class="week-card" onclick="openWeekDetail(this,3)">
+        <div class="wc-num">Semana 3</div>
+        <div class="wc-focus" id="wf-3">Sin definir</div>
+        <div class="wc-sub">Días 15–21 del mes</div>
+      </div>
+      <div class="week-card" onclick="openWeekDetail(this,4)">
+        <div class="wc-num">Semana 4</div>
+        <div class="wc-focus" id="wf-4">Sin definir</div>
+        <div class="wc-sub">Días 22–28 del mes</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK DETAIL -->
+  <div class="week-detail" id="sem-week-detail">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:8px">
+      <div>
+        <div style="font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--tl);margin-bottom:3px" id="wk-label">Semana 1</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--tx)">Planificación <em style="color:var(--tl);font-style:italic">diaria</em></div>
+      </div>
+      <button class="btn btn-sm" onclick="document.getElementById('sem-week-detail').classList.remove('on')"><i class="ti ti-x"></i></button>
+    </div>
+
+    <!-- ENFOQUE Y CTA -->
+    <div class="frow" style="margin-bottom:12px">
+      <div class="field">
+        <label class="flbl">Enfoque de la semana</label>
+        <input class="ef" type="text" id="wk-enfoque" placeholder="Ej: Semana del metabolismo — educación + un re-hook contrarian">
+      </div>
+      <div class="field">
+        <label class="flbl">CTA principal de la semana</label>
+        <input class="ef" type="text" id="wk-cta" placeholder="Ej: Comenta CANDIDATO en todos los reels">
+      </div>
+    </div>
+
+    <!-- DAILY SCHEDULE -->
+    <div style="margin-bottom:12px">
+      <label class="flbl" style="margin-bottom:8px">Calendario de publicación</label>
+
+      <div class="day-row">
+        <div class="day-label" style="color:var(--tl)">Lun</div>
+        <div class="day-content">
+          <div class="day-type">Reel emocional · Validación</div>
+          <textarea class="day-inp" rows="2" id="day-lun" placeholder="Título del reel del lunes · pilar · hook idea..."></textarea>
+        </div>
+      </div>
+      <div class="day-row">
+        <div class="day-label">Mar</div>
+        <div class="day-content">
+          <div class="day-type">Historias · Humanización</div>
+          <textarea class="day-inp" rows="2" id="day-mar" placeholder="Tipo de historias del martes · caja de preguntas · tema..."></textarea>
+        </div>
+      </div>
+      <div class="day-row">
+        <div class="day-label" style="color:#b48ef0">Mié</div>
+        <div class="day-content">
+          <div class="day-type">Reel educativo · Autoridad</div>
+          <textarea class="day-inp" rows="2" id="day-mie" placeholder="Título del reel del miércoles · pilar · hook idea..."></textarea>
+        </div>
+      </div>
+      <div class="day-row">
+        <div class="day-label">Jue</div>
+        <div class="day-content">
+          <div class="day-type">Historias · Educación / Autoridad</div>
+          <textarea class="day-inp" rows="2" id="day-jue" placeholder="Tipo de historias del jueves..."></textarea>
+        </div>
+      </div>
+      <div class="day-row">
+        <div class="day-label" style="color:var(--conv)">Vie</div>
+        <div class="day-content">
+          <div class="day-type">Reel conversión · Autoridad humana</div>
+          <textarea class="day-inp" rows="2" id="day-vie" placeholder="Título del reel del viernes · pilar · hook idea..."></textarea>
+        </div>
+      </div>
+      <div class="day-row">
+        <div class="day-label">Sáb</div>
+        <div class="day-content">
+          <div class="day-type">Historias · Equipo / Conversión</div>
+          <textarea class="day-inp" rows="2" id="day-sab" placeholder="Presentar nutricionista · psicólogo · CTA suave..."></textarea>
+        </div>
+      </div>
+      <div class="day-row">
+        <div class="day-label">Dom</div>
+        <div class="day-content">
+          <div class="day-type">Historias · Libre / Reflexión</div>
+          <textarea class="day-inp" rows="2" id="day-dom" placeholder="Reflexión personal · vida real · descanso..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIPO DOMINANTE -->
+    <div class="frow">
+      <div class="field">
+        <label class="flbl">Tipo de edición dominante esta semana</label>
+        <div class="ctype-row">
+          <div class="ctype on" onclick="this.classList.toggle('on')">Emocional lento</div>
+          <div class="ctype" onclick="this.classList.toggle('on')">Contrarian intenso</div>
+          <div class="ctype" onclick="this.classList.toggle('on')">Educativo documental</div>
+          <div class="ctype" onclick="this.classList.toggle('on')">Conversacional</div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="flbl">Pauta activa esta semana</label>
+        <div class="toggle-row" style="margin-top:5px">
+          <div class="toggle-track" onclick="this.classList.toggle('on')"><div class="toggle-dot"></div></div>
+          <span class="toggle-lbl" style="font-size:12px">Activar pauta esta semana</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="flbl">Notas de la semana</label>
+      <textarea class="ef" rows="2" id="wk-notas" placeholder="Agenda del Dr., restricciones, oportunidades especiales..."></textarea>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;margin-top:8px">
+      <button class="btn btn-p btn-sm" onclick="saveWeek()"><i class="ti ti-device-floppy"></i> Guardar semana</button>
+    </div>
+
+  </div><!-- /week-detail -->
+
+</div><!-- /p-semanal -->
+
+<!-- SAVE BAR -->
+<div class="save-bar">
+  <span class="save-status"><i class="ti ti-cloud"></i><span id="save-msg">Cambios sin guardar</span></span>
+  <div class="save-btns">
+    <button class="btn" onclick="exportJSON()"><i class="ti ti-download"></i>Exportar JSON</button>
+    <button class="btn btn-p" onclick="saveAll()"><i class="ti ti-device-floppy"></i>Guardar todo</button>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════
+   DATA STORE
+══════════════════════════════ */
+const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const FASES = ['ignite','auth','conv','cons','none'];
+const FASE_LABELS = {ignite:'IGNITE',auth:'AUTHORITY',conv:'CONVERSION',cons:'CONSOLIDACIÓN',none:'Sin definir'};
+
+let state = {
+  anual: { fase:'ignite', obj:'', kpis:{seg:20000,cir:10,dm:60,con:20,gua:500,sha:300}, pilares:[], reels:36, cars:12, hist:180, notas:'' },
+  meses: Array.from({length:12},(_,i)=>({
+    nombre: MESES[i], fase:'none', obj:'', enfoque:'', kpis:{seg:0,dm:0,con:0,gua:0},
+    pilares:[], reels:3, cars:1, hist:5, pauta:false, presupuesto:0, cta:'', notas:''
+  })),
+  semanas: {}
+};
+
+let activeMes = null;
+let activeWeek = null;
+
+/* ══════════════════════════════
+   LEVEL NAVIGATION
+══════════════════════════════ */
+function goLevel(id, el) {
+  document.querySelectorAll('.ltab').forEach(t => t.classList.remove('on'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('p-' + id).classList.add('on');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (id === 'mensual') renderMonthGrid();
+  if (id === 'semanal') renderSemMonthSelector();
+}
+
+/* ══════════════════════════════
+   FASE SELECTOR
+══════════════════════════════ */
+function selectFase(el, groupId) {
+  document.getElementById(groupId).querySelectorAll('.fase-card').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  markUnsaved();
+}
+function getSelectedFase(groupId) {
+  const el = document.querySelector(`#${groupId} .fase-card.on`);
+  if (!el) return 'none';
+  const cls = Array.from(el.classList).find(c => c.startsWith('fc-') && c !== 'fase-card');
+  return cls ? cls.replace('fc-','') : 'none';
+}
+function setFase(groupId, fase) {
+  const cards = document.querySelectorAll(`#${groupId} .fase-card`);
+  cards.forEach(c => c.classList.remove('on'));
+  const map = {ignite:0,auth:1,conv:2,cons:3};
+  if (map[fase] !== undefined) cards[map[fase]]?.classList.add('on');
+}
+
+/* ══════════════════════════════
+   STEPPER
+══════════════════════════════ */
+function step(id, delta) {
+  const el = document.getElementById(id);
+  const val = parseInt(el.textContent) + delta;
+  el.textContent = Math.max(0, val);
+  markUnsaved();
+}
+
+/* ══════════════════════════════
+   SELECT EXCLUSIVE CTYPE
+══════════════════════════════ */
+function selectCtype(el, groupSel) {
+  el.closest(groupSel || '.ctype-row')?.querySelectorAll('.ctype').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  markUnsaved();
+}
+
+/* ══════════════════════════════
+   ADD OTHER
+══════════════════════════════ */
+function addOther(btn, containerClass) {
+  const inp = btn.previousElementSibling;
+  const val = inp.value.trim();
+  if (!val) return;
+  const row = btn.closest('.field');
+  const container = row.querySelector('.' + containerClass) || btn.parentElement.previousElementSibling;
+  const chip = document.createElement('div');
+  chip.className = 'ctype on';
+  chip.style.cssText = 'display:inline-flex;align-items:center;gap:5px;';
+  chip.innerHTML = val + ' <i class="ti ti-x" style="font-size:10px;cursor:pointer" onclick="this.parentElement.remove()"></i>';
+  container.appendChild(chip);
+  inp.value = '';
+  markUnsaved();
+}
+
+/* ══════════════════════════════
+   MONTH GRID
+══════════════════════════════ */
+function renderMonthGrid() {
+  const grid = document.getElementById('month-grid');
+  grid.innerHTML = '';
+  MESES.forEach((m, i) => {
+    const d = state.meses[i];
+    const fase = d.fase;
+    const faseLabel = FASE_LABELS[fase] || 'Sin definir';
+    const card = document.createElement('div');
+    card.className = `month-card mc-${fase === 'none' ? 'none' : fase}`;
+    card.dataset.idx = i;
+    card.innerHTML = `
+      <button class="mc-edit-btn" onclick="event.stopPropagation();openMonthDetail(${i})"><i class="ti ti-pencil"></i></button>
+      <div class="mc-num">${String(i+1).padStart(2,'0')} · 2026</div>
+      <div class="mc-name">${m}</div>
+      <div class="mc-fase ${fase}">${faseLabel}</div>
+      <div class="mc-kpis">
+        <div class="mc-kpi"><div class="mc-kpi-val">${d.kpis.seg||'—'}</div><div class="mc-kpi-lbl">seg. nuevos</div></div>
+        <div class="mc-kpi"><div class="mc-kpi-val">${d.kpis.dm||'—'}</div><div class="mc-kpi-lbl">DMs</div></div>
+        <div class="mc-kpi"><div class="mc-kpi-val">${d.reels}</div><div class="mc-kpi-lbl">reels</div></div>
+        <div class="mc-kpi"><div class="mc-kpi-val">${d.kpis.con||'—'}</div><div class="mc-kpi-lbl">consultas</div></div>
+      </div>
+      ${d.obj ? `<div style="font-size:10.5px;color:var(--tx3);line-height:1.4;margin-top:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${d.obj}</div>` : ''}
+    `;
+    card.addEventListener('click', () => openMonthDetail(i));
+    grid.appendChild(card);
+  });
+}
+
+function openMonthDetail(idx) {
+  activeMes = idx;
+  const d = state.meses[idx];
+  document.getElementById('md-title').innerHTML = `${MESES[idx]} <em>2026</em>`;
+  setFase('fase-mes', d.fase);
+  document.getElementById('md-obj').value = d.obj || '';
+  document.getElementById('md-enfoque').value = d.enfoque || '';
+  document.getElementById('md-kpi-seg').value = d.kpis.seg || '';
+  document.getElementById('md-kpi-dm').value = d.kpis.dm || '';
+  document.getElementById('md-kpi-con').value = d.kpis.con || '';
+  document.getElementById('md-kpi-gua').value = d.kpis.gua || '';
+  document.getElementById('md-reels').textContent = d.reels;
+  document.getElementById('md-cars').textContent = d.cars;
+  document.getElementById('md-hist').textContent = d.hist;
+  document.getElementById('md-presupuesto').value = d.presupuesto || '';
+  document.getElementById('md-notas').value = d.notas || '';
+  const pt = document.getElementById('pauta-toggle');
+  d.pauta ? pt.classList.add('on') : pt.classList.remove('on');
+  // pilares
+  document.querySelectorAll('#md-pilares .pilar-chip').forEach((c,i) => {
+    c.classList.toggle('on', d.pilares.includes(i));
+  });
+  const detail = document.getElementById('month-detail');
+  detail.classList.add('on');
+  detail.scrollIntoView({ behavior:'smooth', block:'start' });
+  // highlight card
+  document.querySelectorAll('.month-card').forEach(c => c.classList.remove('active'));
+  document.querySelector(`.month-card[data-idx="${idx}"]`)?.classList.add('active');
+}
+
+function closeMonthDetail() {
+  document.getElementById('month-detail').classList.remove('on');
+  document.querySelectorAll('.month-card').forEach(c => c.classList.remove('active'));
+  activeMes = null;
+}
+
+function saveMonth() {
+  if (activeMes === null) return;
+  const d = state.meses[activeMes];
+  d.fase = getSelectedFase('fase-mes');
+  d.obj  = document.getElementById('md-obj').value;
+  d.enfoque = document.getElementById('md-enfoque').value;
+  d.kpis.seg = parseInt(document.getElementById('md-kpi-seg').value) || 0;
+  d.kpis.dm  = parseInt(document.getElementById('md-kpi-dm').value) || 0;
+  d.kpis.con = parseInt(document.getElementById('md-kpi-con').value) || 0;
+  d.kpis.gua = parseInt(document.getElementById('md-kpi-gua').value) || 0;
+  d.reels = parseInt(document.getElementById('md-reels').textContent) || 0;
+  d.cars  = parseInt(document.getElementById('md-cars').textContent) || 0;
+  d.hist  = parseInt(document.getElementById('md-hist').textContent) || 0;
+  d.pauta = document.getElementById('pauta-toggle').classList.contains('on');
+  d.presupuesto = parseInt(document.getElementById('md-presupuesto').value) || 0;
+  d.notas = document.getElementById('md-notas').value;
+  d.pilares = [];
+  document.querySelectorAll('#md-pilares .pilar-chip').forEach((c,i) => { if(c.classList.contains('on')) d.pilares.push(i); });
+  renderMonthGrid();
+  markSaved();
+  toast('Mes guardado ✓');
+}
+
+function prevMonth() { if(activeMes > 0) openMonthDetail(activeMes - 1); }
+function nextMonth() { if(activeMes < 11) openMonthDetail(activeMes + 1); }
+
+/* ══════════════════════════════
+   SEMANAL
+══════════════════════════════ */
+function renderSemMonthSelector() {
+  const sel = document.getElementById('sem-month-selector');
+  sel.innerHTML = '';
+  MESES.forEach((m, i) => {
+    const btn = document.createElement('div');
+    btn.className = 'ctype';
+    if (activeMes === i) btn.classList.add('on');
+    btn.textContent = m.substring(0,3);
+    btn.addEventListener('click', () => {
+      sel.querySelectorAll('.ctype').forEach(c => c.classList.remove('on'));
+      btn.classList.add('on');
+      activeMes = i;
+      document.getElementById('sem-week-wrap').style.display = 'block';
+      document.getElementById('sem-week-detail').classList.remove('on');
+    });
+    sel.appendChild(btn);
+  });
+}
+
+function openWeekDetail(el, wkNum) {
+  document.querySelectorAll('.week-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  activeWeek = wkNum;
+  const key = `${activeMes}-${wkNum}`;
+  const d = state.semanas[key] || {};
+  document.getElementById('wk-label').textContent = `Semana ${wkNum} · ${MESES[activeMes] || ''}`;
+  document.getElementById('wk-enfoque').value = d.enfoque || '';
+  document.getElementById('wk-cta').value = d.cta || '';
+  document.getElementById('wk-notas').value = d.notas || '';
+  ['lun','mar','mie','jue','vie','sab','dom'].forEach(dia => {
+    const el2 = document.getElementById('day-' + dia);
+    if (el2) el2.value = d['day_'+dia] || '';
+  });
+  document.getElementById('wf-' + wkNum).textContent = d.enfoque || 'Sin definir';
+  const detail = document.getElementById('sem-week-detail');
+  detail.classList.add('on');
+  detail.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function saveWeek() {
+  if (activeMes === null || activeWeek === null) return;
+  const key = `${activeMes}-${activeWeek}`;
+  state.semanas[key] = {
+    enfoque: document.getElementById('wk-enfoque').value,
+    cta: document.getElementById('wk-cta').value,
+    notas: document.getElementById('wk-notas').value,
+  };
+  ['lun','mar','mie','jue','vie','sab','dom'].forEach(dia => {
+    const el = document.getElementById('day-' + dia);
+    if (el) state.semanas[key]['day_'+dia] = el.value;
+  });
+  document.getElementById('wf-' + activeWeek).textContent = state.semanas[key].enfoque || 'Sin definir';
+  markSaved();
+  toast('Semana guardada ✓');
+}
+
+/* ══════════════════════════════
+   SAVE / EXPORT
+══════════════════════════════ */
+function saveAll() {
+  // Collect anual
+  state.anual.fase = getSelectedFase('fase-anual');
+  state.anual.obj  = document.getElementById('obj-anual').value;
+  ['seg','cir','dm','con','gua','sha'].forEach(k => {
+    const el = document.getElementById('kpi-' + k);
+    if (el) state.anual.kpis[k] = parseInt(el.value) || 0;
+  });
+  state.anual.reels = parseInt(document.getElementById('reels-anual').textContent) || 0;
+  state.anual.cars  = parseInt(document.getElementById('cars-anual').textContent)  || 0;
+  state.anual.hist  = parseInt(document.getElementById('hist-anual').textContent)  || 0;
+  // Save to localStorage
+  try { localStorage.setItem('estrategia-molina', JSON.stringify(state)); } catch(e){}
+  markSaved();
+  toast('Todo guardado ✓');
+}
+
+function exportJSON() {
+  saveAll();
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type:'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'estrategia-cirujanomolina-2026.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function markUnsaved() {
+  document.getElementById('save-msg').textContent = 'Cambios sin guardar';
+}
+function markSaved() {
+  document.getElementById('save-msg').textContent = 'Guardado · ' + new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});
+}
+
+/* ══════════════════════════════
+   TOAST
+══════════════════════════════ */
+function toast(msg) {
+  let t = document.getElementById('toast-r');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'toast-r';
+    t.style.cssText = 'position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--sf2);border:1px solid var(--tl);color:var(--tx);font-family:Archivo,sans-serif;font-size:12px;padding:8px 16px;border-radius:8px;opacity:0;transition:all .22s;pointer-events:none;z-index:200;white-space:nowrap;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(() => { t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(8px)'; }, 2200);
+}
+
+/* ══════════════════════════════
+   INIT
+══════════════════════════════ */
+// Load from localStorage if exists
+try {
+  const saved = localStorage.getItem('estrategia-molina');
+  if (saved) { state = JSON.parse(saved); markSaved(); }
+} catch(e){}
+
+// Initial render
+renderMonthGrid();
+renderSemMonthSelector();
+
+// Mark unsaved on any input change
+document.addEventListener('input', markUnsaved);
+document.addEventListener('change', markUnsaved);
+</script>
+</body>
+</html>

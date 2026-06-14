@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equipo — Content OS</title>
+    <link rel="stylesheet" href="../design-system.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            font-family: var(--f-body);
+        }
+        
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            overflow-y: auto;
+            gap: 1.5rem;
+        }
+
+        /* ── HEADER PREMIUM ── */
+        .vb-header {
+            background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 2rem;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            flex-shrink: 0;
+        }
+        .vb-header::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background: var(--accent);
+            opacity: 0.04;
+            pointer-events: none;
+        }
+        .vb-header-main {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 1;
+            min-width: 0;
+        }
+        .vb-header-actions {
+            z-index: 1;
+            flex-shrink: 0;
+        }
+        .vb-title {
+            font-family: var(--f-display);
+            font-size: clamp(22px, 3vw, 30px);
+            font-weight: 300;
+            color: var(--text);
+            line-height: 1.1;
+            margin: 0;
+        }
+        .vb-title em {
+            color: var(--accent);
+            font-style: italic;
+        }
+        .vb-badges {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .vb-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 11px;
+            border-radius: 20px;
+            background: rgba(42, 191, 176, 0.1);
+            border: 1px solid rgba(42, 191, 176, 0.25);
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--accent);
+        }
+
+        /* ── CARDS COLABORADORES ── */
+        .collab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+        .collab-card {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: var(--r);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            transition: transform 0.2s, border-color 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .collab-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--border);
+        }
+        .collab-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border2);
+            background: var(--surface3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+        .collab-info {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .badge {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+        .badge-success {
+            background: rgba(46, 204, 113, 0.15);
+            color: #2ecc71;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+        .badge-warning {
+            background: rgba(241, 196, 15, 0.15);
+            color: #f1c40f;
+            border: 1px solid rgba(241, 196, 15, 0.3);
+        }
+        .badge-info {
+            background: rgba(52, 152, 219, 0.15);
+            color: #3498db;
+            border: 1px solid rgba(52, 152, 219, 0.3);
+        }
+
+        /* ── MODALES ── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 20, 25, 0.85);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1.5rem;
+        }
+        .modal-content {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: modalIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes modalIn {
+            from { transform: scale(0.95) translateY(10px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        .modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .modal-title {
+            font-family: var(--f-display);
+            font-size: 1.35rem;
+            color: var(--text);
+            margin: 0;
+        }
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--text2);
+            font-size: 1.25rem;
+            cursor: pointer;
+        }
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            max-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border2);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="vb-header">
+        <div class="vb-header-main">
+            <h1 class="vb-title">Colaboración de <em>Equipo</em></h1>
+            <div class="vb-badges">
+                <span class="vb-badge"><i class="ti ti-user-plus"></i> Roles y Permisos</span>
+                <span class="vb-badge"><i class="ti ti-check-double"></i> Aprobación de Flujo</span>
+                <span class="vb-badge"><i class="ti ti-users"></i> @username</span>
+            </div>
+        </div>
+        <div class="vb-header-actions" id="headerActions">
+            <!-- Dinámicamente insertado si es administrador -->
+        </div>
+    </header>
+
+    <div class="container fade-in">
+        <div id="connectionWarning" style="display: none; background: rgba(231, 76, 60, 0.15); border: 1px solid rgba(231, 76, 60, 0.3); color: #e74c3c; padding: 12px; border-radius: var(--r-sm); font-size: 13px; margin-bottom: 1rem; text-align: center;">
+            ⚠️ <strong>Error de Conexión:</strong> No se pudo conectar a la base de datos de Supabase.
+        </div>
+
+        <div id="loadingState" style="text-align: center; padding: 3rem; color: var(--text2);">
+            <i class="ti ti-loader ti-spin" style="font-size: 2.5rem; color: var(--accent);"></i>
+            <p style="margin-top: 10px; font-size: 14px;">Cargando colaboradores...</p>
+        </div>
+
+        <!-- Grid de Colaboradores -->
+        <div class="collab-grid" id="collabGrid" style="display: none;"></div>
+
+        <!-- Vista si no hay colaboradores -->
+        <div id="emptyState" style="display: none; text-align: center; padding: 4rem 2rem; color: var(--text2);">
+            <i class="ti ti-users" style="font-size: 3rem; color: var(--text3); margin-bottom: 1rem; display: block;"></i>
+            <h3 style="color: var(--text);">No hay colaboradores registrados</h3>
+            <p style="font-size: 13px; max-width: 400px; margin: 8px auto 0;">Los perfiles registrados aparecerán aquí.</p>
+        </div>
+    </div>
+
+    <!-- MODAL CREACIÓN / EDICIÓN -->
+    <div id="collabModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Crear Colaborador</h3>
+                <button class="modal-close" onclick="closeModal()"><i class="ti ti-x"></i></button>
+            </div>
+            <form id="collabForm" onsubmit="event.preventDefault(); saveCollab();">
+                <input type="hidden" id="collabId">
+                <input type="hidden" id="collabPhotoUrl">
+                <div class="modal-body">
+                    <!-- Centered circular avatar with pencil overlay -->
+                    <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 1.5rem; position: relative;">
+                        <div style="position: relative; width: 100px; height: 100px;">
+                            <div id="modalAvatarPreview" style="width: 100px; height: 100px; border-radius: 50%; background: var(--surface3); display: flex; align-items: center; justify-content: center; font-size: 2.2rem; font-weight: 700; color: var(--accent); border: 2px solid var(--border); overflow: hidden;">
+                                <i class="ti ti-user" style="font-size: 2.2rem;"></i>
+                            </div>
+                            <label class="btn btn-icon" style="position: absolute; bottom: 0; right: 0; width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: #14262D; border: 2px solid var(--bg2); display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.3); margin: 0; transition: transform 0.2s;" title="Cambiar Foto" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                                <i class="ti ti-pencil" style="font-size: 14px;"></i>
+                                <input type="file" id="collabPhotoFile" accept="image/*" style="display: none;">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label class="flabel">Nombre de Usuario (@username)</label>
+                        <input type="text" id="collabUsername" required placeholder="ej: molinacreativo">
+                    </div>
+                    
+                    <div class="field">
+                        <label class="flabel">Nombre Completo</label>
+                        <input type="text" id="collabName" required placeholder="ej: Juan Molina">
+                    </div>
+                    
+                    <div class="field">
+                        <label class="flabel">Correo Electrónico</label>
+                        <input type="email" id="collabEmail" required placeholder="correo@ejemplo.com">
+                    </div>
+                    
+                    <div class="field" id="passwordField">
+                        <label class="flabel" id="passwordLabel">Contraseña</label>
+                        <input type="password" id="collabPassword" placeholder="Escribe la contraseña">
+                        <small style="color: var(--text3); font-size: 11px; margin-top: 4px; display: block;" id="passwordHelp">Introduce una contraseña inicial.</small>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="field">
+                            <label class="flabel">Rol de Sistema</label>
+                            <select id="collabRole" class="input-control">
+                                <option value="colaborador">Colaborador</option>
+                                <option value="administrador">Administrador</option>
+                            </select>
+                        </div>
+                        
+                        <div class="field">
+                            <label class="flabel">Función Especializada</label>
+                            <select id="collabFunction" class="input-control">
+                                <option value="Editor de Video">Editor de Video</option>
+                                <option value="Diseñador">Diseñador</option>
+                                <option value="Copywriter">Copywriter</option>
+                                <option value="Trafficker">Trafficker</option>
+                                <option value="Administrador">Administrador</option>
+                                <option value="Otros">Otros</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="field" id="verifiedCheckboxField" style="flex-direction: row; gap: 10px; align-items: center; margin-top: 8px;">
+                        <input type="checkbox" id="collabVerified" style="width: auto; cursor: pointer;">
+                        <label for="collabVerified" class="flabel" style="margin: 0; cursor: pointer;">Usuario Verificado (Permitir Acceso)</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="saveBtn">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { supabase } from '../supabase-client.js';
+
+        // Local state
+        let colaboradoresList = [];
+        let activeUser = null;
+        let isAdmin = false;
+
+        // Check active session on load
+        window.addEventListener('DOMContentLoaded', () => {
+            activeUser = JSON.parse(localStorage.getItem('content_os_user') || 'null');
+            if (!activeUser) {
+                document.body.innerHTML = `
+                    <div style="text-align: center; padding: 4rem; color: var(--text2);">
+                        <i class="ti ti-lock" style="font-size: 3rem; color: var(--danger); margin-bottom: 1rem; display: block;"></i>
+                        <h2>Acceso Restringido</h2>
+                        <p>Por favor, inicia sesión desde la cabecera principal para ver el módulo de equipo.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            isAdmin = activeUser.role === 'administrador';
+            
+            // Set up Actions in header if admin
+            if (isAdmin) {
+                const headerActions = document.getElementById('headerActions');
+                headerActions.innerHTML = `
+                    <button class="btn btn-primary" id="createCollabBtn">
+                        <i class="ti ti-plus"></i> Crear Colaborador
+                    </button>
+                `;
+                document.getElementById('createCollabBtn').addEventListener('click', openCreateModal);
+            }
+
+            loadColaboradores();
+
+            // Handle file upload
+            const photoFileInput = document.getElementById('collabPhotoFile');
+            if (photoFileInput) {
+                photoFileInput.addEventListener('change', async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    const uploadBtn = e.target.closest('label');
+                    const originalHTML = uploadBtn.innerHTML;
+                    uploadBtn.innerHTML = '<i class="ti ti-loader ti-spin" style="font-size: 14px;"></i>';
+                    uploadBtn.style.pointerEvents = 'none';
+
+                    const reader = new FileReader();
+                    reader.onload = async (event) => {
+                        try {
+                            const base64Data = event.target.result.split(',')[1];
+                            const res = await fetch('/api/upload-avatar', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    filename: file.name,
+                                    base64_data: base64Data
+                                })
+                            });
+
+                            const data = await res.json();
+                            if (res.ok && data.success) {
+                                document.getElementById('collabPhotoUrl').value = data.url;
+                                document.getElementById('modalAvatarPreview').innerHTML = `<img src="${data.url}" style="width: 100%; height: 100%; object-fit: cover;">`;
+                                alert("¡Foto subida con éxito!");
+                            } else {
+                                alert("Error al subir foto: " + (data.error || "Fallo del servidor"));
+                            }
+                        } catch (err) {
+                            alert("Error de red al subir la imagen: " + err.message);
+                        } finally {
+                            uploadBtn.innerHTML = '<i class="ti ti-pencil" style="font-size: 14px;"></i>';
+                            uploadBtn.style.pointerEvents = 'auto';
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        });
+
+        // Theme management
+        window.addEventListener('message', (e) => {
+            if (e.data && e.data.type === 'THEME_CHANGE') {
+                document.body.classList.toggle('light', e.data.payload === 'light');
+            }
+        });
+        window.parent.postMessage({ type: 'IFRAME_READY' }, '*');
+
+        // Hash Password SHA-256 helper
+        async function hashPassword(password) {
+            const msgUint8 = new TextEncoder().encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Logging helper
+        async function logActivity(action, details) {
+            try {
+                await supabase.from('audit_logs').insert({
+                    user_email: activeUser.email,
+                    user_name: activeUser.name,
+                    action: action,
+                    details: details
+                });
+            } catch (err) {
+                console.error("Error logging activity:", err);
+            }
+        }
+
+        // Load Colaboradores from Supabase
+        async function loadColaboradores() {
+            const loading = document.getElementById('loadingState');
+            const grid = document.getElementById('collabGrid');
+            const empty = document.getElementById('emptyState');
+            const warn = document.getElementById('connectionWarning');
+            
+            loading.style.display = 'block';
+            grid.style.display = 'none';
+            empty.style.display = 'none';
+            warn.style.display = 'none';
+
+            try {
+                const { data, error } = await supabase
+                    .from('colaboradores')
+                    .select('*')
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                colaboradoresList = data || [];
+                loading.style.display = 'none';
+
+                if (colaboradoresList.length === 0) {
+                    empty.style.display = 'block';
+                } else {
+                    grid.style.display = 'grid';
+                    renderColaboradores();
+                }
+            } catch (err) {
+                console.error("Error loading colaboradores:", err);
+                loading.style.display = 'none';
+                warn.style.display = 'block';
+                warn.textContent = `⚠️ Error de Supabase: ${err.message}`;
+            }
+        }
+
+        // Render Colaboradores Cards
+        function renderColaboradores() {
+            const grid = document.getElementById('collabGrid');
+            grid.innerHTML = '';
+
+            colaboradoresList.forEach(user => {
+                const initials = user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                
+                const card = document.createElement('div');
+                card.className = 'collab-card';
+                
+                // Construct photo block
+                let avatarHtml = `<div class="collab-avatar">${initials}</div>`;
+                if (user.photo_url) {
+                    avatarHtml = `<img class="collab-avatar" src="${user.photo_url}" onerror="this.outerHTML='<div class=collab-avatar>${initials}</div>'" alt="${user.name}">`;
+                }
+
+                // Action buttons logic
+                let actionButtonsHtml = '';
+                if (isAdmin) {
+                    let approveBtn = '';
+                    if (!user.verified) {
+                        approveBtn = `<button class="btn btn-primary approve-btn" data-id="${user.id}" style="padding: 4px 10px; font-size: 11px;"><i class="ti ti-check"></i> Aprobar</button>`;
+                    }
+                    
+                    actionButtonsHtml = `
+                        <div style="margin-top: 1rem; display: flex; gap: 8px; border-top: 1px solid var(--border2); padding-top: 10px; justify-content: flex-end;">
+                            ${approveBtn}
+                            <button class="btn btn-outline edit-btn" data-id="${user.id}" style="padding: 4px 10px; font-size: 11px;"><i class="ti ti-edit"></i> Editar</button>
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div class="collab-info">
+                        ${avatarHtml}
+                        <div style="flex: 1; min-width: 0;">
+                            <h3 style="font-size: 15px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 0;">${user.name}</h3>
+                            <div style="font-size: 11px; color: var(--text3); margin-top: 2px;">@${user.username}</div>
+                            <div style="font-size: 12px; color: var(--text2); margin-top: 6px; display: flex; align-items: center; gap: 4px;">
+                                <i class="ti ti-briefcase" style="font-size: 13px;"></i> ${user.function}
+                            </div>
+                            <div style="font-size: 11px; color: var(--text3); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                <i class="ti ti-mail" style="font-size: 13px; vertical-align: middle;"></i> ${user.email}
+                            </div>
+                            <div style="margin-top: 10px; display: flex; gap: 4px; flex-wrap: wrap;">
+                                <span class="badge ${user.verified ? 'badge-success' : 'badge-warning'}">${user.verified ? 'Verificado' : 'Pendiente'}</span>
+                                <span class="badge badge-info">${user.role === 'administrador' ? 'Admin' : 'Colaborador'}</span>
+                            </div>
+                        </div>
+                    </div>
+                    ${actionButtonsHtml}
+                `;
+                
+                grid.appendChild(card);
+            });
+
+            // Bind events
+            if (isAdmin) {
+                grid.querySelectorAll('.approve-btn').forEach(btn => {
+                    btn.addEventListener('click', () => approveCollab(btn.dataset.id));
+                });
+                grid.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.addEventListener('click', () => openEditModal(btn.dataset.id));
+                });
+            }
+        }
+
+        // Approve/Verify a collaborator
+        async function approveCollab(id) {
+            const targetUser = colaboradoresList.find(u => u.id === id);
+            if (!targetUser) return;
+
+            if (!confirm(`¿Estás seguro de que quieres verificar y permitir el acceso a "${targetUser.name}"?`)) return;
+
+            try {
+                const { error } = await supabase
+                    .from('colaboradores')
+                    .update({ verified: true })
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                alert(`El colaborador "${targetUser.name}" ha sido verificado con éxito.`);
+                await logActivity('Aprobación de Colaborador', `Se verificó y habilitó el acceso de ${targetUser.name} (@${targetUser.username}).`);
+                loadColaboradores();
+            } catch (err) {
+                alert(`Error al aprobar: ${err.message}`);
+            }
+        }
+
+        // Open Modal for creation
+        function openCreateModal() {
+            const form = document.getElementById('collabForm');
+            form.reset();
+            document.getElementById('collabId').value = '';
+            document.getElementById('modalTitle').textContent = 'Crear Colaborador';
+            document.getElementById('passwordField').style.display = 'flex';
+            document.getElementById('collabPassword').required = true;
+            document.getElementById('passwordHelp').textContent = 'Introduce una contraseña inicial.';
+            
+            // Reset photo and avatar preview
+            document.getElementById('collabPhotoUrl').value = '';
+            document.getElementById('modalAvatarPreview').innerHTML = '<i class="ti ti-user" style="font-size: 2.2rem;"></i>';
+
+            // Default unverified
+            document.getElementById('collabVerified').checked = false;
+            document.getElementById('collabVerified').disabled = false;
+
+            const modal = document.getElementById('collabModal');
+            modal.style.display = 'flex';
+        }
+
+        // Open Modal for edition
+        function openEditModal(id) {
+            const user = colaboradoresList.find(u => u.id === id);
+            if (!user) return;
+
+            document.getElementById('collabId').value = user.id;
+            document.getElementById('collabUsername').value = user.username;
+            document.getElementById('collabName').value = user.name;
+            document.getElementById('collabEmail').value = user.email;
+            
+            // Password optional during edit
+            document.getElementById('collabPassword').value = '';
+            document.getElementById('collabPassword').required = false;
+            document.getElementById('passwordHelp').textContent = 'Deja este campo en blanco si no quieres cambiar la contraseña.';
+
+            document.getElementById('collabRole').value = user.role;
+            document.getElementById('collabFunction').value = user.function;
+            document.getElementById('collabPhotoUrl').value = user.photo_url || '';
+            document.getElementById('collabVerified').checked = user.verified;
+            
+            // Set avatar preview in modal
+            const initials = user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            if (user.photo_url) {
+                document.getElementById('modalAvatarPreview').innerHTML = `<img src="${user.photo_url}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            } else {
+                document.getElementById('modalAvatarPreview').textContent = initials;
+            }
+
+            // Prevent self-de-verification
+            if (user.id === activeUser.id) {
+                document.getElementById('collabVerified').disabled = true;
+            } else {
+                document.getElementById('collabVerified').disabled = false;
+            }
+
+            document.getElementById('modalTitle').textContent = 'Editar Colaborador';
+            
+            const modal = document.getElementById('collabModal');
+            modal.style.display = 'flex';
+        }
+
+        // Close Modal
+        window.closeModal = () => {
+            const modal = document.getElementById('collabModal');
+            modal.style.display = 'none';
+        };
+
+        // Save Colaborador
+        async function saveCollab() {
+            const id = document.getElementById('collabId').value;
+            const username = document.getElementById('collabUsername').value.trim().toLowerCase();
+            const name = document.getElementById('collabName').value.trim();
+            const email = document.getElementById('collabEmail').value.trim().toLowerCase();
+            const password = document.getElementById('collabPassword').value;
+            const role = document.getElementById('collabRole').value;
+            const specFunction = document.getElementById('collabFunction').value;
+            const photoUrl = document.getElementById('collabPhotoUrl').value.trim();
+            const verified = document.getElementById('collabVerified').checked;
+
+            const saveBtn = document.getElementById('saveBtn');
+            const originalText = saveBtn.textContent;
+            saveBtn.innerHTML = '<i class="ti ti-loader ti-spin"></i> Guardando...';
+            saveBtn.disabled = true;
+
+            try {
+                let payload = {
+                    username: username,
+                    name: name,
+                    email: email,
+                    role: role,
+                    function: specFunction,
+                    photo_url: photoUrl || null,
+                    verified: verified
+                };
+
+                if (id) {
+                    // Update mode
+                    if (password) {
+                        payload.password = await hashPassword(password);
+                    }
+                    
+                    const { error } = await supabase
+                        .from('colaboradores')
+                        .update(payload)
+                        .eq('id', id);
+
+                    if (error) throw error;
+                    
+                    alert('Colaborador actualizado con éxito.');
+                    await logActivity('Edición de Colaborador', `Se actualizaron los datos de ${name} (@${username}). Estado verificado: ${verified}.`);
+                    
+                    // If editing own profile, update local session
+                    if (id === activeUser.id) {
+                        const updatedUser = { ...activeUser, ...payload };
+                        delete updatedUser.password;
+                        localStorage.setItem('content_os_user', JSON.stringify(updatedUser));
+                        window.parent.location.reload();
+                        return;
+                    }
+                } else {
+                    // Create mode
+                    if (!password) {
+                        throw new Error('La contraseña es obligatoria para nuevos colaboradores.');
+                    }
+                    
+                    payload.password = await hashPassword(password);
+
+                    const { error } = await supabase
+                        .from('colaboradores')
+                        .insert(payload);
+
+                    if (error) throw error;
+
+                    alert('Colaborador creado con éxito.');
+                    await logActivity('Creación de Colaborador', `Se registró un nuevo perfil para ${name} (@${username}). Estado verificado: ${verified}.`);
+                }
+
+                closeModal();
+                loadColaboradores();
+            } catch (err) {
+                alert(`Error al guardar: ${err.message}`);
+            } finally {
+                saveBtn.textContent = originalText;
+                saveBtn.disabled = false;
+            }
+        }
+        
+        // Expose functions globally for modal elements
+        window.saveCollab = saveCollab;
+    </script>
+</body>
+</html>

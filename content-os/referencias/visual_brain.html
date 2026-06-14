@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visual Brain — @cirujanomolina</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f1e24;--bg2:#14262D;--bg3:#1F434E;
+  --sf:#182f38;--sf2:#1c3641;--sf3:#213e4b;
+  --tx:#F4F5F0;--tx2:#9db8c0;--tx3:#6a8f98;
+  --tl:#2ABFB0;--tl2:rgba(42,191,176,.12);--tl3:rgba(42,191,176,.06);
+  --be:#CCC2A7;--br:rgba(42,191,176,.15);--br2:rgba(244,245,240,.07);--br3:rgba(244,245,240,.04);
+  --am:#C9862A;--r:12px;--rsm:8px;--rlg:16px;
+}
+html,body{min-height:100%;background:var(--bg);color:var(--tx);font-family:'Archivo',sans-serif;font-size:13px;line-height:1.5}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(42,191,176,.2);border-radius:4px}
+
+/* ── HEADER ── */
+.vb-header{
+  background:linear-gradient(135deg,var(--bg2) 0%,var(--bg3) 100%);
+  border-bottom:1px solid var(--br);
+  padding:2.5rem 2rem 2rem;
+  position:relative;overflow:hidden;
+}
+.vb-header::before{content:'';position:absolute;top:-100px;right:-100px;width:320px;height:320px;border-radius:50%;background:var(--tl);opacity:.04;pointer-events:none}
+.vb-header::after{content:'';position:absolute;bottom:-60px;left:5%;width:200px;height:200px;border-radius:50%;background:var(--be);opacity:.03;pointer-events:none}
+.vb-eyebrow{font-size:10px;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:var(--tl);margin-bottom:6px}
+.vb-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,5vw,48px);font-weight:300;color:var(--tx);line-height:1.05;margin-bottom:8px}
+.vb-title em{color:var(--tl);font-style:italic}
+.vb-tagline{font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;color:var(--be);margin-bottom:1.25rem}
+.vb-badges{display:flex;gap:6px;flex-wrap:wrap}
+.vb-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:20px;background:rgba(42,191,176,.1);border:1px solid rgba(42,191,176,.25);font-size:11px;font-weight:500;color:var(--tl)}
+
+/* ── NAV TABS ── */
+.vb-nav{
+  position:sticky;top:0;z-index:20;
+  background:var(--bg2);border-bottom:1px solid var(--br2);
+  padding:0 2rem;
+  display:flex;gap:0;overflow-x:auto;
+}
+.vb-nav::-webkit-scrollbar{height:0}
+.vbt{
+  flex:0 0 auto;padding:14px 18px;
+  font-size:12px;font-weight:400;color:var(--tx3);
+  cursor:pointer;border-bottom:2px solid transparent;
+  transition:all .15s;display:flex;align-items:center;gap:6px;
+  white-space:nowrap;user-select:none;
+}
+.vbt i{font-size:14px}
+.vbt:hover{color:var(--tx)}
+.vbt.on{color:var(--tl);border-bottom-color:var(--tl);font-weight:500}
+
+/* ── PANELS ── */
+.vb-panel{display:none;max-width:940px;margin:0 auto;padding:2rem 2rem 4rem}
+.vb-panel.on{display:block}
+
+/* ── SECTION HEADERS ── */
+.sec-head{margin-bottom:1.5rem}
+.sec-label{font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--tl);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.sec-label i{font-size:12px}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--tx);line-height:1.15}
+.sec-title em{color:var(--tl);font-style:italic}
+.sec-desc{font-size:12.5px;font-weight:300;color:var(--tx2);margin-top:5px;line-height:1.6;max-width:600px}
+
+.divider{height:1px;background:var(--br2);margin:2rem 0}
+
+/* ── CARDS ── */
+.card{background:var(--sf);border:1px solid var(--br2);border-radius:var(--rlg);padding:1.5rem;margin-bottom:1rem}
+.card:last-child{margin-bottom:0}
+.card-label{font-size:10px;font-weight:500;letter-spacing:1.8px;text-transform:uppercase;color:var(--tl);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.card-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:var(--tx);margin-bottom:8px}
+.card-title em{color:var(--tl);font-style:italic}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+
+/* ── EDITABLE FIELDS ── */
+.ef-wrap{position:relative}
+.ef{
+  font-family:'Archivo',sans-serif;font-size:13px;font-weight:300;
+  color:var(--tx);background:transparent;border:none;
+  border-bottom:1px solid transparent;width:100%;
+  outline:none;transition:border-color .15s;
+  padding:2px 0;line-height:1.6;resize:none;
+}
+.ef:hover{border-bottom-color:var(--br2)}
+.ef:focus{border-bottom-color:var(--tl)}
+.ef-icon{position:absolute;right:0;top:2px;font-size:11px;color:var(--tx3);opacity:0;transition:opacity .15s;pointer-events:none}
+.ef-wrap:hover .ef-icon{opacity:1}
+
+/* ── COLOR SYSTEM ── */
+.color-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:1.5rem}
+.color-card{border-radius:var(--r);overflow:hidden;border:1px solid var(--br2);transition:transform .15s;cursor:default}
+.color-card:hover{transform:translateY(-2px)}
+.color-swatch{height:80px;position:relative;display:flex;align-items:flex-end;padding:10px 12px}
+.color-hex-overlay{
+  font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;
+  color:rgba(255,255,255,.2);letter-spacing:1px;
+}
+.color-info{background:var(--sf2);padding:10px 12px}
+.color-name{font-size:12px;font-weight:500;color:var(--tx);margin-bottom:2px}
+.color-hex{font-family:monospace;font-size:11px;color:var(--tl);margin-bottom:3px}
+.color-role{font-size:10.5px;font-weight:300;color:var(--tx3);line-height:1.4}
+
+.contrast-rule{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border-radius:var(--rsm);
+  background:var(--sf2);border:1px solid var(--br3);
+  margin-bottom:6px;
+}
+.cr-dots{display:flex;gap:5px;flex-shrink:0}
+.cr-dot{width:14px;height:14px;border-radius:50%}
+.cr-text{font-size:12px;font-weight:300;color:var(--tx2);flex:1}
+.cr-ok{font-size:11px;font-weight:500;padding:2px 8px;border-radius:10px}
+.cr-ok.yes{background:rgba(42,191,176,.15);color:var(--tl);border:1px solid rgba(42,191,176,.3)}
+.cr-ok.no{background:rgba(245,90,138,.1);color:#f55a8a;border:1px solid rgba(245,90,138,.25)}
+
+/* ── TYPOGRAPHY ── */
+.font-demo{margin-bottom:1.5rem}
+.font-specimen{
+  font-family:'Cormorant Garamond',serif;
+  font-size:42px;font-weight:300;
+  color:var(--tx);line-height:1;
+  margin-bottom:6px;
+}
+.font-specimen em{color:var(--tl);font-style:italic}
+.font-specimen.archivo{font-family:'Archivo',sans-serif;font-size:28px;font-weight:300}
+.font-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.font-tag{
+  padding:3px 10px;border-radius:20px;font-size:10.5px;
+  background:var(--tl2);border:1px solid var(--br);color:var(--tl);
+}
+.font-tag.neutral{background:rgba(244,245,240,.06);border-color:var(--br2);color:var(--tx3)}
+.font-rules{display:flex;flex-direction:column;gap:5px}
+.font-rule{
+  display:flex;align-items:flex-start;gap:8px;
+  font-size:12px;font-weight:300;color:var(--tx2);line-height:1.5;
+}
+.font-rule::before{content:'→';color:var(--tl);font-size:11px;flex-shrink:0;margin-top:2px}
+
+.hierarchy-row{
+  padding:14px 16px;border-radius:var(--rsm);
+  background:var(--sf2);border:1px solid var(--br3);
+  margin-bottom:6px;display:flex;align-items:baseline;gap:14px;
+  flex-wrap:wrap;
+}
+.hr-label{font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--tl);min-width:90px;flex-shrink:0}
+.hr-spec{font-size:11px;font-weight:300;color:var(--tx3);flex:1}
+.hr-preview{width:100%;margin-top:8px}
+
+/* ── AUDIENCIA ── */
+.avatar-card{
+  background:var(--sf2);border:1px solid var(--br2);
+  border-radius:var(--rlg);padding:1.25rem;
+  border-left:3px solid var(--tl);
+}
+.avatar-card.secondary{border-left-color:#b48ef0}
+.avatar-name{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;color:var(--tx);margin-bottom:3px}
+.avatar-desc{font-size:12px;font-weight:300;color:var(--tx2);line-height:1.5;margin-bottom:12px}
+.avatar-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.atag{padding:4px 10px;border-radius:20px;font-size:11px;border:1px solid var(--br2);color:var(--tx2)}
+.avatar-desire{
+  font-family:'Cormorant Garamond',serif;font-size:15px;
+  font-style:italic;color:var(--be);
+  border-top:1px solid var(--br3);padding-top:10px;margin-top:10px;
+}
+
+.quote-card{
+  padding:14px 16px 14px 20px;
+  border-left:2.5px solid var(--be);
+  background:var(--sf2);border-radius:0 var(--rsm) var(--rsm) 0;
+  margin-bottom:8px;
+}
+.quote-text{font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:var(--tx);line-height:1.5}
+.quote-attr{font-size:10.5px;color:var(--tx3);margin-top:4px}
+
+/* ── VOZ ── */
+.rule-row{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:10px 14px;border-radius:var(--rsm);
+  margin-bottom:6px;
+}
+.rule-row.yes{background:rgba(42,191,176,.07);border:1px solid rgba(42,191,176,.2)}
+.rule-row.no{background:rgba(245,90,138,.06);border:1px solid rgba(245,90,138,.15)}
+.rule-icon{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px}
+.rule-icon.yes{background:rgba(42,191,176,.2);color:var(--tl)}
+.rule-icon.no{background:rgba(245,90,138,.15);color:#f55a8a}
+.rule-text{font-size:12px;font-weight:300;color:var(--tx);line-height:1.5;flex:1}
+
+.voz-example{
+  padding:14px 16px 14px 18px;border-radius:var(--rsm);
+  margin-bottom:8px;
+}
+.voz-example.si{background:rgba(42,191,176,.07);border-left:2.5px solid var(--tl)}
+.voz-example.no{background:rgba(245,90,138,.05);border-left:2.5px solid rgba(245,90,138,.4)}
+.voz-label{font-size:9.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px}
+.voz-label.si{color:var(--tl)}
+.voz-label.no{color:#f55a8a}
+.voz-text{font-family:'Cormorant Garamond',serif;font-size:14px;font-style:italic;color:var(--tx);line-height:1.5}
+
+/* ── IMÁGENES ── */
+.img-type-card{
+  background:var(--sf2);border:1px solid var(--br2);
+  border-radius:var(--rsm);padding:1rem;
+  display:flex;flex-direction:column;gap:8px;
+}
+.img-type-thumb{
+  height:80px;border-radius:var(--rsm);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:500;letter-spacing:1px;
+  text-transform:uppercase;color:rgba(255,255,255,.3);
+}
+.img-type-name{font-size:12.5px;font-weight:500;color:var(--tx)}
+.img-type-desc{font-size:11.5px;font-weight:300;color:var(--tx3);line-height:1.45}
+
+.gradient-preview{
+  height:120px;border-radius:var(--r);
+  margin-bottom:10px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#1a3540 0%,#0f2028 100%);
+  display:flex;align-items:flex-start;padding:12px;
+}
+.gp-subject{
+  width:60px;height:60px;border-radius:50%;
+  background:rgba(204,194,167,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;color:var(--be);text-align:center;line-height:1.2;
+}
+.gp-gradient{
+  position:absolute;bottom:0;left:0;right:0;height:70%;
+  background:linear-gradient(to top,rgba(15,32,40,.93) 28%,transparent 72%);
+}
+.gp-text{
+  position:absolute;bottom:12px;left:12px;right:12px;
+  font-family:'Cormorant Garamond',serif;font-size:13px;
+  color:var(--tx);font-style:italic;
+}
+
+/* ── FORMATOS ── */
+.formato-card{
+  background:var(--sf2);border:1px solid var(--br2);
+  border-radius:var(--rsm);padding:1rem;
+  transition:border-color .15s;
+}
+.formato-card:hover{border-color:rgba(42,191,176,.3)}
+.formato-title{font-size:12.5px;font-weight:500;color:var(--tx);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.formato-title i{font-size:13px;color:var(--tl)}
+.formato-desc{font-size:11.5px;font-weight:300;color:var(--tx3);line-height:1.45}
+.formato-badge{
+  display:inline-block;margin-top:6px;padding:2px 8px;
+  border-radius:10px;font-size:10px;font-weight:500;
+  background:rgba(42,191,176,.1);border:1px solid rgba(42,191,176,.2);
+  color:var(--tl);
+}
+.formato-badge.viral{background:rgba(245,147,90,.1);border-color:rgba(245,147,90,.25);color:#f5935a}
+.formato-badge.auth{background:rgba(180,142,240,.1);border-color:rgba(180,142,240,.25);color:#b48ef0}
+.formato-badge.conv{background:rgba(90,210,160,.1);border-color:rgba(90,210,160,.25);color:#5ad0a0}
+
+/* ── LAYOUT ── */
+.layout-spec{
+  background:var(--sf2);border-radius:var(--rsm);
+  padding:1rem;border:1px solid var(--br2);
+  display:flex;gap:12px;align-items:flex-start;
+}
+.ls-format{
+  width:48px;height:64px;border-radius:4px;
+  border:1.5px solid var(--br);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:8px;color:var(--tx3);text-align:center;
+  line-height:1.3;background:var(--sf3);
+}
+.ls-info{flex:1}
+.ls-title{font-size:12.5px;font-weight:500;color:var(--tx);margin-bottom:4px}
+.ls-dims{font-family:monospace;font-size:11px;color:var(--tl);margin-bottom:4px}
+.ls-desc{font-size:11.5px;font-weight:300;color:var(--tx3);line-height:1.45}
+
+.max-elements{
+  display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;
+}
+.me-card{
+  background:var(--sf3);border-radius:var(--rsm);
+  padding:8px 12px;border:1px solid var(--br3);
+  flex:1;min-width:100px;
+}
+.me-type{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--tl);margin-bottom:4px}
+.me-count{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;color:var(--tx);line-height:1;margin-bottom:2px}
+.me-items{font-size:10.5px;color:var(--tx3);line-height:1.4}
+
+/* ── MARCA ── */
+.handle-demo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:20px;font-weight:300;color:var(--tx2);
+  letter-spacing:0.5px;
+}
+.tagline-block{
+  padding:1.25rem 1.5rem;
+  border-radius:var(--r);
+  margin-bottom:10px;
+}
+.tb-main{
+  background:linear-gradient(135deg,var(--bg2),var(--bg3));
+  border:1px solid var(--br);
+}
+.tb-inst{
+  background:var(--sf2);border:1px solid var(--br2);
+}
+.tb-label{font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--tl);margin-bottom:6px}
+.tb-text{
+  font-family:'Cormorant Garamond',serif;
+  font-size:22px;font-weight:300;font-style:italic;
+  color:var(--tx);line-height:1.2;
+}
+.tb-contexts{font-size:11.5px;font-weight:300;color:var(--tx3);margin-top:6px;line-height:1.5}
+
+/* ── MOBILE ── */
+@media(max-width:640px){
+  .vb-header{padding:1.5rem 1rem 1.25rem}
+  .vb-nav{padding:0 1rem}
+  .vb-panel{padding:1.5rem 1rem 3rem}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .color-grid{grid-template-columns:1fr 1fr}
+  .font-specimen{font-size:32px}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="vb-header">
+  <div class="vb-eyebrow">Visual Brain · Sistema de marca completo</div>
+  <div class="vb-title">Dr. Juan Santiago<br>Molina <em>V.</em></div>
+  <div class="vb-tagline">"Recupera quien eres."</div>
+  <div class="vb-badges">
+    <span class="vb-badge"><i class="ti ti-stethoscope"></i> Cirugía Bariátrica y Metabólica</span>
+    <span class="vb-badge"><i class="ti ti-brand-instagram"></i> @cirujanomolina</span>
+    <span class="vb-badge"><i class="ti ti-map-pin"></i> Medellín, Colombia</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="vb-nav">
+  <div class="vbt on" onclick="goTab('identidad',this)"><i class="ti ti-fingerprint"></i>Identidad</div>
+  <div class="vbt"    onclick="goTab('colores',this)"><i class="ti ti-palette"></i>Colores</div>
+  <div class="vbt"    onclick="goTab('tipografia',this)"><i class="ti ti-typography"></i>Tipografía</div>
+  <div class="vbt"    onclick="goTab('audiencia',this)"><i class="ti ti-users"></i>Audiencia</div>
+  <div class="vbt"    onclick="goTab('voz',this)"><i class="ti ti-message-circle"></i>Voz</div>
+  <div class="vbt"    onclick="goTab('imagenes',this)"><i class="ti ti-photo"></i>Imágenes</div>
+  <div class="vbt"    onclick="goTab('formatos',this)"><i class="ti ti-layout-columns"></i>Formatos</div>
+  <div class="vbt"    onclick="goTab('layout',this)"><i class="ti ti-layout"></i>Layout</div>
+  <div class="vbt"    onclick="goTab('marca',this)"><i class="ti ti-award"></i>Marca</div>
+</div>
+
+<!-- ═══════════════════════════════
+     PANEL: IDENTIDAD
+═══════════════════════════════ -->
+<div class="vb-panel on" id="p-identidad">
+
+  <div class="sec-head">
+    <div class="sec-label"><i class="ti ti-fingerprint"></i> Identidad de marca</div>
+    <div class="sec-title">Quién es el Dr. <em>Molina</em></div>
+    <div class="sec-desc">La esencia de la marca — lo que debe transmitir cada pieza de contenido, sin excepción.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Propósito <i class="ti ti-edit" style="font-size:11px;cursor:pointer;color:var(--tl);opacity:.6" title="Campo editable"></i></div>
+    <div class="ef-wrap">
+      <textarea class="ef" rows="3" style="font-size:14px;font-weight:300;line-height:1.7">Ayuda a las personas a recuperar su peso más saludable y resolver problemas digestivos — obesidad, vesícula, reflujo gastroesofágico, hernias — a través de cirugía mínimamente invasiva y acompañamiento clínico multidisciplinario.</textarea>
+      <i class="ti ti-edit ef-icon"></i>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-label">Posicionamiento central</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:300;color:var(--tx);font-style:italic;line-height:1.45;margin-bottom:10px">"El cirujano bariátrico premium que combina humanidad, ciencia y acompañamiento real para transformar vidas de manera profunda y sostenible."</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Lo que la marca NO es</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div class="rule-row no" style="padding:7px 12px">
+          <div class="rule-icon no"><i class="ti ti-x" style="font-size:10px"></i></div>
+          <div class="rule-text">Cercano pero no informal</div>
+        </div>
+        <div class="rule-row no" style="padding:7px 12px">
+          <div class="rule-icon no"><i class="ti ti-x" style="font-size:10px"></i></div>
+          <div class="rule-text">Directo pero nunca cruel con los sentimientos del paciente</div>
+        </div>
+        <div class="rule-row no" style="padding:7px 12px">
+          <div class="rule-icon no"><i class="ti ti-x" style="font-size:10px"></i></div>
+          <div class="rule-text">Orientado a resultados pero no a vender — educar primero, siempre</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <div class="card-label">Palabras de marca</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1.25rem">
+      <div style="padding:8px 16px;border-radius:20px;background:var(--tl2);border:1px solid var(--br);font-size:13px;font-weight:500;color:var(--tl)">Humano</div>
+      <div style="padding:8px 16px;border-radius:20px;background:var(--tl2);border:1px solid var(--br);font-size:13px;font-weight:500;color:var(--tl)">Confiable</div>
+      <div style="padding:8px 16px;border-radius:20px;background:var(--tl2);border:1px solid var(--br);font-size:13px;font-weight:500;color:var(--tl)">Claro</div>
+      <div style="padding:8px 16px;border-radius:20px;background:var(--tl2);border:1px solid var(--br);font-size:13px;font-weight:500;color:var(--tl)">Cercano</div>
+      <div style="padding:8px 16px;border-radius:20px;background:var(--tl2);border:1px solid var(--br);font-size:13px;font-weight:500;color:var(--tl)">Profesional</div>
+      <div style="padding:8px 16px;border-radius:20px;background:var(--tl2);border:1px solid var(--br);font-size:13px;font-weight:500;color:var(--tl)">Elegante</div>
+      <div style="padding:8px 16px;border-radius:20px;background:var(--tl2);border:1px solid var(--br);font-size:13px;font-weight:500;color:var(--tl)">Sobrio</div>
+    </div>
+    <div class="card-label" style="margin-bottom:6px">Lo que la audiencia debe sentir</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px">
+      <div style="background:var(--sf2);border-radius:var(--rsm);padding:8px 12px;font-size:12px;font-weight:300;color:var(--tx2);border:1px solid var(--br3)">"Este doctor sí me entiende."</div>
+      <div style="background:var(--sf2);border-radius:var(--rsm);padding:8px 12px;font-size:12px;font-weight:300;color:var(--tx2);border:1px solid var(--br3)">"Aquí voy a estar segura."</div>
+      <div style="background:var(--sf2);border-radius:var(--rsm);padding:8px 12px;font-size:12px;font-weight:300;color:var(--tx2);border:1px solid var(--br3)">"No me está juzgando."</div>
+      <div style="background:var(--sf2);border-radius:var(--rsm);padding:8px 12px;font-size:12px;font-weight:300;color:var(--tx2);border:1px solid var(--br3)">"Por fin alguien me explica claramente."</div>
+      <div style="background:var(--sf2);border-radius:var(--rsm);padding:8px 12px;font-size:12px;font-weight:300;color:var(--tx2);border:1px solid var(--br3)">"No soy un caso más."</div>
+      <div style="background:var(--sf2);border-radius:var(--rsm);padding:8px 12px;font-size:12px;font-weight:300;color:var(--tx2);border:1px solid var(--br3)">"Quiero operarme con él."</div>
+    </div>
+  </div>
+
+</div><!-- /p-identidad -->
+
+<!-- ═══════════════════════════════
+     PANEL: COLORES
+═══════════════════════════════ -->
+<div class="vb-panel" id="p-colores">
+
+  <div class="sec-head">
+    <div class="sec-label"><i class="ti ti-palette"></i> Sistema de color</div>
+    <div class="sec-title">Paleta <em>oficial</em></div>
+    <div class="sec-desc">5 colores. Cada uno con un rol específico e irremplazable. No usar colores fuera de esta paleta.</div>
+  </div>
+
+  <div class="color-grid">
+    <div class="color-card">
+      <div class="color-swatch" style="background:#14262D">
+        <div class="color-hex-overlay">#14262D</div>
+      </div>
+      <div class="color-info">
+        <div class="color-name">Verde Noche</div>
+        <div class="color-hex">#14262D</div>
+        <div class="color-role">Fondo oscuro principal. Color dominante de la marca.</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:#1F434E">
+        <div class="color-hex-overlay">#1F434E</div>
+      </div>
+      <div class="color-info">
+        <div class="color-name">Verde Azulado</div>
+        <div class="color-hex">#1F434E</div>
+        <div class="color-role">Fondo oscuro secundario. Capas y profundidad.</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:#CCC2A7;display:flex;align-items:flex-end;padding:10px 12px">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:rgba(20,38,45,.25);letter-spacing:1px">#CCC2A7</div>
+      </div>
+      <div class="color-info">
+        <div class="color-name">Beige Cálido</div>
+        <div class="color-hex">#CCC2A7</div>
+        <div class="color-role">Fondo claro principal. Calidez y respiración visual.</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:#2ABFB0">
+        <div class="color-hex-overlay">#2ABFB0</div>
+      </div>
+      <div class="color-info">
+        <div class="color-name">Teal Vibrante</div>
+        <div class="color-hex">#2ABFB0</div>
+        <div class="color-role">Acento exclusivo. CTAs, énfasis, palabras clave en itálica.</div>
+      </div>
+    </div>
+    <div class="color-card">
+      <div class="color-swatch" style="background:#F4F5F0;border-bottom:1px solid rgba(0,0,0,.1)">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:rgba(20,38,45,.2);letter-spacing:1px">#F4F5F0</div>
+      </div>
+      <div class="color-info">
+        <div class="color-name">Hueso Claro</div>
+        <div class="color-hex">#F4F5F0</div>
+        <div class="color-role">Texto principal sobre fondos oscuros. No usar como fondo.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="card-label" style="margin-bottom:10px">Reglas de contraste — críticas</div>
+  <div class="contrast-rule">
+    <div class="cr-dots"><div class="cr-dot" style="background:#F4F5F0;border:1px solid rgba(255,255,255,.2)"></div><span style="font-size:10px;color:var(--tx3)">sobre</span><div class="cr-dot" style="background:#14262D"></div></div>
+    <div class="cr-text">Texto sobre fondos oscuros → siempre <strong style="color:var(--tx)">#F4F5F0</strong></div>
+    <div class="cr-ok yes">✓ Correcto</div>
+  </div>
+  <div class="contrast-rule">
+    <div class="cr-dots"><div class="cr-dot" style="background:#14262D"></div><span style="font-size:10px;color:var(--tx3)">sobre</span><div class="cr-dot" style="background:#CCC2A7"></div></div>
+    <div class="cr-text">Texto sobre fondo claro → siempre <strong style="color:var(--tx)">#14262D</strong></div>
+    <div class="cr-ok yes">✓ Correcto</div>
+  </div>
+  <div class="contrast-rule">
+    <div class="cr-dots"><div class="cr-dot" style="background:#2ABFB0"></div><span style="font-size:10px;color:var(--tx3)">para</span><div class="cr-dot" style="background:transparent;border:1px solid var(--br2)"></div></div>
+    <div class="cr-text">Acento y CTAs → siempre <strong style="color:var(--tl)">#2ABFB0</strong></div>
+    <div class="cr-ok yes">✓ Correcto</div>
+  </div>
+  <div class="contrast-rule">
+    <div class="cr-dots"><div class="cr-dot" style="background:#2ABFB0"></div><span style="font-size:10px;color:var(--tx3)">sobre</span><div class="cr-dot" style="background:#CCC2A7"></div></div>
+    <div class="cr-text">NUNCA teal en texto pequeño sobre beige — ilegible</div>
+    <div class="cr-ok no">✗ Prohibido</div>
+  </div>
+  <div class="contrast-rule">
+    <div class="cr-dots"><div class="cr-dot" style="background:#14262D"></div><span style="font-size:10px;color:var(--tx3)">sobre</span><div class="cr-dot" style="background:#1F434E"></div></div>
+    <div class="cr-text">NUNCA #14262D sobre #1F434E — demasiado similares</div>
+    <div class="cr-ok no">✗ Prohibido</div>
+  </div>
+  <div class="contrast-rule">
+    <div class="cr-dots"><div class="cr-dot" style="background:#F4F5F0;border:1px solid rgba(0,0,0,.1)"></div><span style="font-size:10px;color:var(--tx3)">sobre</span><div class="cr-dot" style="background:#CCC2A7"></div></div>
+    <div class="cr-text">NUNCA #F4F5F0 sobre #CCC2A7 — invisibles juntos</div>
+    <div class="cr-ok no">✗ Prohibido</div>
+  </div>
+
+</div><!-- /p-colores -->
+
+<!-- ═══════════════════════════════
+     PANEL: TIPOGRAFÍA
+═══════════════════════════════ -->
+<div class="vb-panel" id="p-tipografia">
+
+  <div class="sec-head">
+    <div class="sec-label"><i class="ti ti-typography"></i> Tipografía</div>
+    <div class="sec-title">Sistema <em>tipográfico</em></div>
+    <div class="sec-desc">Dos fuentes. Cada una con un rol exacto. No mezclar ni improvisar.</div>
+  </div>
+
+  <!-- Cormorant -->
+  <div class="card">
+    <div class="card-label">Cormorant Garamond — Titulares e impacto</div>
+    <div class="font-specimen">
+      Recupera quien <em>eres.</em>
+    </div>
+    <div class="font-meta">
+      <span class="font-tag">Titulares</span>
+      <span class="font-tag">Hooks</span>
+      <span class="font-tag">Frases de impacto</span>
+      <span class="font-tag">Handle @cirujanomolina</span>
+      <span class="font-tag neutral">Pesos: 300 · 400 · 600</span>
+    </div>
+    <div class="font-rules">
+      <div class="font-rule">Itálica en #2ABFB0 para 1–2 palabras de énfasis por slide. Nunca más.</div>
+      <div class="font-rule">Line-height 0.92 en hooks de impacto. 1.05 en títulos de slide.</div>
+      <div class="font-rule">NO usar en cuerpo de texto ni en tamaños menores a 14px.</div>
+      <div class="font-rule">NO usar en contenido de redes — solo para piezas gráficas.</div>
+    </div>
+  </div>
+
+  <!-- Archivo -->
+  <div class="card">
+    <div class="card-label">Archivo — Cuerpo y funcional</div>
+    <div class="font-specimen archivo">
+      Humanidad, ciencia y acompañamiento real.
+    </div>
+    <div class="font-meta">
+      <span class="font-tag">Cuerpo de texto</span>
+      <span class="font-tag">Subtítulos</span>
+      <span class="font-tag">CTAs</span>
+      <span class="font-tag">Etiquetas</span>
+      <span class="font-tag neutral">Pesos: 300 · 500</span>
+    </div>
+    <div class="font-rules">
+      <div class="font-rule">Peso 300 para cuerpo. Interlineado 1.4.</div>
+      <div class="font-rule">Peso 500 para CTAs en mayúsculas. Color teal.</div>
+      <div class="font-rule">Nunca usar en tamaño menor a 11px en piezas gráficas.</div>
+    </div>
+  </div>
+
+  <!-- Jerarquía -->
+  <div class="card">
+    <div class="card-label">Jerarquía tipográfica</div>
+
+    <div class="hierarchy-row">
+      <div class="hr-label">Hook / Impacto</div>
+      <div class="hr-spec">Cormorant Garamond · 300–400 · Muy grande · Line-height 0.92</div>
+      <div class="hr-preview">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--tx);line-height:0.92">¿Por qué no puedo <em style="color:var(--tl);font-style:italic">bajar de peso?</em></div>
+      </div>
+    </div>
+
+    <div class="hierarchy-row">
+      <div class="hr-label">Título slide</div>
+      <div class="hr-spec">Cormorant Garamond · 600 · Medio · Line-height 1.05</div>
+      <div class="hr-preview">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--tx);line-height:1.05">La obesidad no es una <em style="color:var(--tl);font-style:italic">falla de voluntad</em></div>
+      </div>
+    </div>
+
+    <div class="hierarchy-row">
+      <div class="hr-label">Cuerpo</div>
+      <div class="hr-spec">Archivo · 300 · Visible (nunca pequeño) · Line-height 1.4</div>
+      <div class="hr-preview">
+        <div style="font-family:'Archivo',sans-serif;font-size:13px;font-weight:300;color:var(--tx2);line-height:1.4">Tu cuerpo tiene mecanismos biológicos diseñados para recuperar el peso que pierdes. No es tu culpa — es tu fisiología.</div>
+      </div>
+    </div>
+
+    <div class="hierarchy-row">
+      <div class="hr-label">CTA</div>
+      <div class="hr-spec">Archivo · 500 · Mayúsculas · Color teal</div>
+      <div class="hr-preview">
+        <div style="font-family:'Archivo',sans-serif;font-size:12px;font-weight:500;color:var(--tl);letter-spacing:1px;text-transform:uppercase">→ Comenta LISTO si esto resonó contigo</div>
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- /p-tipografia -->
+
+<!-- ═══════════════════════════════
+     PANEL: AUDIENCIA
+═══════════════════════════════ -->
+<div class="vb-panel" id="p-audiencia">
+
+  <div class="sec-head">
+    <div class="sec-label"><i class="ti ti-users"></i> Audiencia</div>
+    <div class="sec-title">El paciente <em>ideal</em></div>
+    <div class="sec-desc">Conocer a la audiencia con esta profundidad es lo que diferencia el contenido genérico del contenido que convierte.</div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:1rem">
+
+    <div class="avatar-card">
+      <div class="avatar-name">Avatar 1 · Mujer agotada</div>
+      <div class="avatar-desc">32–48 años. Madre frecuentemente. Ha intentado todo sin resultado. Su autoestima y sus relaciones se han visto afectadas.</div>
+      <div class="avatar-tags">
+        <span class="atag">Múltiples dietas fallidas</span>
+        <span class="atag">Ansiedad con la comida</span>
+        <span class="atag">Vergüenza social</span>
+        <span class="atag">Evita fotos</span>
+        <span class="atag">Cansancio emocional</span>
+        <span class="atag">Siente culpa</span>
+        <span class="atag">Baja autoestima</span>
+      </div>
+      <div class="avatar-desire">Quiere volver a reconocerse frente al espejo.</div>
+    </div>
+
+    <div class="avatar-card secondary">
+      <div class="avatar-name">Avatar 2 · Paciente metabólico</div>
+      <div class="avatar-desc">Tiene condiciones médicas asociadas a la obesidad. Deterioro físico progresivo. Preocupación por salud y longevidad.</div>
+      <div class="avatar-tags">
+        <span class="atag">Diabetes tipo 2</span>
+        <span class="atag">Hipertensión</span>
+        <span class="atag">Apnea del sueño</span>
+        <span class="atag">Deterioro físico</span>
+        <span class="atag">Miedo a complicaciones</span>
+      </div>
+      <div class="avatar-desire">Quiere recuperar control sobre su salud y evitar deterioro futuro.</div>
+    </div>
+
+  </div>
+
+  <div class="card">
+    <div class="card-label" style="margin-bottom:12px">Así habla la audiencia — frases reales</div>
+    <div class="quote-card">
+      <div class="quote-text">"Estoy cansada de no poder bajar de peso aunque hago todo lo que está en mis manos."</div>
+    </div>
+    <div class="quote-card">
+      <div class="quote-text">"Me veo al espejo y no me gusta lo que veo. No me reconozco."</div>
+    </div>
+    <div class="quote-card">
+      <div class="quote-text">"Me da miedo la cirugía, pero no quiero seguir perdiendo mi vida así."</div>
+    </div>
+    <div class="quote-card">
+      <div class="quote-text">"No puedo ir al gimnasio porque me da pena que me vean."</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <div class="card-label" style="margin-bottom:10px">Lo que realmente quieren</div>
+    <div style="font-size:13px;font-weight:300;color:var(--tx2);line-height:1.7">
+      No quieren <em style="color:var(--tl)">solo bajar de peso</em>. Quieren recuperar su identidad, su salud, su familia, su vida. Quieren verse al espejo y reconocerse. Quieren volver a ser ellas.<br><br>
+      <strong style="color:var(--tx);font-weight:500">Lo que NO queremos atraer:</strong> curiosos sin intención, adolescentes random, seguidores vacíos, personas buscando lo más barato. La estrategia está diseñada para atraer una audiencia premium y emocionalmente identificada.
+    </div>
+  </div>
+
+</div><!-- /p-audiencia -->
+
+<!-- ═══════════════════════════════
+     PANEL: VOZ
+═══════════════════════════════ -->
+<div class="vb-panel" id="p-voz">
+
+  <div class="sec-head">
+    <div class="sec-label"><i class="ti ti-message-circle"></i> Voz de marca</div>
+    <div class="sec-title">Cómo <em>suena</em> el Dr. Molina</div>
+    <div class="sec-desc">La voz es tan parte de la identidad visual como los colores. Cada palabra debe sonar igual de reconocible.</div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-label" style="color:var(--tl);margin-bottom:10px">Siempre ✓</div>
+      <div class="rule-row yes"><div class="rule-icon yes"><i class="ti ti-check" style="font-size:10px"></i></div><div class="rule-text">Validar antes de explicar — el paciente necesita sentirse escuchado primero</div></div>
+      <div class="rule-row yes"><div class="rule-icon yes"><i class="ti ti-check" style="font-size:10px"></i></div><div class="rule-text">Quitar la culpa: la obesidad es una enfermedad, no una falla de voluntad</div></div>
+      <div class="rule-row yes"><div class="rule-icon yes"><i class="ti ti-check" style="font-size:10px"></i></div><div class="rule-text">Hablar con calidez clínica — cercano, pero con autoridad médica</div></div>
+      <div class="rule-row yes"><div class="rule-icon yes"><i class="ti ti-check" style="font-size:10px"></i></div><div class="rule-text">Educar siempre — que el paciente entienda, no solo que confíe</div></div>
+      <div class="rule-row yes"><div class="rule-icon yes"><i class="ti ti-check" style="font-size:10px"></i></div><div class="rule-text">CTAs por palabra clave: "Comenta X y te enviamos…"</div></div>
+      <div class="rule-row yes"><div class="rule-icon yes"><i class="ti ti-check" style="font-size:10px"></i></div><div class="rule-text">Recordar que hay un equipo detrás — el paciente no está solo</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-label" style="color:#f55a8a;margin-bottom:10px">Nunca ✗</div>
+      <div class="rule-row no"><div class="rule-icon no"><i class="ti ti-x" style="font-size:10px"></i></div><div class="rule-text">Lenguaje grosero, vulgar o cruel</div></div>
+      <div class="rule-row no"><div class="rule-icon no"><i class="ti ti-x" style="font-size:10px"></i></div><div class="rule-text">Tecnicismos innecesarios que alejen al paciente</div></div>
+      <div class="rule-row no"><div class="rule-icon no"><i class="ti ti-x" style="font-size:10px"></i></div><div class="rule-text">Motivación vacía: "¡Tú puedes! Solo necesitas fuerza de voluntad"</div></div>
+      <div class="rule-row no"><div class="rule-icon no"><i class="ti ti-x" style="font-size:10px"></i></div><div class="rule-text">Tono desinteresado, genérico o que minimice el sufrimiento</div></div>
+      <div class="rule-row no"><div class="rule-icon no"><i class="ti ti-x" style="font-size:10px"></i></div><div class="rule-text">Sugerir que el paciente podría resolverlo solo sin ayuda médica</div></div>
+      <div class="rule-row no"><div class="rule-icon no"><i class="ti ti-x" style="font-size:10px"></i></div><div class="rule-text">Competir por precio o parecer desesperado por vender</div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <div class="card-label" style="margin-bottom:12px">Voz de referencia — test de sonido</div>
+    <div class="voz-example si">
+      <div class="voz-label si">✓ Suena como el Dr. Molina</div>
+      <div class="voz-text">"Quiero que entiendas que la culpa no es tuya. Tu cuerpo está jugando en tu contra — y para eso estoy yo aquí."</div>
+    </div>
+    <div class="voz-example si">
+      <div class="voz-label si">✓ Suena como el Dr. Molina</div>
+      <div class="voz-text">"Cuando entras a trabajar con nuestro equipo, tú eres el centro. Te acompañamos en todo el proceso — no estás solo en esto."</div>
+    </div>
+    <div class="voz-example no" style="margin-top:10px">
+      <div class="voz-label no">✗ No suena como el Dr. Molina</div>
+      <div class="voz-text">"¡Tú sí puedes! Con dieta y ejercicio lo puedes lograr sola."</div>
+    </div>
+    <div class="voz-example no">
+      <div class="voz-label no">✗ No suena como el Dr. Molina</div>
+      <div class="voz-text">"La cirugía bariátrica consiste en la segmentación del 80% del volumen gástrico total para modificar la absorción de lípidos y carbohidratos."</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <div class="card-label" style="margin-bottom:8px">Fórmula emocional</div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <div style="flex:1;min-width:120px;background:var(--tl2);border:1px solid var(--br);border-radius:var(--r);padding:16px;text-align:center">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--tl);line-height:1">70%</div>
+        <div style="font-size:11px;font-weight:500;color:var(--tl);margin-top:3px">Emoción</div>
+      </div>
+      <div style="font-size:20px;color:var(--br2)">+</div>
+      <div style="flex:1;min-width:120px;background:var(--sf2);border:1px solid var(--br2);border-radius:var(--r);padding:16px;text-align:center">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--tx2);line-height:1">30%</div>
+        <div style="font-size:11px;font-weight:500;color:var(--tx3);margin-top:3px">Ciencia</div>
+      </div>
+      <div style="font-size:11px;font-weight:300;color:var(--tx3);flex:2;min-width:180px;line-height:1.6;padding-left:10px">El contenido emocional es el motor. La ciencia es el ancla. <em style="color:var(--tl)">En ese orden siempre.</em></div>
+    </div>
+  </div>
+
+</div><!-- /p-voz -->
+
+<!-- ═══════════════════════════════
+     PANEL: IMÁGENES
+═══════════════════════════════ -->
+<div class="vb-panel" id="p-imagenes">
+
+  <div class="sec-head">
+    <div class="sec-label"><i class="ti ti-photo"></i> Dirección de imágenes</div>
+    <div class="sec-title">Estética <em>cinematográfica</em></div>
+    <div class="sec-desc">Fría en el ambiente. Cálida en las personas. Alto contraste. Profundidad. Netflix médico premium.</div>
+  </div>
+
+  <div class="grid2" style="margin-bottom:1rem">
+
+    <div class="img-type-card">
+      <div class="img-type-thumb" style="background:linear-gradient(135deg,#060e12,#0f2028)">Hook / Impacto</div>
+      <div class="img-type-name">Hook · Impacto</div>
+      <div class="img-type-desc">Oscura, dramática, cinematográfica. Diseñada para parar el scroll. Alto contraste, composición fuerte.</div>
+    </div>
+
+    <div class="img-type-card">
+      <div class="img-type-thumb" style="background:linear-gradient(135deg,#1a3540,#243e48)">Educativo / Cercano</div>
+      <div class="img-type-name">Educativo · Cercano</div>
+      <div class="img-type-desc">Más luz, más documental, más cotidiano. El Dr. en su ambiente real. Cálido pero profesional.</div>
+    </div>
+
+    <div class="img-type-card">
+      <div class="img-type-thumb" style="background:linear-gradient(135deg,#1a3a35,#2a4e48)">CTA / Resultados</div>
+      <div class="img-type-name">CTA · Resultados</div>
+      <div class="img-type-desc">Personas esperanzadoras, activas, sonriendo. Transmite la posibilidad de cambio. Tonal más cálido.</div>
+    </div>
+
+    <div class="img-type-card">
+      <div class="img-type-thumb" style="background:linear-gradient(135deg,#101820,#182530)">Dolor / Conexión</div>
+      <div class="img-type-name">Dolor · Conexión</div>
+      <div class="img-type-desc">Personas reflexivas, vulnerables, íntimas. Evoca empatía. La paleta más fría y oscura de todas.</div>
+    </div>
+
+  </div>
+
+  <div class="card">
+    <div class="card-label" style="margin-bottom:12px">Degradado sobre imagen — especificación exacta</div>
+    <div class="gradient-preview">
+      <div class="gp-subject"><div>Sujeto<br>visible</div></div>
+      <div class="gp-gradient"></div>
+      <div class="gp-text">"El texto vive aquí — nunca tapa el rostro"</div>
+    </div>
+    <div style="font-size:12px;font-weight:300;color:var(--tx2);line-height:1.7">
+      <strong style="color:var(--tx);font-weight:500">Linear-gradient de abajo hacia arriba:</strong><br>
+      Empieza opaco (~93%) en el <strong style="color:var(--tl)">28–32% inferior</strong> de la imagen.<br>
+      Llega a transparente en el <strong style="color:var(--tl)">70–74%</strong>.<br>
+      El sujeto principal siempre visible en la parte superior. El texto <strong style="color:var(--tx)">nunca</strong> tapa el rostro.
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <div class="card-label" style="margin-bottom:10px">Fuentes de imágenes — en orden de prioridad</div>
+    <div class="contrast-rule">
+      <div style="width:28px;height:28px;border-radius:6px;background:var(--tl2);border:1px solid var(--br);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--tl)">1</span></div>
+      <div class="cr-text"><strong style="color:var(--tx)">Fotos propias</strong> en quirófano y consultorio — prioritarias siempre</div>
+      <div class="cr-ok yes">Prioridad 1</div>
+    </div>
+    <div class="contrast-rule">
+      <div style="width:28px;height:28px;border-radius:6px;background:var(--sf2);border:1px solid var(--br2);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--tx2)">2</span></div>
+      <div class="cr-text"><strong style="color:var(--tx)">Banco de imágenes</strong> de personas reales (Unsplash, Pexels) — mientras crece el archivo</div>
+      <div class="cr-ok yes">Prioridad 2</div>
+    </div>
+    <div class="contrast-rule">
+      <div style="width:28px;height:28px;border-radius:6px;background:var(--sf2);border:1px solid var(--br2);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-family:'Cormorant Garamond',serif;font-size:14px;color:var(--tx2)">3</span></div>
+      <div class="cr-text"><strong style="color:var(--tx)">Imágenes de IA</strong> (Midjourney) para piezas de alto impacto</div>
+      <div class="cr-ok yes">Prioridad 3</div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="card-label" style="color:#f55a8a;margin-bottom:10px">Nunca usar ✗</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+      <div style="padding:8px 12px;background:rgba(245,90,138,.06);border:1px solid rgba(245,90,138,.15);border-radius:var(--rsm);font-size:12px;font-weight:300;color:var(--tx2)">✗ Stock genérico y corporativo</div>
+      <div style="padding:8px 12px;background:rgba(245,90,138,.06);border:1px solid rgba(245,90,138,.15);border-radius:var(--rsm);font-size:12px;font-weight:300;color:var(--tx2)">✗ Ilustraciones o cartoons</div>
+      <div style="padding:8px 12px;background:rgba(245,90,138,.06);border:1px solid rgba(245,90,138,.15);border-radius:var(--rsm);font-size:12px;font-weight:300;color:var(--tx2)">✗ Fotos crudas o viscerales en feed</div>
+      <div style="padding:8px 12px;background:rgba(245,90,138,.06);border:1px solid rgba(245,90,138,.15);border-radius:var(--rsm);font-size:12px;font-weight:300;color:var(--tx2)">✗ Imágenes que Instagram pueda blurear</div>
+    </div>
+  </div>
+
+</div><!-- /p-imagenes -->
+
+<!-- ═══════════════════════════════
+     PANEL: FORMATOS
+═══════════════════════════════ -->
+<div class="vb-panel" id="p-formatos">
+
+  <div class="sec-head">
+    <div class="sec-label"><i class="ti ti-layout-columns"></i> Formatos de contenido</div>
+    <div class="sec-title">El <em>repertorio</em> creativo</div>
+    <div class="sec-desc">15 formatos específicos para cirugía bariátrica + 5 formatos generales. Cada uno con un objetivo y una mecánica viral.</div>
+  </div>
+
+  <div class="card-label" style="margin-bottom:10px">Formatos generales</div>
+  <div class="grid2" style="margin-bottom:1.5rem">
+    <div class="formato-card"><div class="formato-title"><i class="ti ti-arrows-right-left"></i>Comparison format</div><div class="formato-desc">Antes vs después, con cirugía vs sin cirugía. Genera decisión.</div><div class="formato-badge">Decisión</div></div>
+    <div class="formato-card"><div class="formato-title"><i class="ti ti-list-numbers"></i>Tutorial format</div><div class="formato-desc">Paso a paso del proceso quirúrgico. Quita el misterio y el miedo.</div><div class="formato-badge auth">Autoridad</div></div>
+    <div class="formato-card"><div class="formato-title"><i class="ti ti-align-left"></i>Native format</div><div class="formato-desc">Texto sobre fondo sólido, estilo editorial. Alto engagement orgánico.</div><div class="formato-badge viral">Viral</div></div>
+    <div class="formato-card"><div class="formato-title"><i class="ti ti-list"></i>Compilation format</div><div class="formato-desc">Listas que la gente guarda y comparte. Máximos guardados.</div><div class="formato-badge viral">Guardados</div></div>
+    <div class="formato-card" style="grid-column:1/-1"><div class="formato-title"><i class="ti ti-book"></i>Story format</div><div class="formato-desc">Historia narrada slide a slide. Máxima retención emocional. El formato más poderoso para la audiencia bariátrica.</div><div class="formato-badge conv">Alta retención</div></div>
+  </div>
+
+  <div class="card-label" style="margin-bottom:10px">Formatos específicos — cirugía bariátrica</div>
+  <div class="grid3">
+    <div class="formato-card"><div class="formato-title"><i class="ti ti-flame"></i>Myth Buster</div><div class="formato-desc">Destruye creencias falsas sobre la cirugía.</div><div class="formato-badge viral">Muy viral</div></div>
+    <div class="formato-card"><div class="formato-title"><i class="ti ti-stars"></i>Before &amp; After — Médico</div><div class="formato-desc">Antes y después de la vida, no del cuerpo.</div><div class="formato-badge conv">Alta conversión</div></div>
+    <div class="formato-card"><div class="formato-title"><i class="ti ti-stethoscope"></i>Diagnóstico en público</div><div class="formato-desc">"Si tienes estas señales, tu cuerpo pide ayuda."</div><div class="formato-badge viral">Compartido</div></div>
+    <div class="formato-card"><div class="formato-title"><i class="ti ti-brain"></i>El enemigo invisible</div><div class="formato-desc">Por qué el metabolismo sabotea la pérdida de peso.</div><div class="formato-badge auth">Autoridad</div></div>
+    <div class="formato-card"><div class="formato-title"><i class="ti ti-help-circle"></i>Preguntas frecuentes</div><div class="formato-desc">Una pregunta real por slide. Quita objeciones.</div><div class="formato-badge conv">Conversión</div></div>
+    <div class="formato-card"><div class="formato-title"><i class="ti ti-timeline"></i>Línea de tiempo</div><div class="formato-desc">Semana 1, mes 1, mes 6, año 1. Muy guardado.</div><div class="formato-badge viral">Guardados</div></div>
+    <div class="formato-card"><div class="formato-title"><i class="ti ti-user-check"></i>Caso clínico simplificado</div><div class="formato-desc">Sin datos privados. Genera confianza y empatía.</div><div class="formato-badge auth">Confianza</div></div>
+    <div class="formato-card"><div class="formato-title"><i class="ti ti-door-enter"></i>El momento de decisión</div><div class="formato-desc">"¿Cuándo es momento de considerar la cirugía?"</div><div class="formato-badge conv">Alta conversión</div></div>
+    <div class="formato-card"><div class="formato-title"><i class="ti ti-shield"></i>Desmontando al familiar</div><div class="formato-desc">Valida al paciente frente a su entorno.</div><div class="formato-badge viral">Muy compartido</div></div>
+    <div class="formato-card"><div class="formato-title"><i class="ti ti-chart-bar"></i>Comparativa médica</div><div class="formato-desc">Cirugía vs pastillas vs dieta: qué dice la ciencia.</div><div class="formato-badge auth">Autoridad</div></div>
+    <div class="formato-card"><div class="formato-title"><i class="ti ti-video"></i>Día en el quirófano</div><div class="formato-desc">Detrás de cámaras. Humaniza y genera autoridad.</div><div class="formato-badge auth">Humanización</div></div>
+    <div class="formato-card"><div class="formato-title"><i class="ti ti-calculator"></i>Costo real vs no actuar</div><div class="formato-desc">Emocional, físico, familiar. Reencuadra la inversión.</div><div class="formato-badge conv">Conversión</div></div>
+    <div class="formato-card"><div class="formato-title"><i class="ti ti-school"></i>Congreso médico</div><div class="formato-desc">Autoridad académica en formato cercano.</div><div class="formato-badge auth">Autoridad</div></div>
+    <div class="formato-card"><div class="formato-title"><i class="ti ti-users-group"></i>Equipo multidisciplinario</div><div class="formato-desc">Presenta el equipo y su rol. Genera confianza.</div><div class="formato-badge auth">Confianza</div></div>
+    <div class="formato-card"><div class="formato-title"><i class="ti ti-heart-rate-monitor"></i>Calidad de vida</div><div class="formato-desc">Métricas reales de mejora post-cirugía.</div><div class="formato-badge conv">Conversión</div></div>
+  </div>
+
+</div><!-- /p-formatos -->
+
+<!-- ═══════════════════════════════
+     PANEL: LAYOUT
+═══════════════════════════════ -->
+<div class="vb-panel" id="p-layout">
+
+  <div class="sec-head">
+    <div class="sec-label"><i class="ti ti-layout"></i> Layout y composición</div>
+    <div class="sec-title">Cómo se <em>estructura</em> el espacio</div>
+    <div class="sec-desc">Reglas de composición para piezas de feed y stories. Márgenes, densidad, jerarquía visual.</div>
+  </div>
+
+  <div class="card-label" style="margin-bottom:10px">Formatos de publicación</div>
+  <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:1.5rem">
+    <div class="layout-spec">
+      <div class="ls-format">1080<br>×<br>1350</div>
+      <div class="ls-info">
+        <div class="ls-title">Portrait — Feed</div>
+        <div class="ls-dims">1080 × 1350 px · 4:5</div>
+        <div class="ls-desc">Formato principal. Carruseles y publicaciones de feed. Márgenes moderados — no llega al borde pero aprovecha el espacio.</div>
+      </div>
+    </div>
+    <div class="layout-spec">
+      <div class="ls-format" style="width:40px;height:68px">1080<br>×<br>1920</div>
+      <div class="ls-info">
+        <div class="ls-title">Stories</div>
+        <div class="ls-dims">1080 × 1920 px · 9:16</div>
+        <div class="ls-desc">Complemento de videos, cajitas de preguntas, fechas especiales. Márgenes más generosos — más centrado, más respiración.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label" style="margin-bottom:12px">Máximo de elementos por slide</div>
+    <div class="max-elements">
+      <div class="me-card">
+        <div class="me-type">Hook</div>
+        <div class="me-count">2</div>
+        <div class="me-items">Título + handle/logo</div>
+      </div>
+      <div class="me-card">
+        <div class="me-type">Educativo</div>
+        <div class="me-count">3</div>
+        <div class="me-items">Título + cuerpo + handle</div>
+      </div>
+      <div class="me-card">
+        <div class="me-type">Dato</div>
+        <div class="me-count">4</div>
+        <div class="me-items">Stat + título + cuerpo + handle</div>
+      </div>
+      <div class="me-card">
+        <div class="me-type">CTA</div>
+        <div class="me-count">4</div>
+        <div class="me-items">Título + cuerpo + CTA + logo completo</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <div class="card-label" style="margin-bottom:10px">Arquitectura de carruseles</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="background:var(--sf2);border-radius:var(--rsm);padding:12px 14px;border:1px solid var(--br3)">
+        <div style="font-size:11px;font-weight:600;color:var(--tl);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Carrusel largo · 10 slides</div>
+        <div style="font-size:12px;font-weight:300;color:var(--tx2);line-height:1.7">
+          <strong style="color:var(--tx);font-weight:500">1.</strong> Hook — golpe directo ·
+          <strong style="color:var(--tx);font-weight:500">2–3.</strong> Historia — interés emocional ·
+          <strong style="color:var(--tx);font-weight:500">4–5.</strong> Dato visual — retención ·
+          <strong style="color:var(--tx);font-weight:500">6–9.</strong> Valor práctico ·
+          <strong style="color:var(--tx);font-weight:500">10.</strong> CTA
+        </div>
+      </div>
+      <div style="background:var(--sf2);border-radius:var(--rsm);padding:12px 14px;border:1px solid var(--br3)">
+        <div style="font-size:11px;font-weight:600;color:var(--tl);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Carrusel medio · 6 slides</div>
+        <div style="font-size:12px;font-weight:300;color:var(--tx2);line-height:1.7">
+          <strong style="color:var(--tx);font-weight:500">1.</strong> Hook ·
+          <strong style="color:var(--tx);font-weight:500">2.</strong> Contexto/problema ·
+          <strong style="color:var(--tx);font-weight:500">3–4.</strong> Valor clave ·
+          <strong style="color:var(--tx);font-weight:500">5.</strong> Tensión o remate ·
+          <strong style="color:var(--tx);font-weight:500">6.</strong> CTA
+        </div>
+      </div>
+      <div style="background:var(--sf2);border-radius:var(--rsm);padding:12px 14px;border:1px solid var(--br3)">
+        <div style="font-size:11px;font-weight:600;color:var(--tl);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Carrusel corto · 4 slides</div>
+        <div style="font-size:12px;font-weight:300;color:var(--tx2);line-height:1.7">
+          <strong style="color:var(--tx);font-weight:500">1.</strong> Hook ·
+          <strong style="color:var(--tx);font-weight:500">2–3.</strong> Valor concentrado ·
+          <strong style="color:var(--tx);font-weight:500">4.</strong> CTA
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /p-layout -->
+
+<!-- ═══════════════════════════════
+     PANEL: MARCA
+═══════════════════════════════ -->
+<div class="vb-panel" id="p-marca">
+
+  <div class="sec-head">
+    <div class="sec-label"><i class="ti ti-award"></i> Marca y handle</div>
+    <div class="sec-title">Elementos de <em>identificación</em></div>
+    <div class="sec-desc">Cómo aparece la marca en cada pieza de contenido — handle, logo, taglines. Todo tiene reglas exactas.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-label" style="margin-bottom:12px">Handle oficial</div>
+    <div class="handle-demo">@cirujanomolina</div>
+    <div style="font-size:12px;font-weight:300;color:var(--tx3);margin-top:8px;line-height:1.6">
+      Cormorant Garamond · Discreto · Siempre presente en cada pieza.<br>
+      <strong style="color:var(--tx2)">Arriba</strong> cuando el contenido principal vive abajo.<br>
+      <strong style="color:var(--tx2)">Abajo</strong> cuando el contenido principal vive arriba.
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-top:1rem">
+    <div class="card">
+      <div class="card-label" style="margin-bottom:8px">Logo en slides de contenido</div>
+      <div style="background:var(--sf2);border-radius:var(--rsm);padding:16px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;min-height:60px">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:rgba(42,191,176,.5);letter-spacing:2px">JSM</div>
+      </div>
+      <div style="font-size:12px;font-weight:300;color:var(--tx3);line-height:1.6">Solo el ícono JSM. Pequeño, en esquina del slide. <strong style="color:var(--tx2)">Opacidad 50%</strong> sobre fondos oscuros, <strong style="color:var(--tx2)">30%</strong> sobre fondos claros.</div>
+    </div>
+    <div class="card">
+      <div class="card-label" style="margin-bottom:8px">Logo en slide CTA</div>
+      <div style="background:var(--sf2);border-radius:var(--rsm);padding:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:10px;min-height:60px">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--tl);letter-spacing:1px">DR. JUAN SANTIAGO MOLINA V.</div>
+        <div style="font-size:10px;color:var(--tx3);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px">Cirugía Bariátrica y Metabólica</div>
+      </div>
+      <div style="font-size:12px;font-weight:300;color:var(--tx3);line-height:1.6">Logo completo con nombre y especialidad. Más visible. Cierra el carrusel con identidad completa.</div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:10px;margin-top:1rem">
+    <div class="tagline-block tb-main">
+      <div class="tb-label">Tagline principal</div>
+      <div class="tb-text">"Recupera quien eres."</div>
+      <div class="tb-contexts">CTAs · Slide final · Bio · Piezas de impacto emocional</div>
+    </div>
+    <div class="tagline-block tb-inst">
+      <div class="tb-label">Tagline institucional</div>
+      <div class="tb-text">"Humanidad, ciencia y acompañamiento real."</div>
+      <div class="tb-contexts">Presentaciones · Logo completo · Contextos formales</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1rem">
+    <div class="card-label" style="margin-bottom:12px">Ritmo visual — reglas de energía</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="padding:12px 14px;background:var(--sf2);border-radius:var(--rsm);border:1px solid var(--br3)">
+        <div style="font-size:12px;font-weight:500;color:var(--tx);margin-bottom:3px">Alternancia de fondos</div>
+        <div style="font-size:12px;font-weight:300;color:var(--tx3);line-height:1.5">Libre — no es una fórmula fija. Se alterna entre oscuro y claro según lo que el carrusel necesite, no por turno obligado.</div>
+      </div>
+      <div style="padding:12px 14px;background:var(--sf2);border-radius:var(--rsm);border:1px solid var(--br3)">
+        <div style="font-size:12px;font-weight:500;color:var(--tx);margin-bottom:3px">Intensidad constante</div>
+        <div style="font-size:12px;font-weight:300;color:var(--tx3);line-height:1.5">Todos los slides mantienen intensidad. El objetivo es retención total — ningún slide puede "bajar la guardia" del lector.</div>
+      </div>
+      <div style="padding:12px 14px;background:var(--sf2);border-radius:var(--rsm);border:1px solid var(--br3)">
+        <div style="font-size:12px;font-weight:500;color:var(--tx);margin-bottom:3px">Objetivo de cada carrusel</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
+          <span style="padding:3px 10px;border-radius:20px;font-size:11px;background:var(--tl2);border:1px solid var(--br);color:var(--tl)">Viralidad</span>
+          <span style="padding:3px 10px;border-radius:20px;font-size:11px;background:var(--tl2);border:1px solid var(--br);color:var(--tl)">Retención</span>
+          <span style="padding:3px 10px;border-radius:20px;font-size:11px;background:var(--tl2);border:1px solid var(--br);color:var(--tl)">Autoridad</span>
+          <span style="padding:3px 10px;border-radius:20px;font-size:11px;background:var(--tl2);border:1px solid var(--br);color:var(--tl)">Conversión</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /p-marca -->
+
+<script>
+function goTab(id, el) {
+  document.querySelectorAll('.vbt').forEach(t => t.classList.remove('on'));
+  document.querySelectorAll('.vb-panel').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('p-' + id).classList.add('on');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
