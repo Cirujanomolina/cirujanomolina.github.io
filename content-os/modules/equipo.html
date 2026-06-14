@@ -389,35 +389,29 @@
                     uploadBtn.innerHTML = '<i class="ti ti-loader ti-spin" style="font-size: 14px;"></i>';
                     uploadBtn.style.pointerEvents = 'none';
 
-                    const reader = new FileReader();
-                    reader.onload = async (event) => {
-                        try {
-                            const base64Data = event.target.result.split(',')[1];
-                            const res = await fetch('/api/upload-avatar', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    filename: file.name,
-                                    base64_data: base64Data
-                                })
-                            });
+                    try {
+                        const ext = file.name.split('.').pop();
+                        const filePath = `colaboradores/${Date.now()}.${ext}`;
 
-                            const data = await res.json();
-                            if (res.ok && data.success) {
-                                document.getElementById('collabPhotoUrl').value = data.url;
-                                document.getElementById('modalAvatarPreview').innerHTML = `<img src="${data.url}" style="width: 100%; height: 100%; object-fit: cover;">`;
-                                alert("¡Foto subida con éxito!");
-                            } else {
-                                alert("Error al subir foto: " + (data.error || "Fallo del servidor"));
-                            }
-                        } catch (err) {
-                            alert("Error de red al subir la imagen: " + err.message);
-                        } finally {
-                            uploadBtn.innerHTML = '<i class="ti ti-pencil" style="font-size: 14px;"></i>';
-                            uploadBtn.style.pointerEvents = 'auto';
-                        }
-                    };
-                    reader.readAsDataURL(file);
+                        const { data: uploadData, error: uploadErr } = await supabase.storage
+                            .from('blog-assets')
+                            .upload(filePath, file, { upsert: true });
+
+                        if (uploadErr) throw uploadErr;
+
+                        const { data: urlData } = supabase.storage
+                            .from('blog-assets')
+                            .getPublicUrl(filePath);
+
+                        document.getElementById('collabPhotoUrl').value = urlData.publicUrl;
+                        document.getElementById('modalAvatarPreview').innerHTML = `<img src="${urlData.publicUrl}" style="width: 100%; height: 100%; object-fit: cover;">`;
+                        alert("¡Foto subida con éxito!");
+                    } catch (err) {
+                        alert("Error al subir la imagen: " + err.message);
+                    } finally {
+                        uploadBtn.innerHTML = '<i class="ti ti-pencil" style="font-size: 14px;"></i>';
+                        uploadBtn.style.pointerEvents = 'auto';
+                    }
                 });
             }
         });
