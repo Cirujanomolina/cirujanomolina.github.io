@@ -680,13 +680,14 @@
             }
         };
 
-        window.selectCurrentFolder = () => {
+        window.selectCurrentFolder = async () => {
             if (!modalSelectedPathCompatible) {
                 alert("Acceso denegado: Por seguridad, solo se permite seleccionar la carpeta 'assets' o subcarpetas de ella.");
                 return;
             }
             document.getElementById('assets-path-input').value = modalSelectedPath;
             closeFolderBrowser();
+            await saveAssetsDirectory();
         };
 
         window.saveAssetsDirectory = async () => {
@@ -729,7 +730,10 @@
             try {
                 const response = await fetch('/api/rescan', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-api-key': keyVal
+                    },
                     body: JSON.stringify({ api_key: keyVal })
                 });
                 

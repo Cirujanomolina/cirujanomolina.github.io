@@ -331,6 +331,30 @@
             gap: 8px;
             margin-top: 5px;
         }
+
+        /* User Dropdown Custom Styling */
+        #userDropdown a.dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            font-size: var(--fs-sm);
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            color: var(--text2);
+        }
+        #userDropdown a.dropdown-item:hover {
+            background: var(--surface2);
+            color: var(--text);
+        }
+        #userDropdown a.dropdown-item.danger {
+            color: var(--danger);
+        }
+        #userDropdown a.dropdown-item.danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
     </style>
 </head>
 <body class="dark">
@@ -348,13 +372,16 @@
         <div class="topbar-right">
             <button class="btn btn-icon" style="border:none;background:transparent;color:var(--text);font-size:1.3rem;cursor:pointer"><i class="ti ti-bell"></i></button>
             <div style="position: relative; display: inline-block;">
-                <div id="userAvatar" class="avatar" style="width:38px;height:38px;border-radius:50%;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:0.9rem;cursor:pointer">U</div>
-                <div id="userDropdown" style="display: none; position: absolute; right: 0; top: 48px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-sm); box-shadow: 0 4px 12px rgba(0,0,0,0.3); padding: 0.5rem 0; width: 220px; z-index: 100;">
+                <div id="userAvatar" class="avatar" style="width:45px;height:45px;border-radius:50%;background:var(--surface3);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:1rem;cursor:pointer">U</div>
+                <div id="userDropdown" style="display: none; position: absolute; right: 0; top: 54px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-sm); box-shadow: 0 4px 12px rgba(0,0,0,0.3); padding: 0.5rem 0; width: 220px; z-index: 100;">
                     <div style="padding: 0.5rem 1rem; border-bottom: 1px solid var(--border2); font-size: var(--fs-xs);">
                         <div id="dropdownName" style="font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Cargando...</div>
                         <div id="dropdownEmail" style="color: var(--text3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Cargando...</div>
                     </div>
-                    <a id="logoutBtn" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; color: var(--danger); text-decoration: none; font-size: var(--fs-sm); cursor: pointer; transition: background 0.2s;">
+                    <a id="configBtn" class="dropdown-item">
+                        <i class="ti ti-settings"></i> Configuración
+                    </a>
+                    <a id="logoutBtn" class="dropdown-item danger">
                         <i class="ti ti-logout"></i> Cerrar Sesión
                     </a>
                 </div>
@@ -511,12 +538,26 @@
         const userDropdown = document.getElementById('userDropdown');
         const dropdownName = document.getElementById('dropdownName');
         const dropdownEmail = document.getElementById('dropdownEmail');
+        const configBtn = document.getElementById('configBtn');
         const logoutBtn = document.getElementById('logoutBtn');
 
         // Toggle user dropdown
         userAvatar.addEventListener('click', (e) => {
             e.stopPropagation();
             userDropdown.style.display = userDropdown.style.display === 'none' ? 'block' : 'none';
+        });
+
+        // Config action (opens edit collaborator modal)
+        configBtn.addEventListener('click', () => {
+            userDropdown.style.display = 'none';
+            // Switch to equipo view and trigger edit self
+            const linkToClick = document.querySelector(`.nav-link[data-target="equipo"]`);
+            if (linkToClick) {
+                navLinks.forEach(l => l.classList.remove('active'));
+                linkToClick.classList.add('active');
+            }
+            currentModule = 'equipo';
+            iframe.src = `modules/equipo.html?editSelf=true&t=` + new Date().getTime();
         });
 
         document.addEventListener('click', () => {

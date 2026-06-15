@@ -474,6 +474,12 @@
                 } else {
                     grid.style.display = 'grid';
                     renderColaboradores();
+
+                    // Check if we should automatically open the edit modal for the current user
+                    const urlParams = new URLSearchParams(window.location.search);
+                    if (urlParams.has('editSelf')) {
+                        openEditModal(activeUser.id);
+                    }
                 }
             } catch (err) {
                 console.error("Error loading colaboradores:", err);

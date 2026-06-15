@@ -74,6 +74,24 @@ CREATE POLICY "Allow all actions on hooks" ON hooks FOR ALL USING (true);
 CREATE POLICY "Allow all actions on leads" ON leads FOR ALL USING (true);
 CREATE POLICY "Allow all actions on strategy_plans" ON strategy_plans FOR ALL USING (true);
 
+-- 6. Campañas (Paid Media)
+CREATE TABLE campaigns (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    platform TEXT NOT NULL,
+    status TEXT NOT NULL,
+    objective TEXT,
+    budget_type TEXT DEFAULT 'ABO',
+    budget NUMERIC DEFAULT 0,
+    adsets JSONB DEFAULT '[]',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+ALTER TABLE campaigns ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow all actions on campaigns" ON campaigns FOR ALL USING (true);
+
+
 -- Insert some dummy data for testing
 INSERT INTO ideas (title, tags, status, idea_text) VALUES 
 ('Mito sobre el metabolismo adaptativo', ARRAY['mito', 'educacion'], 'idea', 'Explicar por qué comer menos a veces estanca el peso.'),

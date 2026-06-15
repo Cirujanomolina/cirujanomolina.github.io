@@ -629,13 +629,7 @@
             }
 
             // 2. Cargar campañas
-            loadCampaignsData();
-
-            // 3. Inicializar selectores de filtros
-            initFilterSelectors();
-
-            // 4. Calcular inicial y pintar gráficos
-            window.applyFilters();
+            await loadCampaignsData();
 
             // 5. Cargar datos de Supabase (Bóveda y Estrategia)
             loadBovedaStats();
@@ -670,18 +664,37 @@
             loadStrategy();
         };
 
+        let isSupabaseOnline = false;
+
         // ── CARGAR METRICAS DE PAUTA ──
-        function loadCampaignsData() {
-            const stored = localStorage.getItem('content_os_pauta_campaigns');
-            if (stored) {
-                try {
-                    campaigns = JSON.parse(stored);
-                } catch(e) {
+        async function loadCampaignsData() {
+            try {
+                const { data, error } = await supabase
+                    .from('campaigns')
+                    .select('*')
+                    .order('created_at', { ascending: true });
+                if (error) throw error;
+                campaigns = data || [];
+                isSupabaseOnline = true;
+                // Sync to localStorage
+                localStorage.setItem('content_os_pauta_campaigns', JSON.stringify(campaigns));
+            } catch(e) {
+                console.warn("Using localStorage fallback for campaigns in Dashboard:", e.message);
+                isSupabaseOnline = false;
+                const stored = localStorage.getItem('content_os_pauta_campaigns');
+                if (stored) {
+                    try {
+                        campaigns = JSON.parse(stored);
+                    } catch(err) {
+                        campaigns = [];
+                    }
+                } else {
                     campaigns = [];
                 }
-            } else {
-                campaigns = [];
             }
+            // Repopulate selectors and chart
+            initFilterSelectors();
+            window.applyFilters();
         }
 
         // Inicializa los options del primer selector

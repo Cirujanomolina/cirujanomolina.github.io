@@ -767,8 +767,8 @@
         });
         window.parent.postMessage({ type: 'IFRAME_READY' }, '*');
 
-        window.addEventListener('DOMContentLoaded', () => {
-            loadCampaignData();
+        window.addEventListener('DOMContentLoaded', async () => {
+            await loadCampaignData();
             // Default to publications tab
             window.switchAnalisisTab('publicaciones');
         });
@@ -1071,16 +1071,28 @@
             }, 3000);
         }
 
-        function loadCampaignData() {
-            const stored = localStorage.getItem('content_os_pauta_campaigns');
-            if (stored) {
-                try {
-                    campaigns = JSON.parse(stored);
-                } catch(e) {
+        async function loadCampaignData() {
+            try {
+                const { data, error } = await supabase
+                    .from('campaigns')
+                    .select('*')
+                    .order('created_at', { ascending: true });
+                if (error) throw error;
+                campaigns = data || [];
+                // Save locally
+                localStorage.setItem('content_os_pauta_campaigns', JSON.stringify(campaigns));
+            } catch(e) {
+                console.warn("Using localStorage fallback for campaigns in Analisis:", e.message);
+                const stored = localStorage.getItem('content_os_pauta_campaigns');
+                if (stored) {
+                    try {
+                        campaigns = JSON.parse(stored);
+                    } catch(err) {
+                        campaigns = [];
+                    }
+                } else {
                     campaigns = [];
                 }
-            } else {
-                campaigns = [];
             }
 
 

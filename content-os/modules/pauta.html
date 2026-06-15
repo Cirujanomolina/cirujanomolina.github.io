@@ -439,6 +439,7 @@
                 <span class="vb-badge" id="badge-campaigns"><i class="ti ti-speakerphone"></i> 0 Campañas</span>
                 <span class="vb-badge"><i class="ti ti-brand-meta"></i> Meta Ads</span>
                 <span class="vb-badge"><i class="ti ti-hierarchy"></i> Estructura Jerárquica</span>
+                <span class="vb-badge" id="supabase-status-badge" style="transition: all 0.3s;"><i class="ti ti-loader"></i> Conectando Supabase...</span>
             </div>
         </div>
         <div class="vb-header-actions" style="display: flex; gap: 10px;">
@@ -833,6 +834,7 @@
         ];
 
         let campaigns = [];
+        let isSupabaseOnline = false;
         let selectedType = 'global'; // 'global', 'campaign', 'adset', 'ad'
         let selectedId = null;
 
@@ -867,7 +869,7 @@
         // On Load
         window.addEventListener('DOMContentLoaded', async () => {
             await fetchLibraryImages();
-            initData();
+            await initData();
         });
 
         // Right sidebar toggle
@@ -906,42 +908,83 @@
             localStorage.setItem('content_os_pauta_active_tab', tab);
         };
 
-        function initData() {
-            const stored = localStorage.getItem('content_os_pauta_campaigns');
-            if (stored) {
-                try {
-                    campaigns = JSON.parse(stored);
-                    // Auto-convert old USD values to COP if we detect them
-                    let hasUSDValues = false;
-                    campaigns.forEach(c => {
-                        if (c.budget > 0 && c.budget < 1000) hasUSDValues = true;
-                        c.adsets.forEach(as => {
-                            if (as.budget > 0 && as.budget < 1000) hasUSDValues = true;
+        async function initData() {
+            const badge = document.getElementById('supabase-status-badge');
+            try {
+                const { data: dbCampaigns, error } = await supabase
+                    .from('campaigns')
+                    .select('*')
+                    .order('created_at', { ascending: true });
+                if (error) throw error;
+                
+                isSupabaseOnline = true;
+                campaigns = dbCampaigns || [];
+                console.log("Loaded campaigns from Supabase:", campaigns);
+                
+                if (badge) {
+                    badge.innerHTML = '<i class="ti ti-database"></i> Supabase Conectado';
+                    badge.style.background = 'rgba(39, 174, 96, 0.1)';
+                    badge.style.borderColor = 'rgba(39, 174, 96, 0.25)';
+                    badge.style.color = 'var(--success)';
+                }
+                
+                // Keep local copy updated
+                localStorage.setItem('content_os_pauta_campaigns', JSON.stringify(campaigns));
+            } catch (err) {
+                console.warn("Using localStorage fallback for Campaigns (Pauta):", err.message);
+                isSupabaseOnline = false;
+                
+                if (badge) {
+                    badge.innerHTML = '<i class="ti ti-alert-triangle"></i> Supabase Sin Conexión';
+                    badge.style.background = 'rgba(245, 90, 138, 0.1)';
+                    badge.style.borderColor = 'rgba(245, 90, 138, 0.25)';
+                    badge.style.color = 'var(--danger)';
+                }
+                
+                const stored = localStorage.getItem('content_os_pauta_campaigns');
+                if (stored) {
+                    try {
+                        campaigns = JSON.parse(stored);
+                    } catch(e) {
+                        campaigns = [];
+                    }
+                } else {
+                    campaigns = [];
+                }
+            }
+
+            // USD to COP auto-conversion logic
+            let hasUSDValues = false;
+            campaigns.forEach(c => {
+                if (c.budget > 0 && c.budget < 1000) hasUSDValues = true;
+                if (c.adsets && Array.isArray(c.adsets)) {
+                    c.adsets.forEach(as => {
+                        if (as.budget > 0 && as.budget < 1000) hasUSDValues = true;
+                        if (as.ads && Array.isArray(as.ads)) {
                             as.ads.forEach(ad => {
                                 if (ad.spend > 0 && ad.spend < 1000) hasUSDValues = true;
                             });
-                        });
+                        }
                     });
-                    if (hasUSDValues) {
-                        campaigns.forEach(c => {
-                            if (c.budget > 0 && c.budget < 1000) c.budget = c.budget * 4000;
-                            c.adsets.forEach(as => {
-                                if (as.budget > 0 && as.budget < 1000) as.budget = as.budget * 4000;
+                }
+            });
+            if (hasUSDValues) {
+                campaigns.forEach(c => {
+                    if (c.budget > 0 && c.budget < 1000) c.budget = c.budget * 4000;
+                    if (c.adsets && Array.isArray(c.adsets)) {
+                        c.adsets.forEach(as => {
+                            if (as.budget > 0 && as.budget < 1000) as.budget = as.budget * 4000;
+                            if (as.ads && Array.isArray(as.ads)) {
                                 as.ads.forEach(ad => {
                                     if (ad.spend > 0 && ad.spend < 1000) ad.spend = ad.spend * 4000;
                                 });
-                            });
+                            }
                         });
-                        saveToStorage();
                     }
-                } catch(e) {
-                    campaigns = [];
-                    saveToStorage();
-                }
-            } else {
-                campaigns = [];
-                saveToStorage();
+                });
+                await saveToStorage();
             }
+
             selectedType = 'global';
             selectedId = null;
             renderAll();
@@ -951,19 +994,41 @@
             const layout = document.getElementById('layout-pauta-main');
             const btn = document.getElementById('btn-toggle-sidebar');
             if (sidebarHidden) {
-                layout.classList.add('hide-right');
-                btn.innerHTML = '<i class="ti ti-eye"></i> <span id="toggle-sidebar-text">Mostrar Lateral</span>';
+                if (layout) layout.classList.add('hide-right');
+                if (btn) btn.innerHTML = '<i class="ti ti-eye"></i> <span id="toggle-sidebar-text">Mostrar Lateral</span>';
             } else {
-                layout.classList.remove('hide-right');
-                btn.innerHTML = '<i class="ti ti-eye-off"></i> <span id="toggle-sidebar-text">Ocultar Lateral</span>';
+                if (layout) layout.classList.remove('hide-right');
+                if (btn) btn.innerHTML = '<i class="ti ti-eye-off"></i> <span id="toggle-sidebar-text">Ocultar Lateral</span>';
             }
 
             const activeTab = localStorage.getItem('content_os_pauta_active_tab') || 'funnel';
             window.switchRightTab(activeTab);
         }
 
-        function saveToStorage() {
+        async function saveToStorage() {
             localStorage.setItem('content_os_pauta_campaigns', JSON.stringify(campaigns));
+            if (isSupabaseOnline) {
+                try {
+                    if (campaigns.length > 0) {
+                        const { error } = await supabase
+                            .from('campaigns')
+                            .upsert(campaigns.map(c => ({
+                                id: c.id,
+                                name: c.name,
+                                platform: c.platform,
+                                status: c.status,
+                                objective: c.objective,
+                                budget_type: c.budget_type || 'ABO',
+                                budget: c.budget || 0,
+                                adsets: c.adsets || [],
+                                updated_at: new Date().toISOString()
+                            })));
+                        if (error) throw error;
+                    }
+                } catch(e) {
+                    console.error("Error syncing campaigns to Supabase:", e.message);
+                }
+            }
         }
 
         function renderAll() {
@@ -1542,6 +1607,17 @@
                     selectedType = 'global';
                     selectedId = null;
                 }
+                if (isSupabaseOnline) {
+                    try {
+                        const { error } = await supabase
+                            .from('campaigns')
+                            .delete()
+                            .eq('id', id);
+                        if (error) throw error;
+                    } catch (e) {
+                        console.error("Error deleting campaign from Supabase:", e.message);
+                    }
+                }
                 saveToStorage();
                 showToast('Campaña eliminada permanentemente', 'ti-trash');
                 await logActivity('Eliminación', `Se eliminó la campaña de pauta "${name}" y todos sus conjuntos/anuncios asociados`);
@@ -1925,12 +2001,24 @@
 
         window.clearAllCampaigns = async () => {
             if (confirm('¿Estás seguro de que deseas eliminar la jerarquía de campañas completa y dejar todas las métricas en cero?')) {
+                const oldCampaignIds = campaigns.map(c => c.id);
                 campaigns = [];
                 selectedType = 'global';
                 selectedId = null;
                 collapsedCampaigns.clear();
                 collapsedAdsets.clear();
-                saveToStorage();
+                if (isSupabaseOnline && oldCampaignIds.length > 0) {
+                    try {
+                        const { error } = await supabase
+                            .from('campaigns')
+                            .delete()
+                            .in('id', oldCampaignIds);
+                        if (error) throw error;
+                    } catch (e) {
+                        console.error("Error clearing campaigns from Supabase:", e.message);
+                    }
+                }
+                await saveToStorage();
                 showToast('Base de datos de pauta reiniciada a cero', 'ti-trash');
                 await logActivity('Eliminación', `Se eliminó la jerarquía completa de pauta`);
                 renderAll();

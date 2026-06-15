@@ -854,7 +854,7 @@
         };
 
         // Paid media integrations
-        window.abrirModalPautar = (id, title, assetName, hook) => {
+        window.abrirModalPautar = async (id, title, assetName, hook) => {
             document.getElementById('pautar-id').value = id;
             document.getElementById('pautar-ad-name').value = title;
             
@@ -862,16 +862,27 @@
             window.pautarAsset = assetName;
             window.pautarHook = hook;
 
-            // Load campaigns from localStorage
-            const stored = localStorage.getItem('content_os_pauta_campaigns');
-            if (stored) {
-                try {
-                    campaignsList = JSON.parse(stored);
-                } catch(e) {
+            // Load campaigns from Supabase with localStorage fallback
+            try {
+                const { data: dbCampaigns, error } = await supabase
+                    .from('campaigns')
+                    .select('*')
+                    .order('created_at', { ascending: true });
+                if (error) throw error;
+                campaignsList = dbCampaigns || [];
+                localStorage.setItem('content_os_pauta_campaigns', JSON.stringify(campaignsList));
+            } catch(e) {
+                console.warn("Using localStorage fallback for campaigns in Biblioteca:", e.message);
+                const stored = localStorage.getItem('content_os_pauta_campaigns');
+                if (stored) {
+                    try {
+                        campaignsList = JSON.parse(stored);
+                    } catch(err) {
+                        campaignsList = [];
+                    }
+                } else {
                     campaignsList = [];
                 }
-            } else {
-                campaignsList = [];
             }
 
             const select = document.getElementById('pautar-campaign');
@@ -958,6 +969,20 @@
 
                     // Save back to local storage
                     localStorage.setItem('content_os_pauta_campaigns', JSON.stringify(campaignsList));
+
+                    // Sync to Supabase
+                    try {
+                        const { error: dbErr } = await supabase
+                            .from('campaigns')
+                            .update({
+                                adsets: camp.adsets,
+                                updated_at: new Date().toISOString()
+                            })
+                            .eq('id', camp.id);
+                        if (dbErr) throw dbErr;
+                    } catch(dbErr) {
+                        console.error("Error syncing ad to Supabase campaign:", dbErr.message);
+                    }
                     
                     showToast("¡Anuncio pautado creado con éxito!", "ti-check");
                     await logActivity('Pauta', `Se envió el creativo "${piece ? piece.title : adName}" como anuncio de pauta a la campaña: "${camp.name}"`);

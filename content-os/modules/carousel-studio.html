@@ -101,27 +101,72 @@ body { display: flex; flex-direction: column; height: 100vh; }
 }
 
 /* Layout Split */
-.split-view { display: flex; flex: 1; overflow: hidden; }
+.split-view {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: var(--bg);
+}
 
-/* PANEL IZQUIERDO: FORMULARIO */
-.left-panel { flex: 1; min-width: 600px; border-right: 1px solid var(--border2); background: var(--surface); display: flex; flex-direction: column; }
-.panel-header { padding: 15px 20px; border-bottom: 1px solid var(--border2); font-weight: 600; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text2); }
-.panel-content { flex: 1; overflow-y: auto; padding: 20px; }
-.field { margin-bottom: 16px; }
-.field label { display: block; font-size: 11px; color: var(--text2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
-.field input, .field textarea, .field select { width: 100%; padding: 10px; background: var(--bg); border: 1px solid var(--border2); color: var(--text); border-radius: var(--radius); font-family: 'Archivo', sans-serif; font-size: 13px; }
-.field input:focus, .field textarea:focus, .field select:focus { outline: none; border-color: var(--accent); }
+/* PANEL IZQUIERDO: FORMULARIO/EDITOR */
+.left-panel {
+    flex: 1;
+    min-width: 600px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
 
 /* Lista de Slides */
-.slide-item { padding: 12px; background: var(--bg); border: 1px solid var(--border2); border-radius: var(--radius); margin-bottom: 8px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: space-between; }
-.slide-item:hover, .slide-item.active { border-color: var(--accent); }
-.slide-item-title { font-weight: 600; font-size: 13px; }
-.slide-item-type { font-size: 10px; color: var(--accent); background: rgba(42,191,176,0.1); padding: 2px 6px; border-radius: 4px; margin-top: 4px; display: inline-block; }
+.slide-item {
+    padding: 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border3);
+    border-radius: var(--r-sm);
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.slide-item:hover, .slide-item.active {
+    border-color: var(--accent);
+    background: var(--teal-bg2);
+}
+.slide-item-title {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text);
+}
+.slide-item-type {
+    font-size: 10px;
+    color: var(--accent);
+    background: var(--teal-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-top: 4px;
+    display: inline-block;
+    font-weight: 500;
+}
 
 /* PANEL DERECHO: PREVIEW */
-.right-panel { width: 460px; background: var(--bg2); display: flex; flex-direction: column; flex-shrink: 0; }
-.preview-header { padding: 10px 20px; border-bottom: 1px solid var(--border2); display: flex; justify-content: space-between; align-items: center; }
-.preview-container { flex: 1; overflow: auto; display: flex; justify-content: center; align-items: center; padding: 40px; }
+.right-panel {
+    width: 480px;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+.preview-container {
+    flex: 1;
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .preview-wrapper { 
     transform-origin: top left; 
     transition: transform 0.2s;
@@ -255,18 +300,22 @@ body { display: flex; flex-direction: column; height: 100vh; }
 <div class="split-view fade-in">
         <!-- FORMULARIO / LISTA DE SLIDES -->
         <div class="left-panel">
-            <div id="view-generator">
-                <div class="panel-header">🪄 Generador IA (@Molina)</div>
-                <div class="panel-content" style="max-width: 600px; margin: 0 auto; padding: 30px 20px;">
-                    <p style="font-size:12px; color:var(--text2); margin-bottom:20px; line-height:1.4;">
+            <div id="view-generator" class="card" style="height: 100%; overflow: hidden; display: flex; flex-direction: column;">
+                <div class="card-head" style="border-bottom: 1px solid var(--border2); padding-bottom: 1rem; flex-shrink: 0;">
+                    <h2 class="card-title" style="font-size: 16px; display: flex; align-items: center; gap: 8px; margin: 0;">
+                        <i class="ti ti-wand" style="color: var(--accent);"></i> Generador IA (@Molina)
+                    </h2>
+                </div>
+                <div style="flex: 1; overflow-y: auto; padding: 0.5rem 0 0 0;">
+                    <p style="font-size:12.5px; color:var(--text2); margin-top: 0; margin-bottom:1.25rem; line-height:1.5;">
                         Ingresa un tema o dolor del paciente y el sistema generará automáticamente la estructura y los copys de un carrusel de alto rendimiento.
                     </p>
-                    <div class="field">
-                        <label>Tema o Idea Principal</label>
+                    <div class="field" style="margin-bottom: 1.25rem;">
+                        <label class="flabel">Tema o Idea Principal</label>
                         <textarea id="gen-tema" rows="3" placeholder="Ej: Por qué la manga gástrica falla a los 5 años y cómo la reganancia de peso no es falta de voluntad..."></textarea>
                     </div>
-                    <div class="field">
-                        <label>Pilar de Contenido</label>
+                    <div class="field" style="margin-bottom: 1.25rem;">
+                        <label class="flabel">Pilar de Contenido</label>
                         <select id="gen-pilar">
                             <option value="mitos">Mitos Bariátricos</option>
                             <option value="mindset">Nutrición & Mindset</option>
@@ -275,9 +324,9 @@ body { display: flex; flex-direction: column; height: 100vh; }
                             <option value="estilo">Estilo de Vida Saludable</option>
                         </select>
                     </div>
-                    <div class="field" style="display:flex; gap:10px;">
+                    <div class="field" style="display:flex; gap:1.25rem; margin-bottom: 1.25rem;">
                         <div style="flex:1;">
-                            <label>Objetivo</label>
+                            <label class="flabel">Objetivo</label>
                             <select id="gen-objetivo">
                                 <option value="educar">Educar / Enseñar</option>
                                 <option value="conectar">Generar Conexión</option>
@@ -286,7 +335,7 @@ body { display: flex; flex-direction: column; height: 100vh; }
                             </select>
                         </div>
                         <div style="flex:1;">
-                            <label>Emoción a Evocar</label>
+                            <label class="flabel">Emoción a Evocar</label>
                             <select id="gen-emocion">
                                 <option value="empatia">Empatía / Alivio</option>
                                 <option value="urgencia">Urgencia / Acción</option>
@@ -296,8 +345,8 @@ body { display: flex; flex-direction: column; height: 100vh; }
                             </select>
                         </div>
                     </div>
-                    <div class="field">
-                        <label>Ángulo del Copy</label>
+                    <div class="field" style="margin-bottom: 1.5rem;">
+                        <label class="flabel">Ángulo del Copy</label>
                         <select id="gen-angulo">
                             <option value="emocional">Emocional (Basado en la persona)</option>
                             <option value="cientifico">Científico (Basado en datos y biología)</option>
@@ -305,34 +354,40 @@ body { display: flex; flex-direction: column; height: 100vh; }
                             <option value="directo">Directo al Grano (Sin rodeos)</option>
                         </select>
                     </div>
-                    <button class="btn btn-primary" style="width:100%; justify-content:center; margin-top:20px; font-size:14px; padding:12px;" onclick="generarCarrusel()"><i class="ti ti-wand"></i> Generar Carrusel Estratégico</button>
-                    <div style="margin-top: 25px; border-top: 1px solid var(--border2); padding-top: 20px;">
-                        <button class="btn btn-outline" style="width:100%; justify-content:center; padding:10px; font-size:12px;" onclick="abrirAssetsModal()">
+                    <button class="btn btn-primary" style="width:100%; justify-content:center; font-size:13px; padding:10px 12px; margin-bottom: 1.5rem;" onclick="generarCarrusel()"><i class="ti ti-wand"></i> Generar Carrusel Estratégico</button>
+                    <div style="border-top: 1px solid var(--border2); padding-top: 1.25rem;">
+                        <button class="btn btn-outline" style="width:100%; justify-content:center; padding:9px 12px; font-size:12px;" onclick="abrirAssetsModal()">
                             <i class="ti ti-photo-library"></i> Explorar & Indexar Biblioteca de Fotos
                         </button>
                     </div>
                 </div>
             </div>
 
-            <div id="view-editor" style="display:none; flex-direction:column; height:100%; width:100%;">
-                <div class="panel-header" style="display:flex; justify-content:space-between; flex-shrink: 0; align-items: center;">
-                    <span style="font-family:'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; text-transform: none;">Editor de Carrusel</span>
+            <div id="view-editor" style="display:none; flex-direction:column; height:100%; width:100%; gap: 1.25rem;">
+                <div style="display:flex; justify-content:space-between; align-items: center; flex-shrink: 0;">
+                    <h2 style="font-family: var(--f-display); font-size: 24px; font-weight: 500; color: var(--text); display: flex; align-items: center; gap: 8px; margin: 0;">
+                        <i class="ti ti-edit" style="color: var(--accent);"></i> Editor de Carrusel
+                    </h2>
                     <button class="btn btn-outline" onclick="volverGenerador()" style="padding: 6px 12px; font-size: 11px;"><i class="ti ti-arrow-left"></i> Volver al Generador</button>
                 </div>
                 
-                <div style="display:flex; flex:1; overflow:hidden;">
+                <div style="display:flex; flex:1; overflow:hidden; gap: 1.25rem;">
                     <!-- Columna 1: Lista de Slides -->
-                    <div style="width: 250px; border-right: 1px solid var(--border2); display: flex; flex-direction: column; overflow: hidden; height: 100%;">
-                        <div class="panel-header" style="font-size: 10px; color: var(--text2); background: var(--bg2); border-bottom: 1px solid var(--border2); flex-shrink: 0; padding: 10px 15px;">DIAPOSITIVAS</div>
-                        <div class="panel-content" id="lista-slides" style="flex: 1; overflow-y: auto; padding: 15px;">
+                    <div class="card" style="width: 250px; display: flex; flex-direction: column; overflow: hidden; height: 100%; padding: 1.25rem; flex-shrink: 0;">
+                        <div class="card-head" style="border-bottom: 1px solid var(--border2); padding-bottom: 0.75rem; margin-bottom: 0.75rem; flex-shrink: 0;">
+                            <h3 class="flabel" style="margin: 0; font-size: 11px; letter-spacing: 0.08em; font-weight: 600;">Diapositivas</h3>
+                        </div>
+                        <div id="lista-slides" style="flex: 1; overflow-y: auto; padding-right: 4px;">
                             <!-- Los slides se inyectan aquí -->
                         </div>
                     </div>
                     
                     <!-- Columna 2: Editor de Slide Activo -->
-                    <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden; height: 100%; background: var(--bg2);">
-                        <div class="panel-header" style="font-size: 10px; color: var(--text2); background: var(--bg2); border-bottom: 1px solid var(--border2); flex-shrink: 0; padding: 10px 15px;">EDITAR SLIDE ACTIVO</div>
-                        <div class="panel-content" id="form-slide" style="flex: 1; overflow-y: auto; padding: 20px;">
+                    <div class="card" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; height: 100%; padding: 1.25rem;">
+                        <div class="card-head" style="border-bottom: 1px solid var(--border2); padding-bottom: 0.75rem; margin-bottom: 0.75rem; flex-shrink: 0;">
+                            <h3 class="flabel" style="margin: 0; font-size: 11px; letter-spacing: 0.08em; font-weight: 600;">Editar Diapositiva Activa</h3>
+                        </div>
+                        <div id="form-slide" style="flex: 1; overflow-y: auto; padding-right: 4px;">
                             <!-- Campos dinámicos -->
                         </div>
                     </div>
@@ -341,17 +396,17 @@ body { display: flex; flex-direction: column; height: 100vh; }
         </div>
 
         <!-- PREVIEW -->
-        <div class="right-panel">
-            <div class="preview-header">
-                <div style="font-size:12px; font-weight:600; color:var(--text2);">VISTA PREVIA <span id="preview-indicator"></span></div>
-                <div style="display:flex; gap:10px;">
-                    <button class="btn btn-outline" style="padding:4px 8px;" onclick="zoom(-0.1)"><i class="ti ti-zoom-out"></i></button>
-                    <button class="btn btn-outline" style="padding:4px 8px;" onclick="zoom(0.1)"><i class="ti ti-zoom-in"></i></button>
+        <div class="right-panel card" style="height: 100%; display: flex; flex-direction: column; overflow: hidden; padding: 1.25rem;">
+            <div class="card-head" style="border-bottom: 1px solid var(--border2); padding-bottom: 0.75rem; margin-bottom: 0.75rem; flex-shrink: 0;">
+                <h3 class="card-title" style="font-size: 14px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 6px; margin: 0;"><i class="ti ti-eye" style="color: var(--accent);"></i> Vista Previa <span id="preview-indicator" style="font-size: 11px; font-weight: 400; color: var(--text3); margin-left: 5px;"></span></h3>
+                <div style="display:flex; gap:6px;">
+                    <button class="btn btn-icon" onclick="zoom(-0.05)" title="Alejar"><i class="ti ti-zoom-out"></i></button>
+                    <button class="btn btn-icon" onclick="zoom(0.05)" title="Acercar"><i class="ti ti-zoom-in"></i></button>
                 </div>
             </div>
-            <div class="preview-container" style="flex: 1; overflow: auto; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding: 20px; gap: 20px;">
+            <div class="preview-container" style="flex: 1; overflow: auto; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding: 10px; gap: 1.5rem; position: relative;">
                 <!-- Caja de Consejo de Layout -->
-                <div id="layout-tip-box" style="width: 100%; max-width: 410px; background: rgba(42, 191, 176, 0.08); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 var(--radius) var(--radius) 0; font-size: 12px; line-height: 1.4; color: var(--text2); display: none; margin-bottom: 5px; box-sizing: border-box;">
+                <div id="layout-tip-box" style="width: 100%; background: rgba(42, 191, 176, 0.08); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 var(--radius) var(--radius) 0; font-size: 12px; line-height: 1.4; color: var(--text2); display: none; box-sizing: border-box;">
                 </div>
                 
                 <!-- Contenedor con tamaño escalado dinámico para centrado perfecto -->
@@ -361,12 +416,12 @@ body { display: flex; flex-direction: column; height: 100vh; }
                     </div>
                 </div>
                 <!-- Controles de navegación de slides -->
-                <div class="preview-nav" id="preview-nav" style="display: none; gap: 15px; align-items: center; justify-content: center; z-index: 40;">
-                    <button class="btn btn-outline" onclick="prevSlide()" style="padding: 10px 18px; border-radius: 30px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                <div class="preview-nav" id="preview-nav" style="display: none; gap: 15px; align-items: center; justify-content: center; z-index: 40; margin-top: auto; padding-top: 10px; width: 100%;">
+                    <button class="btn btn-outline" onclick="prevSlide()" style="padding: 8px 16px; border-radius: 30px; font-weight: 500; display: flex; align-items: center; gap: 6px;">
                         <i class="ti ti-arrow-left"></i> Anterior
                     </button>
-                    <span id="nav-counter" style="font-family: 'Archivo', sans-serif; font-size: 14px; font-weight: 600; color: var(--text); min-width: 90px; text-align: center;">Slide 1 / 10</span>
-                    <button class="btn btn-outline" onclick="nextSlide()" style="padding: 10px 18px; border-radius: 30px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                    <span id="nav-counter" style="font-family: 'Archivo', sans-serif; font-size: 13px; font-weight: 600; color: var(--text); min-width: 80px; text-align: center;">Slide 1 / 10</span>
+                    <button class="btn btn-outline" onclick="nextSlide()" style="padding: 8px 16px; border-radius: 30px; font-weight: 500; display: flex; align-items: center; gap: 6px;">
                         Siguiente <i class="ti ti-arrow-right"></i>
                     </button>
                 </div>
@@ -433,8 +488,13 @@ async function loadAssets() {
         if (!res.ok) throw new Error("Servidor API no disponible");
         const data = await res.json();
         
-        IMAGES_METADATA = data.images;
-        LOGOS_DB = data.logos || LOGOS_DB;
+        IMAGES_METADATA.length = 0;
+        IMAGES_METADATA.push(...data.images);
+        
+        if (data.logos) {
+            LOGOS_DB.length = 0;
+            LOGOS_DB.push(...data.logos);
+        }
         
         IMAGES_DB.length = 0;
         IMAGES_DB.push(...data.images.map(img => img.name));
@@ -445,7 +505,7 @@ async function loadAssets() {
         await loadImagesFromDirectory();
         
         // Rellenar metadatos vacíos para las imágenes
-        IMAGES_METADATA = IMAGES_DB.map(img => ({
+        const fallbackMeta = IMAGES_DB.map(img => ({
             name: img,
             path: `../assets/images_database/${img}`,
             photo_type: "Desconocido",
@@ -455,6 +515,8 @@ async function loadAssets() {
             safe_space: "Desconocido",
             suggested_filename: ""
         }));
+        IMAGES_METADATA.length = 0;
+        IMAGES_METADATA.push(...fallbackMeta);
     }
 }
 
@@ -1523,7 +1585,7 @@ function renderTextField(key, val, isTextArea) {
         <div style="flex: 1;">
             ${inputHtml}
         </div>
-        <select onchange="actualizarDato('${key}_shadow', this.value)" title="Intensidad de Sombra" style="width: 105px; padding: 10px 5px; font-size: 11px; flex-shrink: 0; background: var(--bg); border: 1px solid var(--border2); color: var(--text); border-radius: var(--radius); cursor: pointer; height: 38px;">
+        <select onchange="actualizarDato('${key}_shadow', this.value)" title="Intensidad de Sombra" style="width: 115px; font-size: 11px; flex-shrink: 0; cursor: pointer; height: 38px; padding: 6px 8px;">
             <option value="none" ${shadowVal === 'none' ? 'selected' : ''}>🌑 Sin sombra</option>
             <option value="soft" ${shadowVal === 'soft' ? 'selected' : ''}>🌓 Suave</option>
             <option value="strong" ${shadowVal === 'strong' ? 'selected' : ''}>🌕 Notoria</option>
@@ -1564,7 +1626,7 @@ function actualizarEditor() {
     
     html += `
     <div class="field" style="border-bottom: 1px solid var(--border2); padding-bottom: 20px; margin-bottom: 20px;">
-        <label>Diseño / Layout del Slide</label>
+        <label class="flabel">Diseño / Layout del Slide</label>
         <select onchange="cambiarLayout(this.value)">
             ${layoutOptions}
         </select>
@@ -1581,9 +1643,9 @@ function actualizarEditor() {
                 const imgName = val ? val.split('/').pop() : '';
                 html += `
                 <div class="field">
-                    <label>${field.label}</label>
-                    <div style="display:flex; gap:12px; align-items:center; background:var(--bg); border:1px solid var(--border2); padding:10px; border-radius:var(--radius);">
-                        <div style="width:60px; height:75px; border-radius:4px; overflow:hidden; background:var(--bg2); flex-shrink:0; display:flex; align-items:center; justify-content:center; border:1px solid var(--border2);">
+                    <label class="flabel">${field.label}</label>
+                    <div style="display:flex; gap:12px; align-items:center; background:var(--surface2); border:1px solid var(--border3); padding:10px; border-radius:var(--r-sm);">
+                        <div style="width:60px; height:75px; border-radius:var(--r-sm); overflow:hidden; background:var(--bg); flex-shrink:0; display:flex; align-items:center; justify-content:center; border:1px solid var(--border3);">
                             ${val ? `<img src="${val}" style="width:100%; height:100%; object-fit:cover;">` : `<i class="ti ti-photo" style="color:var(--text2); font-size:20px;"></i>`}
                         </div>
                         <div style="flex:1; min-width:0;">
@@ -1597,7 +1659,7 @@ function actualizarEditor() {
             } else if (field.type === 'select_logo_theme') {
                 html += `
                 <div class="field">
-                    <label>${field.label}</label>
+                    <label class="flabel">${field.label}</label>
                     <select onchange="actualizarDato('${field.key}', this.value)">
                         <option value="claro" ${val === 'claro' ? 'selected' : ''}>Claro (Sobre fondos oscuros)</option>
                         <option value="oscuro" ${val === 'oscuro' ? 'selected' : ''}>Oscuro (Sobre fondos claros)</option>
@@ -1606,7 +1668,7 @@ function actualizarEditor() {
             } else if (field.type === 'select_cta_style') {
                 html += `
                 <div class="field">
-                    <label>${field.label}</label>
+                    <label class="flabel">${field.label}</label>
                     <select onchange="actualizarDato('${field.key}', this.value)">
                         <option value="border" ${val === 'border' ? 'selected' : ''}>Solo Borde (Borde y texto Teal)</option>
                         <option value="solid" ${val === 'solid' ? 'selected' : ''}>Color Sólido (Fondo Teal, texto oscuro)</option>
@@ -1621,7 +1683,7 @@ function actualizarEditor() {
             } else {
                 html += `
                 <div class="field">
-                    <label>${field.label}</label>
+                    <label class="flabel">${field.label}</label>
                     ${renderTextField(field.key, val, isTextArea)}
                 </div>`;
             }
@@ -1635,9 +1697,9 @@ function actualizarEditor() {
                 const imgName = s[key] ? s[key].split('/').pop() : '';
                 html += `
                 <div class="field">
-                    <label>Foto de Fondo (Molina Database)</label>
-                    <div style="display:flex; gap:12px; align-items:center; background:var(--bg); border:1px solid var(--border2); padding:10px; border-radius:var(--radius);">
-                        <div style="width:60px; height:75px; border-radius:4px; overflow:hidden; background:var(--bg2); flex-shrink:0; display:flex; align-items:center; justify-content:center; border:1px solid var(--border2);">
+                    <label class="flabel">Foto de Fondo (Molina Database)</label>
+                    <div style="display:flex; gap:12px; align-items:center; background:var(--surface2); border:1px solid var(--border3); padding:10px; border-radius:var(--r-sm);">
+                        <div style="width:60px; height:75px; border-radius:var(--r-sm); overflow:hidden; background:var(--bg); flex-shrink:0; display:flex; align-items:center; justify-content:center; border:1px solid var(--border3);">
                             ${s[key] ? `<img src="${s[key]}" style="width:100%; height:100%; object-fit:cover;">` : `<i class="ti ti-photo" style="color:var(--text2); font-size:20px;"></i>`}
                         </div>
                         <div style="flex:1; min-width:0;">
@@ -1651,7 +1713,7 @@ function actualizarEditor() {
             } else {
                 html += `
                 <div class="field">
-                    <label>${key}</label>
+                    <label class="flabel">${key}</label>
                     ${renderTextField(key, s[key], isTextArea)}
                 </div>`;
             }
@@ -1675,19 +1737,19 @@ function actualizarEditor() {
             </div>
             
             <!-- Tinte de Color -->
-            <div style="background: var(--bg); border: 1px solid var(--border2); padding: 12px; border-radius: var(--radius); margin-bottom: 12px;">
-                <div style="font-size:12px; font-weight:600; color:var(--text); margin-bottom:10px;">Tinte de Color</div>
+            <div style="background: var(--surface2); border: 1px solid var(--border3); padding: 12px; border-radius: var(--r-sm); margin-bottom: 12px;">
+                <div class="flabel" style="font-size:11px; font-weight:600; color:var(--text); margin-bottom:10px;">Tinte de Color</div>
                 
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:10px;">
                     <div>
-                        <label style="font-size:9px; color:var(--text2); display:block; margin-bottom:4px; text-transform:uppercase;">Color</label>
+                        <label class="flabel" style="font-size:9px; margin-bottom:4px;">Color</label>
                         <div style="display:flex; gap:6px; align-items:center;">
                             <input type="color" value="${tintColor}" oninput="this.nextElementSibling.value = this.value; actualizarDato('tint_color', this.value);" style="width:40px; height:30px; padding:0; border:none; background:none; cursor:pointer; flex-shrink:0;">
                             <input type="text" value="${tintColor}" oninput="this.previousElementSibling.value = this.value; actualizarDato('tint_color', this.value);" style="font-size:11px; padding:6px; height:30px; text-transform:uppercase; width:100%;">
                         </div>
                     </div>
                     <div>
-                        <label style="font-size:9px; color:var(--text2); display:block; margin-bottom:4px; text-transform:uppercase;">Dirección</label>
+                        <label class="flabel" style="font-size:9px; margin-bottom:4px;">Dirección</label>
                         <select onchange="actualizarDato('tint_direction', this.value)" style="font-size:11px; padding:6px; height:30px; width:100%;">
                             <option value="to bottom" ${tintDir === 'to bottom' ? 'selected' : ''}>⬇ Hacia Abajo</option>
                             <option value="to top" ${tintDir === 'to top' ? 'selected' : ''}>⬆ Hacia Arriba</option>
@@ -1699,18 +1761,18 @@ function actualizarEditor() {
                 
                 <div>
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                        <label style="font-size:9px; color:var(--text2); text-transform:uppercase; margin:0;">Opacidad: <span id="val-tint-opacity">${Math.round(tintOpacity * 100)}%</span></label>
+                        <label class="flabel" style="font-size:9px; margin:0;">Opacidad: <span id="val-tint-opacity">${Math.round(tintOpacity * 100)}%</span></label>
                     </div>
                     <input type="range" min="0" max="1" step="0.01" value="${tintOpacity}" 
                            oninput="document.getElementById('val-tint-opacity').innerText = Math.round(this.value * 100) + '%'; actualizarDato('tint_opacity', parseFloat(this.value));" 
-                           style="width:100%; height:4px; background:var(--border2); border-radius:2px; cursor:pointer; -webkit-appearance:none; margin:8px 0;">
+                           style="width:100%; height:4px; background:var(--border3); border-radius:2px; cursor:pointer; -webkit-appearance:none; margin:8px 0;">
                 </div>
             </div>
             
             <!-- Tinte Oscuro -->
-            <div style="background: var(--bg); border: 1px solid var(--border2); padding: 12px; border-radius: var(--radius);">
+            <div style="background: var(--surface2); border: 1px solid var(--border3); padding: 12px; border-radius: var(--r-sm);">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <span style="font-size:12px; font-weight:600; color:var(--text);">Tinte Oscuro Adicional</span>
+                    <span class="flabel" style="font-size:11px; font-weight:600; color:var(--text);">Tinte Oscuro Adicional</span>
                     <label class="switch">
                         <input type="checkbox" ${darkActive ? 'checked' : ''} onchange="actualizarDato('tint_dark_active', this.checked); actualizarEditor();">
                         <span class="slider"></span>
@@ -1720,7 +1782,7 @@ function actualizarEditor() {
                 ${darkActive ? `
                 <div style="display:grid; grid-template-columns: 1fr; gap:10px; margin-bottom:10px;">
                     <div>
-                        <label style="font-size:9px; color:var(--text2); display:block; margin-bottom:4px; text-transform:uppercase;">Dirección del Tinte Oscuro</label>
+                        <label class="flabel" style="font-size:9px; margin-bottom:4px;">Dirección del Tinte Oscuro</label>
                         <select onchange="actualizarDato('tint_dark_direction', this.value)" style="font-size:11px; padding:6px; height:30px; width:100%;">
                             <option value="to bottom" ${darkDir === 'to bottom' ? 'selected' : ''}>⬇ Hacia Abajo</option>
                             <option value="to top" ${darkDir === 'to top' ? 'selected' : ''}>⬆ Hacia Arriba</option>
@@ -1732,11 +1794,11 @@ function actualizarEditor() {
                 
                 <div>
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                        <label style="font-size:9px; color:var(--text2); text-transform:uppercase; margin:0;">Opacidad: <span id="val-dark-opacity">${Math.round(darkOpacity * 100)}%</span></label>
+                        <label class="flabel" style="font-size:9px; margin:0;">Opacidad: <span id="val-dark-opacity">${Math.round(darkOpacity * 100)}%</span></label>
                     </div>
                     <input type="range" min="0" max="1" step="0.01" value="${darkOpacity}" 
                            oninput="document.getElementById('val-dark-opacity').innerText = Math.round(this.value * 100) + '%'; actualizarDato('tint_dark_opacity', parseFloat(this.value));" 
-                           style="width:100%; height:4px; background:var(--border2); border-radius:2px; cursor:pointer; -webkit-appearance:none; margin:8px 0;">
+                           style="width:100%; height:4px; background:var(--border3); border-radius:2px; cursor:pointer; -webkit-appearance:none; margin:8px 0;">
                 </div>
                 ` : ''}
             </div>
@@ -1759,7 +1821,7 @@ function actualizarEditor() {
         <!-- Selector de Estilo de Logo (si está activo) -->
         ${s.show_logo !== false ? `
         <div class="field" style="margin-bottom: 20px;">
-            <label style="font-size:10px; color:var(--text2); margin-bottom:8px; font-weight:500; display:block; text-transform:uppercase; letter-spacing:0.05em;">Estilo / Variación de Logo (Click para elegir)</label>
+            <label class="flabel" style="font-size:10px; margin-bottom:8px; display:block;">Estilo / Variación de Logo (Click para elegir)</label>
             <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:8px; width:100%;">
                 ${LOGOS_DB.map(logo => {
                     const isSelected = (s.logo_file || (s.logo_theme === 'oscuro' ? 'Logo Completo Oscuro.png' : 'Logo Completo Blanco.png')) === logo;
@@ -1768,7 +1830,7 @@ function actualizarEditor() {
                     const activeBorder = isSelected ? 'border: 2px solid var(--accent);' : 'border: 2px solid var(--border2); opacity:0.7;';
                     return `
                     <div onclick="actualizarDato('logo_file', '${logo}'); actualizarEditor();" 
-                         style="height:55px; background:${cardBg}; border-radius:var(--radius); padding:4px; cursor:pointer; display:flex; align-items:center; justify-content:center; ${activeBorder} transition:all 0.2s; position:relative;"
+                         style="height:55px; background:${cardBg}; border-radius:var(--r-sm); padding:4px; cursor:pointer; display:flex; align-items:center; justify-content:center; ${activeBorder} transition:all 0.2s; position:relative;"
                          title="${logo}">
                         <img src="../assets/logos/${logo}" style="max-width:100%; max-height:100%; object-fit:contain;">
                     </div>`;
@@ -1781,8 +1843,8 @@ function actualizarEditor() {
         <div style="display: flex; gap: 40px; align-items: flex-start; width: 100%;">
             <!-- LADO IZQUIERDO: Selector de posición de logo -->
             <div style="flex: 1; min-width: 240px; display: ${s.show_logo !== false ? 'block' : 'none'};">
-                <label style="font-size:10px; color:var(--text2); margin-bottom:8px; font-weight:500; display:block; text-transform:uppercase; letter-spacing:0.05em;">Posición del Logo (Haz clic en la celda)</label>
-                <div class="logo-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; width: 100%; max-width: 240px; aspect-ratio: 3/2; background: var(--bg); border: 1px solid var(--border2); padding: 6px; border-radius: var(--radius);">
+                <label class="flabel" style="font-size:10px; margin-bottom:8px; display:block;">Posición del Logo (Haz clic en la celda)</label>
+                <div class="logo-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; width: 100%; max-width: 240px; aspect-ratio: 3/2; background: var(--surface2); border: 1px solid var(--border3); padding: 6px; border-radius: var(--r-sm);">
                     ${[
                         { pos: 'top-left', icon: 'ti-arrow-up-left', label: 'TL' },
                         { pos: 'top-center', icon: 'ti-arrow-up', label: 'TC' },
@@ -1792,7 +1854,7 @@ function actualizarEditor() {
                         { pos: 'bottom-right', icon: 'ti-arrow-down-right', label: 'BR' }
                     ].map(item => {
                         const isActive = (s.logo_position || defaultLogoPos) === item.pos;
-                        const activeBg = isActive ? 'background: var(--accent); color: var(--black); border-color: var(--accent);' : 'background: var(--bg2); color: var(--text2); border-color: var(--border2);';
+                        const activeBg = isActive ? 'background: var(--accent); color: var(--black); border-color: var(--accent);' : 'background: var(--surface3); color: var(--text2); border-color: var(--border3);';
                         return `
                         <button onclick="actualizarDato('logo_position', '${item.pos}'); actualizarEditor();" 
                                 style="${activeBg} border: 1px solid; border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px; cursor: pointer; transition: all 0.2s;"
@@ -1807,7 +1869,7 @@ function actualizarEditor() {
             <!-- LADO DERECHO: Toggles Interruptores -->
             <div style="flex: 1.2; display: flex; flex-direction: column; gap: 14px; align-self: stretch; justify-content: flex-end; padding-top: 18px;">
                 <!-- Conteo -->
-                <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg); border:1px solid var(--border2); padding:10px 14px; border-radius:var(--radius);">
+                <div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface2); border:1px solid var(--border3); padding:10px 14px; border-radius:var(--r-sm);">
                     <span style="font-size:12px; font-weight:500; color:var(--text);">Mostrar Conteo (01/06)</span>
                     <label class="switch">
                         <input type="checkbox" ${s.show_counter !== false ? 'checked' : ''} onchange="actualizarDato('show_counter', this.checked); actualizarEditor();">
@@ -1815,7 +1877,7 @@ function actualizarEditor() {
                     </label>
                 </div>
                 <!-- Etiqueta Superior -->
-                <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg); border:1px solid var(--border2); padding:10px 14px; border-radius:var(--radius);">
+                <div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface2); border:1px solid var(--border3); padding:10px 14px; border-radius:var(--r-sm);">
                     <span style="font-size:12px; font-weight:500; color:var(--text);">Mostrar Etiqueta Superior</span>
                     <label class="switch">
                         <input type="checkbox" ${s.show_tag !== false ? 'checked' : ''} onchange="actualizarDato('show_tag', this.checked); actualizarEditor();">
@@ -1823,7 +1885,7 @@ function actualizarEditor() {
                     </label>
                 </div>
                 <!-- Handle -->
-                <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg); border:1px solid var(--border2); padding:10px 14px; border-radius:var(--radius);">
+                <div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface2); border:1px solid var(--border3); padding:10px 14px; border-radius:var(--r-sm);">
                     <span style="font-size:12px; font-weight:500; color:var(--text);">Mostrar @Handle</span>
                     <label class="switch">
                         <input type="checkbox" ${s.show_handle !== false ? 'checked' : ''} onchange="actualizarDato('show_handle', this.checked); actualizarEditor();">
@@ -2248,99 +2310,162 @@ window.LOGOS_DB = LOGOS_DB;
 </style>
 
 <script>
+let assetPickerTargetField = null;
+
 function abrirAssetsModal() {
-    assetPickerTargetField = null;
-    document.getElementById('assets-modal').style.display = 'flex';
-    filtrarAssets();
+    console.log("abrirAssetsModal() invocado.");
+    try {
+        assetPickerTargetField = null;
+        const modal = document.getElementById('assets-modal');
+        if (!modal) {
+            alert("Error: No se encontró el modal 'assets-modal'");
+            return;
+        }
+        modal.style.display = 'flex';
+        filtrarAssets();
+    } catch (e) {
+        console.error("Error en abrirAssetsModal:", e);
+        alert("Error en abrirAssetsModal:\n" + e.stack);
+    }
 }
 
 function abrirAssetPickerModal(fieldKey) {
-    assetPickerTargetField = fieldKey;
-    document.getElementById('assets-modal').style.display = 'flex';
-    filtrarAssets();
+    console.log("abrirAssetPickerModal() invocado con campo:", fieldKey);
+    try {
+        assetPickerTargetField = fieldKey;
+        const modal = document.getElementById('assets-modal');
+        if (!modal) {
+            alert("Error: No se encontró el modal 'assets-modal'");
+            return;
+        }
+        modal.style.display = 'flex';
+        filtrarAssets();
+    } catch (e) {
+        console.error("Error en abrirAssetPickerModal:", e);
+        alert("Error en abrirAssetPickerModal:\n" + e.stack);
+    }
 }
 
 function cerrarAssetsModal() {
-    document.getElementById('assets-modal').style.display = 'none';
-    assetPickerTargetField = null;
+    try {
+        const modal = document.getElementById('assets-modal');
+        if (modal) modal.style.display = 'none';
+        assetPickerTargetField = null;
+    } catch (e) {
+        console.error("Error en cerrarAssetsModal:", e);
+    }
 }
 
 function selectAsset(path) {
-    if (assetPickerTargetField) {
-        actualizarDato(assetPickerTargetField, path);
-        cerrarAssetsModal();
+    try {
+        if (assetPickerTargetField) {
+            actualizarDato(assetPickerTargetField, path);
+            cerrarAssetsModal();
+        }
+    } catch (e) {
+        console.error("Error en selectAsset:", e);
+        alert("Error en selectAsset:\n" + e.stack);
     }
 }
 
 function filtrarAssets() {
-    const searchVal = document.getElementById('asset-search').value.toLowerCase();
-    const spaceFilter = document.getElementById('asset-filter-space').value;
-    const subjectFilter = document.getElementById('asset-filter-subject').value;
-    
-    const filtered = IMAGES_METADATA.filter(img => {
-        const matchesSearch = img.name.toLowerCase().includes(searchVal);
-        const matchesSpace = !spaceFilter || img.safe_space === spaceFilter;
-        const matchesSubject = !subjectFilter || img.subject === subjectFilter;
-        return matchesSearch && matchesSpace && matchesSubject;
-    });
-    
-    renderAssetCards(filtered);
+    console.log("filtrarAssets() ejecutado. Metadatos cargados:", IMAGES_METADATA);
+    try {
+        const searchInput = document.getElementById('asset-search');
+        const spaceSelect = document.getElementById('asset-filter-space');
+        const subjectSelect = document.getElementById('asset-filter-subject');
+        
+        const searchVal = searchInput ? searchInput.value.toLowerCase() : "";
+        const spaceFilter = spaceSelect ? spaceSelect.value : "";
+        const subjectFilter = subjectSelect ? subjectSelect.value : "";
+        
+        if (!IMAGES_METADATA || !Array.isArray(IMAGES_METADATA)) {
+            console.warn("IMAGES_METADATA no es un array:", IMAGES_METADATA);
+            renderAssetCards([]);
+            return;
+        }
+        
+        const filtered = IMAGES_METADATA.filter(img => {
+            if (!img || !img.name) return false;
+            const matchesSearch = img.name.toLowerCase().includes(searchVal);
+            const matchesSpace = !spaceFilter || img.safe_space === spaceFilter;
+            const matchesSubject = !subjectFilter || img.subject === subjectFilter;
+            return matchesSearch && matchesSpace && matchesSubject;
+        });
+        
+        console.log(`Filtrados: ${filtered.length} de ${IMAGES_METADATA.length} imágenes`);
+        renderAssetCards(filtered);
+    } catch (e) {
+        console.error("Error en filtrarAssets:", e);
+        alert("Error en filtrarAssets:\n" + e.stack);
+    }
 }
 
 function renderAssetCards(filteredImages) {
-    const grid = document.getElementById('assets-grid');
-    grid.innerHTML = '';
-    
-    if (filteredImages.length === 0) {
-        grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:50px; color:var(--text2);"><i class="ti ti-photo-off" style="font-size:48px; color:var(--border);"></i><br><br>No se encontraron imágenes</div>`;
-        return;
-    }
-    
-    filteredImages.forEach(img => {
-        const isPicker = assetPickerTargetField !== null;
+    console.log("renderAssetCards() renderizando imágenes:", filteredImages.length);
+    try {
+        const grid = document.getElementById('assets-grid');
+        if (!grid) {
+            console.error("Error: No se encontró el elemento 'assets-grid'");
+            return;
+        }
+        grid.innerHTML = '';
         
-        let badgeHtml = '';
-        if (currentSlides[activeSlideIndex]) {
-            const activeLayout = currentSlides[activeSlideIndex].layout || currentSlides[activeSlideIndex].type;
-            const rating = getAssetRating(img, activeLayout);
-            if (rating === 'recomendada') {
-                badgeHtml = `<span style="position:absolute; top:8px; left:8px; z-index:5; background:rgba(42, 191, 176, 0.95); color:#14262D; border:1px solid var(--accent); padding:3px 8px; border-radius:12px; font-size:9px; font-weight:700; letter-spacing:0.03em; display:flex; align-items:center; gap:3px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"><i class="ti ti-star-filled" style="font-size:9px; color:#14262D;"></i> RECOMENDADA</span>`;
-            } else if (rating === 'buena') {
-                badgeHtml = `<span style="position:absolute; top:8px; left:8px; z-index:5; background:rgba(204, 194, 167, 0.95); color:#14262D; border:1px solid var(--cream); padding:3px 8px; border-radius:12px; font-size:9px; font-weight:700; letter-spacing:0.03em; display:flex; align-items:center; gap:3px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"><i class="ti ti-thumb-up-filled" style="font-size:9px; color:#14262D;"></i> BUENA</span>`;
-            }
+        if (filteredImages.length === 0) {
+            grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:50px; color:var(--text2);"><i class="ti ti-photo-off" style="font-size:48px; color:var(--border);"></i><br><br>No se encontraron imágenes</div>`;
+            return;
         }
         
-        let metaHtml = `
-        <div style="font-size:10px; color:var(--text2); margin-top:8px; line-height:1.4; display:flex; flex-direction:column; gap:2px;">
-            <div><strong>Sujeto:</strong> ${img.subject} ${img.subject_position && img.subject_position !== 'Desconocido' ? `(${img.subject_position})` : ''}</div>
-            ${img.detailed_description ? `<div style="color:var(--text3); font-style:italic; margin: 2px 0 4px 0;">"${img.detailed_description}"</div>` : ''}
-            <div><strong>Fondo seguro:</strong> <span style="color:var(--accent); font-weight:600;">${img.safe_space}</span></div>
-            <div><strong>Mood:</strong> ${img.mood}</div>
-        </div>`;
-        
-        grid.innerHTML += `
-        <div class="asset-card" style="background:var(--bg2); border:1px solid var(--border2); border-radius:var(--radius); padding:12px; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden;">
-            <!-- Imagen Thumbnail -->
-            <div onclick="selectAsset('${img.path}')" style="width:100%; aspect-ratio:4/5; border-radius:4px; overflow:hidden; background:var(--bg); cursor:pointer; position:relative;">
-                ${badgeHtml}
-                <img src="${img.path}" style="width:100%; height:100%; object-fit:cover;">
-                <div class="picker-overlay" style="position:absolute; inset:0; opacity:0; display:flex; align-items:center; justify-content:center; transition:opacity 0.2s;">
-                    <span style="background:var(--accent); color:var(--black); padding:6px 12px; border-radius:20px; font-size:11px; font-weight:600;">${isPicker ? 'Seleccionar' : 'Ver Detalles'}</span>
-                </div>
-            </div>
+        filteredImages.forEach(img => {
+            if (!img) return;
+            const isPicker = assetPickerTargetField !== null;
             
-            <!-- Info & Renombrar -->
-            <div style="margin-top:10px;">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:4px; margin-bottom: 5px;">
-                    <div style="font-size:11px; font-weight:600; color:var(--text); word-break:break-all; flex:1; line-height:1.2;" title="${img.name}">${img.name}</div>
-                    <button class="btn btn-outline" style="padding:2px; border-radius:4px; background:var(--bg);" title="Renombrar Archivo" onclick="event.stopPropagation(); abrirRenameInput('${img.name}')">
-                        <i class="ti ti-edit" style="font-size:11px;"></i>
-                    </button>
+            let badgeHtml = '';
+            if (window.currentSlides && window.currentSlides[window.activeSlideIndex]) {
+                const activeLayout = window.currentSlides[window.activeSlideIndex].layout || window.currentSlides[window.activeSlideIndex].type;
+                const rating = getAssetRating(img, activeLayout);
+                if (rating === 'recomendada') {
+                    badgeHtml = `<span style="position:absolute; top:8px; left:8px; z-index:5; background:rgba(42, 191, 176, 0.95); color:#14262D; border:1px solid var(--accent); padding:3px 8px; border-radius:12px; font-size:9px; font-weight:700; letter-spacing:0.03em; display:flex; align-items:center; gap:3px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"><i class="ti ti-star-filled" style="font-size:9px; color:#14262D;"></i> RECOMENDADA</span>`;
+                } else if (rating === 'buena') {
+                    badgeHtml = `<span style="position:absolute; top:8px; left:8px; z-index:5; background:rgba(204, 194, 167, 0.95); color:#14262D; border:1px solid var(--cream); padding:3px 8px; border-radius:12px; font-size:9px; font-weight:700; letter-spacing:0.03em; display:flex; align-items:center; gap:3px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);"><i class="ti ti-thumb-up-filled" style="font-size:9px; color:#14262D;"></i> BUENA</span>`;
+                }
+            }
+            
+            let metaHtml = `
+            <div style="font-size:10px; color:var(--text2); margin-top:8px; line-height:1.4; display:flex; flex-direction:column; gap:2px;">
+                <div><strong>Sujeto:</strong> ${img.subject || 'Desconocido'} ${img.subject_position && img.subject_position !== 'Desconocido' ? `(${img.subject_position})` : ''}</div>
+                ${img.detailed_description ? `<div style="color:var(--text3); font-style:italic; margin: 2px 0 4px 0;">"${img.detailed_description}"</div>` : ''}
+                <div><strong>Fondo seguro:</strong> <span style="color:var(--accent); font-weight:600;">${img.safe_space || 'Desconocido'}</span></div>
+                <div><strong>Mood:</strong> ${img.mood || 'Desconocido'}</div>
+            </div>`;
+            
+            grid.innerHTML += `
+            <div class="asset-card" style="background:var(--bg2); border:1px solid var(--border2); border-radius:var(--radius); padding:12px; display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden;">
+                <!-- Imagen Thumbnail -->
+                <div onclick="selectAsset('${img.path || ''}')" style="width:100%; aspect-ratio:4/5; border-radius:4px; overflow:hidden; background:var(--bg); cursor:pointer; position:relative;">
+                    ${badgeHtml}
+                    <img src="${img.path || ''}" style="width:100%; height:100%; object-fit:cover;">
+                    <div class="picker-overlay" style="position:absolute; inset:0; opacity:0; display:flex; align-items:center; justify-content:center; transition:opacity 0.2s;">
+                        <span style="background:var(--accent); color:var(--black); padding:6px 12px; border-radius:20px; font-size:11px; font-weight:600;">${isPicker ? 'Seleccionar' : 'Ver Detalles'}</span>
+                    </div>
                 </div>
-                ${metaHtml}
-            </div>
-        </div>`;
-    });
+                
+                <!-- Info & Renombrar -->
+                <div style="margin-top:10px;">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:4px; margin-bottom: 5px;">
+                        <div style="font-size:11px; font-weight:600; color:var(--text); word-break:break-all; flex:1; line-height:1.2;" title="${img.name || ''}">${img.name || ''}</div>
+                        <button class="btn btn-outline" style="padding:2px; border-radius:4px; background:var(--bg);" title="Renombrar Archivo" onclick="event.stopPropagation(); abrirRenameInput('${img.name || ''}')">
+                            <i class="ti ti-edit" style="font-size:11px;"></i>
+                        </button>
+                    </div>
+                    ${metaHtml}
+                </div>
+            </div>`;
+        });
+    } catch (e) {
+        console.error("Error en renderAssetCards:", e);
+        alert("Error en renderAssetCards:\n" + e.stack);
+    }
 }
 
 function abrirRenameInput(oldName) {
@@ -2394,7 +2519,10 @@ async function rescanearAssets() {
     try {
         const response = await fetch('/api/rescan', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'x-api-key': savedKey
+            },
             body: JSON.stringify({ api_key: savedKey })
         });
         
@@ -2404,7 +2532,8 @@ async function rescanearAssets() {
         }
         
         const data = await response.json();
-        IMAGES_METADATA = data.images;
+        IMAGES_METADATA.length = 0;
+        IMAGES_METADATA.push(...data.images);
         
         // Actualizar IMAGES_DB
         IMAGES_DB.length = 0;
