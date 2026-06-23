@@ -113,7 +113,7 @@ body { display: flex; flex-direction: column; height: 100vh; }
 /* PANEL IZQUIERDO: FORMULARIO/EDITOR */
 .left-panel {
     flex: 1;
-    min-width: 600px;
+    min-width: 380px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -154,19 +154,93 @@ body { display: flex; flex-direction: column; height: 100vh; }
 
 /* PANEL DERECHO: PREVIEW */
 .right-panel {
-    width: 480px;
+    flex: 2;
     display: flex;
     flex-direction: column;
-    flex-shrink: 0;
     overflow: hidden;
 }
 .preview-container {
     flex: 1;
-    overflow: auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    position: relative;
+    padding: 15px;
+}
+
+/* Modos de Previsualización */
+#preview-slides-area {
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+#preview-slides-area.mode-single {
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: auto;
 }
+
+#preview-slides-area.mode-filmstrip {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    align-items: center;
+    padding: 20px 10px;
+}
+
+#preview-slides-area.mode-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px 10px;
+}
+
+/* Scrollbar Custom para Filmstrip/Grid */
+#preview-slides-area::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+}
+#preview-slides-area::-webkit-scrollbar-track {
+    background: var(--bg);
+    border-radius: 4px;
+}
+#preview-slides-area::-webkit-scrollbar-thumb {
+    background: var(--border2);
+    border-radius: 4px;
+}
+#preview-slides-area::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+}
+
+.preview-card {
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+    border: 3px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #14262D;
+    flex-shrink: 0;
+}
+.preview-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px rgba(42, 191, 176, 0.18);
+}
+.preview-card.active {
+    border-color: var(--accent);
+    box-shadow: 0 0 20px rgba(42, 191, 176, 0.5);
+}
+
 .preview-wrapper { 
     transform-origin: top left; 
     transition: transform 0.2s;
@@ -290,144 +364,225 @@ body { display: flex; flex-direction: column; height: 100vh; }
         </div>
     </div>
     <div class="vb-header-actions">
-        <button class="btn btn-outline" id="btn-assets-manager" onclick="abrirAssetsModal()"><i class="ti ti-photo"></i> Biblioteca Assets</button>
-        <button class="btn btn-outline" onclick="reiniciar()"><i class="ti ti-refresh"></i> Nuevo</button>
-        <button class="btn btn-primary" id="btn-guardar" onclick="saveCarrusel()" style="display:none;"><i class="ti ti-device-floppy"></i> Guardar</button>
+        <!-- Selector de Estado de Contenido -->
+        <div id="status-selector-container" style="display:none; align-items:center; gap:8px;">
+            <label class="flabel" style="margin:0; font-size:11px; font-weight:600; text-transform:none; color:var(--text2);">Estado:</label>
+            <select id="piece-status" onchange="cambiarStatus(this.value)" style="font-size:12px; padding:6px 10px; height:38px; width:120px; cursor:pointer; background:var(--surface); border:1px solid var(--border2); color:var(--text); border-radius:var(--r-sm);">
+                <option value="en_creacion">💡 Idea</option>
+                <option value="revision">✍️ Edición</option>
+                <option value="listo">✅ Listo</option>
+                <option value="publicado">🚀 Publicado</option>
+            </select>
+        </div>
+        <button class="btn btn-outline" onclick="toggleRightPanel()" id="btn-toggle-panels" style="display:none;"><i class="ti ti-layout-grid"></i> Ver Diapositivas</button>
+        <button class="btn btn-outline" onclick="abrirAssetsModal()" id="btn-assets-manager" style="display:none;"><i class="ti ti-photo-library"></i> Biblioteca de Fotos</button>
+        <button class="btn btn-outline" onclick="saveCarrusel()" id="btn-guardar" style="display:none;"><i class="ti ti-device-floppy"></i> Guardar Cambios</button>
         <button class="btn btn-primary" onclick="exportarZIP()" id="btn-exportar" style="display:none;"><i class="ti ti-download"></i> Exportar PNGs</button>
     </div>
 </header>
 
 <div class="split-view fade-in">
-        <!-- FORMULARIO / LISTA DE SLIDES -->
-        <div class="left-panel">
-            <div id="view-generator" class="card" style="height: 100%; overflow: hidden; display: flex; flex-direction: column;">
-                <div class="card-head" style="border-bottom: 1px solid var(--border2); padding-bottom: 1rem; flex-shrink: 0;">
-                    <h2 class="card-title" style="font-size: 16px; display: flex; align-items: center; gap: 8px; margin: 0;">
-                        <i class="ti ti-wand" style="color: var(--accent);"></i> Generador IA (@Molina)
-                    </h2>
-                </div>
-                <div style="flex: 1; overflow-y: auto; padding: 0.5rem 0 0 0;">
-                    <p style="font-size:12.5px; color:var(--text2); margin-top: 0; margin-bottom:1.25rem; line-height:1.5;">
-                        Ingresa un tema o dolor del paciente y el sistema generará automáticamente la estructura y los copys de un carrusel de alto rendimiento.
-                    </p>
-                    <div class="field" style="margin-bottom: 1.25rem;">
-                        <label class="flabel">Tema o Idea Principal</label>
-                        <textarea id="gen-tema" rows="3" placeholder="Ej: Por qué la manga gástrica falla a los 5 años y cómo la reganancia de peso no es falta de voluntad..."></textarea>
-                    </div>
-                    <div class="field" style="margin-bottom: 1.25rem;">
-                        <label class="flabel">Pilar de Contenido</label>
-                        <select id="gen-pilar">
-                            <option value="mitos">Mitos Bariátricos</option>
-                            <option value="mindset">Nutrición & Mindset</option>
-                            <option value="historias">Historias Reales / Testimonios</option>
-                            <option value="autoridad">Autoridad & Casos Clínicos</option>
-                            <option value="estilo">Estilo de Vida Saludable</option>
-                        </select>
-                    </div>
-                    <div class="field" style="display:flex; gap:1.25rem; margin-bottom: 1.25rem;">
-                        <div style="flex:1;">
-                            <label class="flabel">Objetivo</label>
-                            <select id="gen-objetivo">
-                                <option value="educar">Educar / Enseñar</option>
-                                <option value="conectar">Generar Conexión</option>
-                                <option value="vender">Vender (Call to Action Fuerte)</option>
-                                <option value="entretener">Entretener</option>
-                            </select>
-                        </div>
-                        <div style="flex:1;">
-                            <label class="flabel">Emoción a Evocar</label>
-                            <select id="gen-emocion">
-                                <option value="empatia">Empatía / Alivio</option>
-                                <option value="urgencia">Urgencia / Acción</option>
-                                <option value="curiosidad">Curiosidad</option>
-                                <option value="inspiracion">Inspiración / Esperanza</option>
-                                <option value="indignacion">Indignación (Contra la industria)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="field" style="margin-bottom: 1.5rem;">
-                        <label class="flabel">Ángulo del Copy</label>
-                        <select id="gen-angulo">
-                            <option value="emocional">Emocional (Basado en la persona)</option>
-                            <option value="cientifico">Científico (Basado en datos y biología)</option>
-                            <option value="contrarian">Contrarian (Desmintiendo creencias)</option>
-                            <option value="directo">Directo al Grano (Sin rodeos)</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-primary" style="width:100%; justify-content:center; font-size:13px; padding:10px 12px; margin-bottom: 1.5rem;" onclick="generarCarrusel()"><i class="ti ti-wand"></i> Generar Carrusel Estratégico</button>
-                    <div style="border-top: 1px solid var(--border2); padding-top: 1.25rem;">
-                        <button class="btn btn-outline" style="width:100%; justify-content:center; padding:9px 12px; font-size:12px;" onclick="abrirAssetsModal()">
-                            <i class="ti ti-photo-library"></i> Explorar & Indexar Biblioteca de Fotos
-                        </button>
-                    </div>
-                </div>
+    <!-- PANEL IZQUIERDO (1/3 de ancho) -->
+    <div class="left-panel">
+        <!-- Generador IA (Creación) -->
+        <div id="view-generator" class="card" style="height: 100%; overflow: hidden; display: flex; flex-direction: column;">
+            <div class="card-head" style="border-bottom: 1px solid var(--border2); padding-bottom: 1rem; flex-shrink: 0;">
+                <h2 class="card-title" style="font-size: 16px; display: flex; align-items: center; gap: 8px; margin: 0;">
+                    <i class="ti ti-wand" style="color: var(--accent);"></i> Generador IA (@Molina)
+                </h2>
             </div>
-
-            <div id="view-editor" style="display:none; flex-direction:column; height:100%; width:100%; gap: 1.25rem;">
-                <div style="display:flex; justify-content:space-between; align-items: center; flex-shrink: 0;">
-                    <h2 style="font-family: var(--f-display); font-size: 24px; font-weight: 500; color: var(--text); display: flex; align-items: center; gap: 8px; margin: 0;">
-                        <i class="ti ti-edit" style="color: var(--accent);"></i> Editor de Carrusel
-                    </h2>
-                    <button class="btn btn-outline" onclick="volverGenerador()" style="padding: 6px 12px; font-size: 11px;"><i class="ti ti-arrow-left"></i> Volver al Generador</button>
+            <div style="flex: 1; overflow-y: auto; padding: 0.5rem 0 0 0;">
+                <p style="font-size:12.5px; color:var(--text2); margin-top: 0; margin-bottom:1.25rem; line-height:1.5;">
+                    Ingresa un tema o dolor del paciente y el sistema generará automáticamente la estructura y los copys de un carrusel de alto rendimiento.
+                </p>
+                <div class="field" style="margin-bottom: 1.25rem;">
+                    <label class="flabel">Tema o Idea Principal</label>
+                    <textarea id="gen-tema" rows="3" placeholder="Ej: Por qué la manga gástrica falla a los 5 años y cómo la reganancia de peso no es falta de voluntad..."></textarea>
                 </div>
-                
-                <div style="display:flex; flex:1; overflow:hidden; gap: 1.25rem;">
-                    <!-- Columna 1: Lista de Slides -->
-                    <div class="card" style="width: 250px; display: flex; flex-direction: column; overflow: hidden; height: 100%; padding: 1.25rem; flex-shrink: 0;">
-                        <div class="card-head" style="border-bottom: 1px solid var(--border2); padding-bottom: 0.75rem; margin-bottom: 0.75rem; flex-shrink: 0;">
-                            <h3 class="flabel" style="margin: 0; font-size: 11px; letter-spacing: 0.08em; font-weight: 600;">Diapositivas</h3>
-                        </div>
-                        <div id="lista-slides" style="flex: 1; overflow-y: auto; padding-right: 4px;">
-                            <!-- Los slides se inyectan aquí -->
-                        </div>
+                <div class="field" style="margin-bottom: 1.25rem;">
+                    <label class="flabel">Pilar de Contenido</label>
+                    <select id="gen-pilar">
+                        <option value="Validación emocional">Validación Emocional (TOFU)</option>
+                        <option value="Educación premium">Educación Premium (TOFU/MOFU)</option>
+                        <option value="Contrarian / Mitos">Contrarian / Mitos (TOFU/MOFU)</option>
+                        <option value="Autoridad humana">Autoridad Humana (MOFU)</option>
+                        <option value="Transformación de vida">Transformación de Vida (MOFU/BOFU)</option>
+                        <option value="Conversión directa">Conversión Directa (BOFU)</option>
+                    </select>
+                </div>
+                <div class="field" style="display:flex; gap:1.25rem; margin-bottom: 1.25rem;">
+                    <div style="flex:1;">
+                        <label class="flabel">Objetivo</label>
+                        <select id="gen-objetivo">
+                            <option value="educar">Educar / Enseñar</option>
+                            <option value="conectar">Generar Conexión</option>
+                            <option value="vender">Vender (Call to Action Fuerte)</option>
+                            <option value="entretener">Entretener</option>
+                        </select>
                     </div>
-                    
-                    <!-- Columna 2: Editor de Slide Activo -->
-                    <div class="card" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; height: 100%; padding: 1.25rem;">
-                        <div class="card-head" style="border-bottom: 1px solid var(--border2); padding-bottom: 0.75rem; margin-bottom: 0.75rem; flex-shrink: 0;">
-                            <h3 class="flabel" style="margin: 0; font-size: 11px; letter-spacing: 0.08em; font-weight: 600;">Editar Diapositiva Activa</h3>
-                        </div>
-                        <div id="form-slide" style="flex: 1; overflow-y: auto; padding-right: 4px;">
-                            <!-- Campos dinámicos -->
-                        </div>
+                    <div style="flex:1;">
+                        <label class="flabel">Emoción a Evocar</label>
+                        <select id="gen-emocion">
+                            <option value="empatia">Empatía / Alivio</option>
+                            <option value="urgencia">Urgencia / Acción</option>
+                            <option value="curiosidad">Curiosidad</option>
+                            <option value="inspiracion">Inspiración / Esperanza</option>
+                            <option value="indignacion">Indignación (Contra la industria)</option>
+                        </select>
                     </div>
+                </div>
+                <div class="field" style="margin-bottom: 1.5rem;">
+                    <label class="flabel">Ángulo del Copy</label>
+                    <select id="gen-angulo">
+                        <option value="emocional">Emocional (Basado en la persona)</option>
+                        <option value="cientifico">Científico (Basado en datos y biología)</option>
+                        <option value="contrarian">Contrarian (Desmintiendo creencias)</option>
+                        <option value="directo">Directo al Grano (Sin rodeos)</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" style="width:100%; justify-content:center; font-size:13px; padding:10px 12px; margin-bottom: 1.5rem;" onclick="generarCarrusel()"><i class="ti ti-wand"></i> Generar Carrusel Estratégico</button>
+                <div style="border-top: 1px solid var(--border2); padding-top: 1.25rem;">
+                    <button class="btn btn-outline" style="width:100%; justify-content:center; padding:9px 12px; font-size:12px;" onclick="abrirAssetsModal()">
+                        <i class="ti ti-photo-library"></i> Explorar & Indexar Biblioteca de Fotos
+                    </button>
                 </div>
             </div>
         </div>
 
-        <!-- PREVIEW -->
-        <div class="right-panel card" style="height: 100%; display: flex; flex-direction: column; overflow: hidden; padding: 1.25rem;">
-            <div class="card-head" style="border-bottom: 1px solid var(--border2); padding-bottom: 0.75rem; margin-bottom: 0.75rem; flex-shrink: 0;">
-                <h3 class="card-title" style="font-size: 14px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 6px; margin: 0;"><i class="ti ti-eye" style="color: var(--accent);"></i> Vista Previa <span id="preview-indicator" style="font-size: 11px; font-weight: 400; color: var(--text3); margin-left: 5px;"></span></h3>
-                <div style="display:flex; gap:6px;">
-                    <button class="btn btn-icon" onclick="zoom(-0.05)" title="Alejar"><i class="ti ti-zoom-out"></i></button>
-                    <button class="btn btn-icon" onclick="zoom(0.05)" title="Acercar"><i class="ti ti-zoom-in"></i></button>
-                </div>
-            </div>
-            <div class="preview-container" style="flex: 1; overflow: auto; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding: 10px; gap: 1.5rem; position: relative;">
-                <!-- Caja de Consejo de Layout -->
-                <div id="layout-tip-box" style="width: 100%; background: rgba(42, 191, 176, 0.08); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 var(--radius) var(--radius) 0; font-size: 12px; line-height: 1.4; color: var(--text2); display: none; box-sizing: border-box;">
-                </div>
-                
-                <!-- Contenedor con tamaño escalado dinámico para centrado perfecto -->
-                <div id="preview-scale-box" style="width: 410.4px; height: 513px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; position: relative; overflow: visible;">
-                    <div class="preview-wrapper" id="preview-wrapper" style="position: absolute; left: 0; top: 0; width: 1080px; height: 1350px; transform: scale(0.38); transform-origin: top left; flex-shrink: 0;">
-                        <!-- Render del HTML del slide seleccionado -->
+        <!-- Vista Previa (Edición) -->
+        <div id="view-editor-preview-card" class="card" style="display:none; flex-direction:column; overflow:hidden; height:100%; padding:1.25rem;">
+            <div class="card-head" style="border-bottom: 1px solid var(--border2); padding-bottom: 0.75rem; margin-bottom: 0.75rem; flex-shrink: 0; display:flex; justify-content:space-between; align-items:center;">
+                <h3 class="card-title" style="font-size: 14px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 6px; margin: 0;">
+                    <i class="ti ti-eye" style="color: var(--accent);"></i> Vista Previa 
+                    <span id="preview-indicator" style="font-size: 11px; font-weight: 400; color: var(--text3); margin-left: 5px;"></span>
+                </h3>
+                <div style="display:flex; gap:12px; align-items:center;">
+                    <!-- Selector de Vistas -->
+                    <div class="btn-group" style="display:flex; background:var(--surface2); border:1px solid var(--border3); border-radius:var(--r-sm); padding:2px;">
+                        <button type="button" class="btn btn-icon" id="btn-view-filmstrip" onclick="setPreviewMode('filmstrip')" title="Vista Cinta (Filmstrip)" style="border:none; border-radius:4px; height:28px; width:28px; padding:0; background:var(--accent); color:#14262D;"><i class="ti ti-carousel-horizontal" style="font-size:15px;"></i></button>
+                        <button type="button" class="btn btn-icon" id="btn-view-single" onclick="setPreviewMode('single')" title="Vista Enfoque (Individual)" style="border:none; border-radius:4px; height:28px; width:28px; padding:0; background:transparent; color:var(--text2);"><i class="ti ti-square" style="font-size:15px;"></i></button>
+                        <button type="button" class="btn btn-icon" id="btn-view-grid" onclick="setPreviewMode('grid')" title="Vista Cuadrícula (Completo)" style="border:none; border-radius:4px; height:28px; width:28px; padding:0; background:transparent; color:var(--text2);"><i class="ti ti-layout-grid" style="font-size:15px;"></i></button>
+                    </div>
+                    <!-- Zoom (Solo visible en Vista Individual) -->
+                    <div id="zoom-controls" style="display:none; gap:4px; align-items:center;">
+                        <button type="button" class="btn btn-icon" onclick="zoom(-0.05)" title="Alejar" style="height:28px; width:28px; padding:0;"><i class="ti ti-zoom-out" style="font-size:15px;"></i></button>
+                        <button type="button" class="btn btn-icon" onclick="zoom(0.05)" title="Acercar" style="height:28px; width:28px; padding:0;"><i class="ti ti-zoom-in" style="font-size:15px;"></i></button>
                     </div>
                 </div>
-                <!-- Controles de navegación de slides -->
+            </div>
+            
+            <div class="preview-container" style="flex: 1; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-start; align-items: stretch; position: relative; padding: 0;">
+                <!-- Área de Slides con scroll o grid según modo -->
+                <div id="preview-slides-area" class="mode-filmstrip">
+                    <!-- Se inyectan las vistas previas dinámicamente -->
+                </div>
+                
+                <!-- Controles de navegación de slides (Solo en modo individual) -->
                 <div class="preview-nav" id="preview-nav" style="display: none; gap: 15px; align-items: center; justify-content: center; z-index: 40; margin-top: auto; padding-top: 10px; width: 100%;">
-                    <button class="btn btn-outline" onclick="prevSlide()" style="padding: 8px 16px; border-radius: 30px; font-weight: 500; display: flex; align-items: center; gap: 6px;">
+                    <button type="button" class="btn btn-outline" onclick="prevSlide()" style="padding: 8px 16px; border-radius: 30px; font-weight: 500; display: flex; align-items: center; gap: 6px;">
                         <i class="ti ti-arrow-left"></i> Anterior
                     </button>
                     <span id="nav-counter" style="font-family: 'Archivo', sans-serif; font-size: 13px; font-weight: 600; color: var(--text); min-width: 80px; text-align: center;">Slide 1 / 10</span>
-                    <button class="btn btn-outline" onclick="nextSlide()" style="padding: 8px 16px; border-radius: 30px; font-weight: 500; display: flex; align-items: center; gap: 6px;">
+                    <button type="button" class="btn btn-outline" onclick="nextSlide()" style="padding: 8px 16px; border-radius: 30px; font-weight: 500; display: flex; align-items: center; gap: 6px;">
                         Siguiente <i class="ti ti-arrow-right"></i>
                     </button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- PANEL DERECHO (2/3 de ancho) -->
+    <div class="right-panel">
+        <!-- Placeholder en fase de generación -->
+        <div id="generator-preview-placeholder" class="card" style="height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px dashed var(--border2); opacity: 0.8; padding: 2rem; box-sizing: border-box;">
+            <i class="ti ti-wand" style="font-size: 48px; color: var(--accent); margin-bottom: 15px;"></i>
+            <h3 style="font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 5px;">Listo para generar tu carrusel</h3>
+            <p style="font-size: 12px; color: var(--text3); text-align: center; max-width: 320px;">Rellena los campos de la izquierda y haz clic en "Generar Carrusel Estratégico".</p>
+        </div>
+
+        <!-- Área de Trabajo del Editor (Editar Diapositiva Activa Arriba + Diapositivas/Estrategia Abajo) -->
+        <div id="view-editor-workspace" style="display:none; flex-direction:column; height:100%; width:100%; gap:1.25rem; overflow:hidden;">
+            <!-- Fila Superior: Editar Diapositiva Activa -->
+            <div id="view-editor-active-slide" class="card" style="height: 100%; display: flex; flex-direction: column; overflow: hidden; padding: 1.25rem; flex: 1;">
+                <div class="card-head" style="border-bottom: 1px solid var(--border2); padding-bottom: 0.75rem; margin-bottom: 0.75rem; flex-shrink: 0; display:flex; justify-content:space-between; align-items:center;">
+                    <h3 class="flabel" style="margin: 0; font-size: 11px; letter-spacing: 0.08em; font-weight: 600; text-transform: uppercase;">Editar Diapositiva Activa</h3>
+                    <button type="button" class="btn btn-outline" style="font-size:11px; padding:6px 12px; height:30px; display:flex; align-items:center; gap:6px;" onclick="switchRightPanel('list')">
+                        <i class="ti ti-layout-grid"></i> Ver Diapositivas & Estrategia
+                    </button>
+                </div>
+                <div id="form-slide" style="flex: 1; overflow-y: auto; padding-right: 4px;">
+                    <!-- Dynamic fields will be injected here -->
+                </div>
+            </div>
+
+            <!-- Fila Inferior: Lista de Slides & Estrategia (Edición) -->
+            <div id="view-editor-sidebar" class="card" style="display:none; flex-direction:row; overflow:hidden; flex: 1; height: 100%; padding:1.25rem; gap:1.5rem;">
+                <!-- Columna Izquierda: Diapositivas -->
+                <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden; height: 100%;">
+                    <div class="card-head" style="border-bottom: 1px solid var(--border2); padding-bottom: 0.75rem; margin-bottom: 0.75rem; flex-shrink: 0; display:flex; justify-content:space-between; align-items:center;">
+                        <h3 class="flabel" style="margin: 0; font-size: 11px; letter-spacing: 0.08em; font-weight: 600; text-transform: uppercase;">Diapositivas</h3>
+                        <div style="display:flex; gap:4px;">
+                            <button type="button" class="btn btn-icon" style="padding:2px; height:24px; width:24px;" title="Subir diapositiva" onclick="subirSlideActivo()"><i class="ti ti-chevron-up" style="font-size:14px;"></i></button>
+                            <button type="button" class="btn btn-icon" style="padding:2px; height:24px; width:24px;" title="Bajar diapositiva" onclick="bajarSlideActivo()"><i class="ti ti-chevron-down" style="font-size:14px;"></i></button>
+                            <button type="button" class="btn btn-icon" style="padding:2px; height:24px; width:24px; color:var(--danger);" title="Eliminar diapositiva" onclick="eliminarSlideActivo()"><i class="ti ti-trash" style="font-size:14px;"></i></button>
+                        </div>
+                    </div>
+                    <div id="lista-slides" style="flex: 1; overflow-y: auto; padding-right: 4px; margin-bottom: 10px;">
+                        <!-- Los slides se inyectan aquí -->
+                    </div>
+                    <button type="button" class="btn btn-outline" style="width: 100%; justify-content: center; font-size: 11px; padding: 6px; flex-shrink: 0;" onclick="agregarNuevaSlide()"><i class="ti ti-plus"></i> Añadir Diapositiva</button>
+                </div>
+
+                <!-- Separador Vertical -->
+                <div style="width: 1px; background-color: var(--border2); align-self: stretch; flex-shrink: 0;"></div>
+
+                <!-- Columna Derecha: Estrategia General -->
+                <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden; height: 100%;">
+                    <div class="card-head" style="border-bottom: 1px solid var(--border2); padding-bottom: 0.75rem; margin-bottom: 0.75rem; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center;">
+                        <h3 class="flabel" style="margin: 0; font-size: 11px; letter-spacing: 0.08em; font-weight: 600; text-transform: uppercase;">Estrategia General</h3>
+                        <button type="button" class="btn btn-outline" style="font-size:11px; padding:6px 12px; height:30px; display:flex; align-items:center; gap:6px;" onclick="switchRightPanel('editor')">
+                            <i class="ti ti-edit"></i> Volver al Editor
+                        </button>
+                    </div>
+                    <div style="flex: 1; display:flex; flex-direction:column; gap:12px; overflow-y: auto; padding-right: 4px;">
+                        <div class="field" style="margin:0;">
+                            <label class="flabel" style="font-size:10px; margin-bottom:2px;">Pilar de Contenido</label>
+                            <select id="editor-pilar" onchange="document.getElementById('gen-pilar').value = this.value; saveCarrusel();" style="font-size:11px; padding:6px; height:32px;">
+                                <option value="Validación emocional">Validación Emocional (TOFU)</option>
+                                <option value="Educación premium">Educación Premium (TOFU/MOFU)</option>
+                                <option value="Contrarian / Mitos">Contrarian / Mitos (TOFU/MOFU)</option>
+                                <option value="Autoridad humana">Autoridad Humana (MOFU)</option>
+                                <option value="Transformación de vida">Transformación de Vida (MOFU/BOFU)</option>
+                                <option value="Conversión directa">Conversión Directa (BOFU)</option>
+                            </select>
+                        </div>
+                        <div style="display:flex; gap:12px;">
+                            <div class="field" style="margin:0; flex:1;">
+                                <label class="flabel" style="font-size:10px; margin-bottom:2px;">Objetivo</label>
+                                <select id="editor-objetivo" onchange="document.getElementById('gen-objetivo').value = this.value; saveCarrusel();" style="font-size:11px; padding:6px; height:32px;">
+                                    <option value="educar">Educar / Enseñar</option>
+                                    <option value="conectar">Generar Conexión</option>
+                                    <option value="vender">Vender (CTA Fuerte)</option>
+                                    <option value="entretener">Entretener</option>
+                                </select>
+                            </div>
+                            <div class="field" style="margin:0; flex:1;">
+                                <label class="flabel" style="font-size:10px; margin-bottom:2px;">Emoción</label>
+                                <select id="editor-emocion" onchange="document.getElementById('gen-emocion').value = this.value; saveCarrusel();" style="font-size:11px; padding:6px; height:32px;">
+                                    <option value="empatia">Empatía / Alivio</option>
+                                    <option value="urgencia">Urgencia / Acción</option>
+                                    <option value="curiosidad">Curiosidad</option>
+                                    <option value="inspiracion">Inspiración</option>
+                                    <option value="indignacion">Indignación</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Contenedor oculto para renderizar los 10 slides y exportar -->
 <div id="export-container"></div>
@@ -453,6 +608,197 @@ async function logActivity(action, details) {
 let currentCarruselId = null;
 let currentStatus = 'en_creacion';
 let linkedIdeaId = null;
+
+// Modos de previsualización y variables auxiliares
+let previewMode = 'filmstrip'; // 'filmstrip' | 'single' | 'grid'
+window.autoScrollPending = true;
+
+const WORD_LIMITS = {
+    // cover-cinematic-center
+    'title1': 3,
+    'title2': 3,
+    'accent': 2,
+    'badge': 6,
+    'tag': 3,
+    // content-photo-split
+    'title': 8,
+    'subtitle': 8,
+    'cta_text': 3,
+    // cta-standard / cta
+    'hero': 5,
+    'action1': 3,
+    'desc1': 6,
+    'action2': 3,
+    'desc2': 6,
+    // tesis / regla / insight
+    'line1': 3,
+    'line2': 3,
+    'body': 25, // Regla body
+    // bento
+    'header': 5,
+    'subheader': 6,
+    'c1_title': 2, 'c2_title': 2, 'c3_title': 2, 'c4_title': 2,
+    'c1_cap': 6, 'c2_cap': 6, 'c3_cap': 6, 'c4_cap': 6
+};
+
+function countWords(str) {
+    if (!str) return 0;
+    const clean = str.replace(/[*_]/g, '').trim();
+    if (!clean) return 0;
+    return clean.split(/\s+/).filter(Boolean).length;
+}
+
+function updateWordCounter(key, val) {
+    const limit = WORD_LIMITS[key];
+    if (limit === undefined) return;
+    const countSpan = document.getElementById(`wordcount-${key}`);
+    if (!countSpan) return;
+    const count = countWords(val);
+    countSpan.textContent = `${count} / ${limit} palabras`;
+    if (count > limit) {
+        countSpan.style.color = 'var(--danger)';
+    } else {
+        countSpan.style.color = 'var(--text3)';
+    }
+}
+
+function formatTextAccent(inputEl) {
+    if (!inputEl) return;
+    const start = inputEl.selectionStart;
+    const end = inputEl.selectionEnd;
+    const text = inputEl.value;
+    
+    let newVal;
+    if (start !== undefined && end !== undefined && start !== end) {
+        const selected = text.substring(start, end);
+        const before = text.substring(0, start);
+        const after = text.substring(end);
+        newVal = `${before}_${selected}_${after}`;
+        inputEl.value = newVal;
+        inputEl.selectionStart = start + 1;
+        inputEl.selectionEnd = end + 1;
+    } else {
+        const pos = start !== undefined ? start : text.length;
+        const before = text.substring(0, pos);
+        const after = text.substring(pos);
+        newVal = `${before}__${after}`;
+        inputEl.value = newVal;
+        inputEl.selectionStart = pos + 1;
+        inputEl.selectionEnd = pos + 1;
+    }
+    
+    inputEl.dispatchEvent(new Event('input'));
+    inputEl.focus();
+}
+
+async function cambiarStatus(newStatus) {
+    currentStatus = newStatus;
+    showToast(`Estado cambiado a: ${newStatus === 'en_creacion' ? 'Idea' : (newStatus === 'revision' ? 'Edición' : (newStatus === 'listo' ? 'Listo' : 'Publicado'))}`);
+    await saveCarrusel();
+}
+
+function setPreviewMode(mode) {
+    previewMode = mode;
+    
+    const fBtn = document.getElementById('btn-view-filmstrip');
+    const sBtn = document.getElementById('btn-view-single');
+    const gBtn = document.getElementById('btn-view-grid');
+    
+    if (fBtn) {
+        fBtn.style.background = mode === 'filmstrip' ? 'var(--accent)' : 'transparent';
+        fBtn.style.color = mode === 'filmstrip' ? '#14262D' : 'var(--text2)';
+    }
+    if (sBtn) {
+        sBtn.style.background = mode === 'single' ? 'var(--accent)' : 'transparent';
+        sBtn.style.color = mode === 'single' ? '#14262D' : 'var(--text2)';
+    }
+    if (gBtn) {
+        gBtn.style.background = mode === 'grid' ? 'var(--accent)' : 'transparent';
+        gBtn.style.color = mode === 'grid' ? '#14262D' : 'var(--text2)';
+    }
+    
+    const zoomCtrl = document.getElementById('zoom-controls');
+    const prevNav = document.getElementById('preview-nav');
+    
+    if (zoomCtrl) zoomCtrl.style.display = mode === 'single' ? 'flex' : 'none';
+    if (prevNav) prevNav.style.display = mode === 'single' ? 'flex' : 'none';
+    
+    window.autoScrollPending = true;
+    actualizarPreview();
+}
+
+function subirSlideActivo() {
+    if (activeSlideIndex <= 1 || activeSlideIndex === currentSlides.length - 1) {
+        showToast('⚠️ No se puede mover este slide en esta dirección');
+        return;
+    }
+    const prevIndex = activeSlideIndex - 1;
+    const temp = currentSlides[activeSlideIndex];
+    currentSlides[activeSlideIndex] = currentSlides[prevIndex];
+    currentSlides[prevIndex] = temp;
+    
+    seleccionarSlide(prevIndex);
+    showToast('Diapositiva movida hacia arriba');
+    saveActiveDraft();
+}
+
+function bajarSlideActivo() {
+    if (activeSlideIndex === 0 || activeSlideIndex >= currentSlides.length - 2) {
+        showToast('⚠️ No se puede mover este slide en esta dirección');
+        return;
+    }
+    const nextIndex = activeSlideIndex + 1;
+    const temp = currentSlides[activeSlideIndex];
+    currentSlides[activeSlideIndex] = currentSlides[nextIndex];
+    currentSlides[nextIndex] = temp;
+    
+    seleccionarSlide(nextIndex);
+    showToast('Diapositiva movida hacia abajo');
+    saveActiveDraft();
+}
+
+function eliminarSlideActivo() {
+    if (currentSlides.length <= 2) {
+        alert('Un carrusel debe tener al menos una portada y un CTA.');
+        return;
+    }
+    if (confirm(`¿Estás seguro de que deseas eliminar la diapositiva ${activeSlideIndex + 1}?`)) {
+        currentSlides.splice(activeSlideIndex, 1);
+        const newIdx = Math.min(activeSlideIndex, currentSlides.length - 1);
+        seleccionarSlide(newIdx);
+        showToast('Diapositiva eliminada');
+        saveActiveDraft();
+    }
+}
+
+function agregarNuevaSlide() {
+    const nueva = {
+        type: 'regla',
+        tag: 'INFO',
+        ghost: String(currentSlides.length).padStart(2, '0'),
+        title: 'Nueva Diapositiva',
+        body: 'Escribe aquí el contenido principal...',
+        italic: 'Resaltado final',
+        layout: 'default',
+        show_logo: true,
+        show_counter: true,
+        show_tag: true,
+        show_handle: true
+    };
+    
+    const ctaIndex = currentSlides.length - 1;
+    currentSlides.splice(ctaIndex, 0, nueva);
+    seleccionarSlide(ctaIndex);
+    showToast('Nueva diapositiva añadida');
+    saveActiveDraft();
+}
+
+function cambiarTipoSlide(newType) {
+    const s = currentSlides[activeSlideIndex];
+    s.type = newType;
+    s.layout = 'default';
+    cambiarLayout('default');
+}
 
 // --- MOTOR DE ASSETS (IMÁGENES Y LOGOS) ---
 const DEFAULT_IMAGES = [
@@ -624,7 +970,7 @@ function renderSlideLogo(slide) {
         logoFile = theme === 'oscuro' ? 'Logo Completo Oscuro.png' : 'Logo Completo Blanco.png';
     }
     
-    const logoUrl = `../assets/logos/${logoFile}`;
+    const logoUrl = `../assets/logos/${encodeURIComponent(logoFile)}`;
     const pos = slide.logo_position || (slide.layout === 'cover-cinematic-center' ? 'bottom-center' : 'bottom-left');
     
     let posStyle = '';
@@ -1130,6 +1476,7 @@ function cambiarLayout(layoutId) {
     
     actualizarEditor();
     actualizarPreview();
+    saveActiveDraft();
 }
 
 // --- ALGORITMO GENERADOR (MOCK DE LA SKILL) ---
@@ -1137,7 +1484,12 @@ let currentSlides = [];
 let activeSlideIndex = 0;
 let currentZoom = 0.38;
 
-async function generarCarrusel() {
+async function generarCarrusel(isTransfer = false) {
+    if (!isTransfer) {
+        linkedIdeaId = null;
+    }
+    currentCarruselId = null;
+    currentStatus = 'en_creacion';
     const tema = document.getElementById('gen-tema').value || 'La realidad de la manga gástrica';
     
     // Leemos las variables estratégicas
@@ -1153,13 +1505,16 @@ async function generarCarrusel() {
 
     const prompt = `Eres CARRUSEL STUDIO, director creativo y copywriter experto operando en MODO @MOLINA.
 
-IDENTIDAD DE MARCA
-Quién es: Dr. Juan Santiago Molina V. — cirujano bariátrico y laparoscopista avanzado (@cirujanomolina / Visual Brain Molina).
-Tagline: "Recupera quien eres." / "Humanidad, ciencia y acompañamiento real."
+IDENTIDAD Y DIFERENCIADORES DE MARCA
+Quién es: Dr. Juan Santiago Molina V. — cirujano bariátrico, metabólico y laparoscopista avanzado (@cirujanomolina).
 Posicionamiento: El cirujano bariátrico premium que combina humanidad, ciencia y acompañamiento real para transformar vidas de manera profunda y sostenible.
+Diferenciadores Clave:
+1. Humanidad clínica: Tratamos personas con una historia y heridas emocionales, no solo estómagos o básculas. Cero juicio, empatía radical.
+2. Premium sin arrogancia: Excelencia y exclusividad en la atención médica de primer nivel, pero explicada con sencillez, cercanía y calidez genuina.
+3. Equipo, no individuo: Venta del sistema multidisciplinario de soporte (psicología, nutrición, medicina física), no del ego del cirujano.
 
 TIPOGRAFÍA Y DISEÑO
-Cormorant Garamond: Titulares, hooks. Itálica en #2ABFB0 (Teal Vibrante) para 1-2 palabras de énfasis.
+Cormorant Garamond: Titulares, hooks. Itálica en #2ABFB0 (Teal Vibrante, rodeando el texto con guiones bajos, ej. _palabra_) para 1-2 palabras de énfasis.
 Archivo: Cuerpo, subtítulos.
 Énfasis: 1-2 palabras clave del titular van en itálica y en Teal. NUNCA más de 2 palabras en teal por slide.
 IMPORTANTE: Escribe en minúsculas y mayúsculas normales (Sentence case / Mixed case), NUNCA todo en Mayúsculas. Queremos una tipografía elegante, no agresiva.
@@ -1167,27 +1522,37 @@ IMPORTANTE: Escribe en minúsculas y mayúsculas normales (Sentence case / Mixed
 VOZ DE MARCA
 Fórmula emocional: 70% emoción / 30% ciencia.
 SIEMPRE:
-- Validar antes de explicar: el paciente necesita sentirse escuchado primero.
-- Quitar la culpa: la obesidad es una enfermedad, no una falla de voluntad.
-- Hablar con calidez clínica: cercano pero con autoridad médica.
+- Validar antes de explicar: el paciente necesita sentirse escuchado y comprendido primero.
+- Quitar la culpa: la obesidad es una enfermedad biológica, no una falla de voluntad.
+- Hablar con calidez clínica: cercano, empático, pero con autoridad y rigor médico.
 - Usar "tú" (tuteo), nunca "usted".
-- Intensidad constante: ningún slide puede "bajar la guardia".
+- Explicar la ciencia de forma sencilla (usar analogías cotidianas, evitar jerga fría).
+- Hablar en plural ("nuestro equipo", "te acompañamos") para reforzar el ecosistema de soporte.
+- Validar los miedos normales del paciente (a la cirugía, a los medicamentos o a fracasar).
 NUNCA:
-- Frases de motivación vacía ("¡Tú puedes!").
-- Tono frío, corporativo o académico excesivo.
-- Lenguaje que sugiera que el paciente puede resolverlo solo sin ayuda médica.
+- Frases de motivación vacía ("¡Tú puedes! Solo necesitas fuerza de voluntad" -> es ignorancia biológica).
+- Usar jerga ultra-médica innecesaria que confunda o aleje al lector del mensaje central.
+- Tono de reproche o desinteresado que minimice el sufrimiento emocional del paciente.
+- Prometer resultados mágicos inmediatos o vender la cirugía como un "atajo fácil" sin esfuerzo.
 
-AUDIENCIA Y HERIDAS EMOCIONALES
-Avatares: Valeria (agotada, culpa, miedo al juicio, deseo de recuperar su identidad) y Andrés (metabólico, miedo al deterioro).
-Heridas a tocar: Vergüenza social, culpa por no bajar de peso, agotamiento por dietas fallidas, miedo a la cirugía, sentirse atrapados en su cuerpo.
+EJEMPLOS DE VOZ REAL (Estándar de Oro):
+- "Quiero que entiendas que la culpa no es tuya. Tu cuerpo está jugando en tu contra — y para eso estoy yo aquí."
+- "Cuando entras a trabajar con nuestro equipo, tú eres el centro. Te acompañamos en todo el proceso — no estás solo en esto."
 
-FRAMEWORKS DE HOOKS (Motores Emocionales)
-1. Validación de culpa ("No es falta de voluntad. Es biología.")
-2. Disonancia cognitiva ("La cirugía NO es la salida fácil.")
-3. Dolor silencioso ("Lo que más pesa no siempre se mide en kilos.")
-Gancho textual: Máximo 7 palabras, con 1-2 en teal. Entrada directa al conflicto.
+AUDIENCIA Y AVATARES
+1. Paciente 1 - Mujer Agotada (30-50 años, madre frecuentemente): Intentó múltiples dietas, rebotes crónicos, culpa, ansiedad con comida, evita fotos, vergüenza social. Deseo: Volver a sentirse ella misma.
+2. Paciente 2 - Joven Estética (20-45 años): Cansada de verse al espejo y no sentirse a gusto (a veces odia su reflejo), no le queda la ropa, dejó el gimnasio por pena, evita fotos. Deseo: Sentirse linda de nuevo.
+3. Paciente 3 - Hombre Metabólico (30-60 años): Diabetes, prediabetes, hipertensión, apnea del sueño, deterioro físico progresivo, miedo al futuro y a las complicaciones. Deseo: Recuperar el control de su salud y longevidad.
 
-ARQUITECTURA DE CARRUSELES MOLINA (Tú decides cuál usar según el tema)
+PILARES DE CONTENIDO DE REFERENCIA
+- Validación emocional: Hacerlos sentir vistos y no juzgados. Evoca alivio, identificación y acompañamiento.
+- Educación premium: Construir autoridad sin perder cercanía. Evoca claridad, confianza, y alivio de la confusión.
+- Contrarian / Mitos: Romper creencias que bloquean la decisión. Evoca sorpresa, indignación sana y curiosidad.
+- Autoridad humana: Mostrar expertise + equipo + proceso real. Evoca seguridad, respeto y confianza.
+- Transformación de vida: Activar esperanza y deseo de cambio profundo (antes/después de la vida, no del cuerpo).
+- Conversión directa: Mover de "me interesa" a "quiero consultarme" (comentar CANDIDATO y te enviamos info).
+
+ARQUITECTURA DE CARRUSELES MOLINA (Tú decides cuál usar según el tema y pilar)
 - Largo (10 slides): Hook -> 2-3. Ejemplo/Historia -> 4-5. Dato visual -> 6-9. Valor práctico -> CTA.
 - Medio (6 slides): Hook -> 2. Contexto -> 3-4. Valor clave -> 5. Tensión/remate -> CTA.
 - Corto (4 slides): Hook -> 2-3. Valor concentrado -> CTA.
@@ -1233,6 +1598,11 @@ IMPORTANTE:
                     generationConfig: { response_mime_type: "application/json" }
                 })
             });
+
+            if (res.status === 400 || res.status === 403) {
+                alert("⚠️ Error de API Gemini (HTTP " + res.status + "):\nLa clave de API de Gemini por defecto ha sido desactivada por seguridad o la clave provista es inválida (puede estar revocada o bloqueada por Google).\n\nPara solucionarlo:\n1. Ve a la pestaña de 'Configuración' en el menú de Content OS.\n2. Genera una API Key gratuita en Google AI Studio (https://aistudio.google.com/).\n3. Ingresa tu API Key y presiona Guardar.");
+                break;
+            }
 
             if (res.status === 503 || res.status === 429) {
                 attempt++;
@@ -1287,19 +1657,48 @@ IMPORTANTE:
             
             // Mostrar UI de edición
             document.getElementById('view-generator').style.display = 'none';
-            document.getElementById('view-editor').style.display = 'flex';
+            document.getElementById('view-editor-active-slide').style.display = 'flex';
+            document.getElementById('view-editor-sidebar').style.display = 'none';
+            document.getElementById('view-editor-workspace').style.display = 'flex';
+            if (document.getElementById('view-editor-preview-card')) {
+                document.getElementById('view-editor-preview-card').style.display = 'flex';
+            }
+            if (document.getElementById('btn-toggle-panels')) {
+                document.getElementById('btn-toggle-panels').style.display = 'block';
+                document.getElementById('btn-toggle-panels').innerHTML = '<i class="ti ti-layout-grid"></i> Ver Diapositivas';
+            }
+            document.getElementById('generator-preview-placeholder').style.display = 'none';
+            
             document.getElementById('btn-exportar').style.display = 'block';
-            document.getElementById('preview-nav').style.display = 'flex';
+            document.getElementById('btn-guardar').style.display = 'block';
+            document.getElementById('status-selector-container').style.display = 'flex';
+            document.getElementById('piece-status').value = currentStatus;
             document.getElementById('btn-assets-manager').style.display = 'block';
             
+            // Sincronizar dropdowns del sidebar
+            document.getElementById('editor-pilar').value = document.getElementById('gen-pilar').value;
+            document.getElementById('editor-objetivo').value = document.getElementById('gen-objetivo').value;
+            document.getElementById('editor-emocion').value = document.getElementById('gen-emocion').value;
+            
             renderListaSlides();
+            setPreviewMode('filmstrip');
             seleccionarSlide(0);
+            saveActiveDraft();
             break; // Salió bien, rompemos el loop de reintentos
 
         } catch (e) {
             console.error("Error al generar con IA:", e);
+            // Si el error no es de red (fetch/connect), mostrar la alerta del error JS real de inmediato y no reintentar
+            const errorStr = String(e);
+            const isNetworkOrHTTP = errorStr.includes('fetch') || errorStr.includes('Failed to fetch') || errorStr.includes('HTTP Error') || errorStr.includes('status') || errorStr.includes('NetworkError') || errorStr.includes('network');
+            
+            if (!isNetworkOrHTTP) {
+                alert("❌ Error interno de JavaScript durante el renderizado:\n" + e.stack + "\n\nPor favor reporta este error.");
+                break;
+            }
+            
             if (attempt >= maxRetries - 1) {
-                alert("Hubo un error de conexión con los servidores de Google (Gemini) tras varios intentos. Por favor, espera un par de minutos y vuelve a intentarlo.");
+                alert("Hubo un error de conexión con los servidores de Google (Gemini) tras varios intentos. Por favor, espera un par de minutos y vuelve a intentarlo.\nDetalle: " + e.message);
                 break;
             }
             attempt++;
@@ -1577,13 +1976,16 @@ function renderTextField(key, val, isTextArea) {
     const shadowVal = currentSlides[activeSlideIndex][`${key}_shadow`] || 'none';
     
     const inputHtml = isTextArea
-        ? `<textarea oninput="actualizarDato('${key}', this.value)" rows="3" style="width:100%; resize:vertical;">${val}</textarea>`
-        : `<input type="text" value="${val.replace(/"/g, '&quot;')}" oninput="actualizarDato('${key}', this.value)" style="width:100%;">`;
+        ? `<textarea id="input-field-${key}" oninput="actualizarDato('${key}', this.value)" rows="3" style="width:100%; resize:vertical; padding-right: 36px;">${val}</textarea>`
+        : `<input id="input-field-${key}" type="text" value="${val.replace(/"/g, '&quot;')}" oninput="actualizarDato('${key}', this.value)" style="width:100%; padding-right: 36px;">`;
         
     return `
     <div style="display: flex; gap: 8px; align-items: flex-start; width: 100%;">
-        <div style="flex: 1;">
+        <div style="flex: 1; position: relative;">
             ${inputHtml}
+            <button type="button" class="btn btn-icon" onclick="formatTextAccent(document.getElementById('input-field-${key}'))" title="Resaltar con Cursiva Teal (_palabra_)" style="position: absolute; right: 8px; top: ${isTextArea ? '8px' : '5px'}; height: 26px; width: 26px; padding: 0; background: var(--surface3); border: 1px solid var(--border2); z-index: 10; display: flex; align-items: center; justify-content: center; border-radius: 4px; color: var(--accent); cursor: pointer;">
+                <i class="ti ti-italic" style="font-size: 13px;"></i>
+            </button>
         </div>
         <select onchange="actualizarDato('${key}_shadow', this.value)" title="Intensidad de Sombra" style="width: 115px; font-size: 11px; flex-shrink: 0; cursor: pointer; height: 38px; padding: 6px 8px;">
             <option value="none" ${shadowVal === 'none' ? 'selected' : ''}>🌑 Sin sombra</option>
@@ -1631,6 +2033,22 @@ function actualizarEditor() {
             ${layoutOptions}
         </select>
     </div>`;
+
+    // Selector de Tipo de Diapositiva si usa Layout Estándar
+    if (s.layout === 'default' && activeSlideIndex > 0 && activeSlideIndex < currentSlides.length - 1) {
+        html += `
+        <div class="field" style="border-bottom: 1px solid var(--border2); padding-bottom: 20px; margin-bottom: 20px;">
+            <label class="flabel">Tipo de Diapositiva (Contenido)</label>
+            <select onchange="cambiarTipoSlide(this.value)">
+                <option value="regla" ${s.type === 'regla' ? 'selected' : ''}>Regla o Principio</option>
+                <option value="tesis" ${s.type === 'tesis' ? 'selected' : ''}>Tesis (Fondo Teal)</option>
+                <option value="insight" ${s.type === 'insight' ? 'selected' : ''}>Insight (Fondo Crema)</option>
+                <option value="bento" ${s.type === 'bento' ? 'selected' : ''}>Cuadrícula Bento (4 pasos)</option>
+                <option value="hero-foto" ${s.type === 'hero-foto' ? 'selected' : ''}>Hero Foto (Fondo Completo)</option>
+                <option value="hero-texto" ${s.type === 'hero-texto' ? 'selected' : ''}>Hero Texto (Liso)</option>
+            </select>
+        </div>`;
+    }
 
     // Si tiene un layout específico en la base de datos de layouts, usar sus campos definidos
     const layout = LAYOUTS_DB[s.layout];
@@ -1683,7 +2101,10 @@ function actualizarEditor() {
             } else {
                 html += `
                 <div class="field">
-                    <label class="flabel">${field.label}</label>
+                    <label class="flabel">
+                        ${field.label}
+                        ${WORD_LIMITS[field.key] !== undefined ? `<span id="wordcount-${field.key}" style="font-size: 11px; float: right; font-weight: 500; color: var(--text3);"></span>` : ''}
+                    </label>
                     ${renderTextField(field.key, val, isTextArea)}
                 </div>`;
             }
@@ -1713,7 +2134,10 @@ function actualizarEditor() {
             } else {
                 html += `
                 <div class="field">
-                    <label class="flabel">${key}</label>
+                    <label class="flabel">
+                        ${key}
+                        ${WORD_LIMITS[key] !== undefined ? `<span id="wordcount-${key}" style="font-size: 11px; float: right; font-weight: 500; color: var(--text3);"></span>` : ''}
+                    </label>
                     ${renderTextField(key, s[key], isTextArea)}
                 </div>`;
             }
@@ -1825,14 +2249,14 @@ function actualizarEditor() {
             <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:8px; width:100%;">
                 ${LOGOS_DB.map(logo => {
                     const isSelected = (s.logo_file || (s.logo_theme === 'oscuro' ? 'Logo Completo Oscuro.png' : 'Logo Completo Blanco.png')) === logo;
-                    const isDarkThemeLogo = logo.toLowerCase().includes('oscuro') || logo.toLowerCase().includes('sello oscuro') || logo.toLowerCase().includes('símbolo oscuro') || logo.toLowerCase().includes('sello.png');
+                    const isDarkThemeLogo = logo.toLowerCase().includes('oscuro') || logo.toLowerCase().includes('dark');
                     const cardBg = isDarkThemeLogo ? '#F4F5F0' : '#14262D';
                     const activeBorder = isSelected ? 'border: 2px solid var(--accent);' : 'border: 2px solid var(--border2); opacity:0.7;';
                     return `
                     <div onclick="actualizarDato('logo_file', '${logo}'); actualizarEditor();" 
                          style="height:55px; background:${cardBg}; border-radius:var(--r-sm); padding:4px; cursor:pointer; display:flex; align-items:center; justify-content:center; ${activeBorder} transition:all 0.2s; position:relative;"
                          title="${logo}">
-                        <img src="../assets/logos/${logo}" style="max-width:100%; max-height:100%; object-fit:contain;">
+                        <img src="../assets/logos/${encodeURIComponent(logo)}" style="max-width:100%; max-height:100%; object-fit:contain;">
                     </div>`;
                 }).join('')}
             </div>
@@ -1897,10 +2321,21 @@ function actualizarEditor() {
     </div>`;
 
     form.innerHTML = html;
+    
+    // Calcular contadores de palabras inicialmente
+    Object.keys(s).forEach(key => {
+        if (WORD_LIMITS[key] !== undefined) {
+            updateWordCounter(key, s[key] || '');
+        }
+    });
 }
 
 function actualizarDato(key, value) {
     currentSlides[activeSlideIndex][key] = value;
+    
+    // Update word counter for this key in real-time
+    updateWordCounter(key, value);
+    
     actualizarPreview(); // Render en tiempo real
     
     // Actualizar lista sin perder foco (debounced idealmente, pero así funciona)
@@ -1909,13 +2344,102 @@ function actualizarDato(key, value) {
     if (listItems[activeSlideIndex]) {
         listItems[activeSlideIndex].textContent = `${activeSlideIndex+1}. ${title.substring(0,30)}...`;
     }
+    saveActiveDraft();
 }
 
 function actualizarPreview() {
-    const s = currentSlides[activeSlideIndex];
-    const wrapper = document.getElementById('preview-wrapper');
-    wrapper.innerHTML = buildSlideHTML(s, activeSlideIndex, currentSlides.length);
-    wrapper.style.transform = `scale(${currentZoom})`;
+    const container = document.getElementById('preview-slides-area');
+    if (!container) return;
+    
+    // Guardar posición de scroll anterior para evitar brincos al escribir
+    const prevScrollLeft = container.scrollLeft;
+    const prevScrollTop = container.scrollTop;
+    
+    container.className = `mode-${previewMode}`;
+    container.innerHTML = '';
+    
+    if (!currentSlides || currentSlides.length === 0) {
+        container.innerHTML = `<div style="text-align:center; color:var(--text3); padding:50px; font-size:14px; grid-column: 1/-1;"><i class="ti ti-carousel-horizontal" style="font-size:48px; color:var(--border2); display:block; margin:0 auto 15px auto;"></i>Genera o carga un carrusel para ver la vista previa.</div>`;
+        return;
+    }
+    
+    if (previewMode === 'single') {
+        const s = currentSlides[activeSlideIndex];
+        const slideHTML = buildSlideHTML(s, activeSlideIndex, currentSlides.length);
+        
+        // Single focused slide card
+        const cardWidth = 1080 * currentZoom;
+        const cardHeight = 1350 * currentZoom;
+        
+        container.innerHTML = `
+        <div class="preview-card active" style="width: ${cardWidth}px; height: ${cardHeight}px; overflow: hidden; flex-shrink:0; margin: auto;">
+            <div style="position: absolute; left: 0; top: 0; width: 1080px; height: 1350px; transform: scale(${currentZoom}); transform-origin: top left; pointer-events: none;">
+                ${slideHTML}
+            </div>
+        </div>`;
+    } else if (previewMode === 'filmstrip') {
+        // Horizontal scroll deck, scale 0.30
+        let activeCard = null;
+        currentSlides.forEach((s, idx) => {
+            const slideHTML = buildSlideHTML(s, idx, currentSlides.length);
+            const isActive = idx === activeSlideIndex;
+            
+            const card = document.createElement('div');
+            card.className = `preview-card ${isActive ? 'active' : ''}`;
+            card.style.width = '324px'; // 1080 * 0.30
+            card.style.height = '405px'; // 1350 * 0.30
+            card.style.overflow = 'hidden';
+            card.onclick = () => seleccionarSlide(idx);
+            
+            card.innerHTML = `
+            <div style="position: absolute; left: 0; top: 0; width: 1080px; height: 1350px; transform: scale(0.30); transform-origin: top left; pointer-events: none;">
+                ${slideHTML}
+            </div>`;
+            
+            container.appendChild(card);
+            if (isActive) {
+                activeCard = card;
+            }
+        });
+        
+        // Restaurar scroll position de forma inmediata
+        container.scrollLeft = prevScrollLeft;
+        
+        // Auto scroll to active slide on explicit navigation
+        if (activeCard && window.autoScrollPending) {
+            setTimeout(() => {
+                activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }, 50);
+            window.autoScrollPending = false;
+        }
+    } else if (previewMode === 'grid') {
+        // Birds-eye overview, scale 0.20
+        currentSlides.forEach((s, idx) => {
+            const slideHTML = buildSlideHTML(s, idx, currentSlides.length);
+            const isActive = idx === activeSlideIndex;
+            
+            const card = document.createElement('div');
+            card.className = `preview-card ${isActive ? 'active' : ''}`;
+            card.style.width = '216px'; // 1080 * 0.20
+            card.style.height = '270px'; // 1350 * 0.20
+            card.style.overflow = 'hidden';
+            card.onclick = () => seleccionarSlide(idx);
+            
+            card.innerHTML = `
+            <div style="position: absolute; left: 0; top: 0; width: 1080px; height: 1350px; transform: scale(0.20); transform-origin: top left; pointer-events: none;">
+                ${slideHTML}
+            </div>
+            <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.6); color: var(--cream); font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: bold; z-index: 40; pointer-events: none;">
+                #${idx+1}
+            </div>`;
+            
+            container.appendChild(card);
+        });
+        
+        // Restaurar scroll vertical en grid
+        container.scrollTop = prevScrollTop;
+    }
+    
     actualizarLayoutTip();
 }
 
@@ -1954,24 +2478,68 @@ function actualizarLayoutTip() {
     }
 }
 
+function switchRightPanel(panel) {
+    const editor = document.getElementById('view-editor-active-slide');
+    const sidebar = document.getElementById('view-editor-sidebar');
+    const headerBtn = document.getElementById('btn-toggle-panels');
+    
+    if (panel === 'list') {
+        editor.style.display = 'none';
+        sidebar.style.display = 'flex';
+        if (headerBtn) {
+            headerBtn.innerHTML = '<i class="ti ti-edit"></i> Ver Editor de Slide';
+        }
+    } else {
+        editor.style.display = 'flex';
+        sidebar.style.display = 'none';
+        if (headerBtn) {
+            headerBtn.innerHTML = '<i class="ti ti-layout-grid"></i> Ver Diapositivas';
+        }
+    }
+}
+
+function toggleRightPanel() {
+    const editor = document.getElementById('view-editor-active-slide');
+    if (editor && editor.style.display === 'none') {
+        switchRightPanel('editor');
+    } else {
+        switchRightPanel('list');
+    }
+}
+
 function zoom(delta) {
     currentZoom = Math.max(0.2, Math.min(1, currentZoom + delta));
     actualizarPreview();
 }
 
 function volverGenerador() {
-    document.getElementById('view-editor').style.display = 'none';
+    document.getElementById('view-editor-active-slide').style.display = 'none';
+    document.getElementById('view-editor-sidebar').style.display = 'none';
+    document.getElementById('view-editor-workspace').style.display = 'none';
+    if (document.getElementById('view-editor-preview-card')) {
+        document.getElementById('view-editor-preview-card').style.display = 'none';
+    }
+    if (document.getElementById('btn-toggle-panels')) {
+        document.getElementById('btn-toggle-panels').style.display = 'none';
+    }
+    document.getElementById('generator-preview-placeholder').style.display = 'flex';
     document.getElementById('view-generator').style.display = 'block';
+    
     document.getElementById('btn-exportar').style.display = 'none';
     document.getElementById('btn-guardar').style.display = 'none';
     document.getElementById('preview-nav').style.display = 'none';
+    document.getElementById('status-selector-container').style.display = 'none';
 }
 
 function reiniciar() {
     volverGenerador();
     document.getElementById('gen-tema').value = '';
     currentSlides = [];
-    document.getElementById('preview-wrapper').innerHTML = '';
+    currentCarruselId = null;
+    linkedIdeaId = null;
+    currentStatus = 'en_creacion';
+    document.getElementById('preview-slides-area').innerHTML = '';
+    localStorage.removeItem('carousel_studio_draft');
 }
 
 // --- EXPORTACIÓN ---
@@ -2073,9 +2641,106 @@ async function saveCarrusel() {
         if (!detail) detail = typeof err === 'object' ? JSON.stringify(err) : String(err);
         showToast(`⚠️ Error al guardar en Supabase: ${detail}`);
     }
+    saveActiveDraft();
+}
+
+function saveActiveDraft() {
+    console.log("[Draft] saveActiveDraft invocado. Slides:", currentSlides?.length, "Status:", currentStatus, "ID:", currentCarruselId);
+    if (!currentSlides || currentSlides.length === 0) {
+        console.log("[Draft] No hay slides, eliminando borrador.");
+        localStorage.removeItem('carousel_studio_draft');
+        return;
+    }
+    
+    if (currentStatus === 'listo' || currentStatus === 'publicado') {
+        console.log("[Draft] Estado definitivo (" + currentStatus + "), eliminando borrador.");
+        localStorage.removeItem('carousel_studio_draft');
+        return;
+    }
+    
+    try {
+        const draft = {
+            slides: currentSlides,
+            carruselId: currentCarruselId,
+            status: currentStatus,
+            linkedIdeaId: linkedIdeaId,
+            pilar: document.getElementById('editor-pilar')?.value || document.getElementById('gen-pilar')?.value || '',
+            objetivo: document.getElementById('editor-objetivo')?.value || document.getElementById('gen-objetivo')?.value || '',
+            emocion: document.getElementById('editor-emocion')?.value || document.getElementById('gen-emocion')?.value || ''
+        };
+        
+        localStorage.setItem('carousel_studio_draft', JSON.stringify(draft));
+        console.log("[Draft] Borrador guardado con éxito:", draft);
+    } catch (err) {
+        console.error("[Draft] Error al guardar borrador:", err);
+    }
+}
+
+function restoreActiveDraft() {
+    console.log("[Draft] restoreActiveDraft invocado.");
+    const raw = localStorage.getItem('carousel_studio_draft');
+    if (!raw) {
+        console.log("[Draft] No hay borrador en localStorage.");
+        return;
+    }
+    
+    try {
+        const draft = JSON.parse(raw);
+        console.log("[Draft] Borrador obtenido de localStorage:", draft);
+        if (draft && draft.slides && draft.slides.length > 0) {
+            currentSlides = draft.slides;
+            currentCarruselId = draft.carruselId || null;
+            currentStatus = draft.status || 'en_creacion';
+            linkedIdeaId = draft.linkedIdeaId || null;
+            
+            // Show editor UI
+            document.getElementById('view-generator').style.display = 'none';
+            document.getElementById('view-editor-active-slide').style.display = 'flex';
+            document.getElementById('view-editor-sidebar').style.display = 'none';
+            document.getElementById('view-editor-workspace').style.display = 'flex';
+            if (document.getElementById('view-editor-preview-card')) {
+                document.getElementById('view-editor-preview-card').style.display = 'flex';
+            }
+            if (document.getElementById('btn-toggle-panels')) {
+                document.getElementById('btn-toggle-panels').style.display = 'block';
+                document.getElementById('btn-toggle-panels').innerHTML = '<i class="ti ti-layout-grid"></i> Ver Diapositivas';
+            }
+            document.getElementById('generator-preview-placeholder').style.display = 'none';
+            
+            document.getElementById('btn-exportar').style.display = 'block';
+            document.getElementById('btn-guardar').style.display = 'block';
+            document.getElementById('status-selector-container').style.display = 'flex';
+            document.getElementById('piece-status').value = currentStatus;
+            document.getElementById('btn-assets-manager').style.display = 'block';
+            
+            // Restore dropdown selections
+            if (draft.pilar) {
+                document.getElementById('gen-pilar').value = draft.pilar;
+                document.getElementById('editor-pilar').value = draft.pilar;
+            }
+            if (draft.objetivo) {
+                document.getElementById('gen-objetivo').value = draft.objetivo;
+                document.getElementById('editor-objetivo').value = draft.objetivo;
+            }
+            if (draft.emocion) {
+                document.getElementById('gen-emocion').value = draft.emocion;
+                document.getElementById('editor-emocion').value = draft.emocion;
+            }
+            
+            renderListaSlides();
+            setPreviewMode('filmstrip');
+            seleccionarSlide(0);
+            
+            showToast('Borrador restaurado automáticamente 🔄');
+            console.log("[Draft] Borrador restaurado con éxito en la interfaz.");
+        }
+    } catch (e) {
+        console.error("[Draft] Error al restaurar borrador:", e);
+    }
 }
 
 async function loadCarrusel(id) {
+    console.log("[Load] loadCarrusel invocado con ID:", id);
     try {
         const { data, error } = await supabase
             .from('content_pieces')
@@ -2093,15 +2758,35 @@ async function loadCarrusel(id) {
                 
                 // Show editor view
                 document.getElementById('view-generator').style.display = 'none';
-                document.getElementById('view-editor').style.display = 'flex';
+                document.getElementById('view-editor-active-slide').style.display = 'flex';
+                document.getElementById('view-editor-sidebar').style.display = 'none';
+                document.getElementById('view-editor-workspace').style.display = 'flex';
+                if (document.getElementById('view-editor-preview-card')) {
+                    document.getElementById('view-editor-preview-card').style.display = 'flex';
+                }
+                if (document.getElementById('btn-toggle-panels')) {
+                    document.getElementById('btn-toggle-panels').style.display = 'block';
+                    document.getElementById('btn-toggle-panels').innerHTML = '<i class="ti ti-layout-grid"></i> Ver Diapositivas';
+                }
+                document.getElementById('generator-preview-placeholder').style.display = 'none';
+                
                 document.getElementById('btn-exportar').style.display = 'block';
                 document.getElementById('btn-guardar').style.display = 'block';
-                document.getElementById('preview-nav').style.display = 'flex';
+                document.getElementById('status-selector-container').style.display = 'flex';
+                document.getElementById('piece-status').value = currentStatus;
                 document.getElementById('btn-assets-manager').style.display = 'block';
                 
+                // Sincronizar dropdowns del sidebar
+                if (data.pillar) document.getElementById('gen-pilar').value = data.pillar;
+                document.getElementById('editor-pilar').value = document.getElementById('gen-pilar').value;
+                document.getElementById('editor-objetivo').value = document.getElementById('gen-objetivo').value;
+                document.getElementById('editor-emocion').value = document.getElementById('gen-emocion').value;
+                
                 renderListaSlides();
+                setPreviewMode('filmstrip');
                 seleccionarSlide(0);
                 showToast('Carrusel cargado de Supabase ✅');
+                saveActiveDraft();
             }
         }
     } catch (err) {
@@ -2126,11 +2811,13 @@ function showToast(msg) {
 
 // --- INITIALIZATION ---
 async function init() {
+    console.log("[Init] Inicializando Carousel Studio...");
     await loadAssets();
     
     // Check pending transfer
     const pending = localStorage.getItem('pending_transfer_idea');
     if (pending) {
+        console.log("[Init] Detectada transferencia de idea pendiente:", pending);
         try {
             const data = JSON.parse(pending);
             if (document.getElementById('gen-tema')) {
@@ -2138,12 +2825,12 @@ async function init() {
             }
             
             const pilarMap = {
-                'contrarian / mitos': 'mitos',
-                'educación premium': 'mitos',
-                'transformación de vida': 'mindset',
-                'autoridad humana': 'autoridad',
-                'validación emocional': 'mindset',
-                'conversión directa': 'autoridad'
+                'validación emocional': 'Validación emocional',
+                'educación premium': 'Educación premium',
+                'contrarian / mitos': 'Contrarian / Mitos',
+                'autoridad humana': 'Autoridad humana',
+                'transformación de vida': 'Transformación de vida',
+                'conversión directa': 'Conversión directa'
             };
             const key = data.pilar ? data.pilar.toLowerCase() : '';
             if (document.getElementById('gen-pilar')) {
@@ -2153,10 +2840,10 @@ async function init() {
             linkedIdeaId = data.idea_id || null;
             
             // Auto trigger generation!
-            generarCarrusel();
+            generarCarrusel(true);
             
         } catch (e) {
-            console.error("Error reading pending transfer:", e);
+            console.error("[Init] Error al procesar transferencia pendiente:", e);
         } finally {
             localStorage.removeItem('pending_transfer_idea');
         }
@@ -2164,12 +2851,16 @@ async function init() {
         // Check url parameter or pending localStorage edit ID
         const params = new URLSearchParams(window.location.search);
         let carruselId = params.get('id');
+        console.log("[Init] ID de URL:", carruselId);
         if (!carruselId) {
             carruselId = localStorage.getItem('pending_edit_piece_id');
+            console.log("[Init] ID de pending_edit_piece_id:", carruselId);
             localStorage.removeItem('pending_edit_piece_id'); // Clear immediately
         }
         if (carruselId) {
             await loadCarrusel(carruselId);
+        } else {
+            restoreActiveDraft();
         }
     }
 }
@@ -2186,6 +2877,20 @@ window.addEventListener('message', (e) => {
         const theme = e.data.payload || e.data.theme;
         if (theme === 'light') document.body.classList.add('light');
         else document.body.classList.remove('light');
+    }
+});
+
+// Atajos de Teclado para Navegación
+window.addEventListener('keydown', (e) => {
+    if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') {
+        return;
+    }
+    if (!currentSlides || currentSlides.length === 0) return;
+    
+    if (e.key === 'ArrowLeft') {
+        prevSlide();
+    } else if (e.key === 'ArrowRight') {
+        nextSlide();
     }
 });
 
@@ -2215,6 +2920,16 @@ window.activeSlideIndex = activeSlideIndex;
 window.IMAGES_METADATA = IMAGES_METADATA;
 window.IMAGES_DB = IMAGES_DB;
 window.LOGOS_DB = LOGOS_DB;
+window.formatTextAccent = formatTextAccent;
+window.setPreviewMode = setPreviewMode;
+window.subirSlideActivo = subirSlideActivo;
+window.bajarSlideActivo = bajarSlideActivo;
+window.eliminarSlideActivo = eliminarSlideActivo;
+window.agregarNuevaSlide = agregarNuevaSlide;
+window.cambiarTipoSlide = cambiarTipoSlide;
+window.cambiarStatus = cambiarStatus;
+window.switchRightPanel = switchRightPanel;
+window.toggleRightPanel = toggleRightPanel;
 </script>
 
 <!-- MODAL DE BIBLIOTECA DE ASSETS -->

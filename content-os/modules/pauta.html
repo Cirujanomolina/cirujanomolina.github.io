@@ -511,6 +511,7 @@
                                     <th>Estado</th>
                                     <th>Diario</th>
                                     <th>Inversión</th>
+                                    <th>Impresiones</th>
                                     <th>Clics (CTR)</th>
                                     <th>Leads (CPL)</th>
                                     <th>Citas</th>
@@ -1094,6 +1095,7 @@
                     <td><span class="badge-status ${cStatusClass}">${c.status}</span></td>
                     <td>$${Math.round(c.budget || 0).toLocaleString('es-CO')}/d (${c.budget_type})</td>
                     <td>$${Math.round(c.spend || 0).toLocaleString('es-CO')}</td>
+                    <td>${c.impressions.toLocaleString('es-CO')}</td>
                     <td>
                         <div>${c.clicks}</div>
                         <div style="font-size:10px;color:var(--text3);">${ctr}% CTR</div>
@@ -1141,6 +1143,7 @@
                         <td><span class="badge-status ${asStatusClass}">${as.status}</span></td>
                         <td>${budgetText}</td>
                         <td>$${Math.round(as.spend || 0).toLocaleString('es-CO')}</td>
+                        <td>${(as.impressions || 0).toLocaleString('es-CO')}</td>
                         <td>
                             <div>${as.clicks}</div>
                             <div style="font-size:10px;color:var(--text3);">${asCtr}% CTR</div>
@@ -1187,6 +1190,7 @@
                             <td><span class="badge-status ${adStatusClass}">${ad.status}</span></td>
                             <td>—</td>
                             <td>$${Math.round(ad.spend || 0).toLocaleString('es-CO')}</td>
+                            <td>${(ad.impressions || 0).toLocaleString('es-CO')}</td>
                             <td>
                                 <div>${ad.clicks}</div>
                                 <div style="font-size:10px;color:var(--text3);">${adCtr}% CTR</div>
