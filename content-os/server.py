@@ -189,6 +189,8 @@ class CustomHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             self.handle_list_folders()
         elif self.path == "/api/upload-avatar":
             self.handle_upload_avatar()
+        elif self.path == "/api/upload-format-image":
+            self.handle_upload_format_image()
         else:
             self.send_error(404, "Endpoint not found")
 
@@ -548,6 +550,45 @@ class CustomHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
             })
         except Exception as e:
             self.send_json_response({"error": f"Fallo al guardar imagen: {str(e)}"}, status=500)
+
+    def handle_upload_format_image(self):
+        try:
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length)
+            req_params = json.loads(post_data.decode('utf-8'))
+        except Exception as e:
+            self.send_json_response({"error": "Petición JSON inválida"}, status=400)
+            return
+
+        filename = req_params.get("filename")
+        base64_data = req_params.get("base64_data")
+        
+        if not filename or not base64_data:
+            self.send_json_response({"error": "Falta el nombre del archivo o los datos base64"}, status=400)
+            return
+
+        safe_filename = os.path.basename(filename)
+        _, ext = os.path.splitext(safe_filename.lower())
+        if ext not in ['.jpg', '.jpeg', '.png', '.webp', '.gif']:
+            self.send_json_response({"error": "Formato de imagen no permitido"}, status=400)
+            return
+
+        formats_dir = os.path.join(DIRECTORY, "assets", "formatos")
+        os.makedirs(formats_dir, exist_ok=True)
+        file_path = os.path.join(formats_dir, safe_filename)
+
+        try:
+            file_bytes = base64.b64decode(base64_data)
+            with open(file_path, "wb") as f:
+                f.write(file_bytes)
+            
+            relative_url = f"/assets/formatos/{safe_filename}"
+            self.send_json_response({
+                "success": True,
+                "url": relative_url
+            })
+        except Exception as e:
+            self.send_json_response({"error": f"Fallo al guardar imagen de formato: {str(e)}"}, status=500)
 
     def send_json_response(self, data, status=200):
         response_bytes = json.dumps(data, ensure_ascii=False).encode('utf-8')

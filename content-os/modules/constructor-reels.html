@@ -853,25 +853,54 @@ select option{background:var(--surface2)}
               <input type="text" id="reel-nombre" placeholder="Ej: Por qué tu cuerpo recupera el peso aunque hagas todo bien">
             </div>
 
-            <div class="frow">
-              <div class="field">
-                <div class="flabel">Emoción central</div>
-                <input type="text" id="reel-emocion" placeholder="Ej: Alivio · Identificación">
-              </div>
-              <div class="field">
-                <div class="flabel">Objetivo psicológico</div>
-                <input type="text" id="reel-obj-p" placeholder="Quitar la culpa...">
+            <div class="field" style="position: relative;">
+              <div class="flabel">Descripción del video <span class="req">*</span></div>
+              <div style="position: relative;">
+                <textarea id="reel-descripcion" rows="4" placeholder="Describe brevemente de qué tratará el video, los puntos clave y el mensaje para que la IA estructurada con la voz de marca complete el resto..." style="padding-bottom: 42px; padding-right: 12px; width: 100%; box-sizing: border-box; display: block;"></textarea>
+                <button class="btn btn-primary" id="btn-fill-ia" onclick="fillReelWithIA()" title="Completar con IA" style="position: absolute; bottom: 8px; right: 8px; width: 34px; height: 34px; border-radius: 50% !important; padding: 0; display: flex; justify-content: center; align-items: center; background: var(--teal); border: 1px solid var(--teal); box-shadow: 0 2px 10px rgba(42,191,176,0.35); cursor: pointer; transition: transform 0.2s ease;">
+                  <i class="ti ti-sparkles" style="font-size: 15px; color: #0f1e24;"></i>
+                </button>
               </div>
             </div>
 
-            <div class="field">
-              <div class="flabel">Objetivo algorítmico</div>
-              <div class="tag-group" id="reel-obj-algo">
-                <div class="tag" onclick="this.classList.toggle('on')">Guardados</div>
-                <div class="tag on" onclick="this.classList.toggle('on')">Compartidos</div>
-                <div class="tag" onclick="this.classList.toggle('on')">DMs</div>
-                <div class="tag" onclick="this.classList.toggle('on')">Comentarios</div>
-                <div class="tag" onclick="this.classList.toggle('on')">Visualización</div>
+            <div class="frow">
+              <div class="field" style="position: relative; display: flex; flex-direction: column; justify-content: flex-start;">
+                <style>
+                  #reel-emocion-select:hover, #reel-obj-p-select:hover,
+                  #reel-emocion-text:focus, #reel-obj-p-text:focus {
+                    border-color: var(--teal) !important;
+                  }
+                </style>
+                <div class="flabel">Emoción central</div>
+                <div style="margin-top: 5px; height: 26px; position: relative;">
+                  <select id="reel-emocion-select" onchange="checkEditableSelect(this, 'reel-emocion-text')" style="width: 100%; height: 26px; padding: 0 24px 0 12px; border-radius: 20px !important; font-size: 11px; background-color: var(--surface2); border: 1px solid var(--border2); color: var(--text2); outline: none; cursor: pointer; transition: all 0.15s; font-weight: 500; -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;10&quot; height=&quot;10&quot; viewBox=&quot;0 0 10 10&quot; fill=&quot;none&quot; stroke=&quot;%2394a3b8&quot;><path d=&quot;M2 4l3 3 3-3&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 8px;">
+                    <option value="" disabled selected>Selecciona una emoción...</option>
+                    <option value="Identificación" style="background-color: var(--bg2); color: var(--text2);">Identificación (Sentirse reflejado/visto)</option>
+                    <option value="Curiosidad" style="background-color: var(--bg2); color: var(--text2);">Curiosidad (Intriga/Secreto revelado)</option>
+                    <option value="Alivio" style="background-color: var(--bg2); color: var(--text2);">Alivio (Solución/Esperanza)</option>
+                    <option value="Urgencia" style="background-color: var(--bg2); color: var(--text2);">Urgencia (Pérdida de salud/Prevención)</option>
+                    <option value="Revelación" style="background-color: var(--bg2); color: var(--text2);">Revelación (Desmitificación profunda)</option>
+                    <option value="otra" style="background-color: var(--bg2); color: var(--text2);">otra</option>
+                  </select>
+                  <input type="text" id="reel-emocion-text" onblur="saveEditableSelect(this, 'reel-emocion-select')" onkeydown="handleEditableKeyDown(event, this, 'reel-emocion-select')" placeholder="Escribe otra emoción..." style="display: none; width: 100%; height: 26px; padding: 0 12px; border-radius: 20px !important; font-size: 11px; background-color: var(--surface2); border: 1px solid var(--border2); color: var(--text); outline: none; transition: all 0.15s;">
+                </div>
+                <input type="hidden" id="reel-emocion" value="">
+              </div>
+              <div class="field" style="position: relative; display: flex; flex-direction: column; justify-content: flex-start;">
+                <div class="flabel">Objetivo psicológico</div>
+                <div style="margin-top: 5px; height: 26px; position: relative;">
+                  <select id="reel-obj-p-select" onchange="checkEditableSelect(this, 'reel-obj-p-text')" style="width: 100%; height: 26px; padding: 0 24px 0 12px; border-radius: 20px !important; font-size: 11px; background-color: var(--surface2); border: 1px solid var(--border2); color: var(--text2); outline: none; cursor: pointer; transition: all 0.15s; font-weight: 500; -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;10&quot; height=&quot;10&quot; viewBox=&quot;0 0 10 10&quot; fill=&quot;none&quot; stroke=&quot;%2394a3b8&quot;><path d=&quot;M2 4l3 3 3-3&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 8px;">
+                    <option value="" disabled selected>Selecciona un objetivo...</option>
+                    <option value="Validar frustración" style="background-color: var(--bg2); color: var(--text2);">Validar frustración (No es tu culpa/Empatía)</option>
+                    <option value="Conectar síntoma-raíz" style="background-color: var(--bg2); color: var(--text2);">Conectar síntoma con la causa raíz</option>
+                    <option value="Desmitificar creencia" style="background-color: var(--bg2); color: var(--text2);">Desmitificar creencia limitante popular</option>
+                    <option value="Dirección accionable" style="background-color: var(--bg2); color: var(--text2);">Dirección clara y accionable</option>
+                    <option value="Generar urgencia" style="background-color: var(--bg2); color: var(--text2);">Generar urgencia (Dolor del statu quo)</option>
+                    <option value="otra" style="background-color: var(--bg2); color: var(--text2);">otra</option>
+                  </select>
+                  <input type="text" id="reel-obj-p-text" onblur="saveEditableSelect(this, 'reel-obj-p-select')" onkeydown="handleEditableKeyDown(event, this, 'reel-obj-p-select')" placeholder="Escribe otro objetivo..." style="display: none; width: 100%; height: 26px; padding: 0 12px; border-radius: 20px !important; font-size: 11px; background-color: var(--surface2); border: 1px solid var(--border2); color: var(--text); outline: none; transition: all 0.15s;">
+                </div>
+                <input type="hidden" id="reel-obj-p" value="">
               </div>
             </div>
 
@@ -900,14 +929,24 @@ select option{background:var(--surface2)}
               </div>
             </div>
 
-            <div class="frow">
-              <div class="field">
-                <div class="flabel">Prioridad</div>
-                <select id="reel-prioridad">
-                  <option>Alta</option>
-                  <option selected>Media</option>
-                  <option>Baja</option>
-                </select>
+            <div class="frow" style="grid-template-columns: 1fr 1fr;">
+              <div class="field" style="display: flex; flex-direction: column; justify-content: flex-start;">
+                <style>
+                  #reel-obj-algo-select:hover {
+                    border-color: var(--teal) !important;
+                  }
+                </style>
+                <div class="flabel">Objetivo algorítmico</div>
+                <div style="margin-top: 5px; height: 26px; position: relative;">
+                  <select id="reel-obj-algo-select" style="height: 26px; padding: 0 24px 0 12px; border-radius: 20px !important; font-size: 11px; background-color: var(--surface2); border: 1px solid var(--border2); color: var(--text2); outline: none; cursor: pointer; transition: all 0.15s; font-weight: 500; width: 100%; -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;10&quot; height=&quot;10&quot; viewBox=&quot;0 0 10 10&quot; fill=&quot;none&quot; stroke=&quot;%2394a3b8&quot;><path d=&quot;M2 4l3 3 3-3&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 8px;">
+                    <option value="Guardados" style="background-color: var(--bg2); color: var(--text2);">Guardados</option>
+                    <option value="Compartidos" selected style="background-color: var(--bg2); color: var(--text2);">Compartidos</option>
+                    <option value="DMs" style="background-color: var(--bg2); color: var(--text2);">DMs</option>
+                    <option value="Comentarios" style="background-color: var(--bg2); color: var(--text2);">Comentarios</option>
+                    <option value="Seguidores" style="background-color: var(--bg2); color: var(--text2);">Seguidores</option>
+                    <option value="Visualización" style="background-color: var(--bg2); color: var(--text2);">Visualización</option>
+                  </select>
+                </div>
               </div>
               <div class="field">
                 <div class="flabel">Plataforma</div>
@@ -920,35 +959,208 @@ select option{background:var(--surface2)}
             </div>
 
             <div class="frow">
-              <div class="field">
+              <div class="field" style="display: flex; flex-direction: column; justify-content: flex-start;">
+                <style>
+                  #reel-fecha:hover, #reel-fecha:focus {
+                    border-color: var(--teal) !important;
+                  }
+                  #reel-fecha::-webkit-calendar-picker-indicator {
+                    filter: invert(0.6);
+                    cursor: pointer;
+                  }
+                </style>
                 <div class="flabel">Fecha publicación</div>
-                <input type="date" id="reel-fecha" onchange="document.getElementById('meta-fecha').textContent=this.value.split('-').slice(1).join('/')">
+                <input type="date" id="reel-fecha" onchange="document.getElementById('meta-fecha').textContent=this.value.split('-').slice(1).join('/')" style="height: 26px; padding: 0 12px; border-radius: 20px !important; font-size: 11px; background-color: var(--surface2); border: 1px solid var(--border2); color: var(--text2); outline: none; transition: all 0.15s; font-weight: 500; width: 100%; margin-top: 5px;">
               </div>
               <div class="field">
-                <div class="flabel">Etapa del funnel</div>
-                <div class="pill-group" id="funnel-g">
-                  <div class="pill on" onclick="setPill(this,'funnel-g')">TOFU</div>
-                  <div class="pill" onclick="setPill(this,'funnel-g')">MOFU</div>
-                  <div class="pill" onclick="setPill(this,'funnel-g')">BOFU</div>
+                <style>
+                  #reel-prioridad-slider {
+                    -webkit-appearance: none;
+                    appearance: none;
+                    width: 100%;
+                    height: 26px;
+                    background: transparent !important;
+                    border: none !important;
+                    box-shadow: none !important;
+                    padding: 0 !important;
+                    outline: none;
+                    cursor: pointer;
+                    margin: 0;
+                  }
+                  /* Webkit Track Style */
+                  #reel-prioridad-slider::-webkit-slider-runnable-track {
+                    height: 26px;
+                    border-radius: 20px;
+                    background: linear-gradient(to right, var(--teal) 0%, #f5935a 50%, #f55a8a 100%);
+                    border: none;
+                  }
+                  /* Firefox Track Style */
+                  #reel-prioridad-slider::-moz-range-track {
+                    height: 26px;
+                    border-radius: 20px;
+                    background: linear-gradient(to right, var(--teal) 0%, #f5935a 50%, #f55a8a 100%);
+                    border: none;
+                  }
+                  /* Webkit Thumb Style */
+                  #reel-prioridad-slider::-webkit-slider-thumb {
+                    -webkit-appearance: none;
+                    appearance: none;
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 50%;
+                    background: #ffffff;
+                    box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+                    transition: transform 0.1s ease;
+                    border: none;
+                    margin-top: 7px; /* Centrado vertical: (26px - 12px)/2 */
+                  }
+                  #reel-prioridad-slider::-webkit-slider-thumb:hover {
+                    transform: scale(1.2);
+                  }
+                  /* Firefox Thumb Style */
+                  #reel-prioridad-slider::-moz-range-thumb {
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 50%;
+                    background: #ffffff;
+                    box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+                    transition: transform 0.1s ease;
+                    border: none;
+                  }
+                  #reel-prioridad-slider::-moz-range-thumb:hover {
+                    transform: scale(1.2);
+                  }
+                </style>
+                <div class="flabel">Prioridad: <span id="prioridad-val" style="color: var(--teal); font-weight: 600;">Media</span></div>
+                <div style="display: flex; align-items: center; gap: 10px; height: 26px; margin-top: 5px;">
+                  <input type="range" id="reel-prioridad-slider" min="1" max="3" value="2" step="1" oninput="updatePrioridadSlider(this.value)">
+                  <input type="hidden" id="reel-prioridad" value="Media">
                 </div>
               </div>
             </div>
 
             <div class="frow">
               <div class="field">
+                <style>
+                  #dia-g {
+                    display: flex;
+                    gap: 6px;
+                    margin-top: 5px;
+                    width: 100%;
+                  }
+                  #dia-g .pill {
+                    flex: 1;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 76px;
+                    font-weight: 600;
+                    font-size: 11px;
+                    border-radius: 8px !important;
+                    padding: 0 !important;
+                    text-align: center;
+                    cursor: pointer;
+                    background: var(--surface2);
+                    border: 1px solid var(--border);
+                    transition: all 0.2s;
+                  }
+                  #dia-g .pill:hover {
+                    border-color: var(--teal-alpha);
+                    background: rgba(42, 191, 176, 0.05);
+                  }
+                  #dia-g .pill.on {
+                    background: var(--teal) !important;
+                    color: #0f1e24 !important;
+                    border-color: var(--teal) !important;
+                  }
+                </style>
                 <div class="flabel">Día recomendado</div>
                 <div class="pill-group" id="dia-g">
-                  <div class="pill on" onclick="setPill(this,'dia-g')">Lun</div>
-                  <div class="pill" onclick="setPill(this,'dia-g')">Mié</div>
-                  <div class="pill" onclick="setPill(this,'dia-g')">Vie</div>
+                  <div class="pill on" style="border-radius: 8px !important;" onclick="setPill(this,'dia-g')">Lun</div>
+                  <div class="pill" style="border-radius: 8px !important;" onclick="setPill(this,'dia-g')">Mar</div>
+                  <div class="pill" style="border-radius: 8px !important;" onclick="setPill(this,'dia-g')">Mié</div>
+                  <div class="pill" style="border-radius: 8px !important;" onclick="setPill(this,'dia-g')">Jue</div>
+                  <div class="pill" style="border-radius: 8px !important;" onclick="setPill(this,'dia-g')">Vie</div>
+                  <div class="pill" style="border-radius: 8px !important;" onclick="setPill(this,'dia-g')">Sáb</div>
+                  <div class="pill" style="border-radius: 8px !important;" onclick="setPill(this,'dia-g')">Dom</div>
                 </div>
               </div>
               <div class="field">
+                <style>
+                  #fase-g {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 8px;
+                    margin-top: 5px;
+                    width: 100%;
+                  }
+                  #fase-g .pill {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 6px;
+                    font-weight: 600;
+                    font-size: 11px;
+                    padding: 8px 12px;
+                    border-radius: 8px !important;
+                    transition: all 0.25s ease;
+                    cursor: pointer;
+                    background: var(--surface2);
+                    border: 1px solid var(--border);
+                  }
+                  /* Custom Hovers per Phase */
+                  #fase-g .pill[data-phase="ignite"]:hover {
+                    background: rgba(42, 191, 176, 0.08);
+                    border-color: rgba(42, 191, 176, 0.4);
+                    color: #2ABFB0;
+                  }
+                  #fase-g .pill[data-phase="authority"]:hover {
+                    background: rgba(168, 85, 247, 0.08);
+                    border-color: rgba(168, 85, 247, 0.4);
+                    color: #c084fc;
+                  }
+                  #fase-g .pill[data-phase="conversion"]:hover {
+                    background: rgba(249, 115, 22, 0.08);
+                    border-color: rgba(249, 115, 22, 0.4);
+                    color: #fb923c;
+                  }
+                  #fase-g .pill[data-phase="consolidacion"]:hover {
+                    background: rgba(59, 130, 246, 0.08);
+                    border-color: rgba(59, 130, 246, 0.4);
+                    color: #60a5fa;
+                  }
+                  /* Active States */
+                  #fase-g .pill[data-phase="ignite"].on {
+                    background: rgba(42, 191, 176, 0.15) !important;
+                    color: #2ABFB0 !important;
+                    border-color: #2ABFB0 !important;
+                    box-shadow: 0 0 10px rgba(42, 191, 176, 0.25);
+                  }
+                  #fase-g .pill[data-phase="authority"].on {
+                    background: rgba(168, 85, 247, 0.15) !important;
+                    color: #c084fc !important;
+                    border-color: #a855f7 !important;
+                    box-shadow: 0 0 10px rgba(168, 85, 247, 0.25);
+                  }
+                  #fase-g .pill[data-phase="conversion"].on {
+                    background: rgba(249, 115, 22, 0.15) !important;
+                    color: #fb923c !important;
+                    border-color: #f97316 !important;
+                    box-shadow: 0 0 10px rgba(249, 115, 22, 0.25);
+                  }
+                  #fase-g .pill[data-phase="consolidacion"].on {
+                    background: rgba(59, 130, 246, 0.15) !important;
+                    color: #60a5fa !important;
+                    border-color: #3b82f6 !important;
+                    box-shadow: 0 0 10px rgba(59, 130, 246, 0.25);
+                  }
+                </style>
                 <div class="flabel">Fase del plan 90 días</div>
                 <div class="pill-group" id="fase-g">
-                  <div class="pill on" onclick="setPill(this,'fase-g')">IGNITE</div>
-                  <div class="pill" onclick="setPill(this,'fase-g')">AUTHORITY</div>
-                  <div class="pill" onclick="setPill(this,'fase-g')">CONVERSION</div>
+                  <div class="pill on" data-phase="ignite" style="border-radius: 8px !important;" onclick="setPill(this,'fase-g')">🔥 IGNITE</div>
+                  <div class="pill" data-phase="authority" style="border-radius: 8px !important;" onclick="setPill(this,'fase-g')">🛡️ AUTHORITY</div>
+                  <div class="pill" data-phase="conversion" style="border-radius: 8px !important;" onclick="setPill(this,'fase-g')">⚡ CONVERSION</div>
+                  <div class="pill" data-phase="consolidacion" style="border-radius: 8px !important;" onclick="setPill(this,'fase-g')">🌊 CONSOLIDACIÓN</div>
                 </div>
               </div>
             </div>
@@ -964,7 +1176,7 @@ select option{background:var(--surface2)}
               </div>
             </div>
 
-            <div class="field">
+            <div class="field" style="display: none;">
               <div class="flabel">Estado</div>
               <div class="status-row" id="reel-estado">
                 <div class="sbtn s0" onclick="setStatus(this)">Idea</div>
@@ -981,7 +1193,7 @@ select option{background:var(--surface2)}
           </div><!-- /card -->
 
           <!-- Columna Derecha: Producción y Copy -->
-          <div style="display:flex; flex-direction:column; gap:16px;">
+          <div style="display:flex; flex-direction:column; gap:16px; min-width: 0;">
 
           <div class="card">
             <div class="card-head">
@@ -989,57 +1201,303 @@ select option{background:var(--surface2)}
             </div>
 
             <div class="field">
+              <style>
+                .fcard-slider-wrapper {
+                  position: relative;
+                  width: 100%;
+                  margin-top: 5px;
+                  overflow: hidden;
+                }
+                /* Fade masks on both edges */
+                .fcard-fade {
+                  position: absolute;
+                  top: 0;
+                  height: 175px;
+                  width: 45px;
+                  pointer-events: none;
+                  z-index: 2;
+                  transition: opacity 0.2s ease;
+                }
+                .fcard-fade.left {
+                  left: 0;
+                  background: linear-gradient(to left, transparent, var(--surface));
+                  opacity: 0; /* Oculto inicialmente (scrollLeft = 0) */
+                }
+                .fcard-fade.right {
+                  right: 0;
+                  background: linear-gradient(to right, transparent, var(--surface));
+                  opacity: 1; /* Visible inicialmente */
+                }
+                .fcard-slider {
+                  display: flex;
+                  gap: 10px;
+                  overflow-x: auto;
+                  padding-bottom: 0px;
+                  scroll-behavior: smooth;
+                  -webkit-overflow-scrolling: touch;
+                  -ms-overflow-style: none;
+                  scrollbar-width: none;
+                }
+                .fcard-slider::-webkit-scrollbar {
+                  display: none;
+                }
+                /* Circular chevron arrow styles */
+                .fcard-slider-arrow {
+                  position: absolute;
+                  top: 50%;
+                  transform: translateY(-50%);
+                  width: 30px;
+                  height: 30px;
+                  border-radius: 50%;
+                  background: var(--teal);
+                  border: none;
+                  color: #0f1e24;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  cursor: pointer;
+                  z-index: 3;
+                  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+                  transition: all 0.2s ease;
+                }
+                .fcard-slider-arrow.left {
+                  left: 6px;
+                }
+                .fcard-slider-arrow.right {
+                  right: 6px;
+                }
+                .fcard-slider-arrow:hover {
+                  transform: translateY(-50%) scale(1.1);
+                  background: #ffffff;
+                }
+                .fcard-slider .fcard {
+                  flex: 0 0 120px; /* Tarjeta vertical (ancho fijo 120px) */
+                  height: 175px; /* Altura total alineada con la cuadrícula anterior */
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: space-between;
+                  padding: 12px 10px;
+                  border-radius: 8px !important;
+                  border: 1px solid var(--border2);
+                  cursor: pointer;
+                  transition: all 0.15s ease;
+                  user-select: none;
+                  background: var(--surface2);
+                  text-align: center;
+                }
+                .fcard-slider .fcard:hover {
+                  border-color: rgba(42, 191, 176, 0.4);
+                  background: var(--surface3);
+                }
+                .fcard-slider .fcard.on {
+                  border-color: var(--teal) !important;
+                  background: var(--teal2) !important;
+                }
+                .fcard-slider .fcard-t {
+                  font-size: 11.5px;
+                  font-weight: 600;
+                  color: var(--text);
+                  margin-bottom: 6px;
+                  line-height: 1.2;
+                }
+                .fcard-slider .fcard-d {
+                  font-size: 10px;
+                  color: var(--text3);
+                  line-height: 1.35;
+                }
+                .fcard-slider .fcard.on .fcard-t {
+                  color: var(--teal) !important;
+                }
+              </style>
               <div class="flabel">Formato de video</div>
-              <div class="fcard-grid" id="reel-formato-video">
-                <div class="fcard on" onclick="setFormat(this)"><div class="fcard-t">Talking head</div><div class="fcard-d">Directo a cámara</div></div>
-                <div class="fcard" onclick="setFormat(this)"><div class="fcard-t">Voiceover + B-roll</div><div class="fcard-d">Voz en off con imágenes</div></div>
-                <div class="fcard" onclick="setFormat(this)"><div class="fcard-t">Pantalla verde</div><div class="fcard-d">Análisis crítico visual</div></div>
-                <div class="fcard" onclick="setFormat(this)"><div class="fcard-t">Documental</div><div class="fcard-d">Estilo cinematográfico</div></div>
-                <div class="fcard" onclick="setFormat(this)"><div class="fcard-t">Ranking de 3</div><div class="fcard-d">Malo vs Bueno vs Excelente</div></div>
-                <div class="fcard" onclick="setFormat(this)"><div class="fcard-t">Metáfora visual</div><div class="fcard-d">Objeto como protagonista</div></div>
+              <div class="fcard-slider-wrapper">
+                <div class="fcard-fade left" id="fade-left"></div>
+                <div class="fcard-fade right" id="fade-right"></div>
+                
+                <button type="button" class="fcard-slider-arrow left" id="arrow-left" style="display: none;" onclick="document.getElementById('reel-formato-video').scrollBy({ left: -140, behavior: 'smooth' })">
+                  <i class="ti ti-chevron-left" style="font-size: 16px; font-weight: bold;"></i>
+                </button>
+
+                <div class="fcard-slider" id="reel-formato-video" onscroll="updateFormatSliderControls()">
+                  <!-- Cargado dinámicamente con JS -->
+                </div>
+
+                <button type="button" class="fcard-slider-arrow right" id="arrow-right" onclick="document.getElementById('reel-formato-video').scrollBy({ left: 140, behavior: 'smooth' })">
+                  <i class="ti ti-chevron-right" style="font-size: 16px; font-weight: bold;"></i>
+                </button>
+
+                <script>
+                  function updateFormatSliderControls() {
+                    const slider = document.getElementById('reel-formato-video');
+                    const fadeLeft = document.getElementById('fade-left');
+                    const fadeRight = document.getElementById('fade-right');
+                    const arrowLeft = document.getElementById('arrow-left');
+                    const arrowRight = document.getElementById('arrow-right');
+                    if (!slider || !fadeLeft || !fadeRight || !arrowLeft || !arrowRight) return;
+                    
+                    const scrollLeft = slider.scrollLeft;
+                    const maxScroll = slider.scrollWidth - slider.clientWidth;
+                    
+                    if (scrollLeft > 3) {
+                      fadeLeft.style.opacity = '1';
+                      arrowLeft.style.display = 'flex';
+                    } else {
+                      fadeLeft.style.opacity = '0';
+                      arrowLeft.style.display = 'none';
+                    }
+                    
+                    if (scrollLeft < maxScroll - 3) {
+                      fadeRight.style.opacity = '1';
+                      arrowRight.style.display = 'flex';
+                    } else {
+                      fadeRight.style.opacity = '0';
+                      arrowRight.style.display = 'none';
+                    }
+                  }
+                  // Inicializar estado de las flechas
+                  setTimeout(updateFormatSliderControls, 500);
+                </script>
               </div>
             </div>
 
-            <div class="field">
-              <div class="flabel">Tipo de edición</div>
-              <div class="tag-group" id="reel-tipo-edicion">
-                <div class="tag" onclick="this.classList.toggle('on')">Emocional lento</div>
-                <div class="tag on" onclick="this.classList.toggle('on')">Contrarian intenso</div>
-                <div class="tag" onclick="this.classList.toggle('on')">Educativo cinematográfico</div>
-                <div class="tag" onclick="this.classList.toggle('on')">Conversacional</div>
+            <div class="frow" style="grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div class="field">
+                <style>
+                  #reel-tipo-edicion {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 6px;
+                    margin-top: 5px;
+                    width: 100%;
+                  }
+                  #reel-tipo-edicion .tag {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 38px;
+                    font-weight: 500;
+                    font-size: 11px;
+                    border-radius: 8px !important;
+                    padding: 0 4px !important;
+                    text-align: center;
+                    cursor: pointer;
+                    background: var(--surface2);
+                    border: 1px solid var(--border);
+                    transition: all 0.2s;
+                    margin: 0;
+                  }
+                </style>
+                <div class="flabel">Tipo de edición</div>
+                <div class="tag-group" id="reel-tipo-edicion">
+                  <div class="tag" onclick="this.classList.toggle('on')">Emocional lento</div>
+                  <div class="tag on" onclick="this.classList.toggle('on')">Contrarian intenso</div>
+                  <div class="tag" onclick="this.classList.toggle('on')">Educativo cinem.</div>
+                  <div class="tag" onclick="this.classList.toggle('on')">Conversacional</div>
+                </div>
+              </div>
+
+              <div class="field">
+                <style>
+                  #dur-group {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 6px;
+                    margin-top: 5px;
+                    width: 100%;
+                  }
+                  #dur-group .pill {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 38px;
+                    font-weight: 500;
+                    font-size: 11px;
+                    border-radius: 8px !important;
+                    padding: 0 !important;
+                    text-align: center;
+                    cursor: pointer;
+                    background: var(--surface2);
+                    border: 1px solid var(--border);
+                    transition: all 0.2s;
+                    margin: 0;
+                  }
+                </style>
+                <div class="flabel">Duración objetivo</div>
+                <div class="pill-group" id="dur-group">
+                  <div class="pill" onclick="setPill(this,'dur-group')">15s</div>
+                  <div class="pill" onclick="setPill(this,'dur-group')">30s</div>
+                  <div class="pill on" onclick="setPill(this,'dur-group')">45s</div>
+                  <div class="pill" onclick="setPill(this,'dur-group')">60s</div>
+                </div>
               </div>
             </div>
 
-            <div class="field">
-              <div class="flabel">Duración objetivo</div>
-              <div class="pill-group" id="dur-group">
-                <div class="pill" onclick="setPill(this,'dur-group')">15s</div>
-                <div class="pill" onclick="setPill(this,'dur-group')">30s</div>
-                <div class="pill on" onclick="setPill(this,'dur-group')">45s</div>
-                <div class="pill" onclick="setPill(this,'dur-group')">60s</div>
-                <div class="pill" onclick="setPill(this,'dur-group')">90s</div>
-              </div>
-            </div>
 
-            <div class="field">
-              <div class="flabel">Objetivo algorítmico</div>
-              <div class="tag-group">
-                <div class="tag" onclick="this.classList.toggle('on')">Guardados</div>
-                <div class="tag on" onclick="this.classList.toggle('on')">Compartidos</div>
-                <div class="tag" onclick="this.classList.toggle('on')">DMs</div>
-                <div class="tag" onclick="this.classList.toggle('on')">Comentarios</div>
-                <div class="tag" onclick="this.classList.toggle('on')">Seguidores</div>
-                <div class="tag" onclick="this.classList.toggle('on')">Visualización</div>
-              </div>
-            </div>
 
             <div class="field">
               <div class="flabel">Etapa del funnel</div>
-              <div class="pill-group" id="funnel-group">
-                <div class="pill" onclick="setPill(this,'funnel-group')">TOFU</div>
-                <div class="pill on" onclick="setPill(this,'funnel-group')">MOFU</div>
-                <div class="pill" onclick="setPill(this,'funnel-group')">BOFU</div>
+              <div class="funnel-container" style="display: flex; gap: 16px; align-items: center; margin-top: 8px; background: rgba(0,0,0,0.18); padding: 12px 14px; border-radius: var(--r-lg); border: 1px solid var(--border3);">
+                <!-- Columna del Embudo Visual (SVG continuo 3D) -->
+                <div class="funnel-visual" style="width: 120px; flex-shrink: 0; user-select: none; display: flex; align-items: center; justify-content: center; position: relative;">
+                  <svg viewBox="0 0 120 120" width="112" height="112" style="overflow: visible; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">
+                    <defs>
+                      <linearGradient id="tofuGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#148f82" />
+                        <stop offset="50%" stop-color="#2ABFB0" />
+                        <stop offset="100%" stop-color="#148f82" />
+                      </linearGradient>
+                      <linearGradient id="tofuTopGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#41dfce" />
+                        <stop offset="100%" stop-color="#2ABFB0" />
+                      </linearGradient>
+                      <linearGradient id="mofuGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#1e40af" />
+                        <stop offset="50%" stop-color="#3b82f6" />
+                        <stop offset="100%" stop-color="#1e40af" />
+                      </linearGradient>
+                      <linearGradient id="bofuGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#0f172a" />
+                        <stop offset="50%" stop-color="#1e3a8a" />
+                        <stop offset="100%" stop-color="#0f172a" />
+                      </linearGradient>
+                    </defs>
+
+                    <!-- Segmento BOFU (Abajo) -->
+                    <path class="funnel-svg-layer" data-val="BOFU" onclick="selectFunnelStage('BOFU')" d="M30 70 L90 70 L75 105 C68 110, 52 110, 45 105 Z" fill="url(#bofuGrad)" style="cursor: pointer; transition: all 0.25s; filter: brightness(0.4); opacity: 0.75;" />
+                    <text data-val="BOFU" onclick="selectFunnelStage('BOFU')" x="60" y="93" fill="#ffffff" font-family="Archivo" font-size="9.5" font-weight="800" text-anchor="middle" style="cursor:pointer; opacity: 0.4; pointer-events: none; letter-spacing:0.5px;">BOFU</text>
+
+                    <!-- Segmento MOFU (Medio) -->
+                    <path class="funnel-svg-layer" data-val="MOFU" onclick="selectFunnelStage('MOFU')" d="M15 35 L105 35 L90 71 L30 71 Z" fill="url(#mofuGrad)" style="cursor: pointer; transition: all 0.25s; filter: brightness(0.4); opacity: 0.75;" />
+                    <text data-val="MOFU" onclick="selectFunnelStage('MOFU')" x="60" y="57" fill="#ffffff" font-family="Archivo" font-size="10" font-weight="800" text-anchor="middle" style="cursor:pointer; opacity: 0.4; pointer-events: none; letter-spacing:0.5px;">MOFU</text>
+
+                    <!-- Segmento TOFU (Arriba) -->
+                    <path class="funnel-svg-layer active" data-val="TOFU" onclick="selectFunnelStage('TOFU')" d="M2 15 L118 15 L105 36 L15 36 Z" fill="url(#tofuGrad)" style="cursor: pointer; transition: all 0.25s; filter: brightness(1.1) drop-shadow(0 2px 5px rgba(255,255,255,0.1)); opacity: 1;" />
+                    <!-- Elipse de la cara superior de TOFU (con el agujero) -->
+                    <path class="funnel-svg-layer active" data-val="TOFU" onclick="selectFunnelStage('TOFU')" d="M 2 15 C 2 5, 118 5, 118 15 C 118 25, 2 25, 2 15 Z M 42 15 C 42 18, 78 18, 78 15 C 78 12, 42 12, 42 15 Z" fill="url(#tofuTopGrad)" style="cursor: pointer; transition: all 0.25s; fill-rule: evenodd; filter: brightness(1.1); opacity: 1;" />
+                    <text data-val="TOFU" onclick="selectFunnelStage('TOFU')" x="60" y="30" fill="#0f1e24" font-family="Archivo" font-size="10.5" font-weight="800" text-anchor="middle" style="cursor:pointer; opacity: 1; pointer-events: none; letter-spacing:0.5px;">TOFU</text>
+                  </svg>
+                </div>
+                
+                <!-- Columna de Etiquetas Seleccionables -->
+                <div class="funnel-labels" style="display: flex; flex-direction: column; gap: 6px; flex: 1;">
+                  <!-- TOFU Label -->
+                  <div class="funnel-label-item pill on" data-val="TOFU" onclick="selectFunnelStage('TOFU')" style="cursor: pointer; padding: 4px 6px; border-radius: var(--r-sm); transition: all 0.2s; border: 1px solid transparent; background: rgba(255,255,255,0.02);">
+                    <div style="font-size: 10.5px; font-weight: 700; color: #2ABFB0;">TOFU — Awareness</div>
+                    <div style="font-size: 9px; color: var(--text3); line-height: 1.2; margin-top: 1px;">Atracción inicial. El usuario descubre un problema o dolor.</div>
+                  </div>
+                  <!-- MOFU Label -->
+                  <div class="funnel-label-item pill" data-val="MOFU" onclick="selectFunnelStage('MOFU')" style="cursor: pointer; padding: 4px 6px; border-radius: var(--r-sm); transition: all 0.2s; border: 1px solid transparent;">
+                    <div style="font-size: 10.5px; font-weight: 500; color: var(--text2);">MOFU — Engagement</div>
+                    <div style="font-size: 9px; color: var(--text3); line-height: 1.2; margin-top: 1px;">Consideración. El usuario investiga soluciones.</div>
+                  </div>
+                  <!-- BOFU Label -->
+                  <div class="funnel-label-item pill" data-val="BOFU" onclick="selectFunnelStage('BOFU')" style="cursor: pointer; padding: 4px 6px; border-radius: var(--r-sm); transition: all 0.2s; border: 1px solid transparent;">
+                    <div style="font-size: 10.5px; font-weight: 500; color: var(--text2);">BOFU — Sales &amp; Loyalty</div>
+                    <div style="font-size: 9px; color: var(--text3); line-height: 1.2; margin-top: 1px;">Conversión. Listo para agendar consulta de valoración.</div>
+                  </div>
+                </div>
               </div>
+              <input type="hidden" id="funnel-g" value="TOFU">
             </div>
           </div><!-- /card -->
 
@@ -1749,6 +2207,14 @@ function fillFromAI(r) {
   if (s('reel-ubic'))    s('reel-ubic').value     = r.ubicacion || '';
   if (s('reel-vest'))    s('reel-vest').value      = r.vestuario || '';
 
+  // Formato de video
+  if (r.formato) {
+    document.querySelectorAll('#reel-formato-video .fcard').forEach(f => {
+      const match = f.querySelector('.fcard-t').textContent.trim().toLowerCase() === r.formato.trim().toLowerCase();
+      f.classList.toggle('on', match);
+    });
+  }
+
   // Pilar
   if (r.pilar) {
     const pilarLabels = {
@@ -1769,9 +2235,15 @@ function fillFromAI(r) {
   // Objetivo algoritmico
   if (r.obj_algoritmico) {
     const tags = Array.isArray(r.obj_algoritmico) ? r.obj_algoritmico : [r.obj_algoritmico];
-    document.querySelectorAll('#reel-obj-algo .tag').forEach(t => {
-      t.classList.toggle('on', tags.some(tag => t.textContent.trim().toLowerCase() === tag.toLowerCase()));
-    });
+    const algoSel = s('reel-obj-algo-select');
+    if (algoSel && tags.length > 0) {
+      for (let opt of algoSel.options) {
+        if (opt.value.toLowerCase() === tags[0].toLowerCase()) {
+          algoSel.value = opt.value;
+          break;
+        }
+      }
+    }
   }
 
   // pills
@@ -1781,9 +2253,22 @@ function fillFromAI(r) {
       p.classList.toggle('on', p.textContent.trim().toLowerCase().startsWith(val.toLowerCase().substring(0,3)))
     );
   };
-  if (r.funnel) setP('funnel-g', r.funnel);
+  if (r.funnel) {
+    const hidden = s('funnel-g');
+    if (hidden) hidden.value = r.funnel;
+  }
+  if (r.prioridad) {
+    const hidden = s('reel-prioridad');
+    if (hidden) hidden.value = r.prioridad;
+  }
   if (r.dia)    setP('dia-g', r.dia.substring(0,3));
-  if (r.fase)   setP('fase-g', r.fase);
+  if (r.fase) {
+    const cleanFase = r.fase.replace(/[^\wÁÉÍÓÚÑ]/gi, '').trim().toLowerCase();
+    document.querySelectorAll('#fase-g .pill').forEach(p => {
+      const cleanText = p.textContent.replace(/[^\wÁÉÍÓÚÑ]/gi, '').trim().toLowerCase();
+      p.classList.toggle('on', cleanText === cleanFase);
+    });
+  }
 
   // hooks
   if (r.hook_a) { if(s('ha-tipo'))s('ha-tipo').textContent=r.hook_a.tipo||''; if(s('ha-vis'))s('ha-vis').value=r.hook_a.visual||''; if(s('ha-verb'))s('ha-verb').value=r.hook_a.verbal||''; }
@@ -1887,14 +2372,16 @@ async function loadReel(id) {
       }
       
       // Populate fields from content
+      if (document.getElementById('reel-descripcion')) {
+        document.getElementById('reel-descripcion').value = content.descripcion || '';
+      }
       document.getElementById('reel-emocion').value = content.emocion || '';
       document.getElementById('reel-obj-p').value = content.obj_psicologico || '';
       
-      // Set algoritmico tags
-      const algoTags = content.obj_algoritmico || [];
-      document.querySelectorAll('#reel-obj-algo .tag').forEach(t => {
-        t.classList.toggle('on', algoTags.includes(t.textContent.trim()));
-      });
+      // Set algoritmico select
+      const algoVal = (content.obj_algoritmico && content.obj_algoritmico[0]) || 'Compartidos';
+      const algoSel = document.getElementById('reel-obj-algo-select');
+      if (algoSel) algoSel.value = algoVal;
       
       // Set tema tags
       const temaTags = content.tema || [];
@@ -1909,10 +2396,7 @@ async function loadReel(id) {
       });
       
       // Set funnel pills
-      const funnelVal = content.funnel || 'TOFU';
-      document.querySelectorAll('#funnel-g .pill').forEach(p => {
-        p.classList.toggle('on', p.textContent.trim() === funnelVal);
-      });
+      document.getElementById('funnel-g').value = content.funnel || 'TOFU';
       
       // Set dia pills
       const diaVal = content.dia_recomendado || 'Lun';
@@ -1922,8 +2406,10 @@ async function loadReel(id) {
       
       // Set fase pills
       const faseVal = content.fase_plan || 'IGNITE';
+      const cleanFaseVal = faseVal.replace(/[^\wÁÉÍÓÚÑ]/gi, '').trim().toLowerCase();
       document.querySelectorAll('#fase-g .pill').forEach(p => {
-        p.classList.toggle('on', p.textContent.trim() === faseVal);
+        const cleanText = p.textContent.replace(/[^\wÁÉÍÓÚÑ]/gi, '').trim().toLowerCase();
+        p.classList.toggle('on', cleanText === cleanFaseVal);
       });
       
       document.getElementById('reel-ubic').value = content.ubicacion || '';
@@ -2070,11 +2556,11 @@ async function saveReel() {
   }
   
   // Gather other content_data properties
+  const descripcion = document.getElementById('reel-descripcion')?.value.trim() || '';
   const emocion = document.getElementById('reel-emocion').value.trim();
   const obj_psicologico = document.getElementById('reel-obj-p').value.trim();
   
-  const obj_algoritmico = [];
-  document.querySelectorAll('#reel-obj-algo .tag.on').forEach(t => obj_algoritmico.push(t.textContent.trim()));
+  const obj_algoritmico = [document.getElementById('reel-obj-algo-select').value];
   
   const tema = [];
   document.querySelectorAll('#reel-tema .tag.on').forEach(t => tema.push(t.textContent.trim()));
@@ -2082,9 +2568,10 @@ async function saveReel() {
   const platform_tags = [];
   document.querySelectorAll('#reel-plataforma .tag.on').forEach(t => platform_tags.push(t.textContent.trim()));
   
-  const funnel = document.querySelector('#funnel-g .pill.on')?.textContent || 'TOFU';
+  const funnel = document.getElementById('funnel-g')?.value || 'TOFU';
   const dia_recomendado = document.querySelector('#dia-g .pill.on')?.textContent || 'Lun';
-  const fase_plan = document.querySelector('#fase-g .pill.on')?.textContent || 'IGNITE';
+  const rawFase = document.querySelector('#fase-g .pill.on')?.textContent || 'IGNITE';
+  const fase_plan = rawFase.replace(/[^\wÁÉÍÓÚÑ]/gi, '').trim().toUpperCase();
   
   const ubicacion = document.getElementById('reel-ubic').value.trim();
   const vestuario = document.getElementById('reel-vest').value.trim();
@@ -2164,6 +2651,7 @@ async function saveReel() {
   
   const content_data = {
     ui_state,
+    descripcion,
     emocion,
     obj_psicologico,
     obj_algoritmico,
@@ -2240,6 +2728,291 @@ function showToast(msg) {
   setTimeout(() => t.remove(), 3000);
 }
 
+function makeInputHiddenSync(inputId, selectIdOrSyncFn) {
+  const hidden = document.getElementById(inputId);
+  if (!hidden) return;
+  const originalDescriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+  
+  Object.defineProperty(hidden, 'value', {
+    get: function() {
+      return originalDescriptor.get.call(this);
+    },
+    set: function(val) {
+      originalDescriptor.set.call(this, val);
+      if (typeof selectIdOrSyncFn === 'function') {
+        selectIdOrSyncFn(val);
+      } else {
+        syncHiddenToSelect(inputId, selectIdOrSyncFn);
+      }
+    }
+  });
+}
+
+function syncHiddenToSelect(inputId, selectId) {
+  const hidden = document.getElementById(inputId);
+  const select = document.getElementById(selectId);
+  if (!hidden || !select) return;
+  const val = hidden.value;
+  
+  let found = false;
+  for (let opt of select.options) {
+    if (opt.value === val) {
+      opt.selected = true;
+      found = true;
+      break;
+    }
+  }
+  
+  if (!found && val) {
+    const opt = document.createElement('option');
+    opt.value = val;
+    opt.textContent = val;
+    select.insertBefore(opt, select.options[select.options.length - 1]);
+    opt.selected = true;
+  }
+}
+
+function checkEditableSelect(selectEl, inputId) {
+  if (selectEl.value === 'otra') {
+    selectEl.style.display = 'none';
+    const inputEl = document.getElementById(inputId);
+    inputEl.style.display = 'block';
+    inputEl.value = '';
+    inputEl.focus();
+  } else {
+    const hiddenId = selectEl.id.replace('-select', '');
+    const hidden = document.getElementById(hiddenId);
+    if (hidden) hidden.value = selectEl.value;
+  }
+}
+
+function saveEditableSelect(inputEl, selectId) {
+  const val = inputEl.value.trim();
+  const selectEl = document.getElementById(selectId);
+  const hiddenId = selectId.replace('-select', '');
+  const hidden = document.getElementById(hiddenId);
+  
+  if (val) {
+    let found = false;
+    for (let opt of selectEl.options) {
+      if (opt.value === val) {
+        opt.selected = true;
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      const opt = document.createElement('option');
+      opt.value = val;
+      opt.textContent = val;
+      selectEl.insertBefore(opt, selectEl.options[selectEl.options.length - 1]);
+      opt.selected = true;
+    }
+    if (hidden) hidden.value = val;
+  }
+  inputEl.style.display = 'none';
+  selectEl.style.display = 'block';
+}
+
+function handleEditableKeyDown(event, inputEl, selectId) {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    saveEditableSelect(inputEl, selectId);
+  }
+}
+
+function updatePrioridadSlider(val) {
+  const mapping = {
+    1: { text: 'Baja', color: 'var(--teal)' },
+    2: { text: 'Media', color: '#f5935a' },
+    3: { text: 'Alta', color: '#f55a8a' }
+  };
+  const current = mapping[val] || mapping[2];
+  const label = document.getElementById('prioridad-val');
+  if (label) {
+    label.textContent = current.text;
+    label.style.color = current.color;
+  }
+  const hidden = document.getElementById('reel-prioridad');
+  if (hidden) {
+    const originalDescriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+    originalDescriptor.set.call(hidden, current.text);
+  }
+}
+
+function syncHiddenToPrioridadSlider(val) {
+  const mapping = {
+    'baja': { num: 1, text: 'Baja', color: 'var(--teal)' },
+    'media': { num: 2, text: 'Media', color: '#f5935a' },
+    'alta': { num: 3, text: 'Alta', color: '#f55a8a' }
+  };
+  const normalizedVal = String(val).trim().toLowerCase();
+  const current = mapping[normalizedVal] || mapping['media'];
+  const slider = document.getElementById('reel-prioridad-slider');
+  if (slider) {
+    slider.value = current.num;
+  }
+  const label = document.getElementById('prioridad-val');
+  if (label) {
+    label.textContent = current.text;
+    label.style.color = current.color;
+  }
+}
+
+function selectFunnelStage(val) {
+  const norm = String(val).trim().toUpperCase();
+  document.querySelectorAll('.funnel-svg-layer').forEach(layer => {
+    const isTarget = layer.dataset.val === norm;
+    layer.classList.toggle('active', isTarget);
+    
+    if (isTarget) {
+      layer.style.opacity = '1';
+      layer.style.transform = 'scale(1.05)';
+      if (norm === 'TOFU') {
+        layer.style.boxShadow = '0 4px 12px rgba(42,191,176,0.45)';
+        layer.style.filter = 'brightness(1.1) drop-shadow(0 2px 5px rgba(255,255,255,0.1))';
+      } else if (norm === 'MOFU') {
+        layer.style.boxShadow = '0 4px 12px rgba(91,163,245,0.45)';
+        layer.style.filter = 'brightness(1.1) drop-shadow(0 2px 5px rgba(255,255,255,0.1))';
+      } else if (norm === 'BOFU') {
+        layer.style.boxShadow = '0 4px 12px rgba(26,54,93,0.45)';
+        layer.style.filter = 'brightness(1.1) drop-shadow(0 2px 5px rgba(255,255,255,0.1))';
+      }
+    } else {
+      layer.style.opacity = '0.75';
+      layer.style.transform = 'scale(1)';
+      layer.style.boxShadow = 'none';
+      layer.style.filter = 'brightness(0.4)';
+    }
+  });
+
+  document.querySelectorAll('.funnel-visual text').forEach(text => {
+    const isTarget = text.dataset.val === norm;
+    text.style.opacity = isTarget ? '1' : '0.4';
+    if (norm === 'TOFU') {
+      if (text.dataset.val === 'TOFU') text.style.fill = '#0f1e24';
+    } else {
+      if (text.dataset.val === 'TOFU') text.style.fill = '#ffffff';
+    }
+  });
+
+  document.querySelectorAll('.funnel-label-item').forEach(item => {
+    const isTarget = item.dataset.val === norm;
+    item.classList.toggle('on', isTarget);
+    
+    if (isTarget) {
+      item.style.background = 'rgba(255,255,255,0.02)';
+      item.style.borderColor = 'transparent';
+      const title = item.querySelector('div:first-child');
+      if (title) {
+        title.style.fontWeight = '700';
+        if (norm === 'TOFU') title.style.color = '#2ABFB0';
+        else if (norm === 'MOFU') title.style.color = '#5ba3f5';
+        else if (norm === 'BOFU') title.style.color = '#5ba3f5';
+      }
+    } else {
+      item.style.background = 'transparent';
+      item.style.borderColor = 'transparent';
+      const title = item.querySelector('div:first-child');
+      if (title) {
+        title.style.fontWeight = '500';
+        title.style.color = 'var(--text2)';
+      }
+    }
+  });
+
+  const hidden = document.getElementById('funnel-g');
+  if (hidden) {
+    const originalDescriptor = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+    originalDescriptor.set.call(hidden, norm);
+  }
+}
+
+async function fillReelWithIA() {
+  const nombre = document.getElementById('reel-nombre').value.trim();
+  const descripcion = document.getElementById('reel-descripcion').value.trim();
+  if (!nombre || !descripcion) {
+    showToast('⚠️ El Nombre y la Descripción son obligatorios para generar con IA');
+    return;
+  }
+
+  const btn = document.getElementById('btn-fill-ia');
+  const origHTML = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="ti ti-loader rotate" style="animation: spin 1s linear infinite; display: inline-block;"></i> <span>Analizando estilo y estructurando reel...</span>';
+
+  const sys = `Eres la skill inteligente /creador-de-contenido adaptada exactamente al estilo de marca de Juan Santiago Molina V. (@cirujanomolina), cirujano bariátrico premium.
+  
+Tu estilo se rige por:
+- Enfoque compasivo "anti-dieta restrictiva" y "anti-fuerza de voluntad".
+- Explicar la ciencia de forma simple (70% emoción y empatía / 30% ciencia bariátrica).
+- Conectar los síntomas físicos con dolores emocionales cotidianos (ej: culpabilidad, aislamiento social, frustración médica).
+- Tono premium, clínico pero profundamente humano y cercano.
+
+SOLO responde con JSON puro — sin markdown, sin texto adicional, sin bloques de código.
+
+Estructura exacta:
+{
+  "pilar":"validacion_emocional|educacion_premium|contrarian_mitos|autoridad_humana|transformacion_vida|conversion_directa",
+  "funnel":"TOFU|MOFU|BOFU",
+  "emocion":"emoción central basada en el dolor",
+  "obj_psicologico":"objetivo psicológico en el espectador",
+  "obj_algoritmico":["guardados","compartidos","DMs","comentarios"],
+  "formato":"formato de video compatible",
+  "edicion":"tipo de edición",
+  "duracion":"30s|45s|60s",
+  "ubicacion":"locación",
+  "vestuario":"vestuario",
+  "dia":"Lun|Mar|Mié|Jue|Vie|Sáb|Dom",
+  "fase":"IGNITE|AUTHORITY|CONVERSION",
+  "musica":"ambiente sonoro",
+  "imagen":"tratamiento de imagen y PIPs",
+  "historias":"historias complementarias",
+  "hook_a":{"tipo":"empatía|contrarian|revelación","visual":"visual hook","verbal":"frase de gancho del Dr."},
+  "hook_b":{"tipo":"conexión|desarrollo","visual":"visual hook","verbal":"frase conectora del Dr."},
+  "hook_c":{"tipo":"rehook","visual":"visual hook","verbal":"frase del Dr."},
+  "cta_verbal":"CTA verbal del Dr. Molina",
+  "cta_visual":"texto visual del CTA en pantalla",
+  "cta_kw":"Comenta [PALABRA] y [acción]",
+  "guion":[
+    {"tiempo":"0–2s","tipo":"normal|rehook|pip|cta","dialogo":"texto","plano":"plano y cámara","movimiento":"movimiento","texto":"texto en pantalla","pip":"concepto PIP","notas":"instrucciones al Dr."}
+  ]
+}`;
+
+  const usr = `Nombre del reel: ${nombre}
+Descripción o idea del video: ${descripcion}
+
+Basado en estos datos, completa la estrategia, el pilar de contenido, el objetivo psicológico y algorítmico, y redacta el guión detallado paso a paso con las voces y estilo de @cirujanomolina.`;
+
+  const prompt = `${sys}\n\nDatos de entrada:\n${usr}`;
+  const apiKey = localStorage.getItem('gemini_api_key') || "AIzaSyDoFbsWJclf_aLUT7hJLF9mz86frAlJeec";
+
+  try {
+    const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { response_mime_type: "application/json" }
+      })
+    });
+    
+    if (!res.ok) throw new Error("API error status " + res.status);
+    const data = await res.json();
+    const textoJSON = data.candidates[0].content.parts[0].text.trim().replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
+    const reel = JSON.parse(textoJSON);
+    
+    fillFromAI(reel);
+    showToast('¡Estrategia y Guión completados con IA basados en tu estilo! ✨');
+  } catch(e) {
+    console.error(e);
+    showToast(`⚠️ Error al generar con IA: ${e.message}`);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = origHTML;
+  }
+}
+
 /* ── BIND TO WINDOW FOR INLINE HANDLERS ── */
 window.goStep = goStep;
 window.clickStepbar = clickStepbar;
@@ -2265,9 +3038,99 @@ window.saveReel = saveReel;
 window.openNav = openNav;
 window.closeNav = closeNav;
 window.toggleTheme = toggleTheme;
+window.checkEditableSelect = checkEditableSelect;
+window.saveEditableSelect = saveEditableSelect;
+window.handleEditableKeyDown = handleEditableKeyDown;
+window.updatePrioridadSlider = updatePrioridadSlider;
+window.selectFunnelStage = selectFunnelStage;
+window.fillReelWithIA = fillReelWithIA;
+
+let videoFormatsList = [];
+const DEFAULT_FORMATS = [
+  { name: 'Talking head', description: 'Directo a cámara', image_url: '' },
+  { name: 'Voiceover + B-roll', description: 'Voz en off con imágenes', image_url: '' },
+  { name: 'Pantalla verde', description: 'Análisis crítico visual', image_url: '' },
+  { name: 'Documental', description: 'Estilo cinematográfico', image_url: '' },
+  { name: 'Ranking de 3', description: 'Malo vs Bueno vs Excelente', image_url: '' },
+  { name: 'Metáfora visual', description: 'Objeto como protagonista', image_url: '' }
+];
+
+async function loadDynamicVideoFormats() {
+  try {
+    const { data, error } = await supabase
+      .from('video_formats')
+      .select('*')
+      .order('created_at', { ascending: true });
+
+    if (error) throw error;
+    videoFormatsList = data || [];
+    if (videoFormatsList.length === 0) {
+      videoFormatsList = DEFAULT_FORMATS;
+    }
+  } catch (err) {
+    console.warn("⚠️ No se pudo cargar la tabla 'video_formats' de Supabase. Usando fallback en memoria.", err.message);
+    videoFormatsList = DEFAULT_FORMATS;
+  }
+  renderVideoFormatsSlider();
+}
+
+function renderVideoFormatsSlider() {
+  const container = document.getElementById('reel-formato-video');
+  if (!container) return;
+  container.innerHTML = '';
+  
+  videoFormatsList.forEach((f, idx) => {
+    const card = document.createElement('div');
+    card.className = 'fcard';
+    card.onclick = () => setFormat(card);
+    
+    if (f.image_url) {
+      card.style.backgroundImage = `url('${f.image_url}')`;
+      card.style.backgroundSize = 'cover';
+      card.style.backgroundPosition = 'center';
+      
+      const overlay = document.createElement('div');
+      overlay.style.position = 'absolute';
+      overlay.style.inset = '0';
+      overlay.style.background = 'linear-gradient(to top, rgba(11,22,25,0.95) 45%, rgba(11,22,25,0.3) 100%)';
+      overlay.style.borderRadius = '6px';
+      overlay.style.zIndex = '1';
+      card.appendChild(overlay);
+    }
+    
+    const title = document.createElement('div');
+    title.className = 'fcard-t';
+    title.style.position = 'relative';
+    title.style.zIndex = '2';
+    title.textContent = f.name;
+    card.appendChild(title);
+    
+    const desc = document.createElement('div');
+    desc.className = 'fcard-d';
+    desc.style.position = 'relative';
+    desc.style.zIndex = '2';
+    desc.textContent = f.description;
+    card.appendChild(desc);
+    
+    container.appendChild(card);
+  });
+  
+  // Activar la primera por defecto
+  const firstCard = container.querySelector('.fcard');
+  if (firstCard) firstCard.classList.add('on');
+}
+
+window.loadDynamicVideoFormats = loadDynamicVideoFormats;
+window.renderVideoFormatsSlider = renderVideoFormatsSlider;
 
 /* ── INIT ── */
 async function init() {
+  await loadDynamicVideoFormats();
+  makeInputHiddenSync('reel-emocion', 'reel-emocion-select');
+  makeInputHiddenSync('reel-obj-p', 'reel-obj-p-select');
+  makeInputHiddenSync('reel-prioridad', syncHiddenToPrioridadSlider);
+  makeInputHiddenSync('funnel-g', selectFunnelStage);
+
   renderTasks();
   await loadLinkedIdeas();
   

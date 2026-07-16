@@ -1,1 +1,0 @@
-import{r as t,j as e}from"./index-D6xcl45P.js";const o=()=>(t.useEffect(()=>{document.title="Content OS — Dr. Molina"},[]),e.jsx("div",{className:"w-screen h-screen overflow-hidden bg-[#0a1419]",children:e.jsx("iframe",{src:"/content-os/content-os.html",className:"w-full h-full border-none",title:"Content OS",allow:"clipboard-write"})}));export{o as default};

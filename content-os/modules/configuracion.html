@@ -291,7 +291,7 @@
             <h1 class="vb-title">Configuración del <em>Sistema</em></h1>
             <div class="vb-badges">
                 <span class="vb-badge"><i class="ti ti-settings"></i> Parámetros</span>
-                <span class="vb-badge"><i class="ti ti-key"></i> Clave Gemini</span>
+                <span class="vb-badge"><i class="ti ti-cpu"></i> Motor de IA</span>
                 <span class="vb-badge"><i class="ti ti-folder"></i> Sandbox Assets</span>
             </div>
         </div>
@@ -300,9 +300,10 @@
     </header>
 
     <div class="container fade-in" data-module="configuracion">
-        <!-- TABS DE CONFIGURACIÓN -->
         <div class="tabs" style="margin-bottom: 1.5rem; display: flex; gap: 1rem; border-bottom: 1px solid var(--border2);">
             <button class="tab active" id="tab-system" style="padding: 0.75rem 0.5rem; font-weight: 600; cursor: pointer;"><i class="ti ti-settings"></i> Configuración de Sistema</button>
+            <button class="tab" id="tab-video-formats" style="padding: 0.75rem 0.5rem; font-weight: 600; cursor: pointer;"><i class="ti ti-video"></i> Formatos de Video</button>
+            <button class="tab" id="tab-topics" style="padding: 0.75rem 0.5rem; font-weight: 600; cursor: pointer;"><i class="ti ti-tags"></i> Temas Personalizables</button>
             <button class="tab" id="tab-activity" style="padding: 0.75rem 0.5rem; font-weight: 600; cursor: pointer;"><i class="ti ti-history"></i> Historial de Actividad</button>
         </div>
 
@@ -345,25 +346,161 @@
                     </div>
                 </div>
 
-                <!-- TARJETA 2: CLAVE API GEMINI -->
+                <!-- TARJETA EXTRA: AJUSTES DE APARIENCIA -->
                 <div class="config-card">
-                    <h2 class="config-card-title"><i class="ti ti-key"></i> Clave API Google Gemini</h2>
+                    <h2 class="config-card-title"><i class="ti ti-palette"></i> Apariencia & Tema</h2>
                     <div class="status-box" style="border-left-color: var(--accent);">
-                        <i class="ti ti-lock" style="color:var(--accent); font-size: 14px;"></i>
-                        <strong>Privacidad Garantizada:</strong> Tu API Key se almacena localmente en la memoria de tu navegador (localStorage). Nunca se comparte con servidores externos de terceros.
+                        <i class="ti ti-eye" style="color:var(--accent); font-size: 14px;"></i>
+                        <strong>Estilo Premium:</strong> Elige la visualización que prefieras para trabajar con mayor comodidad.
+                    </div>
+
+                    <div class="field" style="margin-bottom: 0.5rem;">
+                        <label>Tema del Sistema</label>
+                        <select id="theme-selector" style="width: 100%;">
+                            <option value="dark">Modo Oscuro (Predeterminado)</option>
+                            <option value="light">Modo Claro</option>
+                        </select>
                     </div>
                     
-                    <div class="field">
-                        <label>API Key de Gemini</label>
-                        <div style="position:relative; display:flex; gap:8px;">
-                            <input type="password" id="gemini-key" placeholder="AIzaSy...">
-                            <button class="btn btn-outline" style="padding: 10px;" onclick="toggleKeyVisibility()" title="Mostrar/Ocultar"><i class="ti ti-eye" id="eye-icon"></i></button>
+                    <div style="font-size: 11.5px; color: var(--text3); line-height: 1.4; margin-top: 5px;">
+                        El tema se guardará en tu navegador y se sincronizará automáticamente en todas las pestañas y módulos abiertos.
+                    </div>
+                </div>
+
+                <!-- TARJETA 2: MOTOR DE IA MULTI-MODELO -->
+                <div class="config-card" style="grid-column: 1 / -1;">
+                    <h2 class="config-card-title"><i class="ti ti-cpu"></i> Motor de Inteligencia Artificial</h2>
+                    <div class="status-box" style="border-left-color: var(--accent);">
+                        <i class="ti ti-lock" style="color:var(--accent); font-size: 14px;"></i>
+                        <strong>Privacidad Garantizada:</strong> Todas tus API Keys se almacenan localmente en tu navegador (localStorage). Nunca se comparten con servidores externos.
+                    </div>
+
+                    <!-- Selector de Modelo Activo -->
+                    <div style="background:var(--bg2); border:1px solid var(--border2); border-radius:var(--r-sm); padding:14px; display:flex; flex-direction:column; gap:12px;">
+                        <div style="font-size:12px; font-weight:700; color:var(--text); text-transform:uppercase; letter-spacing:0.06em;">Modelo Activo por Defecto</div>
+                        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                            <label id="model-card-flash" style="flex:1; min-width:140px; cursor:pointer; border:2px solid var(--accent); border-radius:var(--r-sm); padding:12px 14px; display:flex; align-items:center; gap:10px; transition:all 0.2s; background:rgba(42,191,176,0.06);">
+                                <input type="radio" name="active-model" value="gemini-flash" id="radio-flash" style="display:none;">
+                                <span style="font-size:20px;">⚡</span>
+                                <div>
+                                    <div style="font-size:13px; font-weight:600; color:var(--text);">Gemini 2.5 Flash</div>
+                                    <div style="font-size:11px; color:var(--text3);">Rápido y eficiente</div>
+                                </div>
+                            </label>
+                            <label id="model-card-pro" style="flex:1; min-width:140px; cursor:pointer; border:2px solid var(--border2); border-radius:var(--r-sm); padding:12px 14px; display:flex; align-items:center; gap:10px; transition:all 0.2s;">
+                                <input type="radio" name="active-model" value="gemini-pro" id="radio-pro" style="display:none;">
+                                <span style="font-size:20px;">🧠</span>
+                                <div>
+                                    <div style="font-size:13px; font-weight:600; color:var(--text);">Gemini 2.5 Pro</div>
+                                    <div style="font-size:11px; color:var(--text3);">Profundo y creativo</div>
+                                </div>
+                            </label>
+                            <label id="model-card-claude" style="flex:1; min-width:140px; cursor:pointer; border:2px solid var(--border2); border-radius:var(--r-sm); padding:12px 14px; display:flex; align-items:center; gap:10px; transition:all 0.2s;">
+                                <input type="radio" name="active-model" value="claude" id="radio-claude" style="display:none;">
+                                <span style="font-size:20px;">✦</span>
+                                <div>
+                                    <div style="font-size:13px; font-weight:600; color:var(--text);">Claude Sonnet</div>
+                                    <div style="font-size:11px; color:var(--text3);">Narrativo y profundo</div>
+                                </div>
+                            </label>
                         </div>
                     </div>
 
-                    <div style="display:flex; gap:10px;">
-                        <button class="btn btn-primary" style="flex:1;" onclick="saveApiKey()"><i class="ti ti-device-floppy"></i> Guardar Clave</button>
-                        <button class="btn btn-outline" style="flex:1;" onclick="testApiKey()" id="btn-test-key"><i class="ti ti-flask"></i> Probar Conexión</button>
+                    <!-- API Keys Row -->
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:16px; margin-top:4px;">
+                        <!-- Gemini Flash Key -->
+                        <div style="background:var(--bg2); border:1px solid var(--border2); border-radius:var(--r-sm); padding:14px; display:flex; flex-direction:column; gap:10px;">
+                            <div style="display:flex; align-items:center; gap:8px; font-size:12px; font-weight:700; color:var(--text);"><span>⚡</span>Gemini Flash <span style="font-size:10px; font-weight:500; color:var(--text3);">(Google AI Studio)</span></div>
+                            <div class="field" style="margin:0;">
+                                <div style="position:relative; display:flex; gap:8px;">
+                                    <input type="password" id="key-gemini-flash" placeholder="AIzaSy..." style="flex:1;">
+                                    <button class="btn btn-outline" style="padding: 10px; flex-shrink:0;" onclick="toggleVis('key-gemini-flash','eye-flash')" title="Mostrar/Ocultar"><i class="ti ti-eye" id="eye-flash"></i></button>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:8px;">
+                                <button class="btn btn-primary" style="flex:1; font-size:12px; padding:7px 10px;" onclick="guardarClave('gemini-flash')"><i class="ti ti-device-floppy"></i> Guardar</button>
+                                <button class="btn btn-outline" style="flex:1; font-size:12px; padding:7px 10px;" onclick="probarClave('gemini-flash')" id="btn-test-flash"><i class="ti ti-flask"></i> Probar</button>
+                            </div>
+                        </div>
+                        <!-- Gemini Pro Key -->
+                        <div style="background:var(--bg2); border:1px solid var(--border2); border-radius:var(--r-sm); padding:14px; display:flex; flex-direction:column; gap:10px;">
+                            <div style="display:flex; align-items:center; gap:8px; font-size:12px; font-weight:700; color:var(--text);"><span>🧠</span>Gemini Pro <span style="font-size:10px; font-weight:500; color:var(--text3);">(Google AI Studio)</span></div>
+                            <div class="field" style="margin:0;">
+                                <div style="position:relative; display:flex; gap:8px;">
+                                    <input type="password" id="key-gemini-pro" placeholder="AIzaSy..." style="flex:1;">
+                                    <button class="btn btn-outline" style="padding: 10px; flex-shrink:0;" onclick="toggleVis('key-gemini-pro','eye-pro')" title="Mostrar/Ocultar"><i class="ti ti-eye" id="eye-pro"></i></button>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:8px;">
+                                <button class="btn btn-primary" style="flex:1; font-size:12px; padding:7px 10px;" onclick="guardarClave('gemini-pro')"><i class="ti ti-device-floppy"></i> Guardar</button>
+                                <button class="btn btn-outline" style="flex:1; font-size:12px; padding:7px 10px;" onclick="probarClave('gemini-pro')" id="btn-test-pro"><i class="ti ti-flask"></i> Probar</button>
+                            </div>
+                        </div>
+                        <!-- Claude Key -->
+                        <div style="background:var(--bg2); border:1px solid var(--border2); border-radius:var(--r-sm); padding:14px; display:flex; flex-direction:column; gap:10px;">
+                            <div style="display:flex; align-items:center; gap:8px; font-size:12px; font-weight:700; color:var(--text);"><span>✦</span>Claude Sonnet <span style="font-size:10px; font-weight:500; color:var(--text3);">(Anthropic)</span></div>
+                            <div class="field" style="margin:0;">
+                                <div style="position:relative; display:flex; gap:8px;">
+                                    <input type="password" id="key-claude" placeholder="sk-ant-api03-..." style="flex:1;">
+                                    <button class="btn btn-outline" style="padding: 10px; flex-shrink:0;" onclick="toggleVis('key-claude','eye-claude')" title="Mostrar/Ocultar"><i class="ti ti-eye" id="eye-claude"></i></button>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:8px;">
+                                <button class="btn btn-primary" style="flex:1; font-size:12px; padding:7px 10px;" onclick="guardarClave('claude')"><i class="ti ti-device-floppy"></i> Guardar</button>
+                                <button class="btn btn-outline" style="flex:1; font-size:12px; padding:7px 10px;" onclick="probarClave('claude')" id="btn-test-claude"><i class="ti ti-flask"></i> Probar</button>
+                            </div>
+                        </div>
+                        <!-- Instagram Scraper (Hybrid Setup) -->
+                        <div style="background:var(--bg2); border:1px solid var(--border2); border-radius:var(--r-sm); padding:14px; display:flex; flex-direction:column; gap:10px;">
+                            <div style="display:flex; align-items:center; gap:8px; font-size:12px; font-weight:700; color:var(--text);"><span>📸</span>Instagram Scraper <span style="font-size:10px; font-weight:500; color:var(--text3);">(Spy System)</span></div>
+                            
+                            <div class="field" style="margin:0;">
+                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Método de Conexión</label>
+                                <select id="insta-method" onchange="toggleInstaFields()" style="width:100%; padding:8px; background:var(--bg); border:1px solid var(--border); border-radius:var(--r-xs); color:var(--text); outline:none;">
+                                    <option value="hikerapi">HikerAPI (Pago/Premium - Seguro, Rápido)</option>
+                                    <option value="session">Instagram Session Cookie (100% Gratis - Requiere Cuenta Señuelo)</option>
+                                </select>
+                            </div>
+
+                            <!-- HikerAPI Field -->
+                            <div id="field-hikerapi" class="field" style="margin:0;">
+                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">HikerAPI Key</label>
+                                <div style="position:relative; display:flex; gap:8px;">
+                                    <input type="password" id="key-hikerapi" placeholder="Clave de HikerAPI..." style="flex:1;">
+                                    <button class="btn btn-outline" style="padding: 10px; flex-shrink:0;" onclick="toggleVis('key-hikerapi','eye-hiker')" title="Mostrar/Ocultar"><i class="ti ti-eye" id="eye-hiker"></i></button>
+                                </div>
+                            </div>
+
+                            <!-- Session Field -->
+                            <div id="field-session" class="field" style="margin:0; display:none;">
+                                <label style="font-size:11px; color:var(--text2); margin-bottom:4px; display:block;">Instagram Session ID (sessionid=...)</label>
+                                <div style="position:relative; display:flex; gap:8px;">
+                                    <input type="password" id="key-instagram-session" placeholder="sessionid=..." style="flex:1;">
+                                    <button class="btn btn-outline" style="padding: 10px; flex-shrink:0;" onclick="toggleVis('key-instagram-session','eye-insta')" title="Mostrar/Ocultar"><i class="ti ti-eye" id="eye-insta"></i></button>
+                                </div>
+                                <p style="font-size:10px; color:var(--text3); margin:4px 0 8px 0; line-height:1.3;">
+                                    ⚠️ <strong>Recomendación:</strong> Crea una cuenta de Instagram secundaria (señuelo). Inicia sesión en ella en tu navegador, obtén las cookies completas y pégalas aquí. Nunca uses tu cuenta personal.
+                                </p>
+                                <!-- Guía de Cookies -->
+                                <details style="background:rgba(255,193,7,0.05); border:1px dashed rgba(255,193,7,0.3); border-radius:var(--r-xs); padding:8px 10px; cursor:pointer; margin-top:4px;">
+                                    <summary style="font-size:11px; font-weight:600; color:#ffb703; list-style:none; display:flex; align-items:center; gap:6px; outline:none; user-select:none;">
+                                        <span>💡</span> ¿Cómo obtener tus Cookies de Instagram?
+                                    </summary>
+                                    <div style="font-size:10px; color:var(--text2); margin-top:8px; line-height:1.4; display:flex; flex-direction:column; gap:6px; cursor:default;" onclick="event.stopPropagation()">
+                                        <p>1. Inicia sesión en Instagram Web en tu navegador con una <strong>cuenta secundaria/señuelo</strong>.</p>
+                                        <p>2. Presiona <code>F12</code> (Chrome/Firefox) y ve a la pestaña <strong>Red (Network)</strong>.</p>
+                                        <p>3. Recarga la página y haz clic en cualquier petición (ej. <code>timeline/</code>, <code>graphql/</code> o que empiece por <code>username/</code>).</p>
+                                        <p>4. En la parte derecha, ve a <strong>Headers (Cabeceras)</strong> y baja hasta <strong>Request Headers (Cabeceras de Petición)</strong>.</p>
+                                        <p>5. Copia todo el valor del campo <strong><code>cookie:</code></strong> (debe empezar con algo como <code>mid=...</code> y contener <code>sessionid=...</code>) y pégalo arriba.</p>
+                                    </div>
+                                </details>
+                            </div>
+
+                            <div style="display:flex; gap:8px;">
+                                <button class="btn btn-primary" style="flex:1; font-size:12px; padding:7px 10px;" onclick="guardarClaveInstagram()"><i class="ti ti-device-floppy"></i> Guardar</button>
+                                <button class="btn btn-outline" style="flex:1; font-size:12px; padding:7px 10px;" onclick="probarClaveInstagram()" id="btn-test-insta-config"><i class="ti ti-flask"></i> Probar</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -381,6 +518,119 @@
                     <button class="btn btn-primary" onclick="rescanAssetsIa()" id="btn-scan-main" style="padding:10px 20px;">
                         <i class="ti ti-wand"></i> Escanear e Indexar con Gemini
                     </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DE FORMATOS DE VIDEO -->
+        <div id="section-video-formats" style="display: none;">
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.5rem; align-items: start; margin-bottom: 2rem;">
+                <!-- Lista de Formatos -->
+                <div class="config-card">
+                    <h2 class="config-card-title"><i class="ti ti-video"></i> Formatos de Video Registrados</h2>
+                    <p style="font-size: 12.5px; color: var(--text2); line-height: 1.4; margin: 0;">
+                        Estos son los formatos disponibles en el Constructor de Reels. Los cambios se guardan directamente en Supabase y son compartidos en tiempo real.
+                    </p>
+                    
+                    <div id="formats-loading" style="text-align: center; padding: 2rem; color: var(--text2);">
+                        <i class="ti ti-loader ti-spin" style="font-size: 1.5rem; color: var(--accent);"></i>
+                        <p style="margin-top: 8px; font-size: 12px;">Cargando formatos de video...</p>
+                    </div>
+
+                    <div id="formats-list-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 10px;">
+                        <!-- Renderizado dinámicamente con JS -->
+                    </div>
+
+                    <div id="formats-empty" style="display: none; text-align: center; padding: 2rem; color: var(--text3); border: 1px dashed var(--border2); border-radius: var(--radius);">
+                        <i class="ti ti-mood-empty" style="font-size: 2rem; color: var(--text3); display: block; margin-bottom: 8px;"></i>
+                        Sin formatos de video creados. Añade uno a la derecha.
+                    </div>
+                </div>
+
+                <!-- Formulario Agregar/Editar Formato -->
+                <div class="config-card">
+                    <h2 class="config-card-title" id="form-format-title"><i class="ti ti-plus"></i> Registrar Formato</h2>
+                    <form id="format-form" onsubmit="event.preventDefault(); saveFormat();" style="display: flex; flex-direction: column; gap: 12px;">
+                        <input type="hidden" id="format-id" value="">
+                        
+                        <div class="field">
+                            <label>Nombre del Formato</label>
+                            <input type="text" id="format-name" placeholder="Ej: Talking head" required>
+                        </div>
+
+                        <div class="field">
+                            <label>Descripción Corta</label>
+                            <input type="text" id="format-desc" placeholder="Ej: Explicación directa a la cámara" required>
+                        </div>
+
+                        <div class="field">
+                            <label>Imagen de Fondo / Miniatura</label>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <input type="text" id="format-image-url" placeholder="URL remota o ruta de archivo local">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <input type="file" id="format-file-input" accept="image/*" style="display: none;" onchange="handleFormatFileChange(this)">
+                                    <button type="button" class="btn btn-outline" style="flex: 1; font-size: 11px; padding: 8px;" onclick="document.getElementById('format-file-input').click()"><i class="ti ti-upload"></i> Subir Imagen Local</button>
+                                    <span id="format-file-name" style="font-size: 11px; color: var(--text3); text-overflow: ellipsis; overflow: hidden; white-space: nowrap; max-width: 140px;">Sin archivo seleccionado</span>
+                                </div>
+                            </div>
+                            <div id="format-preview-box" style="margin-top: 10px; display: none; height: 100px; border-radius: var(--radius); border: 1px solid var(--border2); overflow: hidden; position: relative;">
+                                <img id="format-preview-img" style="width: 100%; height: 100%; object-fit: cover;">
+                                <div style="position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); display: flex; align-items: flex-end; padding: 8px;">
+                                    <span style="font-size: 10px; color: var(--text2);">Previsualización de fondo</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 10px; margin-top: 8px;">
+                            <button type="button" class="btn btn-outline" id="btn-cancel-edit" style="display: none; flex: 1;" onclick="clearFormatForm()">Cancelar</button>
+                            <button type="submit" class="btn btn-primary" id="btn-submit-format" style="flex: 2;"><i class="ti ti-device-floppy"></i> Guardar Formato</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DE TEMAS PERSONALIZABLES -->
+        <div id="section-topics" style="display: none;">
+            <div class="config-grid">
+                <!-- Tarjeta de listado de temas -->
+                <div class="config-card" style="flex: 1.5;">
+                    <h2 class="config-card-title"><i class="ti ti-tags"></i> Temas Activos</h2>
+                    <p style="font-size: 13px; color: var(--text2); margin-top: -5px; margin-bottom: 10px;">
+                        Estos temas clasifican tus ideas, reels y carruseles en el Content-OS.
+                    </p>
+                    
+                    <div id="topics-loading" style="text-align: center; padding: 20px; color: var(--text3);">
+                        <i class="ti ti-loader ti-spin" style="font-size: 24px; margin-bottom: 8px;"></i>
+                        <div>Cargando temas...</div>
+                    </div>
+                    
+                    <div id="topics-empty" style="display: none; text-align: center; padding: 30px; color: var(--text3); border: 1px dashed var(--border2); border-radius: var(--r-sm);">
+                        <i class="ti ti-info-circle" style="font-size: 32px; margin-bottom: 8px; color: var(--border2);"></i>
+                        <div>No hay temas creados aún.</div>
+                    </div>
+
+                    <div id="topics-list-container" style="display: none; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; max-height: 400px; overflow-y: auto; padding-right: 4px;">
+                        <!-- Dinámico -->
+                    </div>
+                </div>
+
+                <!-- Tarjeta de agregar/editar tema -->
+                <div class="config-card" style="flex: 1;">
+                    <h2 class="config-card-title" id="topic-form-title"><i class="ti ti-plus"></i> Crear Nuevo Tema</h2>
+                    <form id="topic-form" onsubmit="event.preventDefault(); saveTopic();">
+                        <input type="hidden" id="topic-id" value="">
+                        
+                        <div class="field" style="margin-bottom: 1rem;">
+                            <label>Nombre del Tema</label>
+                            <input type="text" id="topic-name-input" required placeholder="ej: Manga Gástrica">
+                        </div>
+
+                        <div style="display: flex; gap: 10px; margin-top: 8px;">
+                            <button type="button" class="btn btn-outline" id="btn-cancel-topic-edit" style="display: none; flex: 1;" onclick="clearTopicForm()">Cancelar</button>
+                            <button type="submit" class="btn btn-primary" id="btn-submit-topic" style="flex: 2;"><i class="ti ti-device-floppy"></i> Guardar Tema</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -490,64 +740,272 @@
         window.addEventListener('message', (e) => {
             if (e.data && e.data.type === 'THEME_CHANGE') {
                 document.body.classList.toggle('light', e.data.payload === 'light');
+                const themeSelector = document.getElementById('theme-selector');
+                if (themeSelector) {
+                    themeSelector.value = e.data.payload;
+                }
             }
         });
         window.parent.postMessage({ type: 'IFRAME_READY' }, '*');
 
         // Cargar claves e información al iniciar
         window.addEventListener('DOMContentLoaded', () => {
-            const savedKey = localStorage.getItem('gemini_api_key') || DEFAULT_KEY;
-            document.getElementById('gemini-key').value = savedKey;
-            
+            // Cargar las claves
+            document.getElementById('key-gemini-flash').value = localStorage.getItem('ai_key_gemini_flash') || localStorage.getItem('gemini_api_key') || '';
+            document.getElementById('key-gemini-pro').value   = localStorage.getItem('ai_key_gemini_pro')   || localStorage.getItem('gemini_api_key') || '';
+            document.getElementById('key-claude').value       = localStorage.getItem('ai_key_claude')        || '';
+            document.getElementById('key-hikerapi').value = localStorage.getItem('hikerapi_key') || '';
+            document.getElementById('key-instagram-session').value = localStorage.getItem('instagram_session_id') || '';
+            const activeMethod = localStorage.getItem('instagram_method') || 'hikerapi';
+            document.getElementById('insta-method').value = activeMethod;
+            // Delay toggle just in case the DOM elements are resolving
+            setTimeout(() => {
+                if (typeof window.toggleInstaFields === 'function') {
+                    window.toggleInstaFields();
+                }
+            }, 50);
+
+            // Cargar modelo activo
+            const activeModel = localStorage.getItem('ai_active_model') || 'gemini-flash';
+            const radioEl = document.getElementById(`radio-${activeModel === 'gemini-flash' ? 'flash' : activeModel === 'gemini-pro' ? 'pro' : 'claude'}`);
+            if (radioEl) radioEl.checked = true;
+            actualizarTarjetasModelo(activeModel);
+
+            // Cargar tema activo en el select
+            const cachedTheme = localStorage.getItem('theme_preference') || 'dark';
+            const themeSelector = document.getElementById('theme-selector');
+            if (themeSelector) {
+                themeSelector.value = cachedTheme;
+                document.body.classList.toggle('light', cachedTheme === 'light');
+                themeSelector.addEventListener('change', (e) => {
+                    window.parent.postMessage({ type: 'THEME_UPDATE', payload: e.target.value }, '*');
+                });
+            }
+
+            // Escuchar cambios en los radios
+            document.querySelectorAll('input[name="active-model"]').forEach(radio => {
+                radio.addEventListener('change', () => {
+                    localStorage.setItem('ai_active_model', radio.value);
+                    actualizarTarjetasModelo(radio.value);
+                    showModelToast(radio.value);
+                    window.parent.postMessage({ type: 'API_CONFIG_UPDATE' }, '*');
+                });
+            });
+
             checkBackendConnection();
         });
 
-        window.toggleKeyVisibility = () => {
-            const input = document.getElementById('gemini-key');
-            const icon = document.getElementById('eye-icon');
+        // Iluminar la tarjeta del modelo activo
+        function actualizarTarjetasModelo(model) {
+            const cards = { 'gemini-flash': 'model-card-flash', 'gemini-pro': 'model-card-pro', 'claude': 'model-card-claude' };
+            Object.entries(cards).forEach(([key, id]) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                if (key === model) {
+                    el.style.border = '2px solid var(--accent)';
+                    el.style.background = 'rgba(42,191,176,0.08)';
+                } else {
+                    el.style.border = '2px solid var(--border2)';
+                    el.style.background = 'transparent';
+                }
+            });
+        }
+
+        function showModelToast(model) {
+            const names = { 'gemini-flash': 'Gemini Flash', 'gemini-pro': 'Gemini Pro', 'claude': 'Claude Sonnet' };
+            alert(`Modelo activo cambiado a: ${names[model] || model}`);
+        }
+
+        // ── MULTI-MODEL KEY MANAGEMENT ──
+        window.toggleVis = (inputId, iconId) => {
+            const input = document.getElementById(inputId);
+            const icon  = document.getElementById(iconId);
+            if (!input) return;
             if (input.type === 'password') {
                 input.type = 'text';
-                icon.className = 'ti ti-eye-off';
+                if (icon) icon.className = 'ti ti-eye-off';
             } else {
                 input.type = 'password';
-                icon.className = 'ti ti-eye';
+                if (icon) icon.className = 'ti ti-eye';
             }
         };
+        // Alias retrocompatible
+        window.toggleKeyVisibility = () => window.toggleVis('key-gemini-flash', 'eye-flash');
 
-        window.saveApiKey = () => {
-            const keyVal = document.getElementById('gemini-key').value.trim();
-            if (!keyVal) {
-                alert("Por favor introduce una clave válida.");
-                return;
-            }
-            localStorage.setItem('gemini_api_key', keyVal);
-            alert("Clave API de Gemini guardada correctamente.");
+        window.guardarClave = (model) => {
+            const idMap   = { 'gemini-flash': 'key-gemini-flash', 'gemini-pro': 'key-gemini-pro', 'claude': 'key-claude', 'hikerapi': 'key-hikerapi' };
+            const lsMap   = { 'gemini-flash': 'ai_key_gemini_flash', 'gemini-pro': 'ai_key_gemini_pro', 'claude': 'ai_key_claude', 'hikerapi': 'hikerapi_key' };
+            const nameMap = { 'gemini-flash': 'Gemini Flash', 'gemini-pro': 'Gemini Pro', 'claude': 'Claude Sonnet', 'hikerapi': 'HikerAPI Key' };
+            const keyVal  = document.getElementById(idMap[model])?.value.trim();
+            if (!keyVal) { alert('Por favor introduce una clave válida.'); return; }
+            localStorage.setItem(lsMap[model], keyVal);
+            // Retrocompatibilidad: Flash y Pro también actualizan gemini_api_key para el indexador
+            if (model !== 'claude' && model !== 'hikerapi') localStorage.setItem('gemini_api_key', keyVal);
+            window.parent.postMessage({ type: 'API_CONFIG_UPDATE' }, '*');
+            alert(`Clave de ${nameMap[model]} guardada correctamente.`);
         };
+        // Alias retrocompatible
+        window.saveApiKey = () => window.guardarClave('gemini-flash');
 
-        window.testApiKey = async () => {
-            const keyVal = document.getElementById('gemini-key').value.trim();
-            const btn = document.getElementById('btn-test-key');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="ti ti-loader ti-spin"></i> Conectando...';
+        window.probarClave = async (model) => {
+            const idMap   = { 'gemini-flash': 'key-gemini-flash', 'gemini-pro': 'key-gemini-pro', 'claude': 'key-claude', 'hikerapi': 'key-hikerapi' };
+            const btnMap  = { 'gemini-flash': 'btn-test-flash', 'gemini-pro': 'btn-test-pro', 'claude': 'btn-test-claude', 'hikerapi': 'btn-test-hiker' };
+            const nameMap = { 'gemini-flash': 'Gemini Flash', 'gemini-pro': 'Gemini Pro', 'claude': 'Claude Sonnet', 'hikerapi': 'HikerAPI Key' };
+            const keyVal  = document.getElementById(idMap[model])?.value.trim();
+            const btn     = document.getElementById(btnMap[model]);
+            if (!keyVal) { alert('Primero guarda una clave válida.'); return; }
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="ti ti-loader ti-spin"></i> Probando...';
             btn.disabled = true;
-
             try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={keyVal}`.replace('{keyVal}', keyVal), {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: "Di 'OK' para verificar la conexión de la clave" }] }] })
-                });
-
-                if (res.ok) {
-                    alert("¡Prueba de conexión Exitosa!\nTu API Key de Gemini responde correctamente.");
+                if (model === 'hikerapi') {
+                    const res = await fetch('/api/scrape-instagram', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'test', hikerapiKey: keyVal })
+                    });
+                    const resData = await res.json();
+                    if (res.ok && resData.success) {
+                        alert('¡Conexión con HikerAPI exitosa! ✅ (Clave y cuota válidas)');
+                    } else {
+                        alert(`Error de HikerAPI: ${resData.error || 'Respuesta no válida'}`);
+                    }
+                } else if (model === 'claude') {
+                    const res = await fetch('/api/proxy-claude', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ apiKey: keyVal, promptText: 'Di OK' })
+                    });
+                    if (res.ok) {
+                        alert('¡Conexión con Claude Sonnet exitosa! ✅');
+                    } else {
+                        const err = await res.json();
+                        alert(`Error Claude (HTTP ${res.status}): ` + (err.error?.message || err.error?.type || JSON.stringify(err)));
+                    }
                 } else {
-                    const err = await res.json();
-                    alert("Error en la conexión: " + (err.error?.message || "Código HTTP " + res.status));
+                    const candidates = model === 'gemini-pro' 
+                        ? ['gemini-2.5-pro', 'gemini-1.5-pro-latest', 'gemini-1.5-pro'] 
+                        : ['gemini-2.5-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-flash'];
+                    
+                    let res = null;
+                    let lastError = null;
+                    let successModel = '';
+                    
+                    for (const modelName of candidates) {
+                        const versions = ['v1', 'v1beta'];
+                        for (const apiVer of versions) {
+                            try {
+                                const url = `https://generativelanguage.googleapis.com/${apiVer}/models/${modelName}:generateContent?key={keyVal}`.replace('{keyVal}', keyVal);
+                                const testRes = await fetch(url, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ contents: [{ parts: [{ text: 'Di OK' }] }] })
+                                });
+                                
+                                if (testRes.status === 404) {
+                                    lastError = testRes;
+                                    continue;
+                                }
+                                
+                                if (testRes.status === 429) {
+                                    const errClone = testRes.clone();
+                                    try {
+                                        const errJson = await errClone.json();
+                                        const errMsg = errJson.error?.message || '';
+                                        if (errMsg.includes('limit: 0') || errMsg.includes('free_tier_requests, limit: 0')) {
+                                            lastError = testRes;
+                                            continue;
+                                        }
+                                    } catch (e) {}
+                                }
+                                
+                                res = testRes;
+                                successModel = `${modelName} (${apiVer})`;
+                                break;
+                            } catch (err) {
+                                lastError = err;
+                            }
+                        }
+                        if (res) break;
+                    }
+                    
+                    if (res && res.ok) {
+                        alert(`¡Conexión con ${nameMap[model]} exitosa! ✅\nModelo enlazado: ${successModel}`);
+                    } else if (res) {
+                        const err = await res.json();
+                        alert(`Error ${nameMap[model]} (HTTP ${res.status}): ` + (err.error?.message || JSON.stringify(err)));
+                    } else {
+                        alert(`Error ${nameMap[model]}: El servidor retornó error 404 para todos los modelos candidatos de Google AI Studio.`);
+                    }
                 }
             } catch (e) {
-                alert("Fallo al conectar con Google Gemini: " + e.message);
+                alert('Fallo de conexión: ' + e.message);
             } finally {
-                btn.innerHTML = originalText;
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }
+        };
+        // Alias retrocompatible
+        window.testApiKey = () => window.probarClave('gemini-flash');
+
+        window.toggleInstaFields = () => {
+            const method = document.getElementById('insta-method').value;
+            document.getElementById('field-hikerapi').style.display = method === 'hikerapi' ? 'block' : 'none';
+            document.getElementById('field-session').style.display = method === 'session' ? 'block' : 'none';
+        };
+
+        window.guardarClaveInstagram = () => {
+            const method = document.getElementById('insta-method').value;
+            localStorage.setItem('instagram_method', method);
+            
+            const hikerKey = document.getElementById('key-hikerapi').value.trim();
+            const sessionVal = document.getElementById('key-instagram-session').value.trim();
+            
+            localStorage.setItem('hikerapi_key', hikerKey);
+            localStorage.setItem('instagram_session_id', sessionVal);
+            
+            window.parent.postMessage({ type: 'API_CONFIG_UPDATE' }, '*');
+            alert('Configuración de Instagram guardada correctamente.');
+        };
+
+        window.probarClaveInstagram = async () => {
+            const method = document.getElementById('insta-method').value;
+            const btn = document.getElementById('btn-test-insta-config');
+            const originalHTML = btn.innerHTML;
+            
+            btn.innerHTML = '<i class="ti ti-loader ti-spin"></i> Probando...';
+            btn.disabled = true;
+            
+            try {
+                let payload = { action: 'test' };
+                if (method === 'hikerapi') {
+                    const keyVal = document.getElementById('key-hikerapi').value.trim();
+                    if (!keyVal) { alert('Introduce tu clave HikerAPI Key antes de probar.'); return; }
+                    payload.hikerapiKey = keyVal;
+                } else {
+                    const sessionCookie = document.getElementById('key-instagram-session').value.trim();
+                    if (!sessionCookie) { alert('Introduce tu Instagram Session ID antes de probar.'); return; }
+                    payload.session = sessionCookie;
+                }
+                
+                const res = await fetch('/api/scrape-instagram', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const resData = await res.json();
+                if (res.ok && resData.success) {
+                    alert('¡Conexión de Instagram exitosa! ✅ Funcionando correctamente.');
+                } else {
+                    alert(`Error de Conexión: ${resData.error || 'Respuesta no válida'}`);
+                }
+            } catch (e) {
+                alert('Fallo de conexión: ' + e.message);
+            } finally {
+                btn.innerHTML = originalHTML;
                 btn.disabled = false;
             }
         };
@@ -763,24 +1221,350 @@
 
         // ── CONTROL DE PESTAÑAS Y LOGS DE AUDITORÍA ──
         const tabSystem = document.getElementById('tab-system');
+        const tabVideoFormats = document.getElementById('tab-video-formats');
+        const tabTopics = document.getElementById('tab-topics');
         const tabActivity = document.getElementById('tab-activity');
         const sectionSystem = document.getElementById('section-system');
+        const sectionVideoFormats = document.getElementById('section-video-formats');
+        const sectionTopics = document.getElementById('section-topics');
         const sectionActivity = document.getElementById('section-activity');
+
+        // Formatos de video por defecto (Fallback local en memoria)
+        const DEFAULT_FORMATS = [
+            { id: 'def1', name: 'Talking head', description: 'Directo a cámara', image_url: '' },
+            { id: 'def2', name: 'Voiceover + B-roll', description: 'Voz en off con imágenes', image_url: '' },
+            { id: 'def3', name: 'Pantalla verde', description: 'Análisis crítico visual', image_url: '' },
+            { id: 'def4', name: 'Documental', description: 'Estilo cinematográfico', image_url: '' },
+            { id: 'def5', name: 'Ranking de 3', description: 'Malo vs Bueno vs Excelente', image_url: '' },
+            { id: 'def6', name: 'Metáfora visual', description: 'Objeto como protagonista', image_url: '' }
+        ];
+
+        let videoFormatsList = [];
 
         tabSystem.addEventListener('click', () => {
             tabSystem.classList.add('active');
+            tabVideoFormats.classList.remove('active');
+            tabTopics.classList.remove('active');
             tabActivity.classList.remove('active');
             sectionSystem.style.display = 'block';
+            sectionVideoFormats.style.display = 'none';
+            sectionTopics.style.display = 'none';
             sectionActivity.style.display = 'none';
+        });
+
+        tabVideoFormats.addEventListener('click', () => {
+            tabVideoFormats.classList.add('active');
+            tabSystem.classList.remove('active');
+            tabTopics.classList.remove('active');
+            tabActivity.classList.remove('active');
+            sectionSystem.style.display = 'none';
+            sectionVideoFormats.style.display = 'block';
+            sectionTopics.style.display = 'none';
+            sectionActivity.style.display = 'none';
+            loadVideoFormats();
+        });
+
+        tabTopics.addEventListener('click', () => {
+            tabTopics.classList.add('active');
+            tabSystem.classList.remove('active');
+            tabVideoFormats.classList.remove('active');
+            tabActivity.classList.remove('active');
+            sectionSystem.style.display = 'none';
+            sectionVideoFormats.style.display = 'none';
+            sectionTopics.style.display = 'block';
+            sectionActivity.style.display = 'none';
+            loadTopics();
         });
 
         tabActivity.addEventListener('click', () => {
             tabActivity.classList.add('active');
             tabSystem.classList.remove('active');
+            tabVideoFormats.classList.remove('active');
+            tabTopics.classList.remove('active');
             sectionSystem.style.display = 'none';
+            sectionVideoFormats.style.display = 'none';
+            sectionTopics.style.display = 'none';
             sectionActivity.style.display = 'block';
             loadAuditLogs();
         });
+
+        // ── LÓGICA DE FORMATOS DE VIDEO ──
+        async function loadVideoFormats() {
+            const loading = document.getElementById('formats-loading');
+            const listContainer = document.getElementById('formats-list-container');
+            const empty = document.getElementById('formats-empty');
+
+            loading.style.display = 'block';
+            listContainer.style.display = 'none';
+            empty.style.display = 'none';
+            listContainer.innerHTML = '';
+
+            try {
+                const { data, error } = await supabase
+                    .from('video_formats')
+                    .select('*')
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                videoFormatsList = data || [];
+                if (videoFormatsList.length === 0) {
+                    // Si la tabla está vacía en Supabase, inicializamos con los por defecto
+                    // pero dejamos que el usuario agregue/edite.
+                    videoFormatsList = DEFAULT_FORMATS;
+                }
+            } catch (err) {
+                console.warn("⚠️ Tabla 'video_formats' no disponible en Supabase. Usando fallback en memoria.", err.message);
+                videoFormatsList = DEFAULT_FORMATS;
+            } finally {
+                loading.style.display = 'none';
+                renderVideoFormats();
+            }
+        }
+
+        function renderVideoFormats() {
+            const listContainer = document.getElementById('formats-list-container');
+            const empty = document.getElementById('formats-empty');
+
+            if (videoFormatsList.length === 0) {
+                listContainer.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+
+            listContainer.style.display = 'grid';
+            empty.style.display = 'none';
+
+            videoFormatsList.forEach(format => {
+                const card = document.createElement('div');
+                card.style.position = 'relative';
+                card.style.height = '120px';
+                card.style.borderRadius = 'var(--radius)';
+                card.style.border = '1px solid var(--border2)';
+                card.style.overflow = 'hidden';
+                card.style.display = 'flex';
+                card.style.flexDirection = 'column';
+                card.style.justifyContent = 'flex-end';
+                card.style.padding = '12px';
+                card.style.background = 'var(--surface2)';
+                
+                // Si hay una imagen, la colocamos de fondo con un overlay oscuro
+                if (format.image_url) {
+                    card.style.backgroundImage = `url('${format.image_url}')`;
+                    card.style.backgroundSize = 'cover';
+                    card.style.backgroundPosition = 'center';
+                }
+
+                // Overlay de degradado para legibilidad del texto
+                const overlay = document.createElement('div');
+                overlay.style.position = 'absolute';
+                overlay.style.inset = '0';
+                overlay.style.background = 'linear-gradient(to top, rgba(11,22,25,0.95) 30%, rgba(11,22,25,0.3) 100%)';
+                overlay.style.zIndex = '1';
+                card.appendChild(overlay);
+
+                // Contenido textual
+                const content = document.createElement('div');
+                content.style.position = 'relative';
+                content.style.zIndex = '2';
+                content.innerHTML = `
+                    <div style="font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 2px;">${format.name}</div>
+                    <div style="font-size: 10px; color: var(--text3); line-height: 1.3;">${format.description}</div>
+                `;
+                card.appendChild(content);
+
+                // Botones de acción flotantes en la esquina superior derecha
+                const actions = document.createElement('div');
+                actions.style.position = 'absolute';
+                actions.style.top = '8px';
+                actions.style.right = '8px';
+                actions.style.display = 'flex';
+                actions.style.gap = '4px';
+                actions.style.zIndex = '3';
+
+                // Solo permitimos eliminar/editar formatos que no sean del fallback puro (a menos que provengan de Supabase)
+                // Para simplificar, permitimos editar y eliminar cualquiera.
+                
+                // Botón Editar
+                const editBtn = document.createElement('button');
+                editBtn.className = 'btn btn-outline';
+                editBtn.style.padding = '4px';
+                editBtn.style.borderRadius = '4px';
+                editBtn.style.fontSize = '10px';
+                editBtn.style.background = 'rgba(0,0,0,0.6)';
+                editBtn.innerHTML = '<i class="ti ti-pencil" style="font-size:11px;"></i>';
+                editBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    editFormat(format);
+                };
+                actions.appendChild(editBtn);
+
+                // Botón Eliminar (no se muestra para fallbacks por defecto si no son de Supabase reales)
+                const isRealSupabase = format.id && !format.id.startsWith('def');
+                if (isRealSupabase) {
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'btn btn-outline';
+                    deleteBtn.style.padding = '4px';
+                    deleteBtn.style.borderRadius = '4px';
+                    deleteBtn.style.fontSize = '10px';
+                    deleteBtn.style.borderColor = 'rgba(231, 76, 60, 0.4)';
+                    deleteBtn.style.color = '#e74c3c';
+                    deleteBtn.style.background = 'rgba(0,0,0,0.6)';
+                    deleteBtn.innerHTML = '<i class="ti ti-trash" style="font-size:11px;"></i>';
+                    deleteBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        deleteFormat(format.id, format.name);
+                    };
+                    actions.appendChild(deleteBtn);
+                }
+
+                card.appendChild(actions);
+                listContainer.appendChild(card);
+            });
+        }
+
+        window.editFormat = (format) => {
+            document.getElementById('form-format-title').innerHTML = `<i class="ti ti-pencil"></i> Editar Formato`;
+            document.getElementById('format-id').value = format.id;
+            document.getElementById('format-name').value = format.name;
+            document.getElementById('format-desc').value = format.description;
+            document.getElementById('format-image-url').value = format.image_url || '';
+            document.getElementById('btn-cancel-edit').style.display = 'block';
+            
+            // Si hay miniatura, previsualizarla
+            const previewBox = document.getElementById('format-preview-box');
+            const previewImg = document.getElementById('format-preview-img');
+            if (format.image_url) {
+                previewImg.src = format.image_url;
+                previewBox.style.display = 'block';
+            } else {
+                previewBox.style.display = 'none';
+            }
+        };
+
+        window.clearFormatForm = () => {
+            document.getElementById('form-format-title').innerHTML = `<i class="ti ti-plus"></i> Registrar Formato`;
+            document.getElementById('format-id').value = '';
+            document.getElementById('format-name').value = '';
+            document.getElementById('format-desc').value = '';
+            document.getElementById('format-image-url').value = '';
+            document.getElementById('format-file-input').value = '';
+            document.getElementById('format-file-name').textContent = 'Sin archivo seleccionado';
+            document.getElementById('format-preview-box').style.display = 'none';
+            document.getElementById('btn-cancel-edit').style.display = 'none';
+        };
+
+        window.handleFormatFileChange = async (input) => {
+            const file = input.files[0];
+            const fileNameSpan = document.getElementById('format-file-name');
+            const urlInput = document.getElementById('format-image-url');
+            const previewBox = document.getElementById('format-preview-box');
+            const previewImg = document.getElementById('format-preview-img');
+
+            if (!file) {
+                fileNameSpan.textContent = 'Sin archivo seleccionado';
+                return;
+            }
+
+            fileNameSpan.textContent = file.name;
+
+            // Leer archivo local como base64
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const base64Data = e.target.result.split(',')[1];
+                
+                // Mostrar preview inmediato
+                previewImg.src = e.target.result;
+                previewBox.style.display = 'block';
+
+                // Subir al backend local en assets/formatos/
+                try {
+                    const response = await fetch('/api/upload-format-image', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            filename: file.name,
+                            base64_data: base64Data
+                        })
+                    });
+
+                    if (!response.ok) throw new Error("Error en el servidor local al subir archivo");
+                    const res = await response.json();
+                    
+                    if (res.success && res.url) {
+                        urlInput.value = res.url; // Ruta local relativa devuelta
+                    }
+                } catch (err) {
+                    console.error("Fallo al guardar imagen de formato local:", err);
+                    alert("⚠️ No se pudo guardar la imagen en el disco duro local (servidor desconectado). Se utilizará la previsualización local temporal.");
+                }
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.saveFormat = async () => {
+            const id = document.getElementById('format-id').value;
+            const name = document.getElementById('format-name').value.trim();
+            const description = document.getElementById('format-desc').value.trim();
+            const image_url = document.getElementById('format-image-url').value.trim();
+
+            if (!name || !description) {
+                alert("Nombre y descripción son obligatorios");
+                return;
+            }
+
+            const payload = { name, description, image_url };
+            const isEditing = id && !id.startsWith('def');
+
+            try {
+                let res;
+                if (isEditing) {
+                    res = await supabase
+                        .from('video_formats')
+                        .update(payload)
+                        .eq('id', id);
+                    
+                    await logActivity('Edición', `Formato de video modificado: ${name}`);
+                } else {
+                    res = await supabase
+                        .from('video_formats')
+                        .insert([payload]);
+                    
+                    await logActivity('Creación', `Formato de video creado: ${name}`);
+                }
+
+                if (res.error) throw res.error;
+
+                alert("¡Formato de video guardado con éxito!");
+                clearFormatForm();
+                loadVideoFormats();
+            } catch (err) {
+                console.error("Error al guardar formato en Supabase:", err);
+                alert("⚠️ Error al conectar con Supabase. No se puede escribir en la tabla 'video_formats' directamente. Por favor, asegúrate de que la tabla está creada ejecutando la migración SQL.");
+            }
+        };
+
+        window.deleteFormat = async (id, name) => {
+            if (!confirm(`¿Estás seguro de que deseas eliminar el formato "${name}"?\nEsta acción no se puede deshacer.`)) {
+                return;
+            }
+
+            try {
+                const { error } = await supabase
+                    .from('video_formats')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+
+                alert("¡Formato de video eliminado con éxito!");
+                await logActivity('Eliminación', `Formato de video eliminado: ${name}`);
+                loadVideoFormats();
+            } catch (err) {
+                console.error("Error al eliminar formato de Supabase:", err);
+                alert("⚠️ Error al eliminar en Supabase: " + err.message);
+            }
+        };
 
         async function loadAuditLogs() {
             const loading = document.getElementById('logs-loading');
@@ -879,6 +1663,203 @@
                 `;
                 tbody.appendChild(tr);
             });
+        }
+
+        // ── LÓGICA DE TEMAS PERSONALIZABLES ──
+        let topicsList = [];
+        const DEFAULT_TOPICS = [
+            'Bariátrica',
+            'Manga Gástrica',
+            'Bypass Gástrico',
+            'Balón Intragástrico',
+            'Nutrición',
+            'Psicología',
+            'Estilo de Vida'
+        ];
+
+        async function loadTopics() {
+            const loading = document.getElementById('topics-loading');
+            const listContainer = document.getElementById('topics-list-container');
+            const empty = document.getElementById('topics-empty');
+
+            loading.style.display = 'block';
+            listContainer.style.display = 'none';
+            empty.style.display = 'none';
+
+            try {
+                const { data, error } = await supabase
+                    .from('content_topics')
+                    .select('*')
+                    .order('name', { ascending: true });
+
+                if (error) throw error;
+
+                topicsList = data || [];
+                if (topicsList.length === 0) {
+                    // Seed them in Supabase or fallback
+                    topicsList = DEFAULT_TOPICS.map((name, index) => ({ id: `t-${index}`, name }));
+                }
+            } catch (err) {
+                console.warn("⚠️ Tabla 'content_topics' no disponible. Usando fallback.", err.message);
+                // Fallback from localStorage or defaults
+                const local = localStorage.getItem('content_os_topics');
+                if (local) {
+                    topicsList = JSON.parse(local);
+                } else {
+                    topicsList = DEFAULT_TOPICS.map((name, index) => ({ id: `t-${index}`, name }));
+                    localStorage.setItem('content_os_topics', JSON.stringify(topicsList));
+                }
+            } finally {
+                loading.style.display = 'none';
+                renderTopics();
+            }
+        }
+
+        window.saveTopic = async function() {
+            const id = document.getElementById('topic-id').value;
+            const name = document.getElementById('topic-name-input').value.trim();
+            if (!name) return;
+
+            const submitBtn = document.getElementById('btn-submit-topic');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="ti ti-loader ti-spin"></i> Guardando...';
+            submitBtn.disabled = true;
+
+            try {
+                if (id) {
+                    // Update
+                    if (id.startsWith('t-')) {
+                        const idx = topicsList.findIndex(t => t.id === id);
+                        if (idx !== -1) topicsList[idx].name = name;
+                        localStorage.setItem('content_os_topics', JSON.stringify(topicsList));
+                    } else {
+                        const { error } = await supabase
+                            .from('content_topics')
+                            .update({ name })
+                            .eq('id', id);
+                        if (error) throw error;
+                    }
+                    alert("¡Tema actualizado con éxito!");
+                } else {
+                    // Create
+                    try {
+                        const { error } = await supabase
+                            .from('content_topics')
+                            .insert({ name });
+                        if (error) throw error;
+                    } catch (e) {
+                        // Fallback in memory
+                        const newId = 't-' + Date.now();
+                        topicsList.push({ id: newId, name });
+                        localStorage.setItem('content_os_topics', JSON.stringify(topicsList));
+                    }
+                    alert("¡Tema creado con éxito!");
+                }
+                clearTopicForm();
+                await loadTopics();
+            } catch (err) {
+                alert("Error al guardar tema: " + err.message);
+            } finally {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        };
+
+        window.deleteTopic = async function(id, name) {
+            if (!confirm(`¿Estás seguro que deseas eliminar el tema "${name}"?`)) return;
+
+            try {
+                if (id.toString().startsWith('t-')) {
+                    topicsList = topicsList.filter(t => t.id !== id);
+                    localStorage.setItem('content_os_topics', JSON.stringify(topicsList));
+                } else {
+                    const { error } = await supabase
+                        .from('content_topics')
+                        .delete()
+                        .eq('id', id);
+                    if (error) throw error;
+                }
+                alert("¡Tema eliminado!");
+                await loadTopics();
+            } catch (err) {
+                alert("Error al eliminar el tema: " + err.message);
+            }
+        };
+
+        window.clearTopicForm = function() {
+            document.getElementById('topic-id').value = '';
+            document.getElementById('topic-name-input').value = '';
+            document.getElementById('topic-form-title').innerHTML = '<i class="ti ti-plus"></i> Crear Nuevo Tema';
+            document.getElementById('btn-cancel-topic-edit').style.display = 'none';
+        };
+
+        function renderTopics() {
+            const listContainer = document.getElementById('topics-list-container');
+            const empty = document.getElementById('topics-empty');
+
+            listContainer.innerHTML = '';
+
+            if (topicsList.length === 0) {
+                listContainer.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+
+            listContainer.style.display = 'grid';
+            empty.style.display = 'none';
+
+            topicsList.forEach(topic => {
+                const item = document.createElement('div');
+                item.style.background = 'var(--surface2)';
+                item.style.border = '1px solid var(--border2)';
+                item.style.borderRadius = 'var(--r-sm)';
+                item.style.padding = '10px 14px';
+                item.style.display = 'flex';
+                item.style.alignItems = 'center';
+                item.style.justifyContent = 'space-between';
+                item.style.gap = '8px';
+
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = topic.name;
+                nameSpan.style.fontWeight = '500';
+                nameSpan.style.color = 'var(--text)';
+                nameSpan.style.fontSize = '13px';
+                item.appendChild(nameSpan);
+
+                const actionsDiv = document.createElement('div');
+                actionsDiv.style.display = 'flex';
+                actionsDiv.style.gap = '6px';
+
+                // Edit button
+                const editBtn = document.createElement('button');
+                editBtn.className = 'btn btn-outline';
+                editBtn.style.padding = '4px 6px';
+                editBtn.style.fontSize = '11px';
+                editBtn.innerHTML = '<i class="ti ti-edit"></i>';
+                editBtn.onclick = () => editTopic(topic);
+                actionsDiv.appendChild(editBtn);
+
+                // Delete button
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'btn btn-outline';
+                deleteBtn.style.padding = '4px 6px';
+                deleteBtn.style.fontSize = '11px';
+                deleteBtn.style.color = 'var(--danger)';
+                deleteBtn.innerHTML = '<i class="ti ti-trash"></i>';
+                deleteBtn.onclick = () => deleteTopic(topic.id, topic.name);
+                actionsDiv.appendChild(deleteBtn);
+
+                item.appendChild(actionsDiv);
+                listContainer.appendChild(item);
+            });
+        }
+
+        function editTopic(topic) {
+            document.getElementById('topic-id').value = topic.id;
+            document.getElementById('topic-name-input').value = topic.name;
+            document.getElementById('topic-form-title').innerHTML = '<i class="ti ti-edit"></i> Editar Tema';
+            document.getElementById('btn-cancel-topic-edit').style.display = 'block';
+            document.getElementById('topic-name-input').focus();
         }
 
         // Bind filter event listeners
