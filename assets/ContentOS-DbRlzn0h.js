@@ -1,0 +1,1 @@
+import{j as e}from"./index-DNqARU1Y.js";const n=()=>(typeof document<"u"&&(document.title="Content OS — Dr. Molina"),e.jsx("div",{className:"w-screen h-screen overflow-hidden bg-[#0a1419]",children:e.jsx("iframe",{src:"/content-os/content-os.html",className:"w-full h-full border-none",title:"Content OS",allow:"clipboard-write"})}));export{n as default};
