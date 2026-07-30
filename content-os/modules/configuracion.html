@@ -758,12 +758,40 @@
             document.getElementById('key-instagram-session').value = localStorage.getItem('instagram_session_id') || '';
             const activeMethod = localStorage.getItem('instagram_method') || 'hikerapi';
             document.getElementById('insta-method').value = activeMethod;
+            // Cargar claves de Instagram desde Supabase si están disponibles
+            supabase
+                .from('global_settings')
+                .select('value')
+                .eq('key', 'instagram_config')
+                .single()
+                .then(({ data, error }) => {
+                    if (data && data.value) {
+                        const val = data.value;
+                        if (val.instagram_method) {
+                            localStorage.setItem('instagram_method', val.instagram_method);
+                            document.getElementById('insta-method').value = val.instagram_method;
+                        }
+                        if (val.hikerapi_key) {
+                            localStorage.setItem('hikerapi_key', val.hikerapi_key);
+                            document.getElementById('key-hikerapi').value = val.hikerapi_key;
+                        }
+                        if (val.instagram_session_id) {
+                            localStorage.setItem('instagram_session_id', val.instagram_session_id);
+                            document.getElementById('key-instagram-session').value = val.instagram_session_id;
+                        }
+                        if (typeof window.toggleInstaFields === 'function') {
+                            window.toggleInstaFields();
+                        }
+                    }
+                })
+                .catch(err => console.error("Error cargando config de Supabase:", err));
+
             // Delay toggle just in case the DOM elements are resolving
             setTimeout(() => {
                 if (typeof window.toggleInstaFields === 'function') {
                     window.toggleInstaFields();
                 }
-            }, 50);
+            }, 100);
 
             // Cargar modelo activo
             const activeModel = localStorage.getItem('ai_active_model') || 'gemini-flash';
@@ -956,7 +984,7 @@
             document.getElementById('field-session').style.display = method === 'session' ? 'block' : 'none';
         };
 
-        window.guardarClaveInstagram = () => {
+        window.guardarClaveInstagram = async () => {
             const method = document.getElementById('insta-method').value;
             localStorage.setItem('instagram_method', method);
             
@@ -966,8 +994,33 @@
             localStorage.setItem('hikerapi_key', hikerKey);
             localStorage.setItem('instagram_session_id', sessionVal);
             
+            // Sincronizar con Supabase
+            try {
+                // Guardar la configuración global en una tabla llamada configuracion_global o similar
+                // Primero intentamos actualizar la fila por defecto, si falla o no existe, la insertamos
+                const configPayload = {
+                    key: 'instagram_config',
+                    value: {
+                        instagram_method: method,
+                        hikerapi_key: hikerKey,
+                        instagram_session_id: sessionVal,
+                        updated_at: new Date().toISOString()
+                    }
+                };
+                
+                const { error: upsertError } = await supabase
+                    .from('global_settings')
+                    .upsert([configPayload], { onConflict: 'key' });
+                    
+                if (upsertError) {
+                    console.warn("La tabla 'global_settings' no existe en Supabase o falló. Guardando solo en local storage.");
+                }
+            } catch (err) {
+                console.error("Error sincronizando configuracion con Supabase:", err);
+            }
+            
             window.parent.postMessage({ type: 'API_CONFIG_UPDATE' }, '*');
-            alert('Configuración de Instagram guardada correctamente.');
+            alert('Configuración de Instagram guardada y sincronizada correctamente.');
         };
 
         window.probarClaveInstagram = async () => {

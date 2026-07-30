@@ -154,6 +154,13 @@ ALTER TABLE spy_favorites ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "Permitir todo a spy_favorites" ON spy_favorites;
 CREATE POLICY "Permitir todo a spy_favorites" ON spy_favorites FOR ALL USING (true);
 
+-- 9. Tabla de Configuración Global (Ej. cookies de Instagram, API keys)
+CREATE TABLE IF NOT EXISTS global_settings (
+    key TEXT PRIMARY KEY,
+    value JSONB DEFAULT '{}',
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
 
-
-
+ALTER TABLE global_settings ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Permitir todo a global_settings" ON global_settings;
+CREATE POLICY "Permitir todo a global_settings" ON global_settings FOR ALL USING (true);
