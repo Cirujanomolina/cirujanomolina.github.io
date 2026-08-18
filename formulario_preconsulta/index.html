@@ -631,10 +631,16 @@ body:not(.started) .hero-btn-wrap {
 <!-- 1. DATOS PERSONALES -->
 <div class="sec" data-step="1">
   <div class="sec-hd"><div class="sec-num">1</div><h2 class="sec-title">Datos Personales</h2></div>
-  <div class="g2">
-    <div class="fld s2">
-      <label>Nombre completo <span class="r">*</span></label>
-      <input type="text" name="nombre_completo" placeholder="Tu nombre y apellidos" required/>
+    <!-- Split Nombres and Apellidos -->
+    <div class="s2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div class="fld">
+        <label>Nombres <span class="r">*</span></label>
+        <input type="text" name="nombres_paciente" id="nombres_paciente" placeholder="Ej: María Camila" required/>
+      </div>
+      <div class="fld">
+        <label>Apellidos <span class="r">*</span></label>
+        <input type="text" name="apellidos_paciente" id="apellidos_paciente" placeholder="Ej: Montoya Cardona" required/>
+      </div>
     </div>
     
     <div class="fld s2">
@@ -650,11 +656,16 @@ body:not(.started) .hero-btn-wrap {
       </div>
     </div>
 
-    <!-- Forced 2-column inline on mobile for Edad and Sexo -->
-    <div class="s2" style="display: grid; grid-template-columns: 80px 1fr; gap: 16px;">
+    <!-- Forced 2-column inline on mobile for Fecha de nacimiento and Sexo -->
+    <div class="s2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
       <div class="fld">
-        <label>Edad <span class="r">*</span></label>
-        <input type="number" name="edad" placeholder="Años" min="15" max="80" required/>
+        <label>Fecha de nacimiento <span class="r">*</span></label>
+        <div class="dob-trigger-wrap" style="position: relative;">
+          <input type="text" name="fecha_nacimiento_display" id="dobDisplayInput" placeholder="DD / MM / AAAA" readonly required onclick="openDobModal()" style="cursor: pointer; background: rgba(255,255,255,0.04); border: 1px solid rgba(42,191,176,0.3); border-radius: 6px; padding: 11px 14px; font-family: 'Archivo', sans-serif; font-size: 13.5px; font-weight: 300; color: var(--hueso); width: 100%; text-overflow: ellipsis; white-space: nowrap;" />
+          <input type="hidden" name="fecha_nacimiento" id="dobHiddenInput" required />
+          <input type="hidden" name="edad" id="edadHiddenInput" />
+          <svg onclick="openDobModal()" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--teal); cursor: pointer;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        </div>
       </div>
       <div class="fld">
         <label>Sexo biológico <span class="r">*</span></label>
@@ -1774,21 +1785,27 @@ function gather(form){
   const d = {};
   
   // Basic text/dropdown fields that map 1:1 to database columns
-  ['edad','sexo','email','ocupacion',
+  ['fecha_nacimiento','edad','sexo','email','ocupacion',
    'peso_actual','estatura','peso_minimo','peso_maximo','eventos_aumento_peso',
    'resultado_intentos','medicamentos_actuales','alcohol',
    'comidas_dia','actividad_fisica','horas_sueno','impacto_vida',
    'motivacion','expectativas','sentimiento_cirugia','preguntas_consulta'
   ].forEach(k => { d[k] = fd.get(k) || null; });
 
-  // Format nombre_completo with Document details since CC/DNI columns do not exist
-  const nombre = fd.get('nombre_completo') || '';
+  // Format nombre_completo with Document details from separated Nombres and Apellidos
+  const nombresVal = (fd.get('nombres_paciente') || '').trim();
+  const apellidosVal = (fd.get('apellidos_paciente') || '').trim();
+  const nombreRaw = (nombresVal && apellidosVal ? `${nombresVal} ${apellidosVal}` : nombresVal || apellidosVal || fd.get('nombre_completo') || '').trim();
+  
+  d['nombres'] = nombresVal || null;
+  d['apellidos'] = apellidosVal || null;
+
   const tipoDoc = fd.get('tipo_documento') || '';
   const numDoc = fd.get('numero_documento') || '';
   if (tipoDoc && numDoc) {
-    d['nombre_completo'] = `${nombre} [${tipoDoc}: ${numDoc}]`.trim();
+    d['nombre_completo'] = `${nombreRaw} [${tipoDoc}: ${numDoc}]`.trim();
   } else {
-    d['nombre_completo'] = nombre || null;
+    d['nombre_completo'] = nombreRaw || null;
   }
 
   // Format ciudad with País details since pais column does not exist
@@ -2255,7 +2272,408 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     heroInner.appendChild(contentWrapper);
   }
+
+  // Initialize DOB calendar
+  initDobModalOptions();
 });
 </script>
+
+<style>
+.cal-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.cal-scroll::-webkit-scrollbar-track {
+  background: rgba(20, 38, 45, 0.8);
+  border-radius: 4px;
+}
+.cal-scroll::-webkit-scrollbar-thumb {
+  background: var(--teal);
+  border-radius: 4px;
+}
+.cal-scroll::-webkit-scrollbar-thumb:hover {
+  background: #209f92;
+}
+.cal-menu-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  color: var(--hueso);
+  padding: 8px 4px;
+  font-size: 12.5px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.cal-menu-item:hover {
+  background: rgba(42, 191, 176, 0.15);
+  border-color: var(--teal);
+  color: var(--teal);
+}
+.cal-menu-item.active {
+  background: var(--teal);
+  color: var(--vn);
+  font-weight: 700;
+  border-color: var(--teal);
+  box-shadow: 0 0 10px rgba(42, 191, 176, 0.4);
+}
+</style>
+
+<script>
+
+// Interactive Calendar DOB Modal
+let calViewDate = new Date(1995, 0, 15);
+let calSelectedDate = new Date(1995, 0, 15);
+const calMonthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+
+function initDobModalOptions() {
+  const hiddenInput = document.getElementById('dobHiddenInput');
+  if (hiddenInput && hiddenInput.value) {
+    const parts = hiddenInput.value.split('-');
+    if (parts.length === 3) {
+      calSelectedDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+      calViewDate = new Date(calSelectedDate);
+    }
+  }
+
+  renderCalendar();
+}
+
+function renderCalendar() {
+  const year = calViewDate.getFullYear();
+  const month = calViewDate.getMonth();
+
+  const monthPill = document.getElementById('calMonthPillText');
+  const yearPill = document.getElementById('calYearPillText');
+  if (monthPill) monthPill.textContent = calMonthNames[month];
+  if (yearPill) yearPill.textContent = '' + year;
+
+  const grid = document.getElementById('calDaysGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const paddingDays = firstDay === 0 ? 6 : firstDay - 1;
+
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const prevMonthDays = new Date(year, month, 0).getDate();
+
+  for (let p = paddingDays - 1; p >= 0; p--) {
+    const dayNum = prevMonthDays - p;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = '' + dayNum;
+    btn.style.cssText = 'width: 36px; height: 36px; border-radius: 50%; background: transparent; border: none; color: rgba(244,245,240,0.2); font-size: 13px; margin: 0 auto; display: flex; align-items: center; justify-content: center; cursor: pointer;';
+    btn.onclick = () => { changeCalMonth(-1); };
+    grid.appendChild(btn);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = '' + d;
+
+    const isSelected = calSelectedDate &&
+      calSelectedDate.getFullYear() === year &&
+      calSelectedDate.getMonth() === month &&
+      calSelectedDate.getDate() === d;
+
+    if (isSelected) {
+      btn.style.cssText = 'width: 36px; height: 36px; border-radius: 50%; background: var(--teal); border: none; color: var(--vn); font-size: 14px; font-weight: 800; margin: 0 auto; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 0 16px rgba(42,191,176,0.6); transform: scale(1.05);';
+    } else {
+      btn.style.cssText = 'width: 36px; height: 36px; border-radius: 50%; background: transparent; border: none; color: var(--hueso); font-size: 13.5px; font-weight: 400; margin: 0 auto; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s;';
+      btn.onmouseenter = function() {
+        this.style.background = 'rgba(42,191,176,0.15)';
+        this.style.color = 'var(--teal)';
+      };
+      btn.onmouseleave = function() {
+        this.style.background = 'transparent';
+        this.style.color = 'var(--hueso)';
+      };
+    }
+
+    btn.onclick = () => {
+      calSelectedDate = new Date(year, month, d);
+      renderCalendar();
+    };
+
+    grid.appendChild(btn);
+  }
+
+  const totalSlots = paddingDays + daysInMonth;
+  const remainingSlots = (totalSlots % 7 === 0) ? 0 : 7 - (totalSlots % 7);
+
+  for (let n = 1; n <= remainingSlots; n++) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = '' + n;
+    btn.style.cssText = 'width: 36px; height: 36px; border-radius: 50%; background: transparent; border: none; color: rgba(244,245,240,0.2); font-size: 13px; margin: 0 auto; display: flex; align-items: center; justify-content: center; cursor: pointer;';
+    btn.onclick = () => { changeCalMonth(1); };
+    grid.appendChild(btn);
+  }
+
+  updateCalPreview();
+}
+
+function changeCalMonth(delta) {
+  calViewDate.setMonth(calViewDate.getMonth() + delta);
+  closeCalMenus();
+  renderCalendar();
+}
+
+function toggleMonthMenu() {
+  const monthView = document.getElementById('calMonthMenuView');
+  const yearView = document.getElementById('calYearMenuView');
+  if (yearView) yearView.style.display = 'none';
+
+  if (!monthView) return;
+  if (monthView.style.display === 'none') {
+    renderMonthGrid();
+    monthView.style.display = 'block';
+  } else {
+    monthView.style.display = 'none';
+  }
+}
+
+function toggleYearMenu() {
+  const monthView = document.getElementById('calMonthMenuView');
+  const yearView = document.getElementById('calYearMenuView');
+  if (monthView) monthView.style.display = 'none';
+
+  if (!yearView) return;
+  if (yearView.style.display === 'none') {
+    renderYearGrid();
+    yearView.style.display = 'block';
+  } else {
+    yearView.style.display = 'none';
+  }
+}
+
+function closeCalMenus() {
+  const monthView = document.getElementById('calMonthMenuView');
+  const yearView = document.getElementById('calYearMenuView');
+  if (monthView) monthView.style.display = 'none';
+  if (yearView) yearView.style.display = 'none';
+}
+
+function renderMonthGrid() {
+  const grid = document.getElementById('calMonthGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  const currentM = calViewDate.getMonth();
+  calMonthNames.forEach((name, idx) => {
+    const btn = document.createElement('div');
+    btn.className = 'cal-menu-item' + (idx === currentM ? ' active' : '');
+    btn.textContent = name;
+    btn.onclick = () => {
+      calViewDate.setMonth(idx);
+      closeCalMenus();
+      renderCalendar();
+    };
+    grid.appendChild(btn);
+  });
+}
+
+function renderYearGrid() {
+  const grid = document.getElementById('calYearGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  const currentY = calViewDate.getFullYear();
+  const currentYear = new Date().getFullYear();
+
+  let activeEl = null;
+  for (let y = currentYear - 14; y >= 1930; y--) {
+    const btn = document.createElement('div');
+    btn.className = 'cal-menu-item' + (y === currentY ? ' active' : '');
+    btn.textContent = '' + y;
+    btn.onclick = () => {
+      calViewDate.setFullYear(y);
+      closeCalMenus();
+      renderCalendar();
+    };
+    grid.appendChild(btn);
+    if (y === currentY) activeEl = btn;
+  }
+
+  if (activeEl) {
+    setTimeout(() => {
+      activeEl.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }, 50);
+  }
+}
+
+function openDobModal() {
+  const modal = document.getElementById('dobModal');
+  if (modal) {
+    modal.style.display = 'flex';
+    closeCalMenus();
+    renderCalendar();
+  }
+}
+
+function closeDobModal() {
+  const modal = document.getElementById('dobModal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+  closeCalMenus();
+}
+
+function updateCalPreview() {
+  if (!calSelectedDate) return;
+  const d = calSelectedDate.getDate();
+  const m = calSelectedDate.getMonth() + 1;
+  const y = calSelectedDate.getFullYear();
+
+  const strDay = d < 10 ? '0' + d : '' + d;
+  const strMonth = m < 10 ? '0' + m : '' + m;
+
+  const dateText = document.getElementById('calSelectedDateText');
+  if (dateText) {
+    dateText.textContent = `${strDay} / ${strMonth} / ${y}`;
+  }
+
+  const today = new Date();
+  let age = today.getFullYear() - y;
+  const monthDiff = today.getMonth() - (m - 1);
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < d)) {
+    age--;
+  }
+
+  const previewAge = document.getElementById('dobPreviewAge');
+  if (previewAge) {
+    previewAge.textContent = (age >= 0 && !isNaN(age)) ? `${age} años` : '-- años';
+  }
+}
+
+function confirmDobSelection() {
+  if (!calSelectedDate) return;
+  const d = calSelectedDate.getDate();
+  const m = calSelectedDate.getMonth() + 1;
+  const y = calSelectedDate.getFullYear();
+
+  const strDay = d < 10 ? '0' + d : '' + d;
+  const strMonth = m < 10 ? '0' + m : '' + m;
+
+  const today = new Date();
+  let age = today.getFullYear() - y;
+  const monthDiff = today.getMonth() - (m - 1);
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < d)) {
+    age--;
+  }
+
+  const formattedDisplay = `${strDay} / ${strMonth} / ${y} (${age} años)`;
+  const isoDate = `${y}-${strMonth}-${strDay}`;
+
+  const displayInput = document.getElementById('dobDisplayInput');
+  const hiddenInput = document.getElementById('dobHiddenInput');
+  const ageInput = document.getElementById('edadHiddenInput');
+
+  if (displayInput) displayInput.value = formattedDisplay;
+  if (hiddenInput) hiddenInput.value = isoDate;
+  if (ageInput) ageInput.value = age;
+
+  closeDobModal();
+}
+</script>
+
+<!-- MODAL FECHA DE NACIMIENTO CON CALENDARIO INTERACTIVO -->
+<div id="dobModal" class="dob-modal-overlay" style="display:none; position: fixed; inset: 0; z-index: 99999; background: rgba(10, 20, 25, 0.85); backdrop-filter: blur(10px); align-items: center; justify-content: center; padding: 20px;">
+  <div class="dob-modal-card" style="background: #14262D; border: 1px solid rgba(42, 191, 176, 0.25); border-radius: 28px; width: 100%; max-width: 380px; padding: 22px 20px; box-shadow: 0 24px 60px rgba(0,0,0,0.7); position: relative; animation: modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);">
+    
+    <!-- Top Bar: Title & Close Button -->
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid rgba(42, 191, 176, 0.12);">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="var(--teal)" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        <span style="font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 1.2px; color: var(--teal);">Fecha de Nacimiento</span>
+      </div>
+      <button type="button" onclick="closeDobModal()" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(244,245,240,0.7); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;" onmouseenter="this.style.color='#fff'; this.style.background='rgba(255,255,255,0.18)'" onmouseleave="this.style.color='rgba(244,245,240,0.7)'; this.style.background='rgba(255,255,255,0.06)'">✕</button>
+    </div>
+
+    <!-- Month & Year Menu Overlay Views -->
+    <!-- Month Menu Popover -->
+    <div id="calMonthMenuView" style="display:none; position: absolute; top: 65px; left: 16px; right: 16px; z-index: 20; background: #14262D; border: 1.5px solid var(--teal); border-radius: 20px; padding: 16px; box-shadow: 0 16px 40px rgba(0,0,0,0.85); animation: modalFadeIn 0.2s ease;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
+        <span style="font-size: 11px; text-transform: uppercase; color: var(--teal); font-weight: 700; letter-spacing: 1px;">Seleccionar Mes</span>
+        <button type="button" onclick="closeCalMenus()" style="background: none; border: none; color: var(--beige); font-size: 14px; cursor: pointer;">✕</button>
+      </div>
+      <div id="calMonthGrid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+      </div>
+    </div>
+
+    <!-- Year Menu Popover -->
+    <div id="calYearMenuView" style="display:none; position: absolute; top: 65px; left: 16px; right: 16px; z-index: 20; background: #14262D; border: 1.5px solid var(--teal); border-radius: 20px; padding: 16px; box-shadow: 0 16px 40px rgba(0,0,0,0.85); animation: modalFadeIn 0.2s ease;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
+        <span style="font-size: 11px; text-transform: uppercase; color: var(--teal); font-weight: 700; letter-spacing: 1px;">Seleccionar Año</span>
+        <button type="button" onclick="closeCalMenus()" style="background: none; border: none; color: var(--beige); font-size: 14px; cursor: pointer;">✕</button>
+      </div>
+      <div id="calYearGrid" class="cal-scroll" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-height: 220px; overflow-y: auto; padding-right: 4px;">
+      </div>
+    </div>
+
+    <!-- Navigation Header (Prev Month, Separated Month & Year Pills, Next Month) -->
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 0 2px;">
+      <button type="button" onclick="changeCalMonth(-1)" style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: var(--hueso); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;" onmouseenter="this.style.borderColor='var(--teal)'; this.style.background='rgba(42,191,176,0.1)'" onmouseleave="this.style.borderColor='rgba(255,255,255,0.1)'; this.style.background='rgba(255,255,255,0.04)'">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+
+      <!-- Separate Month and Year Buttons -->
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button type="button" onclick="toggleMonthMenu()" style="cursor: pointer; display: flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 16px; background: rgba(42,191,176,0.08); border: 1px solid rgba(42,191,176,0.25); color: var(--hueso); font-family: 'Archivo', sans-serif; font-size: 14.5px; font-weight: 600; transition: all 0.2s;" onmouseenter="this.style.background='rgba(42,191,176,0.18)'" onmouseleave="this.style.background='rgba(42,191,176,0.08)'">
+          <span id="calMonthPillText">Enero</span>
+          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="var(--teal)" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+
+        <button type="button" onclick="toggleYearMenu()" style="cursor: pointer; display: flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 16px; background: rgba(42,191,176,0.08); border: 1px solid rgba(42,191,176,0.25); color: var(--hueso); font-family: 'Archivo', sans-serif; font-size: 14.5px; font-weight: 600; transition: all 0.2s;" onmouseenter="this.style.background='rgba(42,191,176,0.18)'" onmouseleave="this.style.background='rgba(42,191,176,0.08)'">
+          <span id="calYearPillText">1995</span>
+          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="var(--teal)" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+      </div>
+
+      <button type="button" onclick="changeCalMonth(1)" style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: var(--hueso); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;" onmouseenter="this.style.borderColor='var(--teal)'; this.style.background='rgba(42,191,176,0.1)'" onmouseleave="this.style.borderColor='rgba(255,255,255,0.1)'; this.style.background='rgba(255,255,255,0.04)'">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+
+    <!-- Calendar Days View Container -->
+    <div id="calendarMainView">
+      <!-- Weekdays Header -->
+      <div style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; margin-bottom: 10px;">
+        <span style="font-size: 11px; font-weight: 600; color: rgba(244,245,240,0.4); letter-spacing: 0.5px;">MON</span>
+        <span style="font-size: 11px; font-weight: 600; color: rgba(244,245,240,0.4); letter-spacing: 0.5px;">TUE</span>
+        <span style="font-size: 11px; font-weight: 600; color: rgba(244,245,240,0.4); letter-spacing: 0.5px;">WED</span>
+        <span style="font-size: 11px; font-weight: 600; color: rgba(244,245,240,0.4); letter-spacing: 0.5px;">THU</span>
+        <span style="font-size: 11px; font-weight: 600; color: rgba(244,245,240,0.4); letter-spacing: 0.5px;">FRI</span>
+        <span style="font-size: 11px; font-weight: 600; color: rgba(244,245,240,0.4); letter-spacing: 0.5px;">SAT</span>
+        <span style="font-size: 11px; font-weight: 600; color: rgba(244,245,240,0.4); letter-spacing: 0.5px;">SUN</span>
+      </div>
+
+      <!-- Days Grid (rendered via JS) -->
+      <div id="calDaysGrid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; margin-bottom: 18px;">
+      </div>
+    </div>
+
+    <!-- Preview & Action Buttons -->
+    <div style="background: rgba(42, 191, 176, 0.06); border: 1px dashed rgba(42, 191, 176, 0.2); border-radius: 14px; padding: 10px 14px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between;">
+      <div>
+        <span style="font-size: 9.5px; text-transform: uppercase; color: var(--beige); display: block; letter-spacing: 0.5px;">Fecha seleccionada</span>
+        <span id="calSelectedDateText" style="font-size: 13.5px; font-weight: 600; color: var(--hueso);">-- / -- / ----</span>
+      </div>
+      <div style="text-align: right;">
+        <span style="font-size: 9.5px; text-transform: uppercase; color: var(--beige); display: block; letter-spacing: 0.5px;">Edad</span>
+        <span id="dobPreviewAge" style="font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--teal);">-- años</span>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+      <button type="button" onclick="closeDobModal()" style="flex: 1; background: transparent; border: 1px solid rgba(255,255,255,0.15); color: var(--hueso); font-size: 12.5px; font-weight: 400; padding: 10px; border-radius: 12px; cursor: pointer;">Cancelar</button>
+      <button type="button" onclick="confirmDobSelection()" style="flex: 1.2; background: var(--teal); border: none; color: var(--vn); font-size: 13px; font-weight: 700; padding: 10px; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 16px rgba(42,191,176,0.35);">Confirmar Fecha</button>
+    </div>
+
+  </div>
+</div>
 </body>
 </html>
