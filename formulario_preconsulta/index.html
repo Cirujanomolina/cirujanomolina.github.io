@@ -631,6 +631,7 @@ body:not(.started) .hero-btn-wrap {
 <!-- 1. DATOS PERSONALES -->
 <div class="sec" data-step="1">
   <div class="sec-hd"><div class="sec-num">1</div><h2 class="sec-title">Datos Personales</h2></div>
+  <div class="g2">
     <!-- Split Nombres and Apellidos -->
     <div class="s2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
       <div class="fld">
@@ -1792,11 +1793,11 @@ function gather(form){
    'motivacion','expectativas','sentimiento_cirugia','preguntas_consulta'
   ].forEach(k => { d[k] = fd.get(k) || null; });
 
-  // Format nombre_completo with Document details from separated Nombres and Apellidos
+  // Separate Nombres and Apellidos for Supabase columns
   const nombresVal = (fd.get('nombres_paciente') || '').trim();
   const apellidosVal = (fd.get('apellidos_paciente') || '').trim();
   const nombreRaw = (nombresVal && apellidosVal ? `${nombresVal} ${apellidosVal}` : nombresVal || apellidosVal || fd.get('nombre_completo') || '').trim();
-  
+
   d['nombres'] = nombresVal || null;
   d['apellidos'] = apellidosVal || null;
 
@@ -2251,27 +2252,10 @@ document.addEventListener('click', () => {
   });
 });
 
-// Dynamic wrapper for hero text to ensure logo goes to bottom and text is centered on mobile
+// Initialize scripts on DOM ready
 window.addEventListener('DOMContentLoaded', () => {
   // Initialize custom dropdowns
   initCustomSelects();
-
-  const heroInner = document.querySelector('.hero-inner');
-  if (heroInner) {
-    const contentWrapper = document.createElement('div');
-    contentWrapper.className = 'hero-content';
-    
-    // Get all child nodes of hero-inner except the logo-img
-    const children = Array.from(heroInner.childNodes);
-    children.forEach(node => {
-      const isImg = node.nodeName === 'IMG' || (node.classList && node.classList.contains('logo-img'));
-      const isTitle = node.classList && node.classList.contains('started-title');
-      if (!isImg && !isTitle) {
-        contentWrapper.appendChild(node);
-      }
-    });
-    heroInner.appendChild(contentWrapper);
-  }
 
   // Initialize DOB calendar
   initDobModalOptions();
