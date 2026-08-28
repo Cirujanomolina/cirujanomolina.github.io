@@ -38,15 +38,14 @@ export async function requireAuth() {
 }
 
 function redirectToLogin() {
-    // Los módulos viven dentro de un iframe en content-os.html; navegamos
-    // la ventana completa (top) de vuelta a la pantalla de login.
-    try {
-        window.top.location.href = window.top.location.pathname.includes('/modules/')
-            ? '../content-os.html'
-            : 'content-os.html';
-    } catch (e) {
-        window.location.href = '../content-os.html';
-    }
+    // Los módulos viven dentro de content-os/modules/ y este script siempre se
+    // ejecuta desde ahí (auth-guard.js se importa con '../auth-guard.js').
+    // Usamos new URL() para resolver la ruta relativa de forma explícita y
+    // absoluta, en vez de dejar que el navegador la resuelva implícitamente
+    // (eso fue lo que causaba que terminara armando una ruta incorrecta
+    // como '.../content-os/modules/content-os.html').
+    const loginUrl = new URL('../content-os.html', window.location.href).href;
+    window.top.location.href = loginUrl;
 }
 
 // Helper de conveniencia: exige además un rol específico (ej. 'administrador').
