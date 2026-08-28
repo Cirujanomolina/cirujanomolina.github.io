@@ -298,12 +298,9 @@
                         <label class="flabel">Correo Electrónico</label>
                         <input type="email" id="collabEmail" required placeholder="correo@ejemplo.com">
                     </div>
-                    
-                    <div class="field" id="passwordField">
-                        <label class="flabel" id="passwordLabel">Contraseña</label>
-                        <input type="password" id="collabPassword" placeholder="Escribe la contraseña">
-                        <small style="color: var(--text3); font-size: 11px; margin-top: 4px; display: block;" id="passwordHelp">Introduce una contraseña inicial.</small>
-                    </div>
+
+                    <!-- SEGURIDAD: campo de contraseña eliminado. Cada colaborador define
+                         su propia contraseña al registrarse (Supabase Auth la gestiona). -->
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                         <div class="field">
@@ -342,25 +339,17 @@
 
     <script type="module">
         import { supabase } from '../supabase-client.js';
+        import { requireAuth } from '../auth-guard.js';
 
         // Local state
         let colaboradoresList = [];
         let activeUser = null;
         let isAdmin = false;
 
-        // Check active session on load
-        window.addEventListener('DOMContentLoaded', () => {
-            activeUser = JSON.parse(localStorage.getItem('content_os_user') || 'null');
-            if (!activeUser) {
-                document.body.innerHTML = `
-                    <div style="text-align: center; padding: 4rem; color: var(--text2);">
-                        <i class="ti ti-lock" style="font-size: 3rem; color: var(--danger); margin-bottom: 1rem; display: block;"></i>
-                        <h2>Acceso Restringido</h2>
-                        <p>Por favor, inicia sesión desde la cabecera principal para ver el módulo de equipo.</p>
-                    </div>
-                `;
-                return;
-            }
+        // Check active session on load — verificado por Supabase Auth, no por
+        // un valor de localStorage que cualquiera podría fabricar manualmente.
+        window.addEventListener('DOMContentLoaded', async () => {
+            activeUser = await requireAuth();
             
             isAdmin = activeUser.role === 'administrador';
             
@@ -424,13 +413,9 @@
         });
         window.parent.postMessage({ type: 'IFRAME_READY' }, '*');
 
-        // Hash Password SHA-256 helper
-        async function hashPassword(password) {
-            const msgUint8 = new TextEncoder().encode(password);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
+        // SEGURIDAD: la función hashPassword() fue eliminada. Las contraseñas ya
+        // no se gestionan manualmente en el navegador — Supabase Auth se encarga
+        // de eso de forma segura (hash + sal en el servidor).
 
         // Logging helper
         async function logActivity(action, details) {
@@ -582,24 +567,7 @@
 
         // Open Modal for creation
         function openCreateModal() {
-            const form = document.getElementById('collabForm');
-            form.reset();
-            document.getElementById('collabId').value = '';
-            document.getElementById('modalTitle').textContent = 'Crear Colaborador';
-            document.getElementById('passwordField').style.display = 'flex';
-            document.getElementById('collabPassword').required = true;
-            document.getElementById('passwordHelp').textContent = 'Introduce una contraseña inicial.';
-            
-            // Reset photo and avatar preview
-            document.getElementById('collabPhotoUrl').value = '';
-            document.getElementById('modalAvatarPreview').innerHTML = '<i class="ti ti-user" style="font-size: 2.2rem;"></i>';
-
-            // Default unverified
-            document.getElementById('collabVerified').checked = false;
-            document.getElementById('collabVerified').disabled = false;
-
-            const modal = document.getElementById('collabModal');
-            modal.style.display = 'flex';
+            alert('Los colaboradores se registran ellos mismos desde la pantalla de inicio de sesión (botón "Regístrate"). Una vez registrados, aparecerán aquí para que los verifiques y les asignes un rol.');
         }
 
         // Open Modal for edition
@@ -650,12 +618,20 @@
         };
 
         // Save Colaborador
+        // SEGURIDAD: este módulo ya NO crea contraseñas ni cuentas nuevas. Los nuevos
+        // colaboradores se registran ellos mismos desde la pantalla de login (Supabase
+        // Auth gestiona su contraseña de forma segura). Aquí el administrador solo
+        // puede editar el perfil (rol, función, foto) y verificar/aprobar el acceso.
         async function saveCollab() {
             const id = document.getElementById('collabId').value;
+            if (!id) {
+                alert('Los colaboradores se registran ellos mismos desde la pantalla de inicio de sesión. Aquí solo puedes editarlos y verificarlos una vez registrados.');
+                return;
+            }
+
             const username = document.getElementById('collabUsername').value.trim().toLowerCase();
             const name = document.getElementById('collabName').value.trim();
             const email = document.getElementById('collabEmail').value.trim().toLowerCase();
-            const password = document.getElementById('collabPassword').value;
             const role = document.getElementById('collabRole').value;
             const specFunction = document.getElementById('collabFunction').value;
             const photoUrl = document.getElementById('collabPhotoUrl').value.trim();
@@ -677,46 +653,21 @@
                     verified: verified
                 };
 
-                if (id) {
-                    // Update mode
-                    if (password) {
-                        payload.password = await hashPassword(password);
-                    }
-                    
-                    const { error } = await supabase
-                        .from('colaboradores')
-                        .update(payload)
-                        .eq('id', id);
+                const { error } = await supabase
+                    .from('colaboradores')
+                    .update(payload)
+                    .eq('id', id);
 
-                    if (error) throw error;
-                    
-                    alert('Colaborador actualizado con éxito.');
-                    await logActivity('Edición de Colaborador', `Se actualizaron los datos de ${name} (@${username}). Estado verificado: ${verified}.`);
-                    
-                    // If editing own profile, update local session
-                    if (id === activeUser.id) {
-                        const updatedUser = { ...activeUser, ...payload };
-                        delete updatedUser.password;
-                        localStorage.setItem('content_os_user', JSON.stringify(updatedUser));
-                        window.parent.location.reload();
-                        return;
-                    }
-                } else {
-                    // Create mode
-                    if (!password) {
-                        throw new Error('La contraseña es obligatoria para nuevos colaboradores.');
-                    }
-                    
-                    payload.password = await hashPassword(password);
+                if (error) throw error;
 
-                    const { error } = await supabase
-                        .from('colaboradores')
-                        .insert(payload);
+                alert('Colaborador actualizado con éxito.');
+                await logActivity('Edición de Colaborador', `Se actualizaron los datos de ${name} (@${username}). Estado verificado: ${verified}.`);
 
-                    if (error) throw error;
-
-                    alert('Colaborador creado con éxito.');
-                    await logActivity('Creación de Colaborador', `Se registró un nuevo perfil para ${name} (@${username}). Estado verificado: ${verified}.`);
+                // Si edita su propio perfil, no hace falta nada más: la sesión sigue
+                // siendo la misma sesión real de Supabase Auth (ya no se cachea en localStorage).
+                if (id === activeUser.id) {
+                    window.parent.location.reload();
+                    return;
                 }
 
                 closeModal();

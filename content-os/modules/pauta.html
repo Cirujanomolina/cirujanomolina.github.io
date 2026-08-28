@@ -703,9 +703,13 @@
 
     <script type="module">
         import { supabase } from '../supabase-client.js';
+        import { requireAuth } from '../auth-guard.js';
+        // SEGURIDAD: exige sesión verificada por Supabase Auth antes de cargar el módulo.
+        const __activeProfile = await requireAuth();
+
 
         async function logActivity(action, details) {
-            const activeUser = JSON.parse(localStorage.getItem('content_os_user') || '{}');
+            const activeUser = __activeProfile;
             if (!activeUser.email) return;
             try {
                 await supabase.from('audit_logs').insert({
@@ -720,7 +724,7 @@
         }
 
         // Gemini API Configuration
-        const DEFAULT_KEY = "AIzaSyDoFbsWJclf_aLUT7hJLF9mz86frAlJeec";
+        // SEGURIDAD: clave hardcodeada eliminada.
 
         // Seed jerárquico detallado de Meta Ads
         const SEED_CAMPAIGNS = [

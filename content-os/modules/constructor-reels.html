@@ -1727,9 +1727,13 @@ select option{background:var(--surface2)}
 
 <script type="module">
 import { supabase } from '../supabase-client.js';
+import { requireAuth } from '../auth-guard.js';
+// SEGURIDAD: exige sesión verificada por Supabase Auth antes de cargar el módulo.
+const __activeProfile = await requireAuth();
+
 
 async function logActivity(action, details) {
-  const activeUser = JSON.parse(localStorage.getItem('content_os_user') || '{}');
+  const activeUser = __activeProfile;
   if (!activeUser.email) return;
   try {
     await supabase.from('audit_logs').insert({
@@ -2173,7 +2177,8 @@ ${extra ? 'Dato adicional: ' + extra : ''}
 Genera la estrategia completa de producción para este reel del Dr. Molina (@cirujanomolina).`;
 
   const prompt = `${sys}\n\nIdea del usuario:\n${usr}`;
-  const apiKey = localStorage.getItem('gemini_api_key') || "AIzaSyDoFbsWJclf_aLUT7hJLF9mz86frAlJeec";
+  const apiKey = localStorage.getItem('gemini_api_key') || localStorage.getItem('ai_key_gemini_flash') || '';
+  if (!apiKey) { alert('Falta configurar tu clave de Gemini en Configuración antes de generar con IA.'); return; }
 
   try {
     const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey, {
@@ -2985,7 +2990,8 @@ Descripción o idea del video: ${descripcion}
 Basado en estos datos, completa la estrategia, el pilar de contenido, el objetivo psicológico y algorítmico, y redacta el guión detallado paso a paso con las voces y estilo de @cirujanomolina.`;
 
   const prompt = `${sys}\n\nDatos de entrada:\n${usr}`;
-  const apiKey = localStorage.getItem('gemini_api_key') || "AIzaSyDoFbsWJclf_aLUT7hJLF9mz86frAlJeec";
+  const apiKey = localStorage.getItem('gemini_api_key') || localStorage.getItem('ai_key_gemini_flash') || '';
+  if (!apiKey) { alert('Falta configurar tu clave de Gemini en Configuración antes de generar con IA.'); return; }
 
   try {
     const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey, {

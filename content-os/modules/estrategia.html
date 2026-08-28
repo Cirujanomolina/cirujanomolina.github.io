@@ -942,6 +942,10 @@ body{font-family:'Archivo',sans-serif;background:var(--bg);color:var(--tx);font-
 
 <script type="module">
 import { supabase } from '../supabase-client.js';
+import { requireAuth } from '../auth-guard.js';
+
+// SEGURIDAD: exige sesion verificada por Supabase Auth antes de cargar el modulo.
+const activeUser = await requireAuth();
 
 /* ══════════════════════════════
    DATA STORE

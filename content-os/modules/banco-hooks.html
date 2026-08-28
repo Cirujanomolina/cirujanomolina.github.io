@@ -592,6 +592,10 @@ select option{background:var(--bg2);color:var(--text)}
 <!-- SCRIPT MODULE -->
 <script type="module">
 import { supabase } from '../supabase-client.js';
+import { requireAuth } from '../auth-guard.js';
+// SEGURIDAD: exige sesion verificada por Supabase Auth antes de cargar el modulo.
+const activeUser = await requireAuth();
+
 
 // DATA
 let HOOKS = [];
@@ -1147,7 +1151,7 @@ SOLO responde con un objeto JSON puro, sin bloques de código markdown, sin text
   ]
 }`;
 
-  const apiKey = localStorage.getItem('gemini_api_key') || "AIzaSyDoFbsWJclf_aLUT7hJLF9mz86frAlJeec";
+  const apiKey = localStorage.getItem('gemini_api_key') || '';
   
   try {
     const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey, {

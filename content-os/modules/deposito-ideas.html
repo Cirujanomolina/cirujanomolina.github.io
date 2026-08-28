@@ -508,9 +508,13 @@ select option{background:var(--bg2);color:var(--text)}
 
 <script type="module">
 import { supabase } from '../supabase-client.js';
+import { requireAuth } from '../auth-guard.js';
+// SEGURIDAD: exige sesión verificada por Supabase Auth antes de cargar el módulo.
+const __activeProfile = await requireAuth();
+
 
 async function logActivity(action, details) {
-  const activeUser = JSON.parse(localStorage.getItem('content_os_user') || '{}');
+  const activeUser = __activeProfile;
   if (!activeUser.email) return;
   try {
     await supabase.from('audit_logs').insert({
@@ -916,7 +920,7 @@ Idea: "${desc}"
 SOLO responde con JSON puro sin markdown ni bloques de código:
 {"descAmpliada":"...","pilar":"Validación emocional|Educación premium|Contrarian / Mitos|Autoridad humana|Transformación de vida|Conversión directa","formato":"Reel|Carrusel|Historia|Publicación|En vivo|Preguntas","tema":"Bariátrica|Hernia|Reflujo|Vesícula|Metabólico|Marca personal|Equipo","prioridad":"Alta|Media|Baja","hook":"máx 10 palabras, directo, segunda persona","razon":"frase corta explicando las decisiones"}`;
 
-  const apiKey = localStorage.getItem('gemini_api_key') || "AIzaSyDoFbsWJclf_aLUT7hJLF9mz86frAlJeec";
+  const apiKey = localStorage.getItem('gemini_api_key') || '';
   try{
     const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey, {
       method: "POST",
@@ -957,7 +961,7 @@ async function getVariations(){
   const prompt=`Genera 4 hooks virales para @cirujanomolina. Audiencia: mujeres 28-50 agotadas. Idea: "${desc}". Hook actual: "${hook||'ninguno'}". 4 ángulos distintos, máx 12 palabras, segunda persona.
 SOLO responde con JSON puro sin markdown ni bloques de código: {"hooks":[{"angulo":"Emocional","texto":"..."},{"angulo":"Contrarian","texto":"..."},{"angulo":"Educativo","texto":"..."},{"angulo":"Conversión","texto":"..."}]}`;
   
-  const apiKey = localStorage.getItem('gemini_api_key') || "AIzaSyDoFbsWJclf_aLUT7hJLF9mz86frAlJeec";
+  const apiKey = localStorage.getItem('gemini_api_key') || '';
   const AC=['#2ABFB0','#f5935a','#5ba3f5','#f55a8a'];
   try{
     const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + apiKey, {

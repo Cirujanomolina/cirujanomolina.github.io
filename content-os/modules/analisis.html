@@ -748,6 +748,10 @@
 
     <script type="module">
         import { supabase } from '../supabase-client.js';
+        import { requireAuth } from '../auth-guard.js';
+        // SEGURIDAD: exige sesion verificada por Supabase Auth antes de cargar el modulo.
+        const activeUser = await requireAuth();
+
 
         let campaigns = [];
         let filterCampaignId = 'global';

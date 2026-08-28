@@ -609,14 +609,6 @@
         const apiLedIcon = document.getElementById('apiLedIcon');
         const apiLedLabel = document.getElementById('apiLedLabel');
 
-        // Password hashing helper (SHA-256 via Web Crypto API)
-        async function hashPassword(password) {
-            const msgUint8 = new TextEncoder().encode(password);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-
         // Audit Log action
         async function logActivity(email, name, action, details) {
             try {
@@ -662,48 +654,22 @@
             }
         }
 
-        // Seed default admin if table is empty
-        async function ensureAdminExists() {
+        // NOTA DE SEGURIDAD: la función que sembraba un admin por defecto
+        // (admin@molina.com / admin123) fue eliminada por completo. Esa
+        // función creaba una cuenta de administrador con contraseña trivial
+        // y públicamente conocida cada vez que la tabla 'colaboradores'
+        // estaba vacía — un hueco de seguridad crítico. La creación del
+        // primer administrador ahora se hace manualmente, una sola vez,
+        // desde el Dashboard de Supabase (Authentication → Add user), y
+        // luego se le crea su fila de perfil en 'colaboradores' vinculada
+        // por auth_user_id con role='administrador' y verified=true.
+        async function checkSupabaseConnection() {
             try {
                 supabaseLed.className = 'led orange';
-                const { count, error } = await supabase
-                    .from('colaboradores')
-                    .select('*', { count: 'exact', head: true });
-                
-                if (error) {
-                    supabaseLed.className = 'led red';
-                    console.error("Database table 'colaboradores' check error:", error.message);
-                    if (error.message.includes("does not exist") || error.code === "P0001" || error.status === 404) {
-                        loginError.style.display = 'block';
-                        loginError.innerHTML = '⚠️ La tabla "colaboradores" no existe en Supabase.<br>Por favor ejecuta "schema_update.sql" en el SQL Editor de tu Supabase.';
-                    }
-                    return;
-                }
-                
-                supabaseLed.className = 'led green';
-                
-                if (count === 0) {
-                    const hashedPassword = await hashPassword('admin123');
-                    const { error: seedError } = await supabase
-                        .from('colaboradores')
-                        .insert({
-                            username: 'admin',
-                            name: 'Dr. Molina (Master)',
-                            email: 'admin@molina.com',
-                            password: hashedPassword,
-                            role: 'administrador',
-                            function: 'Administrador',
-                            verified: true
-                        });
-                    if (seedError) {
-                        console.error("Error seeding default admin:", seedError.message);
-                    } else {
-                        console.log("Master administrator created: admin@molina.com / admin123");
-                    }
-                }
+                const { error } = await supabase.from('colaboradores').select('*', { count: 'exact', head: true });
+                supabaseLed.className = error ? 'led red' : 'led green';
             } catch (e) {
                 supabaseLed.className = 'led red';
-                console.error("ensureAdminExists exception:", e);
             }
         }
 
@@ -737,7 +703,8 @@
             loginError.style.display = 'none';
         });
 
-        // Submit Form
+        // Submit Form — ahora usa Supabase Auth real (JWT verificado por el servidor),
+        // en vez de comparar hashes en el navegador y confiar en el propio cliente.
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             loginError.style.display = 'none';
@@ -750,40 +717,34 @@
 
             try {
                 if (authMode === 'login') {
-                    const isEmail = inputVal.includes('@');
-                    let query = supabase.from('colaboradores').select('*');
-                    
-                    if (isEmail) {
-                        query = query.eq('email', inputVal.toLowerCase());
-                    } else {
-                        query = query.eq('username', inputVal.toLowerCase());
+                    if (!inputVal.includes('@')) {
+                        throw new Error('Inicia sesión con tu correo electrónico (no con el usuario).');
                     }
 
-                    const { data: users, error } = await query;
-                    
-                    if (error) {
-                        throw new Error(error.message);
+                    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+                        email: inputVal.toLowerCase(),
+                        password
+                    });
+                    if (authError) throw new Error('Correo o contraseña incorrectos.');
+
+                    const { data: profile, error: profileError } = await supabase
+                        .from('colaboradores')
+                        .select('*')
+                        .eq('auth_user_id', authData.user.id)
+                        .single();
+
+                    if (profileError || !profile) {
+                        await supabase.auth.signOut();
+                        throw new Error('No se encontró tu perfil de colaborador. Contacta al administrador.');
                     }
-
-                    if (!users || users.length === 0) {
-                        throw new Error('Usuario o correo electrónico no encontrado.');
-                    }
-
-                    const user = users[0];
-                    const hashedPassword = await hashPassword(password);
-
-                    if (user.password !== hashedPassword) {
-                        throw new Error('Contraseña incorrecta.');
-                    }
-
-                    if (!user.verified) {
+                    if (!profile.verified) {
+                        await supabase.auth.signOut();
                         throw new Error('Tu cuenta está registrada pero aún no está verificada por el Administrador.');
                     }
 
-                    localStorage.setItem('content_os_user', JSON.stringify(user));
                     loginOverlay.style.display = 'none';
-                    updateUIForUser(user);
-                    await logActivity(user.email, user.name, 'Inicio de Sesión', 'El usuario inició sesión.');
+                    updateUIForUser(profile);
+                    await logActivity(profile.email, profile.name, 'Inicio de Sesión', 'El usuario inició sesión.');
                     reloadCurrentModule();
                 } else {
                     const username = regUsername.value.trim().toLowerCase();
@@ -792,15 +753,20 @@
                     const email = inputVal.toLowerCase();
 
                     if (!username || !name || !email || !password) throw new Error('Completa todos los campos.');
-                    
-                    const hashedPassword = await hashPassword(password);
-                    const { error: insertError } = await supabase.from('colaboradores').insert({
-                        username, name, email, password: hashedPassword, role: 'colaborador', function: specFunction, verified: false
-                    });
+                    if (password.length < 8) throw new Error('La contraseña debe tener al menos 8 caracteres.');
 
+                    // 1. Crea el usuario real en Supabase Auth (Supabase gestiona el hash de forma segura).
+                    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({ email, password });
+                    if (signUpError) throw new Error(signUpError.message);
+
+                    // 2. Crea el perfil de colaborador vinculado, sin contraseña.
+                    const { error: insertError } = await supabase.from('colaboradores').insert({
+                        username, name, email, role: 'colaborador', function: specFunction,
+                        verified: false, auth_user_id: signUpData.user.id
+                    });
                     if (insertError) throw new Error(insertError.message);
 
-                    alert('Registro exitoso. Espera verificación del admin.');
+                    alert('Registro exitoso. Espera verificación del admin antes de poder ingresar.');
                     await logActivity(email, name, 'Registro', 'Nuevo usuario registrado.');
                     toggleAuthModeBtn.click();
                 }
@@ -829,16 +795,31 @@
             }
         }
 
-        // Validate session on load
+        // Validate session on load — ahora consulta la sesión real verificada
+        // por Supabase (JWT), no un valor que el propio navegador podría inventar.
+        window.getActiveProfile = async function () {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) return null;
+            const { data: profile } = await supabase
+                .from('colaboradores')
+                .select('*')
+                .eq('auth_user_id', session.user.id)
+                .single();
+            return profile || null;
+        };
+
         async function validateSession() {
-            await ensureAdminExists();
+            await checkSupabaseConnection();
             updateAPIStatusIndicator();
 
-            const cachedUser = JSON.parse(localStorage.getItem('content_os_user') || 'null');
-            if (cachedUser) {
-                updateUIForUser(cachedUser);
+            const profile = await window.getActiveProfile();
+            if (profile && profile.verified) {
+                updateUIForUser(profile);
                 loginOverlay.style.display = 'none';
             } else {
+                if (profile && !profile.verified) {
+                    await supabase.auth.signOut();
+                }
                 loginOverlay.style.display = 'flex';
             }
         }
@@ -857,11 +838,11 @@
 
         logoutBtn.addEventListener('click', async () => {
             if (confirm('¿Estás seguro que deseas cerrar sesión?')) {
-                const cachedUser = JSON.parse(localStorage.getItem('content_os_user') || '{}');
-                if (cachedUser.email) {
-                    await logActivity(cachedUser.email, cachedUser.name, 'Cierre de Sesión', 'Sesión cerrada correctamente.');
+                const profile = await window.getActiveProfile();
+                if (profile) {
+                    await logActivity(profile.email, profile.name, 'Cierre de Sesión', 'Sesión cerrada correctamente.');
                 }
-                localStorage.removeItem('content_os_user');
+                await supabase.auth.signOut();
                 loginOverlay.style.display = 'flex';
                 // Reset UI
                 dropdownName.textContent = 'Cargando...';

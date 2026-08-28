@@ -615,9 +615,13 @@ body { display: flex; flex-direction: column; height: 100vh; }
 
 <script type="module">
 import { supabase } from '../supabase-client.js';
+import { requireAuth } from '../auth-guard.js';
+// SEGURIDAD: exige sesión verificada por Supabase Auth antes de cargar el módulo.
+const __activeProfile = await requireAuth();
+
 
 async function logActivity(action, details) {
-  const activeUser = JSON.parse(localStorage.getItem('content_os_user') || '{}');
+  const activeUser = __activeProfile;
   if (!activeUser.email) return;
   try {
     await supabase.from('audit_logs').insert({
@@ -3483,7 +3487,7 @@ async function rescanearAssets() {
     btn.innerHTML = '<i class="ti ti-loader ti-spin"></i> Indexando con IA...';
     btn.disabled = true;
     
-    const savedKey = localStorage.getItem('gemini_api_key') || "AIzaSyDoFbsWJclf_aLUT7hJLF9mz86frAlJeec";
+    const savedKey = localStorage.getItem('gemini_api_key') || "";
     
     try {
         const response = await fetch('/api/rescan', {

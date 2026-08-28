@@ -452,6 +452,10 @@
 
     <script type="module">
         import { supabase, testConnection } from '../supabase-client.js';
+        import { requireAuth } from '../auth-guard.js';
+        // SEGURIDAD: exige sesion verificada por Supabase Auth antes de cargar el modulo.
+        const activeUser = await requireAuth();
+
 
         // ── NAVEGACIÓN Y MENSAJES HACIA EL PADRE ──
         window.navigateToModule = (moduleName) => {
