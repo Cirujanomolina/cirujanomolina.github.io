@@ -498,7 +498,7 @@
 
         <!-- CONTENEDOR MODULOS -->
         <main class="module-container">
-            <iframe id="moduleFrame" class="module-iframe" src="modules/dashboard.html"></iframe>
+            <iframe id="moduleFrame" class="module-iframe" src="about:blank"></iframe>
         </main>
     </div>
 
@@ -816,6 +816,7 @@
             if (profile && profile.verified) {
                 updateUIForUser(profile);
                 loginOverlay.style.display = 'none';
+                reloadCurrentModule(); // Ya confirmamos sesión real: ahora sí cargamos el módulo.
             } else {
                 if (profile && !profile.verified) {
                     await supabase.auth.signOut();
