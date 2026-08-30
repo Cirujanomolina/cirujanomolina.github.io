@@ -8,7 +8,7 @@ Evitar eventos, fotos, espejos. No querer que la vean. Pérdida de presencia soc
 
 ### Herida 2 — Culpa constante
 "Sé lo que debo hacer y no lo hago" — cuando la ciencia muestra que el problema no es voluntad sino biología. El paciente se condena a sí mismo por algo que no es su falta.
-**Cómo usarla:** Destruir la culpa con ciencia. "Lo que sientes como fracaso personal tiene una explicación biológica real. No es tu culpa."
+**Cómo usarla:** Destruir la culpa con ciencia. "Lo que sientes como fracaso personal tiene una explicación biológica real. No es tu culpa." — esta herida conecta directo con el pilar de Identificación y el objetivo de Educación/cambio de creencia.
 
 ### Herida 3 — Pérdida de identidad
 "No me reconozco en el espejo" — el peso como separación entre quién soy y quién era. Una de las heridas más profundas y menos mencionadas.
@@ -24,7 +24,7 @@ Relaciones maritales afectadas, distancia de los hijos, ausencia en la vida fami
 
 ### Herida 6 — Miedo a la cirugía
 No es miedo irracional. Es miedo a fallar de nuevo, a que no funcione, a lo que dirá la familia, al dolor, a lo desconocido.
-**Cómo usarla:** Disolver el miedo con información, no con promesas. Mostrar el proceso, el equipo, la seguridad del protocolo.
+**Cómo usarla:** Disolver el miedo con información, no con promesas. Mostrar el proceso, el equipo, la seguridad del protocolo. Juan prefiere que el miedo esté presente y acompañado de información, a que desaparezca artificialmente.
 
 ### Herida 7 — Juicio externo
 "¿Para qué operarse si después lo va a recuperar?" — el entorno que invalida en lugar de acompañar. Genera aislamiento y vergüenza doble.
@@ -32,24 +32,50 @@ No es miedo irracional. Es miedo a fallar de nuevo, a que no funcione, a lo que 
 
 ---
 
-## El patrón narrativo que nunca falla
+## Cómo se relacionan las heridas con las 8 emociones núcleo de la marca
 
-### Dolor → Validación → Esperanza → Camino → CTA
+Las heridas de arriba son la materia prima psicológica. Las 8 emociones núcleo del
+documento de Pilares y Emociones son lo que se elige provocar deliberadamente con cada
+pieza. Un cruce útil:
 
-1. **Dolor** — Nombrar la herida específica con precisión. No genérica.
+| Herida | Emoción núcleo que suele encajar |
+|---|---|
+| Vergüenza social | Alivio (al sentirse comprendido) |
+| Culpa constante | Alivio, indignación (hacia la creencia, no hacia el paciente) |
+| Pérdida de identidad | Esperanza |
+| Agotamiento emocional | Emoción profunda |
+| Daño relacional | Emoción profunda, esperanza |
+| Miedo a la cirugía | Alivio (nunca se elimina el miedo fingiendo que no existe) |
+| Juicio externo | Indignación (hacia la idea del entorno, nunca hacia una persona) |
+
+---
+
+## Un patrón narrativo útil — no una fórmula obligatoria
+
+Este patrón (Dolor → Validación → Esperanza → Camino → CTA) es una variante
+psicológicamente efectiva, especialmente para piezas de Identificación + Consideración.
+**No es una estructura que deba forzarse en cada pieza** — el documento de Storytelling
+es explícito en que ninguna estructura narrativa es camisa de fuerza, y que cada idea
+debe evaluarse por sí misma antes de encajarla en cualquier patrón. La columna vertebral
+real y más flexible es: **situación → deseo → conflicto → cambio → resultado**
+(ver documento 11, Sistema de Storytelling) — este patrón de 5 pasos es simplemente una
+de sus expresiones posibles, útil cuando la pieza lo pide de forma natural.
+
+1. **Dolor / situación** — Nombrar la herida específica con precisión. No genérica.
    - ❌ "Sé que quieres bajar de peso"
    - ✅ "Llevas 8 años intentándolo. Cada enero empiezas de nuevo. Y cada febrero sientes que fallaste otra vez."
 
-2. **Validación** — Quitar la culpa con ciencia o empatía.
-   - ✅ "No es tu falta de disciplina. Tu cuerpo tiene mecanismos biológicos diseñados para recuperar el peso. Es una enfermedad, no un defecto de carácter."
+2. **Validación** — Quitar la culpa con ciencia o empatía, sin quitar responsabilidad.
+   - ✅ "No es tu falta de disciplina. Tu cuerpo tiene mecanismos biológicos diseñados para recuperar el peso. Es una condición real, no un defecto de carácter."
 
-3. **Esperanza** — Mostrar que hay salida real.
-   - ✅ "Hay pacientes que llevaban más años que tú en este ciclo y hoy viven diferente. No porque se esforzaron más — sino porque encontraron el tratamiento correcto."
+3. **Esperanza** — Mostrar que hay salida real, sin prometer un resultado específico.
+   - ✅ "Hay pacientes que llevaban más años que tú en este ciclo y hoy viven diferente. No porque se esforzaron más — sino porque encontraron el tratamiento correcto para su caso."
 
 4. **Camino** — Presentar el proceso de forma concreta y segura.
    - ✅ "Existe un proceso multidisciplinario, clínicamente respaldado, con un equipo que te acompaña desde el primer día hasta mucho después de la cirugía."
 
-5. **CTA** — Invitar, no presionar.
+5. **CTA** — Invitar, no presionar (ver documento de CTA para la matriz completa de
+   fricción baja/media/alta según el funnel).
    - ✅ "El primer paso es una conversación. Sin compromiso. Escríbeme."
    - ❌ "¡Agenda ya tu consulta! Cupos limitados."
 
@@ -57,32 +83,40 @@ No es miedo irracional. Es miedo a fallar de nuevo, a que no funcione, a lo que 
 
 ## Deseos específicos que convierten más que "bajar de peso"
 
-Usar estos en hooks y desarrollo — son más poderosos que hablar del peso:
+Esto conecta directamente con la Filosofía Narrativa: "no contamos cuánto peso perdió
+una persona, contamos qué recuperó." Usar estos en hooks y desarrollo:
 
 - "Volver a jugar con tus hijos sin cansarte"
 - "Que te guste la persona que ves en el espejo"
 - "Volver a salir en las fotos familiares"
 - "Dejar de planear tu ropa según lo que esconde tu cuerpo"
 - "Poder viajar sin pensar en el cinturón del avión"
-- "Dejar de tomar medicamentos para siempre"
 - "Ir al médico sin sentir vergüenza"
 - "Volver a tener energía para lo que te importa"
+
+*(Se quitó "dejar de tomar medicamentos para siempre" de la lista original — el Punto de
+Vista de Juan sobre Ozempic/Wegovy es que muchas veces son un tratamiento de por vida, no
+algo de lo que haya que "librarse"; presentarlo como meta puede contradecir esa posición.)*
 
 ---
 
 ## Mecanismos de conversión emocional ética
 
 **Validar → Redirigir**
-Primero hacer sentir que no es su culpa. Luego explicar la ciencia. Nunca al revés.
+Primero hacer sentir que no es su culpa. Luego explicar la ciencia (cuando el pilar y el
+formato lo pidan — no es una regla de proporción fija, ver `brand-brain.md`).
 
 **Activar el deseo específico**
 No "bajar de peso" — los deseos de vida específicos listados arriba. La especificidad convierte.
 
 **Disolver el miedo con información**
-El miedo a la cirugía se elimina con transparencia — mostrar el proceso, el equipo, los casos reales. No con promesas vacías.
+El miedo a la cirugía se reduce con transparencia — mostrar el proceso, el equipo, los
+casos reales (con consentimiento). No con promesas vacías, y sin fingir que el miedo no
+es una reacción legítima.
 
 **Lo que NUNCA hacer:**
 - Manipular emociones para vender sin fundamento real
 - Prometer resultados específicos que no se pueden garantizar
 - Usar el dolor del paciente como anzuelo sin ofrecer valor real a cambio
 - Reforzar la vergüenza o la culpa aunque sea involuntariamente
+- Convertir el miedo en herramienta deliberada de presión (documento de Límites)

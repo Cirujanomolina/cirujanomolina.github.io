@@ -875,11 +875,14 @@ select option{background:var(--surface2)}
                 <div style="margin-top: 5px; height: 26px; position: relative;">
                   <select id="reel-emocion-select" onchange="checkEditableSelect(this, 'reel-emocion-text')" style="width: 100%; height: 26px; padding: 0 24px 0 12px; border-radius: 20px !important; font-size: 11px; background-color: var(--surface2); border: 1px solid var(--border2); color: var(--text2); outline: none; cursor: pointer; transition: all 0.15s; font-weight: 500; -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;10&quot; height=&quot;10&quot; viewBox=&quot;0 0 10 10&quot; fill=&quot;none&quot; stroke=&quot;%2394a3b8&quot;><path d=&quot;M2 4l3 3 3-3&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 8px;">
                     <option value="" disabled selected>Selecciona una emoción...</option>
-                    <option value="Identificación" style="background-color: var(--bg2); color: var(--text2);">Identificación (Sentirse reflejado/visto)</option>
-                    <option value="Curiosidad" style="background-color: var(--bg2); color: var(--text2);">Curiosidad (Intriga/Secreto revelado)</option>
-                    <option value="Alivio" style="background-color: var(--bg2); color: var(--text2);">Alivio (Solución/Esperanza)</option>
-                    <option value="Urgencia" style="background-color: var(--bg2); color: var(--text2);">Urgencia (Pérdida de salud/Prevención)</option>
-                    <option value="Revelación" style="background-color: var(--bg2); color: var(--text2);">Revelación (Desmitificación profunda)</option>
+                    <option value="Sorpresa" style="background-color: var(--bg2); color: var(--text2);">Sorpresa (Rompe expectativa, detiene el scroll)</option>
+                    <option value="Curiosidad" style="background-color: var(--bg2); color: var(--text2);">Curiosidad (Brecha de información que se resuelve)</option>
+                    <option value="Humor" style="background-color: var(--bg2); color: var(--text2);">Humor (Puerta de entrada a algo serio)</option>
+                    <option value="Emoción profunda" style="background-color: var(--bg2); color: var(--text2);">Emoción profunda (Sentir, no solo aprender)</option>
+                    <option value="Indignación" style="background-color: var(--bg2); color: var(--text2);">Indignación (Contra la idea, nunca la persona)</option>
+                    <option value="Alivio" style="background-color: var(--bg2); color: var(--text2);">Alivio (No soy un fracaso)</option>
+                    <option value="Esperanza" style="background-color: var(--bg2); color: var(--text2);">Esperanza (Existe otra posibilidad — nunca promesa)</option>
+                    <option value="Determinación" style="background-color: var(--bg2); color: var(--text2);">Determinación (Ya me decidí)</option>
                     <option value="otra" style="background-color: var(--bg2); color: var(--text2);">otra</option>
                   </select>
                   <input type="text" id="reel-emocion-text" onblur="saveEditableSelect(this, 'reel-emocion-select')" onkeydown="handleEditableKeyDown(event, this, 'reel-emocion-select')" placeholder="Escribe otra emoción..." style="display: none; width: 100%; height: 26px; padding: 0 12px; border-radius: 20px !important; font-size: 11px; background-color: var(--surface2); border: 1px solid var(--border2); color: var(--text); outline: none; transition: all 0.15s;">
@@ -887,15 +890,19 @@ select option{background:var(--surface2)}
                 <input type="hidden" id="reel-emocion" value="">
               </div>
               <div class="field" style="position: relative; display: flex; flex-direction: column; justify-content: flex-start;">
-                <div class="flabel">Objetivo psicológico</div>
+                <div class="flabel">Objetivo (documento 06)</div>
                 <div style="margin-top: 5px; height: 26px; position: relative;">
                   <select id="reel-obj-p-select" onchange="checkEditableSelect(this, 'reel-obj-p-text')" style="width: 100%; height: 26px; padding: 0 24px 0 12px; border-radius: 20px !important; font-size: 11px; background-color: var(--surface2); border: 1px solid var(--border2); color: var(--text2); outline: none; cursor: pointer; transition: all 0.15s; font-weight: 500; -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;10&quot; height=&quot;10&quot; viewBox=&quot;0 0 10 10&quot; fill=&quot;none&quot; stroke=&quot;%2394a3b8&quot;><path d=&quot;M2 4l3 3 3-3&quot; stroke-width=&quot;1.5&quot; stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot;/></svg>'); background-repeat: no-repeat; background-position: right 10px center; background-size: 8px;">
                     <option value="" disabled selected>Selecciona un objetivo...</option>
-                    <option value="Validar frustración" style="background-color: var(--bg2); color: var(--text2);">Validar frustración (No es tu culpa/Empatía)</option>
-                    <option value="Conectar síntoma-raíz" style="background-color: var(--bg2); color: var(--text2);">Conectar síntoma con la causa raíz</option>
-                    <option value="Desmitificar creencia" style="background-color: var(--bg2); color: var(--text2);">Desmitificar creencia limitante popular</option>
-                    <option value="Dirección accionable" style="background-color: var(--bg2); color: var(--text2);">Dirección clara y accionable</option>
-                    <option value="Generar urgencia" style="background-color: var(--bg2); color: var(--text2);">Generar urgencia (Dolor del statu quo)</option>
+                    <option value="Alcance" style="background-color: var(--bg2); color: var(--text2);">Alcance (Que gente nueva conozca a Juan)</option>
+                    <option value="Crecimiento" style="background-color: var(--bg2); color: var(--text2);">Crecimiento (Que quiera seguir viendo más)</option>
+                    <option value="Identificación" style="background-color: var(--bg2); color: var(--text2);">Identificación ("Ese soy yo")</option>
+                    <option value="Conversación" style="background-color: var(--bg2); color: var(--text2);">Conversación (Provocar comentario/DM)</option>
+                    <option value="Confianza" style="background-color: var(--bg2); color: var(--text2);">Confianza ("Le confiaría mi caso")</option>
+                    <option value="Educación / cambio de creencia" style="background-color: var(--bg2); color: var(--text2);">Educación / cambio de creencia</option>
+                    <option value="Consideración" style="background-color: var(--bg2); color: var(--text2);">Consideración ("Quizás sí es para mí")</option>
+                    <option value="Decisión" style="background-color: var(--bg2); color: var(--text2);">Decisión (Quitar la última barrera)</option>
+                    <option value="Conversión" style="background-color: var(--bg2); color: var(--text2);">Conversión (Acción comercial concreta)</option>
                     <option value="otra" style="background-color: var(--bg2); color: var(--text2);">otra</option>
                   </select>
                   <input type="text" id="reel-obj-p-text" onblur="saveEditableSelect(this, 'reel-obj-p-select')" onkeydown="handleEditableKeyDown(event, this, 'reel-obj-p-select')" placeholder="Escribe otro objetivo..." style="display: none; width: 100%; height: 26px; padding: 0 12px; border-radius: 20px !important; font-size: 11px; background-color: var(--surface2); border: 1px solid var(--border2); color: var(--text); outline: none; transition: all 0.15s;">
@@ -907,12 +914,14 @@ select option{background:var(--surface2)}
             <div class="field">
               <div class="flabel">Pilar de contenido</div>
               <div class="tag-group" id="reel-pilar">
-                <div class="tag p1" onclick="selectPilar(this)">Validación emocional</div>
-                <div class="tag p2" onclick="selectPilar(this)">Educación premium</div>
-                <div class="tag p3 on" onclick="selectPilar(this)">Contrarian / Mitos</div>
-                <div class="tag p4" onclick="selectPilar(this)">Autoridad humana</div>
-                <div class="tag p5" onclick="selectPilar(this)">Transformación de vida</div>
-                <div class="tag p6" onclick="selectPilar(this)">Conversión directa</div>
+                <div class="tag p1" onclick="selectPilar(this)">Educación</div>
+                <div class="tag p2" onclick="selectPilar(this)">Entretenimiento</div>
+                <div class="tag p3" onclick="selectPilar(this)">Emoción</div>
+                <div class="tag p4 on" onclick="selectPilar(this)">Autoridad</div>
+                <div class="tag p5" onclick="selectPilar(this)">Conversión</div>
+                <div class="tag p6" onclick="selectPilar(this)">Identificación</div>
+                <div class="tag p7" onclick="selectPilar(this)">Inspiración</div>
+                <div class="tag p8" onclick="selectPilar(this)">Comunidad / Conversación</div>
               </div>
             </div>
 
@@ -2133,10 +2142,12 @@ SOLO responde con JSON puro — sin markdown, sin texto adicional, sin bloques d
 Estructura exacta:
 {
   "nombre":"Nombre del reel",
-  "pilar":"validacion_emocional|educacion_premium|contrarian_mitos|autoridad_humana|transformacion_vida|conversion_directa",
+  "pilar":"educacion|entretenimiento|emocion|autoridad|conversion|identificacion|inspiracion|comunidad",
+  "pilar_secundario":"mismo listado, o null si no aplica",
   "funnel":"TOFU|MOFU|BOFU",
-  "emocion":"emoción central",
-  "obj_psicologico":"objetivo psicológico",
+  "emocion":"Sorpresa|Curiosidad|Humor|Emoción profunda|Indignación|Alivio|Esperanza|Determinación",
+  "obj_psicologico":"Alcance|Crecimiento|Identificación|Conversación|Confianza|Educación / cambio de creencia|Consideración|Decisión|Conversión",
+  "respuesta_buscada":"Después de ver esto quiero que la persona piense/sienta/diga/haga...",
   "obj_algoritmico":["guardados","compartidos","DMs","comentarios"],
   "formato":"formato de video",
   "edicion":"tipo de edición",
@@ -2148,6 +2159,7 @@ Estructura exacta:
   "musica":"ambiente sonoro",
   "imagen":"tratamiento de imagen y PIPs",
   "historias":"historias complementarias",
+  "storytelling":"si la pieza cuenta una historia: situación → deseo → conflicto → cambio → resultado. Si no aplica, escribe null.",
   "hook_a":{"tipo":"","visual":"visual hook","verbal":"frase del Dr."},
   "hook_b":{"tipo":"","visual":"visual hook","verbal":"frase del Dr."},
   "hook_c":{"tipo":"","visual":"visual hook","verbal":"frase del Dr."},
@@ -2160,12 +2172,25 @@ Estructura exacta:
 }
 
 REGLAS ABSOLUTAS:
-- 70% emoción / 30% ciencia. VALIDAR antes de explicar.
+- "pilar" y "obj_psicologico" son cosas DISTINTAS: el pilar es la función comunicativa
+  (para qué existe la pieza), el objetivo es el resultado estratégico que se busca
+  provocar. No los confundas ni los repitas con el mismo valor.
+- No existe una fórmula fija de "% emoción / % ciencia". El balance entre validar y
+  explicar depende del pilar y el objetivo de esta pieza específica — pero si ambos
+  aparecen, el orden lógico casi siempre es identificación/validación primero, la
+  explicación aterriza después.
 - Re-hooks son conectores narrativos: "Pero...", "Pero eso no es todo...", "Y no obstante...", "Pero espera..."
 - 45s = 3 re-hooks. 30s = 2. 60s = 4. Distribuidos a lo largo del guion.
 - Ritmo del diálogo: frases cortas = golpes directos. Frases largas = explicación. Alternar.
-- NUNCA motivación vacía. NUNCA "fuerza de voluntad". NUNCA tecnicismos.
-- CTA humano, cálido y específico. Nunca genérico.
+- "Fuerza de voluntad" NO es una frase prohibida — es uno de los temas centrales y más
+  potentes de esta marca (ver Sistema de Hooks). Se cuestiona la creencia de que la
+  fuerza de voluntad lo explica todo — nunca se evita la palabra ni se le resta
+  importancia a que el compromiso del paciente sí es necesario.
+- Prohibido prometer resultados específicos (kilos, "sin esfuerzo", garantías).
+- Nunca fabricar urgencia falsa. La urgencia solo aparece si nace de una situación real.
+- CTA humano, cálido y específico, con nivel de fricción coherente con el funnel: TOFU
+  pide acciones de baja fricción (compartir, guardar, seguir); BOFU sí puede pedir una
+  acción comercial directa. Nunca genérico.
 - Incluir entre 7 y 9 escenas en el guion.`;
 
   const usr = `Idea: ${idea}
@@ -2223,13 +2248,14 @@ function fillFromAI(r) {
   // Pilar
   if (r.pilar) {
     const pilarLabels = {
-      validacion_emocional: 'Validación emocional',
-      educacion_premium: 'Educación premium',
-      contrarian_mitos: 'Contrarian / Mitos',
-      autoridad_humana: 'Autoridad humana',
-      transformación_vida: 'Transformación de vida',
-      transformacion_vida: 'Transformación de vida',
-      conversion_directa: 'Conversión directa'
+      educacion: 'Educación',
+      entretenimiento: 'Entretenimiento',
+      emocion: 'Emoción',
+      autoridad: 'Autoridad',
+      conversion: 'Conversión',
+      identificacion: 'Identificación',
+      inspiracion: 'Inspiración',
+      comunidad: 'Comunidad / Conversación'
     };
     const mappedPilar = pilarLabels[r.pilar] || r.pilar;
     document.querySelectorAll('#reel-pilar .tag').forEach(t => {
@@ -2949,19 +2975,29 @@ async function fillReelWithIA() {
   const sys = `Eres la skill inteligente /creador-de-contenido adaptada exactamente al estilo de marca de Juan Santiago Molina V. (@cirujanomolina), cirujano bariátrico premium.
   
 Tu estilo se rige por:
-- Enfoque compasivo "anti-dieta restrictiva" y "anti-fuerza de voluntad".
-- Explicar la ciencia de forma simple (70% emoción y empatía / 30% ciencia bariátrica).
+- Enfoque compasivo: se le quita la culpa al paciente sin quitarle responsabilidad. La
+  obesidad es una condición multifactorial, no una falla de carácter — pero el
+  compromiso del paciente con el proceso sí importa.
+- "Fuerza de voluntad" no es un tema prohibido — es uno de los hooks más potentes y
+  validados de esta marca. Se cuestiona la creencia de que lo explica todo; nunca se
+  evita el tema ni se le resta importancia al compromiso real que sí se necesita.
+- No existe una fórmula fija de "% emoción / % ciencia" — el balance depende del pilar
+  y el objetivo de la pieza. El orden lógico más frecuente es validar primero, explicar
+  después — pero no es una regla mecánica.
 - Conectar los síntomas físicos con dolores emocionales cotidianos (ej: culpabilidad, aislamiento social, frustración médica).
 - Tono premium, clínico pero profundamente humano y cercano.
+- Nunca fabricar urgencia falsa ni prometer resultados específicos (documento de Límites).
 
 SOLO responde con JSON puro — sin markdown, sin texto adicional, sin bloques de código.
 
 Estructura exacta:
 {
-  "pilar":"validacion_emocional|educacion_premium|contrarian_mitos|autoridad_humana|transformacion_vida|conversion_directa",
+  "pilar":"educacion|entretenimiento|emocion|autoridad|conversion|identificacion|inspiracion|comunidad",
+  "pilar_secundario":"mismo listado, o null si no aplica",
   "funnel":"TOFU|MOFU|BOFU",
-  "emocion":"emoción central basada en el dolor",
-  "obj_psicologico":"objetivo psicológico en el espectador",
+  "emocion":"Sorpresa|Curiosidad|Humor|Emoción profunda|Indignación|Alivio|Esperanza|Determinación",
+  "obj_psicologico":"Alcance|Crecimiento|Identificación|Conversación|Confianza|Educación / cambio de creencia|Consideración|Decisión|Conversión",
+  "respuesta_buscada":"Después de ver esto quiero que la persona piense/sienta/diga/haga...",
   "obj_algoritmico":["guardados","compartidos","DMs","comentarios"],
   "formato":"formato de video compatible",
   "edicion":"tipo de edición",
@@ -2973,6 +3009,7 @@ Estructura exacta:
   "musica":"ambiente sonoro",
   "imagen":"tratamiento de imagen y PIPs",
   "historias":"historias complementarias",
+  "storytelling":"si la pieza cuenta una historia: situación → deseo → conflicto → cambio → resultado. Si no aplica, escribe null.",
   "hook_a":{"tipo":"empatía|contrarian|revelación","visual":"visual hook","verbal":"frase de gancho del Dr."},
   "hook_b":{"tipo":"conexión|desarrollo","visual":"visual hook","verbal":"frase conectora del Dr."},
   "hook_c":{"tipo":"rehook","visual":"visual hook","verbal":"frase del Dr."},
@@ -2987,7 +3024,7 @@ Estructura exacta:
   const usr = `Nombre del reel: ${nombre}
 Descripción o idea del video: ${descripcion}
 
-Basado en estos datos, completa la estrategia, el pilar de contenido, el objetivo psicológico y algorítmico, y redacta el guión detallado paso a paso con las voces y estilo de @cirujanomolina.`;
+Basado en estos datos, completa la estrategia diferenciando claramente el pilar (para qué existe la pieza) del objetivo (qué resultado estratégico se busca) y del funnel (en qué momento está la persona) — son tres variables independientes, no la misma cosa. Redacta el guión detallado paso a paso con las voces y estilo de @cirujanomolina.`;
 
   const prompt = `${sys}\n\nDatos de entrada:\n${usr}`;
   const apiKey = localStorage.getItem('gemini_api_key') || localStorage.getItem('ai_key_gemini_flash') || '';

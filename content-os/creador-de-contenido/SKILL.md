@@ -22,12 +22,12 @@ entregada como un artefacto HTML interactivo con la estética exacta de la marca
 
 - **Posicionamiento:** Cirujano bariátrico premium. Humano, cercano, con autoridad médica real.
 - **Tagline:** *"Recupera quien eres."*
-- **Audiencia:** Mujeres 32–48 años agotadas de intentar sin resultado. Pacientes metabólicos.
-- **Fórmula:** 70% emoción / 30% ciencia. Validar ANTES de explicar. SIEMPRE.
+- **Audiencia:** No es un avatar demográfico fijo — es la situación emocional (ver `references/psychology.md` y `references/pillars.md`): alguien que ha intentado bajar de peso varias veces, que ha escuchado "solo te falta fuerza de voluntad", que evita fotos o ciertas actividades por su cuerpo, o que ya tiene una condición metabólica asociada.
+- **Tono:** No hay una fórmula fija de "% emoción / % ciencia" — el balance depende del pilar y el objetivo de cada pieza. Lo constante es el orden lógico: primero identificación/validación, la explicación aterriza después.
 - **Paleta:** #14262D (verde noche) · #1F434E (verde azulado) · #2ABFB0 (teal) · #F4F5F0 (hueso) · #CCC2A7 (beige)
 - **Tipografía:** Cormorant Garamond (hooks/títulos) · Archivo (cuerpo/CTAs)
 - **Estética:** Cinematográfica · Premium · Netflix médico oscuro — NUNCA TikTok genérico
-- **NUNCA:** Motivación vacía · Tecnicismos · Arrogancia · Competir por precio
+- **NUNCA:** Prometer resultados específicos · Tecnicismos sin traducir · Arrogancia · Atacar a otros médicos o clínicas · Competir por precio
 
 Ver detalles completos en `references/brand-brain.md`.
 
@@ -47,16 +47,26 @@ Si el usuario dice "procede" o ya dio suficiente contexto → saltar directo a F
 
 ### FASE 2 — ANÁLISIS ESTRATÉGICO (interno)
 
-Determinar antes de generar el HTML:
-- Pilar de contenido (ver `references/pillars.md`)
-- Etapa del funnel: TOFU / MOFU / BOFU
-- Emoción central y objetivo psicológico
-- Objetivo algorítmico (guardados / compartidos / DMs / comentarios)
-- Formato (talking head / voiceover+B-roll / native text / etc.)
-- Duración ideal (15s / 30s / 45s / 60s)
-- Tipo de edición (emocional lento / contrarian intenso / documental / conversacional)
-- Ubicación, vestuario, PIP concepts
-- 3 re-hooks como conectores narrativos del diálogo
+Determinar antes de generar el HTML, siguiendo el sistema completo de los 16 documentos
+de marca (ver `references/pillars.md` para el detalle de cada capa):
+- **Pilar principal y secundario** (de los 8 reales — Educación, Entretenimiento, Emoción,
+  Autoridad, Conversión, Identificación, Inspiración, Comunidad/Conversación)
+- **Emoción central** (de las 8 emociones núcleo) y si hay identificación como capa transversal
+- **Objetivo principal y secundario** (de los 9 objetivos — alcance, crecimiento,
+  identificación, conversación, confianza, educación/cambio de creencia, consideración,
+  decisión, conversión). El objetivo NO es lo mismo que el pilar.
+- **Etapa del funnel:** TOFU / MOFU / BOFU — es una coordenada independiente del objetivo
+- **Respuesta buscada:** completar "después de ver esto quiero que la persona piense,
+  sienta, diga o haga..." — en términos humanos concretos, no abstractos
+- **Formato** (ver `references/formats.md`)
+- **Duración ideal** (15s / 30s / 45s / 60s)
+- **Storytelling:** si la pieza cuenta una historia, identificar situación → deseo →
+  conflicto → cambio → resultado (no forzar esta estructura si la idea no la pide)
+- **Tipo de edición** (emocional lento / contrarian intenso / documental / conversacional)
+- **Ubicación, vestuario, PIP concepts**
+- **Rehooks** como conectores narrativos del diálogo (cantidad según duración — ver abajo)
+- **CTA:** nivel de fricción coherente con el funnel y el objetivo (ver documento de CTA:
+  bajo/medio/alto), y si es explícito, integrado o implícito
 
 ### FASE 3 — OUTPUT: ARTEFACTO HTML
 
@@ -139,19 +149,28 @@ Fondo del widget: `background: var(--vd)` — SIEMPRE. Nunca gris del sistema.
 1. El output siempre es el artefacto HTML. Nunca solo texto.
 2. Fondo siempre #14262D. Nunca el gris de Claude.
 3. Re-hooks = conectores del diálogo ("pero", "no obstante", "eso no es todo").
-4. Validar antes de explicar. 70% emoción / 30% ciencia.
-5. Nunca motivación vacía. "¡Tú puedes!" o "fuerza de voluntad" — prohibido.
-6. CTA siempre humano y específico. Nunca genérico.
+4. No existe una fórmula fija de "% emoción / % ciencia" — pero si ambos aparecen, el
+   orden lógico es identificación/validación primero, explicación después.
+5. No prometer resultados específicos, números de kilos, ni "sin esfuerzo" (documento de
+   Límites). "Fuerza de voluntad" NO es una palabra prohibida — es un tema central de la
+   marca que se cuestiona y se reformula, nunca se evita. Sí está prohibida la motivación
+   vacía sin matiz ("¡Tú puedes!" como explicación completa).
+6. CTA siempre humano y específico, con nivel de fricción coherente con el funnel. Nunca
+   genérico, y nunca agresivo cuando el funnel es TOFU.
 7. Los botones de variación tienen opciones CONTEXTUALES e inteligentes — no genéricas.
-8. sendPrompt siempre incluye el contexto del reel: nombre, marca, pilar.
-9. Ideas vagas → construir desde las 7 heridas emocionales (`references/psychology.md`).
+8. sendPrompt siempre incluye el contexto del reel: nombre, marca, pilar, objetivo, funnel.
+9. Ideas vagas → construir desde las 7 heridas emocionales (`references/psychology.md`)
+   y desde el Banco de Ideas (preguntas reales, objeciones, creencias, historias).
+10. Nunca atacar a otro médico, especialidad o clínica identificable. Nunca convertir la
+    obesidad en un problema moral. Nunca usar el cuerpo de un paciente como chiste.
 
 ---
 
 ## REFERENCIAS
 
-- `references/brand-brain.md` — Identidad, voz, paleta, tipografía
-- `references/pillars.md` — Los 6 pilares con objetivos y ejemplos
-- `references/psychology.md` — Las 7 heridas emocionales y el patrón narrativo
+- `references/brand-brain.md` — Identidad, voz, audiencia, paleta, tipografía, límites
+- `references/pillars.md` — Los 8 pilares reales + las 8 emociones núcleo + los 9
+  objetivos + el funnel, como 4 variables independientes y combinables
+- `references/psychology.md` — Las 7 heridas emocionales y el patrón narrativo (no rígido)
 - `references/formats.md` — Tipos de plano, edición, arquitectura de reels
 - `references/html-template.md` — Especificaciones del HTML output (v4 definitiva)

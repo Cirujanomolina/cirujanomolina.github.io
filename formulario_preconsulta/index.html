@@ -1292,9 +1292,28 @@ function startForm() {
 }
 
 // Navigation clicks
-document.addEventListener('click', e => {
+document.addEventListener('click', async e => {
   if (e.target.closest('.next-btn')) {
     if (validateStep(currentStep)) {
+      // Al salir del paso 1: verificar duplicado por tipo + número de documento
+      if (currentStep === 1) {
+        const fd = new FormData(document.getElementById('frm'));
+        const numDoc = (fd.get('numero_documento') || '').toString().trim();
+        if (numDoc) {
+          const yaExiste = await checkPreconsultaExistente(numDoc);
+          if (yaExiste) {
+            const quiereActualizar = await mostrarModalDuplicado();
+            if (!quiereActualizar) {
+              // Paciente cancela → quedarse en paso 1
+              return;
+            }
+            // Paciente acepta actualizar → marcar para UPDATE y pre-llenar form
+            window._preconsultaEsActualizacion = true;
+            const datosExistentes = await obtenerPreconsultaPorDocumento(numDoc);
+            prefillForm(datosExistentes);
+          }
+        }
+      }
       if (currentStep < totalSteps) {
         showStep(currentStep + 1);
       }
@@ -1801,17 +1820,14 @@ function gather(form){
   d['nombres'] = nombresVal || null;
   d['apellidos'] = apellidosVal || null;
 
-  const tipoDoc = fd.get('tipo_documento') || '';
-  const numDoc = fd.get('numero_documento') || '';
-  if (tipoDoc && numDoc) {
-    d['nombre_completo'] = `${nombreRaw} [${tipoDoc}: ${numDoc}]`.trim();
-  } else {
-    d['nombre_completo'] = nombreRaw || null;
-  }
+  // nombre_completo = solo nombre + apellidos (documento va en sus columnas propias)
+  d['nombre_completo'] = nombreRaw || null;
 
   // Guardamos también el documento en su propia columna, para poder
   // detectar envíos duplicados de la misma persona de forma confiable
   // (antes solo vivía concatenado dentro de nombre_completo).
+  const tipoDoc = fd.get('tipo_documento') || '';
+  const numDoc = fd.get('numero_documento') || '';
   d['numero_documento'] = numDoc || null;
   d['tipo_documento'] = tipoDoc || null;
 
@@ -2024,23 +2040,9 @@ document.getElementById('frm').addEventListener('submit', async e => {
   try {
     const payload = gather(e.target);
 
-    // Verificar si esta persona (mismo número de documento) ya había
-    // enviado este formulario antes, usando una función que solo
-    // responde true/false — no expone ningún dato de nadie.
-    let esActualizacion = false;
-    if (payload.numero_documento) {
-      const yaExiste = await checkPreconsultaExistente(payload.numero_documento);
-      if (yaExiste) {
-        const quiereActualizar = await mostrarModalDuplicado();
-        if (!quiereActualizar) {
-          btn.disabled = false;
-          btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4 19-7z"/></svg> Enviar formulario';
-          return;
-        }
-        esActualizacion = true;
-        btn.textContent = 'Enviando...';
-      }
-    }
+    // La detección de duplicado ya ocurrió en el paso 1 al pulsar "Continuar".
+    // Aquí solo leemos la bandera que se fijó en ese momento.
+    const esActualizacion = window._preconsultaEsActualizacion === true;
 
     const res = esActualizacion
       ? await fetch(`${SUPA_URL}/rest/v1/rpc/actualizar_preconsulta`, {
@@ -2104,6 +2106,184 @@ async function checkPreconsultaExistente(numeroDocumento) {
   }
 }
 
+// Trae los datos existentes de la preconsulta para pre-llenar el form
+async function obtenerPreconsultaPorDocumento(numeroDocumento) {
+  try {
+    const res = await fetch(`${SUPA_URL}/rest/v1/rpc/obtener_preconsulta_por_documento`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer ' + SUPA_KEY
+      },
+      body: JSON.stringify({ p_numero_documento: numeroDocumento })
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (e) {
+    return null;
+  }
+}
+
+// Pre-llena todos los campos del formulario con los datos existentes de la BD
+function prefillForm(d) {
+  if (!d) return;
+  const frm = document.getElementById('frm');
+  if (!frm) return;
+
+  const set = (name, val) => {
+    if (val === null || val === undefined) return;
+    const el = frm.querySelector(`[name="${name}"]`);
+    if (el) el.value = val;
+  };
+
+  const setRadio = (name, val) => {
+    if (!val) return;
+    const el = frm.querySelector(`[name="${name}"][value="${val}"]`);
+    if (el) { el.checked = true; el.dispatchEvent(new Event('change', { bubbles: true })); }
+  };
+
+  const setCheckboxes = (name, vals) => {
+    if (!Array.isArray(vals) || !vals.length) return;
+    frm.querySelectorAll(`[name="${name}"]`).forEach(cb => {
+      cb.checked = vals.includes(cb.value);
+    });
+  };
+
+  // ── Paso 1: Datos Personales ──
+  set('nombres_paciente', d.nombres);
+  set('apellidos_paciente', d.apellidos);
+  set('tipo_documento', d.tipo_documento);
+  // numero_documento ya está llenado (fue lo que usó para buscar)
+  set('email', d.email);
+  set('ocupacion', d.ocupacion);
+
+  // Sexo biológico (radio)
+  setRadio('sexo', d.sexo);
+
+  // Teléfono: separar prefijo y número
+  if (d.telefono) {
+    const parts = d.telefono.split(' ');
+    if (parts.length >= 2) {
+      const prefixEl = document.getElementById('indicativoSelect');
+      if (prefixEl) { prefixEl.value = parts[0]; prefixEl.dispatchEvent(new Event('change')); }
+      set('telefono', parts.slice(1).join(' '));
+    } else {
+      set('telefono', d.telefono);
+    }
+  }
+
+  // Fecha nacimiento → mostrar en el display del calendario
+  if (d.fecha_nacimiento) {
+    set('fecha_nacimiento', d.fecha_nacimiento);
+    const dobDisplay = document.getElementById('dobDisplay');
+    if (dobDisplay) dobDisplay.textContent = d.fecha_nacimiento;
+  }
+
+  // Ciudad y país
+  if (d.ciudad) {
+    // formato "Ciudad (País)" → separar
+    const match = d.ciudad.match(/^(.+?)\s*\((.+?)\)$/);
+    const ciudadSelect = document.getElementById('ciudadSelect');
+    if (match) {
+      if (ciudadSelect) { ciudadSelect.value = match[1]; ciudadSelect.dispatchEvent(new Event('change')); }
+      set('pais', match[2]);
+    } else {
+      if (ciudadSelect) { ciudadSelect.value = d.ciudad; ciudadSelect.dispatchEvent(new Event('change')); }
+    }
+  }
+
+  // Como nos conoció
+  set('como_se_entero', d.como_nos_conocio);
+
+  // ── Pasos 2-10: Datos clínicos ──
+  set('peso_actual', d.peso_actual);
+  set('estatura', d.estatura);
+  set('peso_minimo', d.peso_minimo);
+  set('peso_maximo', d.peso_maximo);
+
+  // Inicio sobrepeso → reverse map
+  if (d.inicio_sobrepeso) {
+    const reverseMap = {
+      'Desde la infancia': 'infancia',
+      'Adolescencia': 'adolescencia',
+      'Adultez temprana (20–30 años)': 'adultez_temprana',
+      'Después de un embarazo': 'embarazo',
+      'Después de los 30 años': 'despues_30',
+      'Pandemia / estrés': 'pandemia_estres'
+    };
+    const mapped = reverseMap[d.inicio_sobrepeso];
+    const selEl = frm.querySelector('[name="inicio_sobrepeso_select"]');
+    if (selEl) {
+      if (mapped) {
+        selEl.value = mapped;
+      } else {
+        selEl.value = 'Otro';
+        set('inicio_sobrepeso_custom', d.inicio_sobrepeso);
+      }
+      selEl.dispatchEvent(new Event('change'));
+    }
+  }
+
+  set('eventos_aumento_peso', d.eventos_aumento_peso);
+
+  // Intentos (checkboxes array)
+  setCheckboxes('intentos[]', d.intentos);
+
+  set('resultado_intentos', d.resultado_intentos);
+  set('medicamentos_actuales', d.medicamentos_actuales);
+
+  // Condiciones (checkboxes)
+  setCheckboxes('condiciones[]', d.condiciones);
+
+  // Cirugías previas
+  if (d.cirugias_previas) {
+    const cirEl = frm.querySelector('[name="cirugias_previas_select"]');
+    if (cirEl) {
+      if (cirEl.querySelector(`option[value="${d.cirugias_previas}"]`)) {
+        cirEl.value = d.cirugias_previas;
+      } else {
+        cirEl.value = 'Otro';
+        set('cirugias_otro_custom', d.detalle_cirugias || d.cirugias_previas);
+      }
+      cirEl.dispatchEvent(new Event('change'));
+    }
+  }
+
+  // Tabaquismo
+  if (d.tabaquismo) {
+    const tabEl = frm.querySelector('[name="tabaquismo_select"]');
+    if (tabEl) {
+      if (tabEl.querySelector(`option[value="${d.tabaquismo}"]`)) {
+        tabEl.value = d.tabaquismo;
+      } else {
+        tabEl.value = 'Otro';
+        set('tabaquismo_otro_custom', d.tabaquismo);
+      }
+      tabEl.dispatchEvent(new Event('change'));
+    }
+  }
+
+  set('alcohol', d.alcohol);
+  set('comidas_dia', d.comidas_dia);
+  setCheckboxes('patrones[]', d.patrones);
+  set('actividad_fisica', d.actividad_fisica);
+  set('horas_sueno', d.horas_sueno);
+
+  // Impacto vida (radio 0-10)
+  setRadio('impacto_vida', String(d.impacto_vida));
+  setCheckboxes('impacto_areas[]', d.impacto_areas);
+  set('impacto_personal_libre', d.impacto_personal_libre);
+
+  set('motivacion', d.motivacion);
+  set('expectativas', d.expectativas);
+  set('sentimiento_cirugia', d.sentimiento_cirugia);
+  set('preguntas_consulta', d.preguntas_consulta);
+  set('red_apoyo', d.red_apoyo);
+  set('examenes', d.examenes);
+  set('comentario_examenes', d.comentario_examenes);
+}
+
 // Muestra el modal de "ya recibimos tus datos" y resuelve true/false
 // según lo que elija la persona.
 function mostrarModalDuplicado() {
@@ -2148,6 +2328,9 @@ function resetForm() {
   // Reset progress bar
   document.getElementById('pFill').style.width = '0%';
   document.getElementById('pPct').textContent = 'Paso 1 de 10';
+
+  // Limpiar bandera de duplicado
+  window._preconsultaEsActualizacion = false;
 
   // Restore Submit button state
   const btn = document.getElementById('sbBtn');

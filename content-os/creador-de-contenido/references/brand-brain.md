@@ -1,5 +1,11 @@
 # BRAND BRAIN — Dr. Juan Santiago Molina V.
 
+> **Este archivo es un resumen operativo rápido para la IA.** La fuente de verdad completa
+> son los 16 documentos de marca (ADN, Voz, Puntos de Vista, Límites, Pilares y Emociones,
+> Objetivos y Funnel, CTA, Filosofía Narrativa, Hooks, Rehooking, Formatos, Storytelling,
+> Trial Reels, Dirección Visual y Sonora, Banco de Ideas, Revisión Estratégica). Ante
+> cualquier duda o conflicto, esos 16 documentos tienen prioridad sobre este resumen.
+
 ## Identidad de marca
 
 **Nombre:** Dr. Juan Santiago Molina V.
@@ -7,67 +13,94 @@
 **Especialidad:** Cirugía Bariátrica y Metabólica · Laparoscopia Avanzada
 
 **Tagline principal:** *"Recupera quien eres."*
-**Tagline institucional:** *"Humanidad, ciencia y acompañamiento real."*
 
-**Posicionamiento:** El cirujano bariátrico premium que combina humanidad, ciencia y acompañamiento real para transformar vidas de manera profunda y sostenible.
+**Posicionamiento:** No es una cuenta que gira exclusivamente alrededor de la cirugía
+bariátrica — es una marca sobre entender la obesidad de una manera más completa y
+ayudar a alguien a recuperar una vida que se ha ido limitando con el tiempo. La cirugía
+es una herramienta poderosa dentro de ese proceso, no el tema obligatorio de cada pieza.
+
+**La gran batalla (documento 01):** no es contra otros médicos, ni las dietas, ni los
+medicamentos, ni las personas con obesidad. Es contra la interpretación equivocada de
+la obesidad como simple falta de disciplina. Juan quiere **quitarle culpa al paciente,
+sin quitarle responsabilidad** — esa distinción sostiene toda la comunicación.
 
 ---
 
 ## Palabras de marca
-Humano · Confiable · Claro · Cercano · Profesional · Elegante · Sobrio
+Humano · Confiable · Claro · Cercano · Profesional · Elegante · Sobrio · Con criterio propio
 
 ## Lo que NUNCA es
-- Cercano pero no informal
-- Directo pero nunca cruel con los sentimientos del paciente
-- Orientado a resultados pero no a vender — educar primero, siempre
+- Cercano pero no informal permanente — puede ponerse serio cuando el tema lo exige
+- Directo pero nunca cruel con los sentimientos del paciente, ni con quien piensa distinto
+- Sí quiere vender cuando corresponde — "educar siempre, nunca vender" es **incorrecto**:
+  el documento de CTA establece explícitamente que existe un lugar legítimo para el CTA
+  comercial directo cuando el contenido ya construyó la confianza necesaria para pedirlo
 
 ---
 
-## Audiencia primaria
+## Audiencia
 
-**Avatar 1 — Mujer agotada (core)**
-- 32–48 años, madre frecuentemente
-- Intentó múltiples dietas sin resultado
-- Autoestima deteriorada, ansiedad con comida
-- Evita fotos, vergüenza social
-- Cansancio emocional profundo, siente culpa
-- Deseo profundo: volver a reconocerse
+No se trabaja con un "avatar" demográfico rígido — los 16 documentos deliberadamente
+evitan reducir a la audiencia a un rango de edad o un perfil cerrado. Lo que sí define
+a quién le habla Juan es la **situación emocional y biográfica**, no la demografía:
 
-**Avatar 2 — Paciente metabólico**
-- Diabetes / prediabetes / hipertensión / apnea del sueño
-- Deterioro físico progresivo
-- Miedo a complicaciones futuras
-- Deseo profundo: recuperar control sobre su salud
+- Alguien que ha intentado bajar de peso varias veces y ha recuperado el peso
+- Alguien que ha escuchado "solo te falta fuerza de voluntad" y siente que algo en esa
+  explicación no encaja
+- Alguien que evita fotos, piscinas, ciertas prendas, ciertos planes — por su cuerpo
+- Alguien con una condición metabólica asociada (diabetes, hipertensión, apnea) que ya
+  siente el deterioro físico progresivo
+- Alguien que está considerando la cirugía y todavía tiene una objeción puntual sin resolver
 
-**Audiencia NO deseada:** Curiosos vacíos · Adolescentes random · Pacientes buscando lo más barato
+**Audiencia NO deseada:** curiosos vacíos sin ninguna relación con el tema, contenido
+dirigido a menores, personas buscando exclusivamente la opción más barata sin importar
+la calidad del acompañamiento.
 
 ---
 
 ## Voz y tono
 
-**Fórmula:** 70% emoción / 30% ciencia — siempre en ese orden
+**No existe una fórmula fija de "X% emoción / Y% ciencia".** El documento de Voz rechaza
+explícitamente convertir el ritmo en una plantilla rígida — el balance entre emoción y
+dato depende del pilar, el objetivo y el formato de cada pieza específica. Lo que sí es
+constante es el orden lógico cuando ambos aparecen: primero se genera la identificación
+o se valida la experiencia, y la explicación aterriza después — no al revés.
 
 **ALWAYS ✅**
-- Validar antes de explicar — el paciente necesita sentirse escuchado primero
-- Quitar la culpa: la obesidad es una enfermedad, no una falla de voluntad
-- Hablar con calidez clínica — cercano, pero con autoridad médica
-- Educar siempre — que el paciente entienda, no solo que confíe
-- Recordar al paciente que no está solo — hay un equipo detrás
+- Quitar la culpa sin quitar la responsabilidad — la obesidad es una condición
+  multifactorial, no una falla de carácter, pero el paciente sí tiene que comprometerse
+  con el proceso
+- Hablar con calidez clínica — cercano, pero con autoridad médica real
+- Traducir lo médico a algo cotidiano ("una caminadora instalada por dentro" en vez de
+  tecnicismo puro) — sin sacrificar el rigor
+- Tener opinión real y sostenerla, incluso si incomoda una creencia popular
+- Usar el lenguaje coloquial colombiano de Juan cuando es natural (vos, una vaina, un
+  man) — sin forzarlo por cuota
 
 **NEVER ❌**
-- Lenguaje grosero, vulgar o cruel
-- Tecnicismos innecesarios que alejen al paciente
-- Frases de motivación vacía: "¡Tú puedes! Solo necesitas fuerza de voluntad"
-- Tono desinteresado, genérico o que minimice el sufrimiento
-- Lenguaje que sugiera que el paciente podría resolverlo solo sin ayuda médica
+- Lenguaje grosero, cruel o humillante hacia el paciente o hacia quien piensa distinto
+- Tecnicismos sin traducir que dejen a la persona sin entender
+- Prometer un resultado específico, un número de kilos, o un "sin esfuerzo"
+- Usar el miedo de forma fabricada, o convertir la obesidad en un problema moral
+- Atacar a otro médico, especialidad o clínica identificable para quedar mejor por comparación
+
+**Un tema con matiz, no un tema prohibido:** "fuerza de voluntad" NO es una frase vetada —
+es, de hecho, uno de los hooks más validados y potentes de toda la marca (ver Sistema de
+Hooks). Lo que no se hace es usarla como explicación completa y suficiente de la obesidad.
+El patrón correcto es **cuestionar la creencia, no evitar la palabra**: "Yo no te compro
+que esto se explique solo con fuerza de voluntad" es exactamente el tipo de frase que sí
+suena a Juan.
 
 **✅ Suena como el Dr. Molina:**
-*"Quiero que entiendas que la culpa no es tuya. Tu cuerpo está jugando en tu contra — y para eso estoy yo aquí."*
-*"Cuando entras a trabajar con nuestro equipo, tú eres el centro. Te acompañamos en todo el proceso — no estás solo en esto."*
+*"Yo no te compro que esto se explique solo con fuerza de voluntad. Hay gente que sí lo
+ha intentado en serio, y aun así el cuerpo se las juega en contra."*
+*"No necesitas ser una mejor versión de nadie. Necesitas dejar de pelear contigo mismo
+por algo que no dependía solo de ti."*
 
 **❌ No suena como el Dr. Molina:**
 *"¡Tú sí puedes! Con dieta y ejercicio lo puedes lograr sola."*
 *"La cirugía bariátrica consiste en la segmentación del 80% del volumen gástrico total..."*
+*"Transforma tu vida hoy mismo."* (frase genérica que cualquier cuenta médica podría decir)
 
 ---
 
@@ -75,16 +108,16 @@ Humano · Confiable · Claro · Cercano · Profesional · Elegante · Sobrio
 
 | Color | Hex | Rol |
 |---|---|---|
-| Verde Noche | #14262D | Fondo oscuro principal. Color dominante. |
+| Verde Noche | #14262D | Fondo oscuro principal. Autoridad, profundidad, serenidad. |
 | Verde Azulado | #1F434E | Fondo oscuro secundario. Capas y profundidad. |
-| Beige Cálido | #CCC2A7 | Fondo claro principal. Calidez y respiración. |
-| Teal Vibrante | #2ABFB0 | Acento exclusivo. CTAs, énfasis, itálica. |
+| Beige Cálido | #CCC2A7 | Fondo claro principal. Humanidad y calidez. |
+| Teal Vibrante | #2ABFB0 | Acento exclusivo — dirige la atención, nunca decora de más. |
 | Hueso Claro | #F4F5F0 | Texto principal sobre fondos oscuros. |
 
 **Reglas críticas de contraste:**
 - Texto sobre fondos oscuros → siempre #F4F5F0
 - Texto sobre fondo claro → siempre #14262D
-- Acento y CTAs → siempre #2ABFB0
+- Acento y CTAs → siempre #2ABFB0, con moderación (el color no debe competir con la persona)
 - NUNCA teal en texto pequeño sobre beige
 - NUNCA #14262D sobre #1F434E
 
@@ -94,32 +127,46 @@ Humano · Confiable · Claro · Cercano · Profesional · Elegante · Sobrio
 
 | Fuente | Uso |
 |---|---|
-| Cormorant Garamond | Titulares, hooks, frases de impacto, handle. Con itálica en #2ABFB0 para énfasis. Line-height 0.92 en hooks. |
-| Archivo | Cuerpo, subtítulos, CTAs, etiquetas. Peso 300 para cuerpo, 500 para CTAs. |
+| Cormorant Garamond | Titulares, hooks, frases de impacto, handle. Momentos editoriales/emocionales. |
+| Archivo | Cuerpo, subtítulos, CTAs, información funcional. |
 
-**Énfasis en títulos:** Una o dos palabras clave en itálica y #2ABFB0 dentro del titular. Nunca más de 2 palabras en teal por slide.
+**Énfasis en títulos:** una o dos palabras clave en itálica y #2ABFB0 dentro del titular,
+nunca más.
 
 ---
 
 ## Dirección de imágenes
 
-**Estética:** Cinematográfica y fría, paleta azulada y teal oscuro. Alto contraste, profundidad.
+**Principio rector (documento 14):** premium sin ser ostentoso — la cámara observa, no
+presume. Nada de estética clínica genérica (batas, stock médico) ni de estética de
+transformación agresiva (antes/después como único recurso, cuerpos como espectáculo).
 
 **Por tipo de contenido:**
-- Hook / impacto → Oscura, dramática, cinematográfica
-- Educativo / cercano → Más luz, más documental, más cotidiano
-- CTA / resultados → Personas esperanzadoras, activas, sonriendo
-- Dolor / conexión → Personas reflexivas, vulnerables, íntimas
+- Alcance → claridad y velocidad de comprensión, la primera imagen detiene el scroll
+- Identificación → naturalidad, la persona se reconoce antes de sentirse "educada"
+- Confianza → planos estables, buena luz, escenarios reales
+- Emoción → espacio — silencios, detalles, primeros planos, sin apuro
+- Conversión → claridad, reducción de fricción, nada de complejidad visual añadida
 
-**Degradado sobre imagen:** Linear-gradient de abajo hacia arriba. Opaco ~93% en el 28-32% inferior, transparente en el 70-74%.
+**Degradado sobre imagen:** Linear-gradient de abajo hacia arriba. Opaco ~93% en el
+28-32% inferior, transparente en el 70-74%.
 
 ---
 
 ## Marca en pantalla
 
 **Handle:** @cirujanomolina · Cormorant Garamond · Discreto
-- Arriba cuando el contenido vive abajo
-- Abajo cuando el contenido vive arriba
-
 **Logo en contenido:** Solo ícono JSM · Pequeño · Esquina · Opacidad 50% en oscuros, 30% en claros
 **Logo en CTA:** Logo completo con nombre y especialidad · Cierra el carrusel con identidad completa
+
+---
+
+## Los límites que no se negocian (documento 04, resumen)
+
+- No se vende desde la mentira: se puede exagerar la entrada, nunca el resultado médico
+- No se usa el miedo de forma fabricada — solo el que existe honestamente en una historia real
+- No se ataca a otros cirujanos, especialidades ni clínicas identificables
+- No se convierte la obesidad en un problema moral, ni se cae en el extremo opuesto de
+  "no necesitas cambiar nada"
+- No se promete una vida perfecta después de la cirugía
+- Los pacientes se muestran con dignidad y con consentimiento explícito, siempre
