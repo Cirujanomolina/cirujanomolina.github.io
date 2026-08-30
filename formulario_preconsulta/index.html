@@ -1311,6 +1311,8 @@ document.addEventListener('click', async e => {
             window._preconsultaEsActualizacion = true;
             const datosExistentes = await obtenerPreconsultaPorDocumento(numDoc);
             prefillForm(datosExistentes);
+            // Quedarse en paso 1 para que el paciente revise y modifique
+            return;
           }
         }
       }
