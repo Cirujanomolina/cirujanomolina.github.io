@@ -967,6 +967,115 @@ select option{background:var(--surface2)}
               </div>
             </div>
 
+            <!-- ══════════ FICHA ESTRATÉGICA COMPLETA (documento 06 §11) ══════════ -->
+            <div style="margin: 18px 0 6px; padding-top: 14px; border-top: 1px dashed var(--border2);">
+              <div style="font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--teal); margin-bottom: 12px;">📋 Ficha estratégica completa</div>
+            </div>
+
+            <div class="frow">
+              <div class="field">
+                <div class="flabel">Pilar secundario</div>
+                <select id="reel-pilar-sec" style="height: 26px; padding: 0 24px 0 12px; border-radius: 20px !important; font-size: 11px; background-color: var(--surface2); border: 1px solid var(--border2); color: var(--text2); outline: none; cursor: pointer; width: 100%; -webkit-appearance: none; -moz-appearance: none; appearance: none;">
+                  <option value="">Ninguno</option>
+                  <option value="Educación">Educación</option>
+                  <option value="Entretenimiento">Entretenimiento</option>
+                  <option value="Emoción">Emoción</option>
+                  <option value="Autoridad">Autoridad</option>
+                  <option value="Conversión">Conversión</option>
+                  <option value="Identificación">Identificación</option>
+                  <option value="Inspiración">Inspiración</option>
+                  <option value="Comunidad / Conversación">Comunidad / Conversación</option>
+                </select>
+              </div>
+              <div class="field">
+                <div class="flabel">Emoción secundaria</div>
+                <select id="reel-emocion-sec" style="height: 26px; padding: 0 24px 0 12px; border-radius: 20px !important; font-size: 11px; background-color: var(--surface2); border: 1px solid var(--border2); color: var(--text2); outline: none; cursor: pointer; width: 100%; -webkit-appearance: none; -moz-appearance: none; appearance: none;">
+                  <option value="">Ninguna</option>
+                  <option value="Sorpresa">Sorpresa</option>
+                  <option value="Curiosidad">Curiosidad</option>
+                  <option value="Humor">Humor</option>
+                  <option value="Emoción profunda">Emoción profunda</option>
+                  <option value="Indignación">Indignación</option>
+                  <option value="Alivio">Alivio</option>
+                  <option value="Esperanza">Esperanza</option>
+                  <option value="Determinación">Determinación</option>
+                </select>
+              </div>
+              <div class="field">
+                <div class="flabel">Objetivo secundario</div>
+                <select id="reel-obj-sec" style="height: 26px; padding: 0 24px 0 12px; border-radius: 20px !important; font-size: 11px; background-color: var(--surface2); border: 1px solid var(--border2); color: var(--text2); outline: none; cursor: pointer; width: 100%; -webkit-appearance: none; -moz-appearance: none; appearance: none;">
+                  <option value="">Ninguno</option>
+                  <option value="Alcance">Alcance</option>
+                  <option value="Crecimiento">Crecimiento</option>
+                  <option value="Identificación">Identificación</option>
+                  <option value="Conversación">Conversación</option>
+                  <option value="Confianza">Confianza</option>
+                  <option value="Educación / cambio de creencia">Educación / cambio de creencia</option>
+                  <option value="Consideración">Consideración</option>
+                  <option value="Decisión">Decisión</option>
+                  <option value="Conversión">Conversión</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="frow">
+              <div class="field" style="flex: 2;">
+                <div class="flabel">Respuesta buscada <span style="opacity:.5;font-weight:400;text-transform:none;">— "después de ver esto quiero que la persona..."</span></div>
+                <textarea id="reel-respuesta-buscada" rows="2" placeholder="Piense: entonces no es solo falta de voluntad..."></textarea>
+              </div>
+              <div class="field">
+                <div class="flabel">Audiencia / Persona</div>
+                <input type="text" id="reel-audiencia" placeholder="Alguien que ya intentó varias dietas y recuperó el peso">
+              </div>
+            </div>
+
+            <div class="frow">
+              <div class="field" style="flex: 2;">
+                <div class="flabel">¿Por qué esta persona debería ver esto AHORA?</div>
+                <input type="text" id="reel-por-que-ahora" placeholder="Porque es enero y está considerando empezar otra dieta que va a fallar igual">
+              </div>
+              <div class="field">
+                <div class="flabel">Fuente de la idea</div>
+                <select id="reel-fuente-idea" style="height: 26px; padding: 0 24px 0 12px; border-radius: 20px !important; font-size: 11px; background-color: var(--surface2); border: 1px solid var(--border2); color: var(--text2); outline: none; cursor: pointer; width: 100%; -webkit-appearance: none; -moz-appearance: none; appearance: none;">
+                  <option value="">Sin especificar</option>
+                  <option value="Pregunta">Pregunta</option>
+                  <option value="Objeción">Objeción</option>
+                  <option value="Creencia">Creencia</option>
+                  <option value="Historia">Historia</option>
+                  <option value="Escena">Escena</option>
+                  <option value="Frase">Frase</option>
+                  <option value="Experiencia">Experiencia</option>
+                  <option value="Punto de vista">Punto de vista</option>
+                  <option value="Observación">Observación</option>
+                  <option value="Referencia">Referencia</option>
+                  <option value="Tendencia">Tendencia</option>
+                  <option value="Resultado de contenido">Resultado de contenido</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="frow">
+              <div class="field">
+                <div class="flabel">Storytelling — deseo real</div>
+                <input type="text" id="reel-story-deseo" placeholder="Volver a jugar con sus hijos sin cansarse">
+              </div>
+              <div class="field">
+                <div class="flabel">Storytelling — conflicto</div>
+                <input type="text" id="reel-story-conflicto" placeholder="Cree que le falta fuerza de voluntad">
+              </div>
+              <div class="field">
+                <div class="flabel">Storytelling — cambio</div>
+                <input type="text" id="reel-story-cambio" placeholder="Entiende que necesitaba tratamiento, no más disciplina">
+              </div>
+            </div>
+
+            <div class="frow">
+              <div class="field">
+                <div class="flabel">Métrica / señal de éxito</div>
+                <input type="text" id="reel-metrica-exito" placeholder="Comentarios tipo 'esto soy yo' · Guardados">
+              </div>
+            </div>
+
             <div class="frow">
               <div class="field" style="display: flex; flex-direction: column; justify-content: flex-start;">
                 <style>
@@ -1589,30 +1698,42 @@ select option{background:var(--surface2)}
               <div style="font-size:10px;font-weight:500;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:6px">Hook A <span style="text-transform:none;letter-spacing:0;font-weight:300;color:var(--text3);font-size:9.5px">— tipo emocional</span></div>
               <div style="padding:11px 12px 11px 14px;background:var(--surface2);border-radius:var(--r-sm);border-left:2.5px solid var(--teal);margin-bottom:0">
                 <div id="ha-tipo" style="font-size:9.5px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;color:var(--teal);margin-bottom:6px">Emocional · Reconocimiento directo</div>
-                <div style="font-size:10px;font-weight:500;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px">Visual <span style="text-transform:none;letter-spacing:0;font-weight:300;font-size:9.5px">(texto en pantalla · máx 7 palabras)</span></div>
+                <div style="font-size:10px;font-weight:500;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px">Escena <span style="text-transform:none;letter-spacing:0;font-weight:300;font-size:9.5px">(qué se ve)</span></div>
+                <input type="text" id="ha-escena" placeholder="Juan a cámara, plano medio, fondo limpio" style="margin-bottom:8px">
+                <div style="font-size:10px;font-weight:500;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px">Texto en pantalla <span style="text-transform:none;letter-spacing:0;font-weight:300;font-size:9.5px">(máx 7 palabras)</span></div>
                 <input type="text" id="ha-vis" placeholder="Años intentando." style="margin-bottom:8px">
                 <div style="font-size:10px;font-weight:500;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px">Verbal <span style="text-transform:none;letter-spacing:0;font-weight:300;font-size:9.5px">(lo que dice el Dr.)</span></div>
                 <textarea id="ha-verb" rows="2" placeholder='"Si llevas años haciendo todo bien y el peso no baja — esto es para ti."'></textarea>
+                <div style="font-size:10px;font-weight:500;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;margin:8px 0 4px">Sonido</div>
+                <input type="text" id="ha-sonido" placeholder="Silencio hasta la frase clave">
               </div>
             </div>
             <div style="margin-bottom:14px">
               <div style="font-size:10px;font-weight:500;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:6px">Hook B <span style="text-transform:none;letter-spacing:0;font-weight:300;color:var(--text3);font-size:9.5px">— pregunta incómoda</span></div>
               <div style="padding:11px 12px 11px 14px;background:var(--surface2);border-radius:var(--r-sm);border-left:2.5px solid #b48ef0">
                 <div id="hb-tipo" style="font-size:9.5px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;color:#b48ef0;margin-bottom:6px">Pregunta incómoda</div>
-                <div style="font-size:10px;font-weight:500;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px">Visual</div>
+                <div style="font-size:10px;font-weight:500;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px">Escena</div>
+                <input type="text" id="hb-escena" placeholder="Corte a paciente hablando" style="margin-bottom:8px">
+                <div style="font-size:10px;font-weight:500;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px">Texto en pantalla</div>
                 <input type="text" id="hb-vis" placeholder="¿Por qué no puedo bajar de peso?" style="margin-bottom:8px">
                 <div style="font-size:10px;font-weight:500;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px">Verbal</div>
                 <textarea id="hb-verb" rows="2" placeholder='"Antes de responder eso, quiero que sepas algo: la culpa no es tuya."'></textarea>
+                <div style="font-size:10px;font-weight:500;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;margin:8px 0 4px">Sonido</div>
+                <input type="text" id="hb-sonido" placeholder="Se corta la música">
               </div>
             </div>
             <div style="margin-bottom:18px">
               <div style="font-size:10px;font-weight:500;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:6px">Hook C <span style="text-transform:none;letter-spacing:0;font-weight:300;color:var(--text3);font-size:9.5px">— contraste / dato</span></div>
               <div style="padding:11px 12px 11px 14px;background:var(--surface2);border-radius:var(--r-sm);border-left:2.5px solid #f5935a">
                 <div id="hc-tipo" style="font-size:9.5px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;color:#f5935a;margin-bottom:6px">Contraste · Dato científico</div>
-                <div style="font-size:10px;font-weight:500;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px">Visual</div>
+                <div style="font-size:10px;font-weight:500;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px">Escena</div>
+                <input type="text" id="hc-escena" placeholder="Plano detalle, gráfico simple en pantalla" style="margin-bottom:8px">
+                <div style="font-size:10px;font-weight:500;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px">Texto en pantalla</div>
                 <input type="text" id="hc-vis" placeholder="No es voluntad. Es biología." style="margin-bottom:8px">
                 <div style="font-size:10px;font-weight:500;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px">Verbal</div>
                 <textarea id="hc-verb" rows="2" placeholder='"El 95% de personas que pierden peso con dieta lo recuperan. No porque fallen — porque el cuerpo está diseñado para hacerlo."'></textarea>
+                <div style="font-size:10px;font-weight:500;color:var(--text3);letter-spacing:1.2px;text-transform:uppercase;margin:8px 0 4px">Sonido</div>
+                <input type="text" id="hc-sonido" placeholder="Golpe sonoro coincide con el dato">
               </div>
             </div>
           </div><!-- /card (left column) -->
@@ -1635,6 +1756,24 @@ select option{background:var(--surface2)}
                 <div class="field">
                   <div class="flabel">Palabra clave</div>
                   <input type="text" id="cta-kw" placeholder="Comenta LISTO y...">
+                </div>
+              </div>
+              <div class="frow" style="margin-top:10px">
+                <div class="field">
+                  <div class="flabel">Tipo de CTA (doc. 12)</div>
+                  <select id="cta-tipo" style="height: 26px; padding: 0 24px 0 12px; border-radius: 20px !important; font-size: 11px; background-color: var(--surface2); border: 1px solid var(--border2); color: var(--text2); outline: none; cursor: pointer; width: 100%; -webkit-appearance: none; -moz-appearance: none; appearance: none;">
+                    <option value="Implícito">Implícito</option>
+                    <option value="Integrado">Integrado</option>
+                    <option value="Explícito">Explícito</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <div class="flabel">Nivel de fricción</div>
+                  <select id="cta-friccion" style="height: 26px; padding: 0 24px 0 12px; border-radius: 20px !important; font-size: 11px; background-color: var(--surface2); border: 1px solid var(--border2); color: var(--text2); outline: none; cursor: pointer; width: 100%; -webkit-appearance: none; -moz-appearance: none; appearance: none;">
+                    <option value="Baja">Baja (compartir, guardar)</option>
+                    <option value="Media">Media (seguir, escribir)</option>
+                    <option value="Alta">Alta (agendar, solicitar)</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -1660,8 +1799,14 @@ select option{background:var(--surface2)}
               <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:.7rem .9rem"><div style="font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:3px">Tipografía hooks</div><textarea style="background:transparent;border:none;color:var(--text);font-family:'Archivo',sans-serif;font-size:12px;width:100%;outline:none;resize:none;line-height:1.5" rows="2" placeholder="Cormorant Garamond · Grande · 1-2 palabras en itálica teal"></textarea></div>
               <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:.7rem .9rem"><div style="font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:3px">Re-hooks en pantalla</div><textarea style="background:transparent;border:none;color:var(--text);font-family:'Archivo',sans-serif;font-size:12px;width:100%;outline:none;resize:none;line-height:1.5" rows="2" placeholder="Cormorant Garamond · Itálica · Ámbar #C9862A"></textarea></div>
               <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:.7rem .9rem"><div style="font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:3px">Música / ambiente</div><textarea id="brief-musica" style="background:transparent;border:none;color:var(--text);font-family:'Archivo',sans-serif;font-size:12px;width:100%;outline:none;resize:none;line-height:1.5" rows="2" placeholder="Piano ambient minimal · 12% volumen · Cede ante la voz"></textarea></div>
-              <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:.7rem .9rem"><div style="font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:3px">Subtítulos</div><textarea style="background:transparent;border:none;color:var(--text);font-family:'Archivo',sans-serif;font-size:12px;width:100%;outline:none;resize:none;line-height:1.5" rows="2" placeholder="Archivo 300 · #F4F5F0 · Siempre activos · Zona segura"></textarea></div>
+              <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:.7rem .9rem"><div style="font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:3px">Subtítulos</div><textarea id="brief-subtitulos" style="background:transparent;border:none;color:var(--text);font-family:'Archivo',sans-serif;font-size:12px;width:100%;outline:none;resize:none;line-height:1.5" rows="2" placeholder="Archivo 300 · #F4F5F0 · Siempre activos · Zona segura"></textarea></div>
               <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:.7rem .9rem;grid-column:1/-1"><div style="font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:3px">Tratamiento de imagen</div><textarea id="brief-imagen" style="background:transparent;border:none;color:var(--text);font-family:'Archivo',sans-serif;font-size:12px;width:100%;outline:none;resize:none;line-height:1.5" rows="3" placeholder="Reflexiva e íntima. Fondo desenfocado. Grading azulado frío en fondo, cálido en rostro. PIPs al 25–50% soft light..."></textarea></div>
+              <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:.7rem .9rem"><div style="font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:3px">Iluminación (doc. 14 §7)</div><input type="text" id="brief-iluminacion" style="background:transparent;border:none;color:var(--text);font-family:'Archivo',sans-serif;font-size:12px;width:100%;outline:none" placeholder="Luz natural, lateral, cálida"></div>
+              <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:.7rem .9rem"><div style="font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:3px">Encuadre</div><input type="text" id="brief-encuadre" style="background:transparent;border:none;color:var(--text);font-family:'Archivo',sans-serif;font-size:12px;width:100%;outline:none" placeholder="Plano medio, luego primer plano en la frase clave"></div>
+              <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:.7rem .9rem"><div style="font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:3px">Movimiento de cámara</div><input type="text" id="brief-movimiento" style="background:transparent;border:none;color:var(--text);font-family:'Archivo',sans-serif;font-size:12px;width:100%;outline:none" placeholder="Fija, con un leve acercamiento al final"></div>
+              <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:.7rem .9rem"><div style="font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:3px">Elementos de escena</div><input type="text" id="brief-elementos" style="background:transparent;border:none;color:var(--text);font-family:'Archivo',sans-serif;font-size:12px;width:100%;outline:none" placeholder="Historia clínica sobre el escritorio"></div>
+              <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:.7rem .9rem"><div style="font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:3px">Transiciones</div><input type="text" id="brief-transiciones" style="background:transparent;border:none;color:var(--text);font-family:'Archivo',sans-serif;font-size:12px;width:100%;outline:none" placeholder="Corte seco, sin efectos llamativos"></div>
+              <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:.7rem .9rem"><div style="font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:3px">Silencio (doc. 14 §14)</div><input type="text" id="brief-silencio" style="background:transparent;border:none;color:var(--text);font-family:'Archivo',sans-serif;font-size:12px;width:100%;outline:none" placeholder="Justo antes de la frase de cierre"></div>
               <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:.7rem .9rem"><div style="font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:3px">Handle / Logo</div><textarea style="background:transparent;border:none;color:var(--text);font-family:'Archivo',sans-serif;font-size:12px;width:100%;outline:none;resize:none;line-height:1.5" rows="2" placeholder="@cirujanomolina · Cormorant · Arriba derecha · Op. 55%&#10;Logo JSM · Esquina inf. izquierda · Op. 45%"></textarea></div>
               <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:.7rem .9rem"><div style="font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:3px">Historias complementarias</div><textarea id="brief-historias" style="background:transparent;border:none;color:var(--text);font-family:'Archivo',sans-serif;font-size:12px;width:100%;outline:none;resize:none;line-height:1.5" rows="2" placeholder="Martes: mini-mito en caja de preguntas..."></textarea></div>
             </div>
@@ -2146,8 +2291,14 @@ Estructura exacta:
   "pilar_secundario":"mismo listado, o null si no aplica",
   "funnel":"TOFU|MOFU|BOFU",
   "emocion":"Sorpresa|Curiosidad|Humor|Emoción profunda|Indignación|Alivio|Esperanza|Determinación",
+  "emocion_secundaria":"mismo listado, o null si no aplica",
   "obj_psicologico":"Alcance|Crecimiento|Identificación|Conversación|Confianza|Educación / cambio de creencia|Consideración|Decisión|Conversión",
+  "obj_secundario":"mismo listado, o null si no aplica",
   "respuesta_buscada":"Después de ver esto quiero que la persona piense/sienta/diga/haga...",
+  "audiencia":"a quién le habla específicamente esta pieza (situación, no demografía)",
+  "por_que_ahora":"por qué esta persona debería ver esto en este momento específico",
+  "fuente_idea":"Pregunta|Objeción|Creencia|Historia|Escena|Frase|Experiencia|Punto de vista|Observación|Referencia|Tendencia|Resultado de contenido",
+  "metrica_exito":"qué señal indicaría que esta pieza cumplió su objetivo",
   "obj_algoritmico":["guardados","compartidos","DMs","comentarios"],
   "formato":"formato de video",
   "edicion":"tipo de edición",
@@ -2159,13 +2310,28 @@ Estructura exacta:
   "musica":"ambiente sonoro",
   "imagen":"tratamiento de imagen y PIPs",
   "historias":"historias complementarias",
-  "storytelling":"si la pieza cuenta una historia: situación → deseo → conflicto → cambio → resultado. Si no aplica, escribe null.",
-  "hook_a":{"tipo":"","visual":"visual hook","verbal":"frase del Dr."},
-  "hook_b":{"tipo":"","visual":"visual hook","verbal":"frase del Dr."},
-  "hook_c":{"tipo":"","visual":"visual hook","verbal":"frase del Dr."},
+  "direccion":{
+    "subtitulos":"jerarquía y tratamiento de subtítulos",
+    "iluminacion":"tipo de luz",
+    "encuadre":"planos a usar y por qué",
+    "movimiento":"movimiento de cámara y por qué",
+    "elementos_escena":"objetos/detalles que ayudan a contar la historia",
+    "transiciones":"tipo de corte o transición entre escenas",
+    "silencio":"si hay un momento donde el silencio pesa más que el sonido"
+  },
+  "storytelling":{
+    "deseo":"qué quiere realmente el personaje/paciente (más allá de bajar de peso), o null",
+    "conflicto":"qué se interpone entre el personaje y lo que quiere, o null",
+    "cambio":"qué cambia al final, o null"
+  },
+  "hook_a":{"tipo":"","escena":"qué se ve","visual":"texto en pantalla","verbal":"frase del Dr.","sonido":"tratamiento sonoro de este momento"},
+  "hook_b":{"tipo":"mecanismo de rehook (ver REGLAS)","escena":"qué se ve","visual":"texto en pantalla","verbal":"frase del Dr.","sonido":"tratamiento sonoro de este momento"},
+  "hook_c":{"tipo":"mecanismo de rehook (ver REGLAS)","escena":"qué se ve","visual":"texto en pantalla","verbal":"frase del Dr.","sonido":"tratamiento sonoro de este momento"},
   "cta_verbal":"CTA verbal del Dr.",
   "cta_visual":"texto visual del CTA",
   "cta_kw":"Comenta [PALABRA] y [acción]",
+  "cta_tipo":"Explícito|Integrado|Implícito",
+  "cta_friccion":"Baja|Media|Alta",
   "guion":[
     {"tiempo":"0–2s","tipo":"normal|rehook|pip|cta","dialogo":"texto","plano":"plano y cámara","movimiento":"movimiento","texto":"texto en pantalla","pip":"concepto PIP","notas":"instrucciones al Dr."}
   ]
@@ -2175,6 +2341,14 @@ REGLAS ABSOLUTAS:
 - "pilar" y "obj_psicologico" son cosas DISTINTAS: el pilar es la función comunicativa
   (para qué existe la pieza), el objetivo es el resultado estratégico que se busca
   provocar. No los confundas ni los repitas con el mismo valor.
+- El mecanismo de "hook_b.tipo" y "hook_c.tipo" (rehooks) debe ser uno de estos 14
+  mecanismos: Cambio de pregunta, Giro de expectativa, Información nueva, Visual sin
+  palabras, Interrupción cumplida, Escalada emocional, Contradicción, Otra voz, Acción
+  en curso, Revelación personal, Retraso antes de la respuesta, Cambio de registro,
+  Silencio, Música. Elige el que mejor encaje — nunca repitas el hook_a.
+- La fricción del CTA debe ser coherente con el funnel: TOFU pide baja fricción
+  (compartir, guardar, seguir), MOFU media (escribir, preguntar), BOFU puede pedir alta
+  (agendar, solicitar valoración) — nunca le pidas a alguien de TOFU una acción de BOFU.
 - No existe una fórmula fija de "% emoción / % ciencia". El balance entre validar y
   explicar depende del pilar y el objetivo de esta pieza específica — pero si ambos
   aparecen, el orden lógico casi siempre es identificación/validación primero, la
@@ -2236,6 +2410,21 @@ function fillFromAI(r) {
   if (s('reel-obj-p'))   s('reel-obj-p').value   = r.obj_psicologico || '';
   if (s('reel-ubic'))    s('reel-ubic').value     = r.ubicacion || '';
   if (s('reel-vest'))    s('reel-vest').value      = r.vestuario || '';
+
+  // Ficha estratégica completa — campos nuevos
+  if (s('reel-pilar-sec')) s('reel-pilar-sec').value = r.pilar_secundario || '';
+  if (s('reel-emocion-sec')) s('reel-emocion-sec').value = r.emocion_secundaria || '';
+  if (s('reel-obj-sec')) s('reel-obj-sec').value = r.obj_secundario || '';
+  if (s('reel-respuesta-buscada')) s('reel-respuesta-buscada').value = r.respuesta_buscada || '';
+  if (s('reel-audiencia')) s('reel-audiencia').value = r.audiencia || '';
+  if (s('reel-por-que-ahora')) s('reel-por-que-ahora').value = r.por_que_ahora || '';
+  if (s('reel-fuente-idea')) s('reel-fuente-idea').value = r.fuente_idea || '';
+  if (s('reel-metrica-exito')) s('reel-metrica-exito').value = r.metrica_exito || '';
+  if (r.storytelling && typeof r.storytelling === 'object') {
+    if (s('reel-story-deseo')) s('reel-story-deseo').value = r.storytelling.deseo || '';
+    if (s('reel-story-conflicto')) s('reel-story-conflicto').value = r.storytelling.conflicto || '';
+    if (s('reel-story-cambio')) s('reel-story-cambio').value = r.storytelling.cambio || '';
+  }
 
   // Formato de video
   if (r.formato) {
@@ -2302,15 +2491,26 @@ function fillFromAI(r) {
   }
 
   // hooks
-  if (r.hook_a) { if(s('ha-tipo'))s('ha-tipo').textContent=r.hook_a.tipo||''; if(s('ha-vis'))s('ha-vis').value=r.hook_a.visual||''; if(s('ha-verb'))s('ha-verb').value=r.hook_a.verbal||''; }
-  if (r.hook_b) { if(s('hb-tipo'))s('hb-tipo').textContent=r.hook_b.tipo||''; if(s('hb-vis'))s('hb-vis').value=r.hook_b.visual||''; if(s('hb-verb'))s('hb-verb').value=r.hook_b.verbal||''; }
-  if (r.hook_c) { if(s('hc-tipo'))s('hc-tipo').textContent=r.hook_c.tipo||''; if(s('hc-vis'))s('hc-vis').value=r.hook_c.visual||''; if(s('hc-verb'))s('hc-verb').value=r.hook_c.verbal||''; }
+  if (r.hook_a) { if(s('ha-tipo'))s('ha-tipo').textContent=r.hook_a.tipo||''; if(s('ha-escena'))s('ha-escena').value=r.hook_a.escena||''; if(s('ha-vis'))s('ha-vis').value=r.hook_a.visual||''; if(s('ha-verb'))s('ha-verb').value=r.hook_a.verbal||''; if(s('ha-sonido'))s('ha-sonido').value=r.hook_a.sonido||''; }
+  if (r.hook_b) { if(s('hb-tipo'))s('hb-tipo').textContent=r.hook_b.tipo||''; if(s('hb-escena'))s('hb-escena').value=r.hook_b.escena||''; if(s('hb-vis'))s('hb-vis').value=r.hook_b.visual||''; if(s('hb-verb'))s('hb-verb').value=r.hook_b.verbal||''; if(s('hb-sonido'))s('hb-sonido').value=r.hook_b.sonido||''; }
+  if (r.hook_c) { if(s('hc-tipo'))s('hc-tipo').textContent=r.hook_c.tipo||''; if(s('hc-escena'))s('hc-escena').value=r.hook_c.escena||''; if(s('hc-vis'))s('hc-vis').value=r.hook_c.visual||''; if(s('hc-verb'))s('hc-verb').value=r.hook_c.verbal||''; if(s('hc-sonido'))s('hc-sonido').value=r.hook_c.sonido||''; }
   if (s('cta-verbal'))   s('cta-verbal').value   = r.cta_verbal || '';
   if (s('cta-visual'))   s('cta-visual').value   = r.cta_visual || '';
   if (s('cta-kw'))       s('cta-kw').value        = r.cta_kw    || '';
+  if (s('cta-tipo'))     s('cta-tipo').value      = r.cta_tipo  || 'Implícito';
+  if (s('cta-friccion')) s('cta-friccion').value  = r.cta_friccion || 'Baja';
   if (s('brief-musica')) s('brief-musica').value  = r.musica    || '';
   if (s('brief-imagen')) s('brief-imagen').value  = r.imagen    || '';
   if (s('brief-historias')) s('brief-historias').value = r.historias || '';
+  if (r.direccion && typeof r.direccion === 'object') {
+    if (s('brief-subtitulos')) s('brief-subtitulos').value = r.direccion.subtitulos || '';
+    if (s('brief-iluminacion')) s('brief-iluminacion').value = r.direccion.iluminacion || '';
+    if (s('brief-encuadre')) s('brief-encuadre').value = r.direccion.encuadre || '';
+    if (s('brief-movimiento')) s('brief-movimiento').value = r.direccion.movimiento || '';
+    if (s('brief-elementos')) s('brief-elementos').value = r.direccion.elementos_escena || '';
+    if (s('brief-transiciones')) s('brief-transiciones').value = r.direccion.transiciones || '';
+    if (s('brief-silencio')) s('brief-silencio').value = r.direccion.silencio || '';
+  }
   const durEl = s('meta-dur'); if(durEl) durEl.textContent = r.duracion || '45s';
 
   // fill guion table
@@ -2408,6 +2608,20 @@ async function loadReel(id) {
       }
       document.getElementById('reel-emocion').value = content.emocion || '';
       document.getElementById('reel-obj-p').value = content.obj_psicologico || '';
+
+      // Ficha estratégica completa — campos nuevos
+      if (document.getElementById('reel-pilar-sec')) document.getElementById('reel-pilar-sec').value = content.pilar_secundario || '';
+      if (document.getElementById('reel-emocion-sec')) document.getElementById('reel-emocion-sec').value = content.emocion_secundaria || '';
+      if (document.getElementById('reel-obj-sec')) document.getElementById('reel-obj-sec').value = content.obj_secundario || '';
+      if (document.getElementById('reel-respuesta-buscada')) document.getElementById('reel-respuesta-buscada').value = content.respuesta_buscada || '';
+      if (document.getElementById('reel-audiencia')) document.getElementById('reel-audiencia').value = content.audiencia || '';
+      if (document.getElementById('reel-por-que-ahora')) document.getElementById('reel-por-que-ahora').value = content.por_que_ahora || '';
+      if (document.getElementById('reel-fuente-idea')) document.getElementById('reel-fuente-idea').value = content.fuente_idea || '';
+      if (document.getElementById('reel-metrica-exito')) document.getElementById('reel-metrica-exito').value = content.metrica_exito || '';
+      const storytellingC = content.storytelling || {};
+      if (document.getElementById('reel-story-deseo')) document.getElementById('reel-story-deseo').value = storytellingC.deseo || '';
+      if (document.getElementById('reel-story-conflicto')) document.getElementById('reel-story-conflicto').value = storytellingC.conflicto || '';
+      if (document.getElementById('reel-story-cambio')) document.getElementById('reel-story-cambio').value = storytellingC.cambio || '';
       
       // Set algoritmico select
       const algoVal = (content.obj_algoritmico && content.obj_algoritmico[0]) || 'Compartidos';
@@ -2483,18 +2697,24 @@ async function loadReel(id) {
       const hooks = content.hooks || {};
       if (hooks.hook_a) {
         if(document.getElementById('ha-tipo')) document.getElementById('ha-tipo').textContent = hooks.hook_a.tipo || '';
+        if(document.getElementById('ha-escena')) document.getElementById('ha-escena').value = hooks.hook_a.escena || '';
         if(document.getElementById('ha-vis')) document.getElementById('ha-vis').value = hooks.hook_a.visual || '';
         if(document.getElementById('ha-verb')) document.getElementById('ha-verb').value = hooks.hook_a.verbal || '';
+        if(document.getElementById('ha-sonido')) document.getElementById('ha-sonido').value = hooks.hook_a.sonido || '';
       }
       if (hooks.hook_b) {
         if(document.getElementById('hb-tipo')) document.getElementById('hb-tipo').textContent = hooks.hook_b.tipo || '';
+        if(document.getElementById('hb-escena')) document.getElementById('hb-escena').value = hooks.hook_b.escena || '';
         if(document.getElementById('hb-vis')) document.getElementById('hb-vis').value = hooks.hook_b.visual || '';
         if(document.getElementById('hb-verb')) document.getElementById('hb-verb').value = hooks.hook_b.verbal || '';
+        if(document.getElementById('hb-sonido')) document.getElementById('hb-sonido').value = hooks.hook_b.sonido || '';
       }
       if (hooks.hook_c) {
         if(document.getElementById('hc-tipo')) document.getElementById('hc-tipo').textContent = hooks.hook_c.tipo || '';
+        if(document.getElementById('hc-escena')) document.getElementById('hc-escena').value = hooks.hook_c.escena || '';
         if(document.getElementById('hc-vis')) document.getElementById('hc-vis').value = hooks.hook_c.visual || '';
         if(document.getElementById('hc-verb')) document.getElementById('hc-verb').value = hooks.hook_c.verbal || '';
+        if(document.getElementById('hc-sonido')) document.getElementById('hc-sonido').value = hooks.hook_c.sonido || '';
       }
       
       // CTA
@@ -2502,12 +2722,21 @@ async function loadReel(id) {
       document.getElementById('cta-verbal').value = cta.verbal || '';
       document.getElementById('cta-visual').value = cta.visual || '';
       document.getElementById('cta-kw').value = cta.kw || '';
+      if (document.getElementById('cta-tipo')) document.getElementById('cta-tipo').value = cta.tipo || 'Implícito';
+      if (document.getElementById('cta-friccion')) document.getElementById('cta-friccion').value = cta.friccion || 'Baja';
       
       // Brief visual
       const brief = content.brief || {};
       document.getElementById('brief-musica').value = brief.musica || '';
       document.getElementById('brief-imagen').value = brief.imagen || '';
       document.getElementById('brief-historias').value = brief.historias || '';
+      if (document.getElementById('brief-subtitulos')) document.getElementById('brief-subtitulos').value = brief.subtitulos || '';
+      if (document.getElementById('brief-iluminacion')) document.getElementById('brief-iluminacion').value = brief.iluminacion || '';
+      if (document.getElementById('brief-encuadre')) document.getElementById('brief-encuadre').value = brief.encuadre || '';
+      if (document.getElementById('brief-movimiento')) document.getElementById('brief-movimiento').value = brief.movimiento || '';
+      if (document.getElementById('brief-elementos')) document.getElementById('brief-elementos').value = brief.elementos_escena || '';
+      if (document.getElementById('brief-transiciones')) document.getElementById('brief-transiciones').value = brief.transiciones || '';
+      if (document.getElementById('brief-silencio')) document.getElementById('brief-silencio').value = brief.silencio || '';
       
       // Idea original vinculada
       window.linkedIdeaId = data.idea_id || null;
@@ -2625,31 +2854,60 @@ async function saveReel() {
   const hooks = {
     hook_a: {
       tipo: document.getElementById('ha-tipo')?.textContent || '',
+      escena: document.getElementById('ha-escena')?.value || '',
       visual: document.getElementById('ha-vis')?.value || '',
-      verbal: document.getElementById('ha-verb')?.value || ''
+      verbal: document.getElementById('ha-verb')?.value || '',
+      sonido: document.getElementById('ha-sonido')?.value || ''
     },
     hook_b: {
       tipo: document.getElementById('hb-tipo')?.textContent || '',
+      escena: document.getElementById('hb-escena')?.value || '',
       visual: document.getElementById('hb-vis')?.value || '',
-      verbal: document.getElementById('hb-verb')?.value || ''
+      verbal: document.getElementById('hb-verb')?.value || '',
+      sonido: document.getElementById('hb-sonido')?.value || ''
     },
     hook_c: {
       tipo: document.getElementById('hc-tipo')?.textContent || '',
+      escena: document.getElementById('hc-escena')?.value || '',
       visual: document.getElementById('hc-vis')?.value || '',
-      verbal: document.getElementById('hc-verb')?.value || ''
+      verbal: document.getElementById('hc-verb')?.value || '',
+      sonido: document.getElementById('hc-sonido')?.value || ''
     }
   };
   
   const cta = {
     verbal: document.getElementById('cta-verbal').value || '',
     visual: document.getElementById('cta-visual').value || '',
-    kw: document.getElementById('cta-kw').value || ''
+    kw: document.getElementById('cta-kw').value || '',
+    tipo: document.getElementById('cta-tipo')?.value || 'Implícito',
+    friccion: document.getElementById('cta-friccion')?.value || 'Baja'
   };
   
   const brief = {
     musica: document.getElementById('brief-musica').value || '',
     imagen: document.getElementById('brief-imagen').value || '',
-    historias: document.getElementById('brief-historias').value || ''
+    historias: document.getElementById('brief-historias').value || '',
+    subtitulos: document.getElementById('brief-subtitulos')?.value || '',
+    iluminacion: document.getElementById('brief-iluminacion')?.value || '',
+    encuadre: document.getElementById('brief-encuadre')?.value || '',
+    movimiento: document.getElementById('brief-movimiento')?.value || '',
+    elementos_escena: document.getElementById('brief-elementos')?.value || '',
+    transiciones: document.getElementById('brief-transiciones')?.value || '',
+    silencio: document.getElementById('brief-silencio')?.value || ''
+  };
+
+  const pilar_secundario = document.getElementById('reel-pilar-sec')?.value || '';
+  const emocion_secundaria = document.getElementById('reel-emocion-sec')?.value || '';
+  const obj_secundario = document.getElementById('reel-obj-sec')?.value || '';
+  const respuesta_buscada = document.getElementById('reel-respuesta-buscada')?.value.trim() || '';
+  const audiencia = document.getElementById('reel-audiencia')?.value.trim() || '';
+  const por_que_ahora = document.getElementById('reel-por-que-ahora')?.value.trim() || '';
+  const fuente_idea = document.getElementById('reel-fuente-idea')?.value || '';
+  const metrica_exito = document.getElementById('reel-metrica-exito')?.value.trim() || '';
+  const storytelling = {
+    deseo: document.getElementById('reel-story-deseo')?.value.trim() || '',
+    conflicto: document.getElementById('reel-story-conflicto')?.value.trim() || '',
+    cambio: document.getElementById('reel-story-cambio')?.value.trim() || ''
   };
   
   const idea_id = document.getElementById('reel-idea-vinculada')?.value || window.linkedIdeaId || null;
@@ -2684,8 +2942,17 @@ async function saveReel() {
     ui_state,
     descripcion,
     emocion,
+    emocion_secundaria,
     obj_psicologico,
+    obj_secundario,
     obj_algoritmico,
+    pilar_secundario,
+    respuesta_buscada,
+    audiencia,
+    por_que_ahora,
+    fuente_idea,
+    metrica_exito,
+    storytelling,
     tema,
     platform_tags,
     funnel,
@@ -2996,8 +3263,14 @@ Estructura exacta:
   "pilar_secundario":"mismo listado, o null si no aplica",
   "funnel":"TOFU|MOFU|BOFU",
   "emocion":"Sorpresa|Curiosidad|Humor|Emoción profunda|Indignación|Alivio|Esperanza|Determinación",
+  "emocion_secundaria":"mismo listado, o null si no aplica",
   "obj_psicologico":"Alcance|Crecimiento|Identificación|Conversación|Confianza|Educación / cambio de creencia|Consideración|Decisión|Conversión",
+  "obj_secundario":"mismo listado, o null si no aplica",
   "respuesta_buscada":"Después de ver esto quiero que la persona piense/sienta/diga/haga...",
+  "audiencia":"a quién le habla específicamente esta pieza (situación, no demografía)",
+  "por_que_ahora":"por qué esta persona debería ver esto en este momento específico",
+  "fuente_idea":"Pregunta|Objeción|Creencia|Historia|Escena|Frase|Experiencia|Punto de vista|Observación|Referencia|Tendencia|Resultado de contenido",
+  "metrica_exito":"qué señal indicaría que esta pieza cumplió su objetivo",
   "obj_algoritmico":["guardados","compartidos","DMs","comentarios"],
   "formato":"formato de video compatible",
   "edicion":"tipo de edición",
@@ -3009,17 +3282,39 @@ Estructura exacta:
   "musica":"ambiente sonoro",
   "imagen":"tratamiento de imagen y PIPs",
   "historias":"historias complementarias",
-  "storytelling":"si la pieza cuenta una historia: situación → deseo → conflicto → cambio → resultado. Si no aplica, escribe null.",
-  "hook_a":{"tipo":"empatía|contrarian|revelación","visual":"visual hook","verbal":"frase de gancho del Dr."},
-  "hook_b":{"tipo":"conexión|desarrollo","visual":"visual hook","verbal":"frase conectora del Dr."},
-  "hook_c":{"tipo":"rehook","visual":"visual hook","verbal":"frase del Dr."},
+  "direccion":{
+    "subtitulos":"jerarquía y tratamiento de subtítulos",
+    "iluminacion":"tipo de luz",
+    "encuadre":"planos a usar y por qué",
+    "movimiento":"movimiento de cámara y por qué",
+    "elementos_escena":"objetos/detalles que ayudan a contar la historia",
+    "transiciones":"tipo de corte o transición entre escenas",
+    "silencio":"si hay un momento donde el silencio pesa más que el sonido"
+  },
+  "storytelling":{
+    "deseo":"qué quiere realmente el personaje/paciente (más allá de bajar de peso), o null",
+    "conflicto":"qué se interpone entre el personaje y lo que quiere, o null",
+    "cambio":"qué cambia al final, o null"
+  },
+  "hook_a":{"tipo":"empatía|contrarian|revelación","escena":"qué se ve","visual":"texto en pantalla","verbal":"frase de gancho del Dr.","sonido":"tratamiento sonoro de este momento"},
+  "hook_b":{"tipo":"mecanismo de rehook (ver REGLAS)","escena":"qué se ve","visual":"texto en pantalla","verbal":"frase conectora del Dr.","sonido":"tratamiento sonoro de este momento"},
+  "hook_c":{"tipo":"mecanismo de rehook (ver REGLAS)","escena":"qué se ve","visual":"texto en pantalla","verbal":"frase del Dr.","sonido":"tratamiento sonoro de este momento"},
   "cta_verbal":"CTA verbal del Dr. Molina",
   "cta_visual":"texto visual del CTA en pantalla",
   "cta_kw":"Comenta [PALABRA] y [acción]",
+  "cta_tipo":"Explícito|Integrado|Implícito",
+  "cta_friccion":"Baja|Media|Alta",
   "guion":[
     {"tiempo":"0–2s","tipo":"normal|rehook|pip|cta","dialogo":"texto","plano":"plano y cámara","movimiento":"movimiento","texto":"texto en pantalla","pip":"concepto PIP","notas":"instrucciones al Dr."}
   ]
-}`;
+}
+
+REGLA ADICIONAL sobre rehooks: "hook_b.tipo" y "hook_c.tipo" deben ser uno de estos 14
+mecanismos (documento 10): Cambio de pregunta, Giro de expectativa, Información nueva,
+Visual sin palabras, Interrupción cumplida, Escalada emocional, Contradicción, Otra voz,
+Acción en curso, Revelación personal, Retraso antes de la respuesta, Cambio de registro,
+Silencio, Música. La fricción del CTA debe ser coherente con el funnel (TOFU=baja,
+MOFU=media, BOFU=puede ser alta).`;
 
   const usr = `Nombre del reel: ${nombre}
 Descripción o idea del video: ${descripcion}
