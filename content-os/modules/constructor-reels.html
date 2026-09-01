@@ -1653,6 +1653,7 @@ select option{background:var(--surface2)}
               <div class="card-title"><i class="ti ti-movie"></i>Guión de producción</div>
               <div style="display:flex;gap:6px">
                 <button class="btn" style="padding:5px 10px;font-size:10.5px" onclick="openModal()"><i class="ti ti-sparkles"></i>Generar con IA</button>
+                <button class="btn" style="padding:5px 10px;font-size:10.5px" onclick="openImportModal()"><i class="ti ti-file-import"></i>Importar JSON</button>
                 <button class="btn" style="padding:5px 10px;font-size:10.5px" onclick="exportGuionCSV()"><i class="ti ti-table-export"></i>CSV</button>
               </div>
             </div>
@@ -3544,6 +3545,81 @@ window.addEventListener('message', (e) => {
     document.body.classList.toggle('light', isLight);
   }
 });
+
+// ══════════ IMPORTAR JSON (desde la skill "planificador-de-reels") ══════════
+function openImportModal() {
+  const modal = document.getElementById('modal-import');
+  if (modal) modal.style.display = 'flex';
+}
+function closeImportModal() {
+  const modal = document.getElementById('modal-import');
+  if (modal) modal.style.display = 'none';
+  const err = document.getElementById('import-error');
+  if (err) err.style.display = 'none';
+}
+function ejecutarImportJSON() {
+  const textarea = document.getElementById('import-json-text');
+  const err = document.getElementById('import-error');
+  err.style.display = 'none';
+
+  let parsed;
+  try {
+    parsed = JSON.parse(textarea.value.trim());
+  } catch (e) {
+    err.textContent = '⚠️ Ese texto no es un JSON válido. Revisa que lo hayas copiado completo, incluyendo las llaves { }.';
+    err.style.display = 'block';
+    return;
+  }
+
+  // fillFromAI ya cubre: nombre, pilar (+secundario), emoción (+secundaria),
+  // objetivo (+secundario), respuesta buscada, audiencia, por qué ahora,
+  // fuente de idea, métrica de éxito, funnel, formato, ubicación, vestuario,
+  // fase, día, hooks (con sus 4 capas), CTA (con tipo y fricción),
+  // dirección visual y sonora completa, storytelling, y el guion completo.
+  fillFromAI(parsed);
+
+  // Campos que fillFromAI no cubre porque no vienen de la IA en el flujo original:
+  if (parsed.descripcion && document.getElementById('reel-descripcion')) {
+    document.getElementById('reel-descripcion').value = parsed.descripcion;
+  }
+  if (parsed.copy && document.getElementById('copyTxt')) {
+    document.getElementById('copyTxt').value = parsed.copy;
+    document.getElementById('charCt').textContent = parsed.copy.length;
+  }
+  if (Array.isArray(parsed.hashtags) && parsed.hashtags.length) {
+    const htwrap = document.getElementById('htwrap');
+    if (htwrap) {
+      htwrap.innerHTML = parsed.hashtags.map(h => {
+        const hash = h.startsWith('#') ? h : '#' + h;
+        return `<div class="htag">${hash} <i class="ti ti-x" onclick="this.parentElement.remove();updateHtCount()"></i></div>`;
+      }).join('');
+      if (typeof updateHtCount === 'function') updateHtCount();
+    }
+  }
+  if (Array.isArray(parsed.platform_tags) && parsed.platform_tags.length) {
+    document.querySelectorAll('#reel-plataforma .tag').forEach(t => {
+      t.classList.toggle('on', parsed.platform_tags.some(pt => t.textContent.trim().toLowerCase().includes(pt.toLowerCase())));
+    });
+  }
+
+  closeImportModal();
+  if (typeof showToast === 'function') showToast('✅ Reel importado desde JSON — revisa cada pestaña antes de guardar.');
+  else alert('Reel importado. Revisa cada pestaña antes de guardar.');
+}
 </script>
+
+<!-- ══════════ MODAL: IMPORTAR JSON ══════════ -->
+<div id="modal-import" style="display:none; position: fixed; inset: 0; z-index: 99999; background: rgba(10, 20, 25, 0.85); backdrop-filter: blur(10px); align-items: center; justify-content: center; padding: 20px;">
+  <div style="background: var(--surface1, #14262D); border: 1px solid rgba(42, 191, 176, 0.25); border-radius: 20px; width: 100%; max-width: 560px; padding: 24px; box-shadow: 0 24px 60px rgba(0,0,0,0.7);">
+    <div style="font-size: 15px; font-weight: 600; color: var(--text, #F4F5F0); margin-bottom: 4px;">Importar reel desde JSON</div>
+    <div style="font-size: 12px; color: var(--text3, #94a3b8); margin-bottom: 14px; line-height: 1.5;">Pega aquí el JSON que te dio la skill <em>planificador-de-reels</em> en tu conversación con Claude. Va a llenar automáticamente todos los campos del reel, incluido el guion completo.</div>
+    <textarea id="import-json-text" rows="10" placeholder='{"nombre": "...", "pilar": "...", ...}' style="width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 10px; color: var(--text); font-family: monospace; font-size: 11.5px; padding: 10px; outline: none; resize: vertical;"></textarea>
+    <div id="import-error" style="display:none; color: #f55a8a; font-size: 11.5px; margin-top: 8px;"></div>
+    <div style="display:flex; gap: 10px; margin-top: 16px;">
+      <button class="btn" style="flex:1; padding: 10px; font-size: 12px;" onclick="closeImportModal()">Cancelar</button>
+      <button class="btn" style="flex:1; padding: 10px; font-size: 12px; background: var(--teal); color: #14262D; font-weight:600;" onclick="ejecutarImportJSON()">Importar</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
