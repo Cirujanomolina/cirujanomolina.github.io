@@ -809,6 +809,7 @@ select option{background:var(--surface2)}
       </div>
     </div>
     <div class="vb-header-actions">
+      <button class="btn" onclick="openImportModal()"><i class="ti ti-file-import"></i>Importar JSON</button>
       <button class="btn"><i class="ti ti-bulb"></i>Desde idea</button>
       <button class="btn"><i class="ti ti-calendar"></i>Al calendario</button>
       <button class="btn btn-primary" onclick="saveReel()"><i class="ti ti-device-floppy"></i>Guardar</button>
@@ -1389,6 +1390,8 @@ select option{background:var(--surface2)}
                   background: #ffffff;
                 }
                 .fcard-slider .fcard {
+                  position: relative;
+                  overflow: hidden;
                   flex: 0 0 120px; /* Tarjeta vertical (ancho fijo 120px) */
                   height: 175px; /* Altura total alineada con la cuadrícula anterior */
                   display: flex;
@@ -1398,30 +1401,37 @@ select option{background:var(--surface2)}
                   border-radius: 8px !important;
                   border: 1px solid var(--border2);
                   cursor: pointer;
-                  transition: all 0.15s ease;
+                  transition: all 0.2s ease;
                   user-select: none;
-                  background: var(--surface2);
+                  background-color: var(--surface2);
                   text-align: center;
                 }
                 .fcard-slider .fcard:hover {
-                  border-color: rgba(42, 191, 176, 0.4);
-                  background: var(--surface3);
+                  border-color: rgba(42, 191, 176, 0.5);
+                  transform: translateY(-2px);
+                  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
                 }
                 .fcard-slider .fcard.on {
                   border-color: var(--teal) !important;
-                  background: var(--teal2) !important;
+                  background-color: var(--teal2);
+                  box-shadow: 0 0 0 1.5px var(--teal), 0 4px 14px rgba(42, 191, 176, 0.25) !important;
+                }
+                .fcard-slider .fcard.has-img.on .fcard-overlay {
+                  background: linear-gradient(to top, rgba(14, 38, 45, 0.95) 50%, rgba(42, 191, 176, 0.3) 100%) !important;
                 }
                 .fcard-slider .fcard-t {
                   font-size: 11.5px;
                   font-weight: 600;
                   color: var(--text);
                   margin-bottom: 6px;
-                  line-height: 1.2;
+                  line-height: 1.25;
+                  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
                 }
                 .fcard-slider .fcard-d {
                   font-size: 10px;
                   color: var(--text3);
                   line-height: 1.35;
+                  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
                 }
                 .fcard-slider .fcard.on .fcard-t {
                   color: var(--teal) !important;
@@ -2429,10 +2439,31 @@ function fillFromAI(r) {
 
   // Formato de video
   if (r.formato) {
+    let matched = false;
     document.querySelectorAll('#reel-formato-video .fcard').forEach(f => {
-      const match = f.querySelector('.fcard-t').textContent.trim().toLowerCase() === r.formato.trim().toLowerCase();
-      f.classList.toggle('on', match);
+      const txt = f.querySelector('.fcard-t')?.textContent.trim().toLowerCase() || '';
+      if (txt && txt === r.formato.trim().toLowerCase()) {
+        f.classList.add('on');
+        matched = true;
+      } else {
+        f.classList.remove('on');
+      }
     });
+    if (!matched) {
+      document.querySelectorAll('#reel-formato-video .fcard').forEach(f => {
+        const txt = f.querySelector('.fcard-t')?.textContent.trim().toLowerCase() || '';
+        if (!matched && txt && (
+          r.formato.toLowerCase().includes(txt) || 
+          txt.includes(r.formato.toLowerCase()) || 
+          (r.formato.toLowerCase().includes('b-roll') && txt.includes('b-roll')) || 
+          (r.formato.toLowerCase().includes('cámara') && txt.includes('talking head')) ||
+          (r.formato.toLowerCase().includes('pantalla verde') && txt.includes('pantalla verde'))
+        )) {
+          f.classList.add('on');
+          matched = true;
+        }
+      });
+    }
   }
 
   // Pilar
@@ -2459,12 +2490,31 @@ function fillFromAI(r) {
     const algoSel = s('reel-obj-algo-select');
     if (algoSel && tags.length > 0) {
       for (let opt of algoSel.options) {
-        if (opt.value.toLowerCase() === tags[0].toLowerCase()) {
+        if (tags.some(t => opt.value.toLowerCase().includes(t.toLowerCase()) || t.toLowerCase().includes(opt.value.toLowerCase()))) {
           algoSel.value = opt.value;
           break;
         }
       }
     }
+    document.querySelectorAll('#reel-obj-algoritmico .tag, input[name="obj_algoritmico"]').forEach(t => {
+      const val = t.textContent ? t.textContent.trim().toLowerCase() : (t.value ? t.value.toLowerCase() : '');
+      const match = tags.some(oa => val.includes(oa.toLowerCase()) || oa.toLowerCase().includes(val));
+      if (t.tagName === 'INPUT') t.checked = match;
+      else if (match) t.classList.add('on');
+    });
+  }
+
+  // Tipo de edicion
+  if (r.edicion || r.tipo_edicion) {
+    const edList = Array.isArray(r.tipo_edicion) ? r.tipo_edicion : (r.edicion ? [r.edicion] : []);
+    document.querySelectorAll('#reel-tipo-edicion .tag').forEach(t => {
+      const tagTxt = t.textContent.trim().toLowerCase();
+      const match = edList.some(e => {
+        const eLow = e.toLowerCase();
+        return eLow.includes(tagTxt) || tagTxt.includes(eLow) || (eLow.includes('educativo') && tagTxt.includes('educativo')) || (eLow.includes('emocional') && tagTxt.includes('emocional')) || (eLow.includes('conversacional') && tagTxt.includes('conversacional')) || (eLow.includes('contrarian') && tagTxt.includes('contrarian'));
+      });
+      if (match) t.classList.add('on');
+    });
   }
 
   // pills
@@ -2477,6 +2527,9 @@ function fillFromAI(r) {
   if (r.funnel) {
     const hidden = s('funnel-g');
     if (hidden) hidden.value = r.funnel;
+    if (typeof selectFunnelStage === 'function') {
+      selectFunnelStage(r.funnel);
+    }
   }
   if (r.prioridad) {
     const hidden = s('reel-prioridad');
@@ -2488,6 +2541,12 @@ function fillFromAI(r) {
     document.querySelectorAll('#fase-g .pill').forEach(p => {
       const cleanText = p.textContent.replace(/[^\wÁÉÍÓÚÑ]/gi, '').trim().toLowerCase();
       p.classList.toggle('on', cleanText === cleanFase);
+    });
+  }
+  if (r.duracion) {
+    const durEl = s('meta-dur'); if (durEl) durEl.textContent = r.duracion;
+    document.querySelectorAll('#dur-group .pill').forEach(p => {
+      p.classList.toggle('on', p.textContent.trim().toLowerCase() === r.duracion.trim().toLowerCase());
     });
   }
 
@@ -3386,28 +3445,27 @@ window.fillReelWithIA = fillReelWithIA;
 
 let videoFormatsList = [];
 const DEFAULT_FORMATS = [
-  { name: 'Talking head', description: 'Directo a cámara', image_url: '' },
-  { name: 'Voiceover + B-roll', description: 'Voz en off con imágenes', image_url: '' },
-  { name: 'Pantalla verde', description: 'Análisis crítico visual', image_url: '' },
-  { name: 'Documental', description: 'Estilo cinematográfico', image_url: '' },
-  { name: 'Ranking de 3', description: 'Malo vs Bueno vs Excelente', image_url: '' },
-  { name: 'Metáfora visual', description: 'Objeto como protagonista', image_url: '' }
+  { name: 'Juan a cámara (Talking Head)', description: 'Directo a cámara. Opinión, contrarian, autoridad, preguntas.', image_url: '' },
+  { name: 'POV / Consulta (Paciente + Juan)', description: 'Cámara como ojos del paciente. Objeciones reales y miedos.', image_url: '' },
+  { name: 'Sketch / Actuación', description: 'Escenas cotidianas (peluquería, amigos, pareja), humor o drama.', image_url: '' },
+  { name: 'Cinematográfico', description: 'Mostrar en vez de explicar. Historias visuales y emoción.', image_url: '' },
+  { name: 'Voz en off + B-roll', description: 'Voz en off guiando la historia con imágenes cotidianas y emotivas.', image_url: '' },
+  { name: 'Juan limpio (Teleprompter)', description: 'Fondo limpio, encuadre fijo, presencia fuerte sin distracciones.', image_url: '' },
+  { name: 'Pantalla / Reacción / Análisis', description: 'Juan analizando noticias, mitos, tendencias virales o publicidad.', image_url: '' },
+  { name: 'Metáfora visual', description: 'Un objeto como protagonista para explicar conceptos médicos complejos.', image_url: '' },
+  { name: 'Historia / Testimonio', description: 'El paciente es el centro: qué recuperó y su transformación real.', image_url: '' },
+  { name: 'Storytelling Personal', description: 'Experiencias de Juan y aprendizajes que cambiaron su visión médica.', image_url: '' },
+  { name: 'Entrevista / Podcast', description: 'Conversaciones con pacientes, especialistas u otros médicos.', image_url: '' },
+  { name: 'Documental', description: 'Seguimiento observacional y profundo de la transformación.', image_url: '' },
+  { name: 'Acompáñame (Vlog)', description: 'Cómo trabaja un cirujano: cirugías, consultas, congresos y día a día.', image_url: '' },
+  { name: 'Híbrido', description: 'Combinación dinámica de formatos en una sola pieza (ej: sketch + Juan + B-roll).', image_url: '' }
 ];
 
 async function loadDynamicVideoFormats() {
   try {
-    const { data, error } = await supabase
-      .from('video_formats')
-      .select('*')
-      .order('created_at', { ascending: true });
-
-    if (error) throw error;
-    videoFormatsList = data || [];
-    if (videoFormatsList.length === 0) {
-      videoFormatsList = DEFAULT_FORMATS;
-    }
+    const local = localStorage.getItem('content_os_video_formats');
+    videoFormatsList = local ? JSON.parse(local) : DEFAULT_FORMATS;
   } catch (err) {
-    console.warn("⚠️ No se pudo cargar la tabla 'video_formats' de Supabase. Usando fallback en memoria.", err.message);
     videoFormatsList = DEFAULT_FORMATS;
   }
   renderVideoFormatsSlider();
@@ -3416,47 +3474,83 @@ async function loadDynamicVideoFormats() {
 function renderVideoFormatsSlider() {
   const container = document.getElementById('reel-formato-video');
   if (!container) return;
+  
+  // Preservar la tarjeta que estaba seleccionada previamente
+  const currentSelectedTitle = container.querySelector('.fcard.on .fcard-t')?.textContent?.trim()?.toLowerCase();
+  
   container.innerHTML = '';
   
   videoFormatsList.forEach((f, idx) => {
     const card = document.createElement('div');
     card.className = 'fcard';
+    if (f.image_url) card.classList.add('has-img');
     card.onclick = () => setFormat(card);
     
     if (f.image_url) {
-      card.style.backgroundImage = `url('${f.image_url}')`;
-      card.style.backgroundSize = 'cover';
-      card.style.backgroundPosition = 'center';
+      const bg = document.createElement('div');
+      bg.className = 'fcard-bg';
+      bg.style.position = 'absolute';
+      bg.style.inset = '0';
+      bg.style.backgroundImage = `url('${f.image_url}')`;
+      bg.style.backgroundSize = 'cover';
+      bg.style.backgroundPosition = 'center';
+      bg.style.borderRadius = '7px';
+      bg.style.zIndex = '1';
+      card.appendChild(bg);
       
       const overlay = document.createElement('div');
+      overlay.className = 'fcard-overlay';
       overlay.style.position = 'absolute';
       overlay.style.inset = '0';
-      overlay.style.background = 'linear-gradient(to top, rgba(11,22,25,0.95) 45%, rgba(11,22,25,0.3) 100%)';
-      overlay.style.borderRadius = '6px';
-      overlay.style.zIndex = '1';
+      overlay.style.background = 'linear-gradient(to top, rgba(10,22,26,0.92) 48%, rgba(10,22,26,0.35) 100%)';
+      overlay.style.borderRadius = '7px';
+      overlay.style.zIndex = '2';
       card.appendChild(overlay);
     }
     
+    const content = document.createElement('div');
+    content.className = 'fcard-content';
+    content.style.position = 'relative';
+    content.style.zIndex = '3';
+    content.style.display = 'flex';
+    content.style.flexDirection = 'column';
+    content.style.justifyContent = 'space-between';
+    content.style.height = '100%';
+    content.style.width = '100%';
+    
     const title = document.createElement('div');
     title.className = 'fcard-t';
-    title.style.position = 'relative';
-    title.style.zIndex = '2';
     title.textContent = f.name;
-    card.appendChild(title);
+    content.appendChild(title);
     
     const desc = document.createElement('div');
     desc.className = 'fcard-d';
-    desc.style.position = 'relative';
-    desc.style.zIndex = '2';
     desc.textContent = f.description;
-    card.appendChild(desc);
+    content.appendChild(desc);
     
+    card.appendChild(content);
     container.appendChild(card);
   });
   
-  // Activar la primera por defecto
-  const firstCard = container.querySelector('.fcard');
-  if (firstCard) firstCard.classList.add('on');
+  // Restaurar selección o marcar la primera
+  let matched = null;
+  if (currentSelectedTitle) {
+    container.querySelectorAll('.fcard').forEach(c => {
+      if (c.querySelector('.fcard-t')?.textContent?.trim()?.toLowerCase() === currentSelectedTitle) {
+        matched = c;
+      }
+    });
+  }
+  if (matched) {
+    matched.classList.add('on');
+  } else {
+    const firstCard = container.querySelector('.fcard');
+    if (firstCard) firstCard.classList.add('on');
+  }
+
+  if (typeof updateFormatSliderControls === 'function') {
+    setTimeout(updateFormatSliderControls, 50);
+  }
 }
 
 window.loadDynamicVideoFormats = loadDynamicVideoFormats;
@@ -3478,11 +3572,18 @@ async function init() {
   if (pending) {
     try {
       const data = JSON.parse(pending);
-      if (document.getElementById('reel-nombre')) document.getElementById('reel-nombre').value = data.title || '';
+      if (data.title && document.getElementById('reel-nombre')) document.getElementById('reel-nombre').value = data.title || '';
+      if (data.desc && document.getElementById('reel-descripcion')) document.getElementById('reel-descripcion').value = data.desc || '';
       
       if (data.pilar) {
         document.querySelectorAll('#reel-pilar .tag').forEach(t => {
           t.classList.toggle('on', t.textContent.trim().toLowerCase() === data.pilar.toLowerCase());
+        });
+      }
+      if (data.formato) {
+        document.querySelectorAll('#reel-formato-video .fcard').forEach(f => {
+          const match = f.querySelector('.fcard-t').textContent.trim().toLowerCase() === data.formato.trim().toLowerCase();
+          f.classList.toggle('on', match);
         });
       }
       if (data.tema) {
@@ -3493,9 +3594,9 @@ async function init() {
       if (data.hook) {
         if (document.getElementById('ha-vis')) document.getElementById('ha-vis').value = data.hook;
       }
-      window.linkedIdeaId = data.idea_id || null;
+      window.linkedIdeaId = data.idea_id || data.id || null;
       if (document.getElementById('reel-idea-vinculada')) {
-        document.getElementById('reel-idea-vinculada').value = data.idea_id || '';
+        document.getElementById('reel-idea-vinculada').value = window.linkedIdeaId || '';
       }
       
       // Auto open generator and fill input
@@ -3546,6 +3647,25 @@ window.addEventListener('message', (e) => {
   }
 });
 
+// Auto refresh formats if updated in another tab/window
+window.addEventListener('focus', () => {
+  const local = localStorage.getItem('content_os_video_formats');
+  if (local) {
+    try {
+      videoFormatsList = JSON.parse(local);
+      renderVideoFormatsSlider();
+    } catch(e){}
+  }
+});
+window.addEventListener('storage', (e) => {
+  if (e.key === 'content_os_video_formats' && e.newValue) {
+    try {
+      videoFormatsList = JSON.parse(e.newValue);
+      renderVideoFormatsSlider();
+    } catch(e){}
+  }
+});
+
 // ══════════ IMPORTAR JSON (desde la skill "planificador-de-reels") ══════════
 function openImportModal() {
   const modal = document.getElementById('modal-import');
@@ -3557,6 +3677,38 @@ function closeImportModal() {
   if (modal) modal.style.display = 'none';
   const err = document.getElementById('import-error');
   if (err) err.style.display = 'none';
+  const fileInput = document.getElementById('import-file-input');
+  if (fileInput) fileInput.value = '';
+  const selectedInfo = document.getElementById('import-file-selected');
+  if (selectedInfo) selectedInfo.style.display = 'none';
+}
+
+function handleJSONFileUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  
+  const selectedInfo = document.getElementById('import-file-selected');
+  if (selectedInfo) {
+    selectedInfo.textContent = `📄 Archivo cargado: ${file.name}`;
+    selectedInfo.style.display = 'block';
+  }
+  
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const content = e.target.result;
+    const textarea = document.getElementById('import-json-text');
+    if (textarea) textarea.value = content;
+    const err = document.getElementById('import-error');
+    if (err) err.style.display = 'none';
+  };
+  reader.onerror = () => {
+    const err = document.getElementById('import-error');
+    if (err) {
+      err.textContent = '❌ Error al leer el archivo seleccionado.';
+      err.style.display = 'block';
+    }
+  };
+  reader.readAsText(file);
 }
 
 function ejecutarImportJSON() {
@@ -3568,7 +3720,7 @@ function ejecutarImportJSON() {
   try {
     parsed = JSON.parse(textarea.value.trim());
   } catch (e) {
-    err.textContent = '⚠️ Ese texto no es un JSON válido. Revisa que lo hayas copiado completo, incluyendo las llaves { }.';
+    err.textContent = '⚠️ Ese texto no es un JSON válido. Revisa que lo hayas copiado o cargado completo, incluyendo las llaves { }.';
     err.style.display = 'block';
     return;
   }
@@ -3626,18 +3778,41 @@ function ejecutarImportJSON() {
     alert('Reel importado. Revisa cada pestaña antes de guardar.');
   }
 }
+
+window.openImportModal = openImportModal;
+window.closeImportModal = closeImportModal;
+window.handleJSONFileUpload = handleJSONFileUpload;
+window.ejecutarImportJSON = ejecutarImportJSON;
 </script>
 
 <!-- ══════════ MODAL: IMPORTAR JSON ══════════ -->
 <div id="modal-import" style="display:none; position: fixed; inset: 0; z-index: 99999; background: rgba(10, 20, 25, 0.85); backdrop-filter: blur(10px); align-items: center; justify-content: center; padding: 20px;">
   <div style="background: var(--surface1, #14262D); border: 1px solid rgba(42, 191, 176, 0.25); border-radius: 20px; width: 100%; max-width: 560px; padding: 24px; box-shadow: 0 24px 60px rgba(0,0,0,0.7);">
-    <div style="font-size: 15px; font-weight: 600; color: var(--text, #F4F5F0); margin-bottom: 4px;">Importar reel desde JSON</div>
-    <div style="font-size: 12px; color: var(--text3, #94a3b8); margin-bottom: 14px; line-height: 1.5;">Pega aquí el JSON que te dio la skill <em>planificador-de-reels</em> en tu conversación con Claude. Va a llenar automáticamente todos los campos del reel, incluido el guion completo.</div>
-    <textarea id="import-json-text" rows="10" placeholder='{"nombre": "...", "pilar": "...", ...}' style="width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 10px; color: var(--text); font-family: monospace; font-size: 11.5px; padding: 10px; outline: none; resize: vertical;"></textarea>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+      <div style="font-size: 16px; font-weight: 600; color: var(--text, #F4F5F0);"><i class="ti ti-file-import" style="color:var(--teal); margin-right: 6px;"></i>Importar reel desde JSON</div>
+      <button onclick="closeImportModal()" style="background:none; border:none; color:var(--text3); cursor:pointer; font-size:18px; padding:4px;"><i class="ti ti-x"></i></button>
+    </div>
+    <div style="font-size: 12px; color: var(--text3, #94a3b8); margin-bottom: 14px; line-height: 1.5;">Carga directamente tu archivo <code>.json</code> o pega el texto generado por la skill <em>planificador-de-reels</em>. Se llenarán automáticamente todos los campos y el guion técnico.</div>
+    
+    <!-- Zona de carga de archivo / Drag & Drop -->
+    <div id="json-dropzone" style="border: 2px dashed rgba(42, 191, 176, 0.35); border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 12px; background: rgba(42, 191, 176, 0.04); cursor: pointer; transition: all 0.2s;" onclick="document.getElementById('import-file-input').click()" ondragover="event.preventDefault(); this.style.borderColor='var(--teal)';" ondragleave="this.style.borderColor='rgba(42, 191, 176, 0.35)';" ondrop="event.preventDefault(); this.style.borderColor='rgba(42, 191, 176, 0.35)'; if(event.dataTransfer.files.length){ document.getElementById('import-file-input').files = event.dataTransfer.files; handleJSONFileUpload(document.getElementById('import-file-input')); }">
+      <i class="ti ti-cloud-upload" style="font-size: 26px; color: var(--teal, #2ABFB0); margin-bottom: 4px; display: block;"></i>
+      <div style="font-size: 12.5px; font-weight: 500; color: var(--text);">Haz clic aquí para seleccionar o arrastra tu archivo <strong>.json</strong></div>
+      <div id="import-file-selected" style="font-size: 11.5px; color: var(--teal, #2ABFB0); margin-top: 6px; display: none; font-weight: 600;"></div>
+      <input type="file" id="import-file-input" accept=".json,application/json" style="display: none;" onchange="handleJSONFileUpload(this)">
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <div style="flex: 1; height: 1px; background: var(--border2, rgba(255,255,255,0.1));"></div>
+      <span style="font-size: 10.5px; color: var(--text3, #94a3b8); text-transform: uppercase; letter-spacing: 0.5px;">O pega el contenido JSON</span>
+      <div style="flex: 1; height: 1px; background: var(--border2, rgba(255,255,255,0.1));"></div>
+    </div>
+
+    <textarea id="import-json-text" rows="7" placeholder='{"nombre": "...", "pilar": "...", ...}' style="width: 100%; background: var(--surface2); border: 1px solid var(--border2); border-radius: 10px; color: var(--text); font-family: monospace; font-size: 11.5px; padding: 10px; outline: none; resize: vertical; box-sizing: border-box;"></textarea>
     <div id="import-error" style="display:none; color: #f55a8a; font-size: 11.5px; margin-top: 8px;"></div>
     <div style="display:flex; gap: 10px; margin-top: 16px;">
       <button class="btn" style="flex:1; padding: 10px; font-size: 12px;" onclick="closeImportModal()">Cancelar</button>
-      <button class="btn" style="flex:1; padding: 10px; font-size: 12px; background: var(--teal, #2ABFB0); color: #14262D; font-weight:600;" onclick="ejecutarImportJSON()">Importar</button>
+      <button class="btn" style="flex:1; padding: 10px; font-size: 12px; background: var(--teal, #2ABFB0); color: #14262D; font-weight:600;" onclick="ejecutarImportJSON()"><i class="ti ti-check" style="margin-right:4px;"></i>Importar Reel</button>
     </div>
   </div>
 </div>

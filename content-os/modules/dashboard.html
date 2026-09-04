@@ -616,7 +616,9 @@
         window.parent.postMessage({ type: 'IFRAME_READY' }, '*');
 
         // ── INICIALIZACIÓN ──
-        window.addEventListener('DOMContentLoaded', async () => {
+        // NOTA: script type="module" es diferido — el DOM ya existe aquí, DOMContentLoaded ya disparó.
+        // Se usa IIFE async directamente en vez de listener.
+        (async () => {
             // 1. Probar conexión y actualizar badge
             const connected = await testConnection();
             const badge = document.getElementById('supabase-status-badge');
@@ -635,10 +637,10 @@
             // 2. Cargar campañas
             await loadCampaignsData();
 
-            // 5. Cargar datos de Supabase (Bóveda y Estrategia)
+            // 3. Cargar datos de Supabase (Bóveda y Estrategia)
             loadBovedaStats();
             loadStrategy();
-        });
+        })();
 
         // Test Connection button
         window.testDbConnection = async () => {

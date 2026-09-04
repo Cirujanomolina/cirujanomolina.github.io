@@ -507,51 +507,57 @@
 
     <!-- LOGIN/REGISTER OVERLAY -->
     <div id="loginOverlay" class="login-overlay" style="display: none;">
-        <div class="login-card">
-            <h2 class="login-title" id="loginCardTitle"><i class="ti ti-brain"></i> Iniciar Sesión</h2>
-            <p class="login-subtitle" id="loginCardSubtitle">Accede al Content OS de Dr. Molina</p>
-            
+        <div class="login-card" style="max-width: 440px; border-radius: 24px; padding: 32px 28px;">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h2 class="login-title" id="loginCardTitle" style="font-size: 20px; font-weight: 700; margin-bottom: 4px; color: var(--text); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i class="ti ti-brain" style="color:var(--accent);"></i> Content OS
+                </h2>
+                <p class="login-subtitle" id="loginCardSubtitle" style="font-size: 12px; color: var(--text3); margin: 0;">Portal del Equipo de Redes & Marketing — Dr. Molina</p>
+            </div>
+
+            <!-- Tab Switcher idéntico al portal médico -->
+            <div style="display: flex; background: rgba(255,255,255,0.06); padding: 4px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border2);">
+                <button type="button" id="btnTabLogin" style="flex:1; padding: 9px; font-size: 12px; font-weight: 700; border-radius: 8px; border: none; cursor: pointer; transition: all 0.2s; background: var(--accent); color: #14262D;">Iniciar Sesión</button>
+                <button type="button" id="btnTabRegister" style="flex:1; padding: 9px; font-size: 12px; font-weight: 600; border-radius: 8px; border: none; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--text3);">Solicitar Acceso</button>
+            </div>
+
+            <div id="loginSuccessMessage" style="display: none; background: rgba(42, 191, 176, 0.15); border: 1px solid rgba(42, 191, 176, 0.4); border-radius: 12px; padding: 12px; color: var(--accent); font-size: 12px; line-height: 1.5; margin-bottom: 16px;"></div>
+            <div id="loginError" style="color: #ff6b6b; background: rgba(255, 107, 107, 0.1); border: 1px solid rgba(255, 107, 107, 0.3); border-radius: 12px; padding: 10px; font-size: 12px; margin-bottom: 16px; display: none; text-align: center; line-height: 1.4;"></div>
+
             <form id="loginForm" onsubmit="event.preventDefault();">
-                <!-- Username field (only shown on registration) -->
-                <div class="field" id="usernameField" style="display: none;">
-                    <label class="field-label">Nombre de Usuario</label>
-                    <input type="text" id="regUsername" class="input-control" placeholder="ej: molinacreativo">
-                </div>
-
-                <!-- Name field (only shown on registration) -->
+                <!-- Nombre Completo (solo en registro) -->
                 <div class="field" id="nameField" style="display: none;">
-                    <label class="field-label">Nombre Completo</label>
-                    <input type="text" id="regName" class="input-control" placeholder="ej: Juan Molina">
+                    <label class="field-label">Nombre Completo *</label>
+                    <input type="text" id="regName" class="input-control" placeholder="ej: Camilo Andrés Pérez">
                 </div>
 
                 <div class="field">
-                    <label class="field-label" id="emailLabel">Nombre de Usuario o Correo</label>
-                    <input type="text" id="loginEmail" class="input-control" required placeholder="ej: admin o admin@molina.com">
+                    <label class="field-label" id="emailLabel">Correo Electrónico *</label>
+                    <input type="email" id="loginEmail" class="input-control" required placeholder="ej: creador@molina.com">
                 </div>
 
                 <div class="field">
-                    <label class="field-label">Contraseña</label>
-                    <input type="password" id="loginPassword" class="input-control" required placeholder="••••••••">
+                    <label class="field-label">Contraseña *</label>
+                    <input type="password" id="loginPassword" class="input-control" required placeholder="Mínimo 8 caracteres">
                 </div>
 
-                <!-- Function selection (only shown on registration) -->
+                <!-- Función / Especialidad en Redes (solo en registro) -->
                 <div class="field" id="functionField" style="display: none;">
-                    <label class="field-label">Función / Especialidad</label>
-                    <select id="regFunction" class="input-control">
-                        <option value="Editor de Video">Editor de Video</option>
-                        <option value="Diseñador">Diseñador</option>
-                        <option value="Copywriter">Copywriter</option>
-                        <option value="Trafficker">Trafficker</option>
-                        <option value="Administrador">Administrador</option>
-                        <option value="Otros">Otros</option>
+                    <label class="field-label">Rol en el Equipo de Redes *</label>
+                    <select id="regFunction" class="input-control" style="background: var(--surface2); color: var(--text);">
+                        <option value="community_manager">Community Manager</option>
+                        <option value="creador_contenido">Creador de Contenido / Diseñador Gráfico</option>
+                        <option value="editor_video">Editor de Video (Reels & Shorts)</option>
+                        <option value="copywriter">Copywriter / Redactor Creativo</option>
+                        <option value="redes">Especialista en Redes Sociales (General)</option>
                     </select>
+                    <p style="font-size: 11px; color: var(--text3); margin-top: 4px; line-height: 1.3;">
+                        El Dr. Molina aprobará tu cuenta en el panel administrativo. Este usuario da acceso exclusivo al Content OS y no tiene acceso a historias de pacientes.
+                    </p>
                 </div>
 
-                <div id="loginError" style="color: #ff6b6b; font-size: 12px; margin-bottom: 10px; display: none; text-align: center; line-height: 1.4;"></div>
-
-                <div class="login-btn-row">
-                    <button type="submit" id="submitBtn" class="btn btn-primary" style="width:100%;">Ingresar</button>
-                    <button type="button" id="toggleAuthModeBtn" class="btn btn-secondary" style="width:100%; border:none; background:transparent;">¿No tienes cuenta? Regístrate</button>
+                <div class="login-btn-row" style="margin-top: 20px;">
+                    <button type="submit" id="submitBtn" class="btn btn-primary" style="width:100%; padding: 12px; font-weight: 700; font-size: 13px;">Ingresar</button>
                 </div>
             </form>
         </div>
@@ -654,60 +660,60 @@
             }
         }
 
-        // NOTA DE SEGURIDAD: la función que sembraba un admin por defecto
-        // (admin@molina.com / admin123) fue eliminada por completo. Esa
-        // función creaba una cuenta de administrador con contraseña trivial
-        // y públicamente conocida cada vez que la tabla 'colaboradores'
-        // estaba vacía — un hueco de seguridad crítico. La creación del
-        // primer administrador ahora se hace manualmente, una sola vez,
-        // desde el Dashboard de Supabase (Authentication → Add user), y
-        // luego se le crea su fila de perfil en 'colaboradores' vinculada
-        // por auth_user_id con role='administrador' y verified=true.
+        // La tabla 'team' es la fuente única de verdad para todos los miembros del equipo.
         async function checkSupabaseConnection() {
             try {
                 supabaseLed.className = 'led orange';
-                const { error } = await supabase.from('colaboradores').select('*', { count: 'exact', head: true });
+                const { error } = await supabase.from('team').select('*', { count: 'exact', head: true });
                 supabaseLed.className = error ? 'led red' : 'led green';
             } catch (e) {
                 supabaseLed.className = 'led red';
             }
         }
 
-        // Toggle authentication mode
-        toggleAuthModeBtn.addEventListener('click', () => {
-            if (authMode === 'login') {
-                authMode = 'register';
-                loginCardTitle.innerHTML = '<i class="ti ti-user-plus"></i> Registrarse';
-                loginCardSubtitle.textContent = 'Crea tu cuenta de colaborador';
-                usernameField.style.display = 'block';
-                nameField.style.display = 'block';
-                functionField.style.display = 'block';
-                emailLabel.textContent = 'Correo Electrónico';
-                loginEmail.placeholder = 'ej: juan@molina.com';
-                loginEmail.type = 'email';
-                submitBtn.textContent = 'Registrarse';
-                toggleAuthModeBtn.textContent = '¿Ya tienes cuenta? Inicia Sesión';
-            } else {
-                authMode = 'login';
-                loginCardTitle.innerHTML = '<i class="ti ti-brain"></i> Iniciar Sesión';
-                loginCardSubtitle.textContent = 'Accede al Content OS de Dr. Molina';
-                usernameField.style.display = 'none';
+        const btnTabLogin = document.getElementById('btnTabLogin');
+        const btnTabRegister = document.getElementById('btnTabRegister');
+        const loginSuccessMessage = document.getElementById('loginSuccessMessage');
+
+        function setAuthMode(mode) {
+            authMode = mode;
+            loginError.style.display = 'none';
+            if (mode === 'login') {
+                btnTabLogin.style.background = 'var(--accent)';
+                btnTabLogin.style.color = '#14262D';
+                btnTabLogin.style.fontWeight = '700';
+                btnTabRegister.style.background = 'transparent';
+                btnTabRegister.style.color = 'var(--text3)';
+                btnTabRegister.style.fontWeight = '600';
+
                 nameField.style.display = 'none';
                 functionField.style.display = 'none';
-                emailLabel.textContent = 'Nombre de Usuario o Correo';
-                loginEmail.placeholder = 'ej: admin o admin@molina.com';
-                loginEmail.type = 'text';
                 submitBtn.textContent = 'Ingresar';
-                toggleAuthModeBtn.textContent = '¿No tienes cuenta? Regístrate';
-            }
-            loginError.style.display = 'none';
-        });
+            } else {
+                btnTabRegister.style.background = 'var(--accent)';
+                btnTabRegister.style.color = '#14262D';
+                btnTabRegister.style.fontWeight = '700';
+                btnTabLogin.style.background = 'transparent';
+                btnTabLogin.style.color = 'var(--text3)';
+                btnTabLogin.style.fontWeight = '600';
 
-        // Submit Form — ahora usa Supabase Auth real (JWT verificado por el servidor),
-        // en vez de comparar hashes en el navegador y confiar en el propio cliente.
+                nameField.style.display = 'block';
+                functionField.style.display = 'block';
+                submitBtn.textContent = 'Enviar Solicitud de Acceso';
+            }
+        }
+
+        btnTabLogin?.addEventListener('click', () => setAuthMode('login'));
+        btnTabRegister?.addEventListener('click', () => setAuthMode('register'));
+
+        const CONTENT_OS_ROLES = ['admin', 'redes', 'community_manager', 'creador_contenido', 'editor_video', 'copywriter', 'collaborator'];
+        const CLINICAL_ONLY_ROLES = ['nutricionista', 'psicologa', 'med_deporte', 'med_interna', 'cirugia_bariatrica'];
+
+        // Login y registro — tabla 'team' es la única fuente de verdad
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             loginError.style.display = 'none';
+            loginSuccessMessage.style.display = 'none';
             submitBtn.disabled = true;
             const originalText = submitBtn.textContent;
             submitBtn.textContent = 'Procesando...';
@@ -718,7 +724,7 @@
             try {
                 if (authMode === 'login') {
                     if (!inputVal.includes('@')) {
-                        throw new Error('Inicia sesión con tu correo electrónico (no con el usuario).');
+                        throw new Error('Inicia sesión con tu correo electrónico.');
                     }
 
                     const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
@@ -727,48 +733,120 @@
                     });
                     if (authError) throw new Error('Correo o contraseña incorrectos.');
 
-                    const { data: profile, error: profileError } = await supabase
-                        .from('colaboradores')
+                    // Verificar en tabla 'team'
+                    const { data: teamUser, error: teamErr } = await supabase
+                        .from('team')
                         .select('*')
-                        .eq('auth_user_id', authData.user.id)
-                        .single();
+                        .or(`auth_user_id.eq.${authData.user.id},email.eq.${inputVal.toLowerCase()}`)
+                        .maybeSingle();
 
-                    if (profileError || !profile) {
+                    if (!teamUser || teamErr) {
                         await supabase.auth.signOut();
-                        throw new Error('No se encontró tu perfil de colaborador. Contacta al administrador.');
+                        throw new Error('No se encontró un perfil autorizado para Content OS. Contacta al Dr. Molina.');
                     }
-                    if (!profile.verified) {
+
+                    if (teamUser.activo === false) {
                         await supabase.auth.signOut();
-                        throw new Error('Tu cuenta está registrada pero aún no está verificada por el Administrador.');
+                        throw new Error('Tu cuenta está registrada pero aún está pendiente de aprobación por el Dr. Molina.');
                     }
+
+                    const userRole = (teamUser.role || '').toLowerCase();
+
+                    // Clínicos no tienen acceso a Content OS
+                    if (CLINICAL_ONLY_ROLES.includes(userRole)) {
+                        await supabase.auth.signOut();
+                        throw new Error('⚠️ Tu cuenta está asignada al Dashboard Clínico de Pacientes. No tienes permisos para acceder al Content OS.');
+                    }
+
+                    if (!CONTENT_OS_ROLES.includes(userRole) && userRole !== 'admin') {
+                        await supabase.auth.signOut();
+                        throw new Error('No tienes permisos para acceder al Content OS. Contacta al Dr. Molina.');
+                    }
+
+                    const profile = {
+                        id: teamUser.id,
+                        username: teamUser.email?.split('@')[0] || 'usuario',
+                        name: teamUser.name || `${teamUser.nombres || ''} ${teamUser.apellidos || ''}`.trim() || teamUser.email,
+                        email: teamUser.email,
+                        role: userRole === 'admin' ? 'administrador' : 'colaborador',
+                        function: teamUser.role,
+                        verified: true,
+                        photo_url: teamUser.avatar_url || '',
+                        auth_user_id: authData.user.id
+                    };
 
                     loginOverlay.style.display = 'none';
                     updateUIForUser(profile);
-                    await logActivity(profile.email, profile.name, 'Inicio de Sesión', 'El usuario inició sesión.');
+                    await logActivity(profile.email, profile.name, 'Inicio de Sesión', 'El usuario inició sesión en Content OS.');
                     reloadCurrentModule();
                 } else {
-                    const username = regUsername.value.trim().toLowerCase();
+                    // REGISTRO: solicitud de acceso
                     const name = regName.value.trim();
                     const specFunction = regFunction.value;
                     const email = inputVal.toLowerCase();
 
-                    if (!username || !name || !email || !password) throw new Error('Completa todos los campos.');
+                    if (!name || !email || !password) throw new Error('Por favor completa todos los campos requeridos.');
                     if (password.length < 8) throw new Error('La contraseña debe tener al menos 8 caracteres.');
 
-                    // 1. Crea el usuario real en Supabase Auth (Supabase gestiona el hash de forma segura).
-                    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({ email, password });
-                    if (signUpError) throw new Error(signUpError.message);
-
-                    // 2. Crea el perfil de colaborador vinculado, sin contraseña.
-                    const { error: insertError } = await supabase.from('colaboradores').insert({
-                        username, name, email, role: 'colaborador', function: specFunction,
-                        verified: false, auth_user_id: signUpData.user.id
+                    // Crear usuario en Supabase Auth
+                    let authUserId = null;
+                    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({ 
+                        email, 
+                        password,
+                        options: {
+                            data: { name, role: specFunction || 'redes' }
+                        }
                     });
-                    if (insertError) throw new Error(insertError.message);
 
-                    alert('Registro exitoso. Espera verificación del admin antes de poder ingresar.');
-                    await logActivity(email, name, 'Registro', 'Nuevo usuario registrado.');
-                    toggleAuthModeBtn.click();
+                    if (signUpError) {
+                        // Si ya existe en Supabase Auth pero no en team (o intentó registrarse antes)
+                        if (signUpError.message && signUpError.message.toLowerCase().includes('already registered')) {
+                            // Intentamos verificar si ya existe en la tabla 'team'
+                            const { data: existingTeam } = await supabase
+                                .from('team')
+                                .select('id, activo')
+                                .eq('email', email)
+                                .maybeSingle();
+
+                            if (existingTeam) {
+                                if (existingTeam.activo) {
+                                    throw new Error('Este correo ya tiene una cuenta activa. Por favor ve a la pestaña "Ingresar".');
+                                } else {
+                                    throw new Error('Ya enviaste una solicitud con este correo y está pendiente de aprobación por el Dr. Molina.');
+                                }
+                            }
+                            // Si existe en Auth pero NO en team, dejamos que proceda a insertarlo en team
+                        } else {
+                            throw new Error(signUpError.message);
+                        }
+                    } else {
+                        authUserId = signUpData.user?.id || null;
+                    }
+
+                    // Insertar directamente en 'team' con el rol real
+                    const namesParts = name.split(' ');
+                    const nombres = namesParts[0] || name;
+                    const apellidos = namesParts.slice(1).join(' ') || '';
+
+                    const { error: teamInsertErr } = await supabase.from('team').insert([{
+                        email,
+                        name,
+                        nombres,
+                        apellidos,
+                        role: specFunction || 'redes',
+                        activo: false, // pendiente de aprobación
+                        auth_user_id: authUserId
+                    }]);
+
+                    if (teamInsertErr && teamInsertErr.code !== '23505') {
+                        throw new Error('Error al registrar en el equipo: ' + teamInsertErr.message);
+                    }
+
+                    loginSuccessMessage.innerHTML = `<strong>✅ ¡Solicitud enviada con éxito!</strong><br>El Dr. Molina revisará y activará tu cuenta en el panel administrativo.<br>Una vez aprobada, podrás ingresar con tu correo <em>${email}</em> y la contraseña que creaste.`;
+                    loginSuccessMessage.style.display = 'block';
+                    setAuthMode('login');
+                    loginPassword.value = '';
+                    await logActivity(email, name, 'Registro', `Nuevo usuario de redes registrado (${specFunction}).`);
                 }
             } catch (err) {
                 loginError.style.display = 'block';
@@ -795,17 +873,37 @@
             }
         }
 
-        // Validate session on load — ahora consulta la sesión real verificada
-        // por Supabase (JWT), no un valor que el propio navegador podría inventar.
+        // Consultar el perfil activo del usuario
         window.getActiveProfile = async function () {
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) return null;
-            const { data: profile } = await supabase
-                .from('colaboradores')
-                .select('*')
-                .eq('auth_user_id', session.user.id)
-                .single();
-            return profile || null;
+
+            try {
+                const { data: teamUser } = await supabase
+                    .from('team')
+                    .select('*')
+                    .or(`auth_user_id.eq.${session.user.id},email.eq.${session.user.email?.toLowerCase()}`)
+                    .maybeSingle();
+
+                if (teamUser && teamUser.activo !== false) {
+                    const userRole = (teamUser.role || '').toLowerCase();
+                    if (CONTENT_OS_ROLES.includes(userRole) || userRole === 'admin') {
+                        return {
+                            id: teamUser.id,
+                            username: teamUser.email?.split('@')[0] || 'usuario',
+                            name: teamUser.name || `${teamUser.nombres || ''} ${teamUser.apellidos || ''}`.trim() || teamUser.email,
+                            email: teamUser.email,
+                            role: userRole === 'admin' ? 'administrador' : 'colaborador',
+                            function: teamUser.role,
+                            verified: true,
+                            photo_url: teamUser.avatar_url || '',
+                            auth_user_id: session.user.id
+                        };
+                    }
+                }
+            } catch (e) {}
+
+            return null;
         };
 
         async function validateSession() {
@@ -816,7 +914,7 @@
             if (profile && profile.verified) {
                 updateUIForUser(profile);
                 loginOverlay.style.display = 'none';
-                reloadCurrentModule(); // Ya confirmamos sesión real: ahora sí cargamos el módulo.
+                reloadCurrentModule();
             } else {
                 if (profile && !profile.verified) {
                     await supabase.auth.signOut();
@@ -881,6 +979,14 @@
             });
         });
 
+        // Navigation to user profile from sidebar card
+        document.querySelector('.sidebar-user-card')?.addEventListener('click', () => {
+            navLinks.forEach(l => l.classList.remove('active'));
+            currentModule = 'configuracion';
+            moduleFrame.src = `modules/configuracion.html?tab=perfil&t=${Date.now()}`;
+            if(window.innerWidth <= 768) toggleMenu();
+        });
+
         // Listen for messages
         window.addEventListener('message', (e) => {
             if (!e.data || !e.data.type) return;
@@ -891,6 +997,21 @@
             }
             if (e.data.type === 'API_CONFIG_UPDATE') {
                 updateAPIStatusIndicator();
+            }
+            if (e.data.type === 'USER_PROFILE_UPDATED') {
+                if (e.data.payload) {
+                    updateUIForUser(e.data.payload);
+                }
+            }
+            if (e.data.type === 'NAVIGATE') {
+                const target = e.data.payload?.module;
+                if (target) {
+                    navLinks.forEach(l => {
+                        l.classList.toggle('active', l.getAttribute('data-target') === target);
+                    });
+                    currentModule = target;
+                    reloadCurrentModule();
+                }
             }
         });
 

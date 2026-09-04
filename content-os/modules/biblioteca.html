@@ -550,9 +550,9 @@
         });
         window.parent.postMessage({ type: 'IFRAME_READY' }, '*');
 
-        window.addEventListener('DOMContentLoaded', () => {
-            loadLibraryContent();
-        });
+        // Al usar script type="module" con top-level await, el DOM ya está listo (DOMContentLoaded ya disparó).
+        // Llamamos directamente la carga de contenido:
+        loadLibraryContent();
 
         // Query database
         async function loadLibraryContent() {
@@ -1001,10 +1001,11 @@
 
         // Toast feedback
         function showToast(msg, icon = 'ti-info-circle') {
+            const container = document.getElementById('toast-container') || document.body;
             const t = document.createElement('div');
             t.className = 'toast';
             t.innerHTML = `<i class="ti ${icon}"></i> <span>${msg}</span>`;
-            toastContainer.appendChild(t);
+            container.appendChild(t);
             setTimeout(() => {
                 t.style.animation = 'none';
                 t.offsetHeight;

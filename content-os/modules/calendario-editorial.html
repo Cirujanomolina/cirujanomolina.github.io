@@ -155,14 +155,40 @@ body{font-family:'Archivo',sans-serif;background:var(--bg);color:var(--text);fon
 .config-btn{display:flex;align-items:center;gap:5px;padding:4px 9px;border-radius:var(--radius);border:1px solid var(--border2);cursor:pointer;font-size:10px;color:var(--text2);transition:all .14s;user-select:none;margin-left:auto}
 .config-btn:hover{border-color:var(--accent);color:var(--accent)}
 
+/* View Switcher */
+.view-switcher{display:flex;background:var(--surface);padding:2px;border-radius:var(--radius);border:1px solid var(--border2)}
+.view-btn{padding:4px 10px;font-size:11px;font-weight:500;border:none;background:transparent;color:var(--text2);cursor:pointer;border-radius:6px;transition:all .15s}
+.view-btn.active{background:var(--accent);color:#14262D;font-weight:700}
+.view-btn:hover:not(.active){color:var(--text);background:var(--surface2)}
+
 /* ── CALENDAR LAYOUT ── */
-.cal-container{flex:1;overflow:hidden;display:flex;flex-direction:column}
-/* Desktop: split view */
-.split-view{display:grid;grid-template-columns:1fr 280px;flex:1;overflow:hidden;gap:0}
-.weekly-panel{overflow-y:auto;border-right:1px solid var(--border2)}
-.monthly-panel{overflow-y:auto;background:var(--bg2)}
+.cal-container{flex:1;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+/* Layout de 2 columnas persistente: Calendario (flexible) + Barra Lateral Derecha */
+.cal-workspace{display:flex;flex:1;min-height:0;overflow:hidden;position:relative}
+.cal-content-area{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+
+/* RIGHT PERSISTENT SIDEBAR */
+.cal-sidebar-right{width:360px;min-width:360px;background:var(--bg2);border-left:1px solid var(--border2);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;z-index:10}
+
+/* ── FULL MONTH VIEW (TABLE NATIVA PARA ALINEACIÓN 100% PERFECTA) ── */
+.month-full-panel{flex:1;display:flex;flex-direction:column;overflow-y:auto;background:var(--bg);min-height:0}
+.cal-month-table{width:100%;table-layout:fixed;border-collapse:collapse;min-width:650px}
+.cal-month-table th{padding:10px 4px;text-align:center;font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;background:var(--bg);border-bottom:1px solid var(--border2);border-right:1px solid var(--border2);position:sticky;top:0;z-index:4}
+.cal-month-table th:last-child{border-right:none}
+.cal-month-table td{border-right:1px solid var(--border2);border-bottom:1px solid var(--border2);vertical-align:top;height:120px;padding:6px 6px 8px;cursor:pointer;transition:background .15s}
+.cal-month-table td:last-child{border-right:none}
+.cal-month-table td:hover{background:rgba(42,191,176,0.03)}
+.cal-month-table td.other-month{opacity:0.35;background:rgba(0,0,0,0.08)}
+.cal-month-table td.today{background:rgba(42,191,176,0.05)}
+.mfg-day-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.mfg-day-num{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:400;color:var(--text)}
+.cal-month-table td.today .mfg-day-num{font-weight:700;color:var(--accent);background:rgba(42,191,176,0.15);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.cal-month-table td.selected-day{outline:2px solid var(--accent);outline-offset:-2px}
+.mfg-day-count{font-size:9px;color:var(--text2);opacity:0.6}
+.mfg-pieces{display:flex;flex-direction:column;gap:3px;overflow-y:auto;max-height:85px}
 
 /* ── WEEK VIEW ── */
+.weekly-panel{flex:1;overflow-y:auto;display:flex;flex-direction:column}
 .week-grid{display:grid;grid-template-columns:48px repeat(7,1fr);min-width:0}
 .week-header{display:grid;grid-template-columns:48px repeat(7,1fr);position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--border2)}
 .wh-spacer{border-right:1px solid var(--border2)}
@@ -264,17 +290,13 @@ body{font-family:'Archivo',sans-serif;background:var(--bg);color:var(--text);fon
 .toggle-dot{width:13px;height:13px;background:var(--text2);border-radius:50%;position:absolute;top:2px;left:2px;transition:all .2s}
 .toggle.on .toggle-dot{left:17px;background:#fff}
 
-/* ── MODAL NUEVA PIEZA ── */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;padding:16px}
-.overlay.open{opacity:1;pointer-events:all}
-.modal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.5);transform:translateY(16px);transition:transform .2s}
-.overlay.open .modal{transform:translateY(0)}
-.modal-hdr{padding:15px 18px 12px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg2);z-index:1}
-.modal-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:7px}
-.modal-close{width:26px;height:26px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:14px;transition:all .15s;border:1px solid var(--border2)}
-.modal-close:hover{border-color:#f55a8a;color:#f55a8a}
-.modal-body{padding:16px 18px}
-.modal-foot{padding:10px 18px 14px;display:flex;gap:7px;justify-content:flex-end;border-top:1px solid var(--border2);position:sticky;bottom:0;background:var(--bg2)}
+/* ── BARRA LATERAL DERECHA CONSTANTE (EDITOR + RESUMEN) ── */
+.cal-sidebar-right{width:360px;min-width:360px;background:var(--bg2);border-left:1px solid var(--border2);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;z-index:10}
+.cs-header{padding:16px 18px 12px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;background:var(--bg2);position:sticky;top:0;z-index:2}
+.cs-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px}
+.cs-body{padding:18px;flex:1}
+.cs-foot{padding:12px 18px 16px;display:flex;gap:8px;justify-content:flex-end;border-top:1px solid var(--border2);background:var(--bg2);position:sticky;bottom:0;z-index:2}
+
 /* Form */
 .field{margin-bottom:12px}
 .flabel{font-size:10px;font-weight:500;color:var(--text2);margin-bottom:4px;letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;gap:4px}
@@ -368,10 +390,16 @@ select option{background:var(--bg2);color:var(--text)}
     </div>
   </div>
   <div style="display:flex; align-items:center; gap:12px; z-index:1;">
+    <!-- Selector Vista: Mes vs Semana -->
+    <div class="view-switcher">
+      <button class="view-btn active" id="btn-view-month" onclick="setViewMode('month')"><i class="fa-solid fa-calendar-days" style="margin-right:4px;"></i>Mes</button>
+      <button class="view-btn" id="btn-view-week" onclick="setViewMode('week')"><i class="fa-solid fa-table-columns" style="margin-right:4px;"></i>Semana</button>
+    </div>
+
     <div class="nav-week" style="display:flex; align-items:center; gap:6px;">
-      <div class="nav-arr" onclick="moveWeek(-1)"><i class="fa-solid fa-chevron-left"></i></div>
+      <div class="nav-arr" onclick="movePeriod(-1)"><i class="fa-solid fa-chevron-left"></i></div>
       <div class="week-label" id="weekLabel"></div>
-      <div class="nav-arr" onclick="moveWeek(1)"><i class="fa-solid fa-chevron-right"></i></div>
+      <div class="nav-arr" onclick="movePeriod(1)"><i class="fa-solid fa-chevron-right"></i></div>
     </div>
     <div class="nav-arr" onclick="goToday()" title="Hoy" style="padding:0 10px;width:auto;height:28px;font-size:10px;font-weight:600;letter-spacing:.04em;color:var(--accent);border-color:rgba(42,191,176,.35);line-height:26px;display:flex;align-items:center;">Hoy</div>
   </div>
@@ -403,36 +431,112 @@ select option{background:var(--bg2);color:var(--text)}
     <div class="config-btn" onclick="toggleConfig()"><i class="fa-solid fa-sliders"></i>Configurar vista</div>
   </div>
 
-  <!-- DESKTOP: SPLIT VIEW -->
-  <div class="split-view cal-container">
-    <!-- LEFT: WEEKLY -->
-    <div class="weekly-panel" id="weeklyPanel">
-      <div class="week-header" id="weekHeader"></div>
-      <div class="allday-row" id="alldayRow"></div>
-      <div class="week-grid" id="weekGrid"></div>
+  <!-- WORKSPACE: CALENDARIO (IZQ) + PANEL LATERAL CONSTANTE (DER) -->
+  <div class="cal-workspace">
+    
+    <!-- ÁREA DE CALENDARIO -->
+    <div class="cal-content-area">
+      <!-- DESKTOP: FULL MONTH VIEW (PREDETERMINADA, TABLE NATIVA) -->
+      <div class="month-full-panel" id="monthFullContainer" style="display:flex;">
+        <table class="cal-month-table" id="monthFullTable">
+          <thead id="monthFullThead"></thead>
+          <tbody id="monthFullTbody"></tbody>
+        </table>
+      </div>
+
+      <!-- DESKTOP: SEMANA VIEW -->
+      <div class="weekly-panel" id="weekContainer" style="display:none;">
+        <div class="week-header" id="weekHeader"></div>
+        <div class="allday-row" id="alldayRow"></div>
+        <div class="week-grid" id="weekGrid"></div>
+      </div>
     </div>
-    <!-- RIGHT: MONTHLY MINI + STATS -->
-    <div class="monthly-panel">
-      <div class="month-mini">
-        <div class="month-mini-hdr">
-          <div class="mini-arr" onclick="moveMonth(-1)"><i class="fa-solid fa-chevron-left"></i></div>
-          <div class="month-mini-title" id="miniMonthLabel"></div>
-          <div class="mini-arr" onclick="moveMonth(1)"><i class="fa-solid fa-chevron-right"></i></div>
+
+    <!-- BARRA LATERAL DERECHA CONSTANTE -->
+    <div class="cal-sidebar-right" id="calSidebarRight">
+      <div class="cs-header">
+        <div class="cs-title" id="pieceModalTitle"><i class="fa-solid fa-plus" style="color:var(--accent)"></i>Nueva pieza</div>
+        <button class="btn" style="padding:3px 8px;font-size:11px;" onclick="resetToNewPiece()"><i class="fa-solid fa-plus" style="margin-right:3px;"></i>Limpiar</button>
+      </div>
+      <div class="cs-body">
+        <input type="hidden" id="p-id">
+        <div class="field">
+          <div class="flabel">Título <span style="color:var(--accent)">*</span></div>
+          <input type="text" id="p-titulo" placeholder="Ej: ¿Eres candidato para cirugía bariátrica?">
         </div>
-        <div class="mini-grid" id="miniGrid"></div>
+        <div class="field">
+          <div class="flabel">Formato</div>
+          <div class="fmt-pills">
+            <div class="fmt-pill fp-reel on" onclick="setFmt(this,'Reel')">🎬 Reel</div>
+            <div class="fmt-pill fp-carrusel" onclick="setFmt(this,'Carrusel')">🖼️ Carrusel</div>
+            <div class="fmt-pill fp-historia" onclick="setFmt(this,'Historia')">📖 Historia</div>
+            <div class="fmt-pill fp-publicacion" onclick="setFmt(this,'Publicación')">📝 Publicación</div>
+            <div class="fmt-pill fp-envivo" onclick="setFmt(this,'En vivo')">📡 En vivo</div>
+          </div>
+          <input type="hidden" id="p-formato" value="Reel">
+        </div>
+        <div class="frow">
+          <div class="field">
+            <div class="flabel">Fecha publicación</div>
+            <input type="date" id="p-fecha">
+          </div>
+          <div class="field">
+            <div class="flabel">Fecha límite</div>
+            <input type="date" id="p-fechalimite">
+          </div>
+        </div>
+        <div class="field">
+          <div class="flabel">Estado</div>
+          <div class="status-pills">
+            <div class="sp sp-idea on" onclick="setStatus(this,'Idea')">Idea</div>
+            <div class="sp sp-guion" onclick="setStatus(this,'Guionización')">Guion</div>
+            <div class="sp sp-grabacion" onclick="setStatus(this,'Grabación')">Grabación</div>
+            <div class="sp sp-edicion" onclick="setStatus(this,'Edición')">Edición</div>
+            <div class="sp sp-listo" onclick="setStatus(this,'Listo')">Listo</div>
+            <div class="sp sp-programado" onclick="setStatus(this,'Programado')">Programado</div>
+            <div class="sp sp-publicado" onclick="setStatus(this,'Publicado')">Publicado</div>
+          </div>
+          <input type="hidden" id="p-estado" value="Idea">
+        </div>
+        <div class="frow">
+          <div class="field">
+            <div class="flabel">Pilar</div>
+            <select id="p-pilar">
+              <option value="">— Seleccionar —</option>
+              <option>Validación emocional</option><option>Educación premium</option>
+              <option>Contrarian / Mitos</option><option>Autoridad humana</option>
+              <option>Transformación de vida</option><option>Conversión directa</option>
+            </select>
+          </div>
+          <div class="field">
+            <div class="flabel">Plataforma</div>
+            <select id="p-plataforma">
+              <option>Instagram</option><option>TikTok</option><option>Facebook</option><option>YouTube</option><option>Blog</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <div class="flabel">Hook / Copy corto</div>
+          <textarea id="p-hook" rows="2" placeholder="La frase de apertura o el copy del post..."></textarea>
+        </div>
+        <div class="field">
+          <div class="flabel">Notas</div>
+          <textarea id="p-notas" rows="2" placeholder="Referencias, ideas, recordatorios..."></textarea>
+        </div>
+
+        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border2)">
+          <div class="ms-title">Resumen del mes</div>
+          <div class="ms-stat"><span class="ms-label"><i class="fa-solid fa-video" style="color:#2ABFB0;font-size:10px"></i>Reels</span><span class="ms-val" id="ms-reels">0</span></div>
+          <div class="ms-stat"><span class="ms-label"><i class="fa-solid fa-table-columns" style="color:#5ba3f5;font-size:10px"></i>Carruseles</span><span class="ms-val" id="ms-carruseles">0</span></div>
+          <div class="ms-stat"><span class="ms-label"><i class="fa-solid fa-circle-check" style="color:#27ae60;font-size:10px"></i>Publicados</span><span class="ms-val" id="ms-publicados">0</span></div>
+          <div class="ms-stat"><span class="ms-label"><i class="fa-solid fa-clock" style="color:#f5d35a;font-size:10px"></i>Pendientes</span><span class="ms-val" id="ms-pendientes">0</span></div>
+        </div>
       </div>
-      <div class="month-summary">
-        <div class="ms-title">Este mes</div>
-        <div class="ms-stat"><span class="ms-label"><i class="fa-solid fa-video" style="color:#2ABFB0;font-size:10px"></i>Reels</span><span class="ms-val" id="ms-reels">0</span></div>
-        <div class="ms-stat"><span class="ms-label"><i class="fa-solid fa-table-columns" style="color:#5ba3f5;font-size:10px"></i>Carruseles</span><span class="ms-val" id="ms-carruseles">0</span></div>
-        <div class="ms-stat"><span class="ms-label"><i class="fa-solid fa-circle-check" style="color:#27ae60;font-size:10px"></i>Publicados</span><span class="ms-val" id="ms-publicados">0</span></div>
-        <div class="ms-stat"><span class="ms-label"><i class="fa-solid fa-clock" style="color:#f5d35a;font-size:10px"></i>Pendientes</span><span class="ms-val" id="ms-pendientes">0</span></div>
-      </div>
-      <div class="upcoming">
-        <div class="upcoming-title">Próximas publicaciones</div>
-        <div id="upcomingList"></div>
+      <div class="cs-foot">
+        <button class="btn btn-p" style="width:100%;justify-content:center;" onclick="savePiece()"><i class="fa-solid fa-floppy-disk"></i>Guardar en Calendario</button>
       </div>
     </div>
+
   </div>
 
   <!-- MOBILE: WEEKLY VERTICAL -->
@@ -473,86 +577,6 @@ select option{background:var(--bg2);color:var(--text)}
       <div class="config-row"><span class="config-row-label">Mostrar fines de semana</span><div class="toggle on" id="cfg-fds" onclick="toggleCfg(this);renderAll()"><div class="toggle-dot"></div></div></div>
     </div>
   </div>
-</div>
-
-<!-- MODAL NUEVA PIEZA -->
-<div class="overlay" id="pieceOverlay">
-<div class="modal">
-  <div class="modal-hdr">
-    <div class="modal-title" id="pieceModalTitle"><i class="fa-solid fa-plus" style="color:var(--accent)"></i>Nueva pieza</div>
-    <div class="modal-close" onclick="closePiece()"><i class="fa-solid fa-xmark"></i></div>
-  </div>
-  <div class="modal-body">
-    <input type="hidden" id="p-id">
-    <div class="field">
-      <div class="flabel">Título <span style="color:var(--accent)">*</span></div>
-      <input type="text" id="p-titulo" placeholder="Ej: ¿Eres candidato para cirugía bariátrica?">
-    </div>
-    <div class="field">
-      <div class="flabel">Formato</div>
-      <div class="fmt-pills">
-        <div class="fmt-pill fp-reel on" onclick="setFmt(this,'Reel')">🎬 Reel</div>
-        <div class="fmt-pill fp-carrusel" onclick="setFmt(this,'Carrusel')">🖼️ Carrusel</div>
-        <div class="fmt-pill fp-historia" onclick="setFmt(this,'Historia')">📖 Historia</div>
-        <div class="fmt-pill fp-publicacion" onclick="setFmt(this,'Publicación')">📝 Publicación</div>
-        <div class="fmt-pill fp-envivo" onclick="setFmt(this,'En vivo')">📡 En vivo</div>
-      </div>
-      <input type="hidden" id="p-formato" value="Reel">
-    </div>
-    <div class="frow">
-      <div class="field">
-        <div class="flabel">Fecha de publicación</div>
-        <input type="date" id="p-fecha">
-      </div>
-      <div class="field">
-        <div class="flabel">Fecha límite</div>
-        <input type="date" id="p-fechalimite">
-      </div>
-    </div>
-    <div class="field">
-      <div class="flabel">Estado</div>
-      <div class="status-pills">
-        <div class="sp sp-idea on" onclick="setStatus(this,'Idea')">Idea</div>
-        <div class="sp sp-guion" onclick="setStatus(this,'Guionización')">Guionización</div>
-        <div class="sp sp-grabacion" onclick="setStatus(this,'Grabación')">Grabación</div>
-        <div class="sp sp-edicion" onclick="setStatus(this,'Edición')">Edición</div>
-        <div class="sp sp-listo" onclick="setStatus(this,'Listo')">Listo</div>
-        <div class="sp sp-programado" onclick="setStatus(this,'Programado')">Programado</div>
-        <div class="sp sp-publicado" onclick="setStatus(this,'Publicado')">Publicado</div>
-      </div>
-      <input type="hidden" id="p-estado" value="Idea">
-    </div>
-    <div class="frow">
-      <div class="field">
-        <div class="flabel">Pilar</div>
-        <select id="p-pilar">
-          <option value="">— Seleccionar —</option>
-          <option>Validación emocional</option><option>Educación premium</option>
-          <option>Contrarian / Mitos</option><option>Autoridad humana</option>
-          <option>Transformación de vida</option><option>Conversión directa</option>
-        </select>
-      </div>
-      <div class="field">
-        <div class="flabel">Plataforma</div>
-        <select id="p-plataforma">
-          <option>Instagram</option><option>TikTok</option><option>Facebook</option><option>YouTube</option><option>Blog</option>
-        </select>
-      </div>
-    </div>
-    <div class="field">
-      <div class="flabel">Hook / Copy corto</div>
-      <textarea id="p-hook" rows="2" placeholder="La frase de apertura o el copy del post..."></textarea>
-    </div>
-    <div class="field">
-      <div class="flabel">Notas</div>
-      <textarea id="p-notas" rows="2" placeholder="Referencias, ideas, recordatorios..."></textarea>
-    </div>
-  </div>
-  <div class="modal-foot">
-    <button class="btn" onclick="closePiece()">Cancelar</button>
-    <button class="btn btn-p" onclick="savePiece()"><i class="fa-solid fa-floppy-disk"></i>Guardar</button>
-  </div>
-</div>
 </div>
 
 <script type="module">
@@ -792,18 +816,143 @@ async function savePieceToSupabase(piece) {
   }
 }
 
+// ══ CURRENT VIEW MODE ══
+let currentViewMode = 'month'; // 'month' (predeterminada) o 'week'
+
+function setViewMode(mode) {
+  currentViewMode = mode;
+  document.getElementById('btn-view-month')?.classList.toggle('active', mode === 'month');
+  document.getElementById('btn-view-week')?.classList.toggle('active', mode === 'week');
+
+  const monthCont = document.getElementById('monthFullContainer');
+  const weekCont = document.getElementById('weekContainer');
+
+  if (mode === 'month') {
+    if (monthCont) monthCont.style.display = 'flex';
+    if (weekCont) weekCont.style.display = 'none';
+  } else {
+    if (monthCont) monthCont.style.display = 'none';
+    if (weekCont) weekCont.style.display = 'grid';
+  }
+  renderAll();
+}
+
+// ══ FULL MONTH RENDER (TABLE NATIVA PARA ALINEACIÓN VERTICAL EXACTA) ══
+function renderFullMonth() {
+  const thead = document.getElementById('monthFullThead');
+  const tbody = document.getElementById('monthFullTbody');
+  if (!thead || !tbody) return;
+
+  const useLunes = cfg('lunes');
+  const dows = useLunes ? ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'] : ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+  thead.innerHTML = `<tr>${dows.map(d => `<th>${d}</th>`).join('')}</tr>`;
+
+  tbody.innerHTML = '';
+
+  const firstDayObj = new Date(miniYear, miniMonth, 1);
+  let firstDayOfWeek = firstDayObj.getDay();
+  if (useLunes) {
+    firstDayOfWeek = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
+  }
+
+  const daysInMonth = new Date(miniYear, miniMonth + 1, 0).getDate();
+  const daysInPrevMonth = new Date(miniYear, miniMonth, 0).getDate();
+  const today = new Date();
+  const activeInputDate = document.getElementById('p-fecha')?.value;
+
+  // Construir celdas
+  const allCells = [];
+
+  // Días del mes anterior
+  for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+    const prevDayNum = daysInPrevMonth - i;
+    const prevDate = new Date(miniYear, miniMonth - 1, prevDayNum);
+    const dateStr = toInputDate(prevDate);
+    const pieces = getPiecesForDay(prevDate);
+    const isSel = activeInputDate === dateStr;
+
+    allCells.push(`
+      <td class="other-month${isSel ? ' selected-day' : ''}" onclick="selectCalendarDay('${dateStr}')">
+        <div class="mfg-day-header">
+          <span class="mfg-day-num">${prevDayNum}</span>
+          ${pieces.length ? `<span class="mfg-day-count">${pieces.length} pieza${pieces.length > 1 ? 's' : ''}</span>` : ''}
+        </div>
+        <div class="mfg-pieces">
+          ${pieces.map(p => pieceHTML(p, true)).join('')}
+        </div>
+      </td>
+    `);
+  }
+
+  // Días del mes actual
+  for (let d = 1; d <= daysInMonth; d++) {
+    const currDate = new Date(miniYear, miniMonth, d);
+    const isToday = sameDay(currDate, today);
+    const dateStr = toInputDate(currDate);
+    const pieces = getPiecesForDay(currDate);
+    const isSel = activeInputDate === dateStr;
+
+    allCells.push(`
+      <td class="${isToday ? 'today ' : ''}${isSel ? 'selected-day' : ''}" onclick="selectCalendarDay('${dateStr}')">
+        <div class="mfg-day-header">
+          <span class="mfg-day-num">${d}</span>
+          ${pieces.length ? `<span class="mfg-day-count">${pieces.length} pieza${pieces.length > 1 ? 's' : ''}</span>` : ''}
+        </div>
+        <div class="mfg-pieces">
+          ${pieces.map(p => pieceHTML(p, false)).join('')}
+        </div>
+      </td>
+    `);
+  }
+
+  // Días del mes siguiente para completar la semana
+  const remaining = (7 - (allCells.length % 7)) % 7;
+  for (let d = 1; d <= remaining; d++) {
+    const nextDate = new Date(miniYear, miniMonth + 1, d);
+    const dateStr = toInputDate(nextDate);
+    const pieces = getPiecesForDay(nextDate);
+    const isSel = activeInputDate === dateStr;
+
+    allCells.push(`
+      <td class="other-month${isSel ? ' selected-day' : ''}" onclick="selectCalendarDay('${dateStr}')">
+        <div class="mfg-day-header">
+          <span class="mfg-day-num">${d}</span>
+          ${pieces.length ? `<span class="mfg-day-count">${pieces.length} pieza${pieces.length > 1 ? 's' : ''}</span>` : ''}
+        </div>
+        <div class="mfg-pieces">
+          ${pieces.map(p => pieceHTML(p, true)).join('')}
+        </div>
+      </td>
+    `);
+  }
+
+  // Armar filas <tr>
+  let rowsHTML = '';
+  for (let i = 0; i < allCells.length; i += 7) {
+    rowsHTML += `<tr>${allCells.slice(i, i + 7).join('')}</tr>`;
+  }
+  tbody.innerHTML = rowsHTML;
+
+  if (currentViewMode === 'month') {
+    const label = document.getElementById('weekLabel');
+    if (label) {
+      label.textContent = `${MONTHS[miniMonth]} · ${miniYear}`;
+    }
+  }
+}
+
 // ══ WEEK RENDER ══
 function renderWeek() {
   const days=getWeekDays();
-  const hdr=document.getElementById('weekHdr');
+  const hdr=document.getElementById('weekHeader');
   if (hdr) {
-    hdr.innerHTML='<div class="time-hdr">Hora</div>';
+    hdr.innerHTML='<div class="wh-spacer"></div>';
     days.forEach(d=>{
       const isToday=sameDay(d,new Date());
-      const dow=DOWS_L[d.getDay()];
-      hdr.innerHTML+=`<div class="day-hdr${isToday?' today':''}">
-        <div class="dow">${dow}</div>
-        <div class="date">${fmtDate(d)}</div>
+      const dow=DOWS_S[d.getDay()];
+      hdr.innerHTML+=`<div class="wh-day${isToday?' today':''}" onclick="jumpToDay(new Date(${d.getFullYear()},${d.getMonth()},${d.getDate()}))">
+        <div class="wh-dow">${dow}</div>
+        <div class="wh-num">${d.getDate()}</div>
       </div>`;
     });
   }
@@ -833,10 +982,12 @@ function renderWeek() {
     });
   }
 
-  const last=days[days.length-1];
-  const label = document.getElementById('weekLabel');
-  if (label) {
-    label.textContent=`${fmtDate(currentWeekStart)} — ${fmtDate(last)} · ${currentWeekStart.getFullYear()}`;
+  if (currentViewMode === 'week') {
+    const last=days[days.length-1];
+    const label = document.getElementById('weekLabel');
+    if (label) {
+      label.textContent=`${fmtDate(currentWeekStart)} — ${fmtDate(last)} · ${currentWeekStart.getFullYear()}`;
+    }
   }
 }
 
@@ -974,7 +1125,11 @@ function selectMobDay(d){
 
 // ══ MAIN RENDER ══
 function renderAll(){
-  renderWeek();
+  if (currentViewMode === 'month') {
+    renderFullMonth();
+  } else {
+    renderWeek();
+  }
   renderMiniMonth();
   renderMonthStats();
   renderUpcoming();
@@ -982,6 +1137,14 @@ function renderAll(){
 }
 
 // ══ NAVIGATION ══
+function movePeriod(dir) {
+  if (currentViewMode === 'month') {
+    moveMonth(dir);
+  } else {
+    moveWeek(dir);
+  }
+}
+
 function moveWeek(d){
   currentWeekStart=addDays(currentWeekStart,d*7);
   renderAll();
@@ -990,7 +1153,7 @@ function moveMonth(d){
   miniMonth+=d;
   if(miniMonth>11){miniMonth=0;miniYear++;}
   if(miniMonth<0){miniMonth=11;miniYear--;}
-  renderMiniMonth();renderMonthStats();renderUpcoming();
+  renderAll();
 }
 function goToday(){
   currentWeekStart=getWeekStart(new Date());
@@ -1001,6 +1164,7 @@ function goToday(){
 function jumpToDay(d){
   currentWeekStart=getWeekStart(d);
   selectedMobDay=d;
+  miniMonth=d.getMonth();miniYear=d.getFullYear();
   renderAll();
 }
 
@@ -1023,17 +1187,36 @@ function toggleCfg(el){
 }
 
 // ══ MODAL ══
-// wait, we need to bind openNewPiece, openNewPieceOnDay, openEditPiece, closePiece
-function openNewPiece(){
-  editingId=null;
+// ══ SIDEBAR ACTIONS (BARRA LATERAL CONSTANTE) ══
+function selectCalendarDay(dateStr){
+  editingId = null;
   resetPieceForm();
-  document.getElementById('pieceModalTitle').innerHTML=`<i class="fa-solid fa-plus" style="color:var(--accent)"></i>Nueva pieza`;
-  openOverlay();
+  document.getElementById('p-fecha').value = dateStr;
+  document.getElementById('pieceModalTitle').innerHTML = `<i class="fa-solid fa-plus" style="color:var(--accent)"></i>Nueva pieza (${dateStr})`;
+  document.getElementById('p-titulo')?.focus();
+  renderAll();
 }
+
+function resetToNewPiece(){
+  editingId = null;
+  resetPieceForm();
+  document.getElementById('pieceModalTitle').innerHTML = `<i class="fa-solid fa-plus" style="color:var(--accent)"></i>Nueva pieza`;
+  renderAll();
+}
+
+function openNewPiece(){
+  resetToNewPiece();
+  document.getElementById('p-titulo')?.focus();
+}
+
 function openNewPieceOnDay(dateStr){
-  openNewPiece();
-  document.getElementById('p-fecha').value=dateStr;
+  resetToNewPiece();
+  document.getElementById('p-fecha').value = dateStr;
+  document.getElementById('pieceModalTitle').innerHTML = `<i class="fa-solid fa-plus" style="color:var(--accent)"></i>Nueva pieza (${dateStr})`;
+  document.getElementById('p-titulo')?.focus();
+  renderAll();
 }
+
 function openEditPiece(id){
   const p=PIECES.find(i=>String(i.id)===String(id));if(!p)return;
   editingId=id;
@@ -1056,15 +1239,17 @@ function openEditPiece(id){
     if(sp.textContent.trim()===p.estado)sp.classList.add('on');
   });
   document.getElementById('p-estado').value=p.estado;
-  openOverlay();
+  
+  // Scroll suave al formulario en el panel derecho
+  document.getElementById('calSidebarRight')?.scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('p-titulo')?.focus();
+  renderAll();
 }
-function openOverlay(){
-  const ov=document.getElementById('pieceOverlay');
-  ov.classList.add('open');
-  ov.onclick=e=>{if(e.target===ov)closePiece();};
-  setTimeout(()=>document.getElementById('p-titulo').focus(),200);
+
+function closePiece(){
+  resetToNewPiece();
 }
-function closePiece(){document.getElementById('pieceOverlay').classList.remove('open');}
+
 function resetPieceForm(){
   document.getElementById('p-id').value='';
   document.getElementById('p-titulo').value='';
@@ -1079,11 +1264,13 @@ function resetPieceForm(){
   document.querySelectorAll('.sp').forEach((sp,i)=>sp.classList.toggle('on',i===0));
   document.getElementById('p-estado').value='Idea';
 }
+
 function setFmt(el,fmt){
   document.querySelectorAll('.fmt-pill').forEach(f=>f.classList.remove('on'));
   el.classList.add('on');
   document.getElementById('p-formato').value=fmt;
 }
+
 function setStatus(el,est){
   document.querySelectorAll('.sp').forEach(s=>s.classList.remove('on'));
   el.classList.add('on');
@@ -1120,8 +1307,7 @@ async function savePiece() {
     PIECES.unshift(piece);
   }
 
-  editingId=null;
-  closePiece();
+  resetToNewPiece();
   renderAll();
 }
 
@@ -1136,7 +1322,8 @@ function showToast(msg){
   setTimeout(()=>{t.remove();if(activeToast===t)activeToast=null;},3000);
 }
 
-// BIND TO WINDOW
+window.setViewMode = setViewMode;
+window.movePeriod = movePeriod;
 window.moveWeek = moveWeek;
 window.moveMonth = moveMonth;
 window.goToday = goToday;
@@ -1148,6 +1335,8 @@ window.openNewPiece = openNewPiece;
 window.openNewPieceOnDay = openNewPieceOnDay;
 window.openEditPiece = openEditPiece;
 window.closePiece = closePiece;
+window.resetToNewPiece = resetToNewPiece;
+window.selectCalendarDay = selectCalendarDay;
 window.setFmt = setFmt;
 window.setStatus = setStatus;
 window.savePiece = savePiece;

@@ -1,18 +1,31 @@
 // auth-guard.js
-// SEGURIDAD: reemplaza la confianza ciega en localStorage.getItem('content_os_user')
-// (que cualquiera podía fabricar manualmente desde la consola del navegador) por una
-// verificación real contra la sesión de Supabase Auth, firmada y verificada por el servidor.
+// SEGURIDAD & CONTROL DE ACCESO:
+// Valida la sesión real contra Supabase Auth y verifica permisos en la tabla 'team'.
 //
-// Uso dentro de cualquier módulo (modules/*.html):
-//   import { requireAuth } from '../auth-guard.js';
-//   const perfil = await requireAuth();
-//   // perfil = { id, username, name, email, role, function, verified, auth_user_id, ... }
-//
-// Si no hay sesión válida o el colaborador no está verificado, esta función
-// redirige automáticamente a la pantalla de login (content-os.html) y nunca
-// resuelve la promesa (evita que el resto del módulo siga ejecutándose).
+// Reglas de acceso:
+// - Administrador ('admin'): Acceso total (Dashboard + Content OS).
+// - Equipo de Redes ('redes', 'community_manager', 'creador_contenido', 'editor_video', 'copywriter'): SOLO Content OS.
+// - Equipo Clínico ('nutricionista', 'psicologa', 'med_interna', 'med_deporte', 'cirugia_bariatrica'): SOLO Dashboard Clínico.
 
 import { supabase } from './supabase-client.js';
+
+const CONTENT_OS_ROLES = [
+    'admin',
+    'redes',
+    'community_manager',
+    'creador_contenido',
+    'editor_video',
+    'copywriter',
+    'collaborator' // legacy
+];
+
+const CLINICAL_ONLY_ROLES = [
+    'nutricionista',
+    'psicologa',
+    'med_deporte',
+    'med_interna',
+    'cirugia_bariatrica'
+];
 
 export async function requireAuth() {
     const { data: { session } } = await supabase.auth.getSession();
@@ -22,13 +35,52 @@ export async function requireAuth() {
         return new Promise(() => {}); // detiene la ejecución del módulo
     }
 
-    const { data: profile, error } = await supabase
-        .from('colaboradores')
-        .select('*')
-        .eq('auth_user_id', session.user.id)
-        .single();
+    let profile = null;
 
-    if (error || !profile || !profile.verified) {
+    try {
+        const { data: teamUser, error: teamErr } = await supabase
+            .from('team')
+            .select('*')
+            .or(`auth_user_id.eq.${session.user.id},email.eq.${session.user.email?.toLowerCase()}`)
+            .maybeSingle();
+
+        if (teamUser && !teamErr) {
+            if (teamUser.activo === false) {
+                alert('Tu cuenta está registrada pero aún está pendiente de aprobación por el Dr. Molina.');
+                await supabase.auth.signOut();
+                redirectToLogin();
+                return new Promise(() => {});
+            }
+
+            const userRole = (teamUser.role || '').toLowerCase();
+
+            // Bloquear si es clínico intentando entrar a Content OS
+            if (CLINICAL_ONLY_ROLES.includes(userRole)) {
+                alert('⚠️ Acceso Restringido:\nTu cuenta está asignada al Dashboard Clínico. No tienes permisos para acceder al Content OS.');
+                await supabase.auth.signOut();
+                redirectToLogin();
+                return new Promise(() => {});
+            }
+
+            if (CONTENT_OS_ROLES.includes(userRole) || userRole === 'admin') {
+                profile = {
+                    id: teamUser.id,
+                    username: teamUser.email?.split('@')[0] || 'usuario',
+                    name: teamUser.name || `${teamUser.nombres || ''} ${teamUser.apellidos || ''}`.trim() || teamUser.email,
+                    email: teamUser.email,
+                    role: userRole === 'admin' ? 'administrador' : 'colaborador',
+                    function: teamUser.role,
+                    verified: teamUser.activo !== false,
+                    photo_url: teamUser.avatar_url || '',
+                    auth_user_id: session.user.id
+                };
+            }
+        }
+    } catch (e) {
+        console.warn('Error al verificar tabla team en auth-guard:', e);
+    }
+
+    if (!profile) {
         await supabase.auth.signOut();
         redirectToLogin();
         return new Promise(() => {});
@@ -38,17 +90,10 @@ export async function requireAuth() {
 }
 
 function redirectToLogin() {
-    // Los módulos viven dentro de content-os/modules/ y este script siempre se
-    // ejecuta desde ahí (auth-guard.js se importa con '../auth-guard.js').
-    // Usamos new URL() para resolver la ruta relativa de forma explícita y
-    // absoluta, en vez de dejar que el navegador la resuelva implícitamente
-    // (eso fue lo que causaba que terminara armando una ruta incorrecta
-    // como '.../content-os/modules/content-os.html').
     const loginUrl = new URL('../content-os.html', window.location.href).href;
     window.top.location.href = loginUrl;
 }
 
-// Helper de conveniencia: exige además un rol específico (ej. 'administrador').
 export async function requireRole(rolesPermitidos) {
     const profile = await requireAuth();
     const roles = Array.isArray(rolesPermitidos) ? rolesPermitidos : [rolesPermitidos];
