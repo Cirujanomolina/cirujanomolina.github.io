@@ -560,6 +560,7 @@
                 const { data, error } = await supabase
                     .from('content_pieces')
                     .select('*')
+                    .is('deleted_at', null)
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
@@ -789,25 +790,29 @@
             }
         };
 
-        // Action: Delete Piece
+        // Action: Delete Piece (Soft-delete hacia el Archivo)
         window.deletePiece = async (id) => {
-            if (confirm("¿Estás seguro de que deseas eliminar este creativo de la Bóveda permanentemente?")) {
+            if (confirm("¿Enviar este creativo al Archivo? Podrás restaurarlo o gestionarlo desde la papelera de Archivo.")) {
                 try {
                     const piece = allPieces.find(p => p.id === id);
                     const title = piece ? piece.title : 'Creativo';
+                    const userEmail = typeof activeUser !== 'undefined' && activeUser ? activeUser.email : 'usuario';
                     const { error } = await supabase
                         .from('content_pieces')
-                        .delete()
+                        .update({
+                            deleted_at: new Date().toISOString(),
+                            deleted_by: userEmail
+                        })
                         .eq('id', id);
 
                     if (error) throw error;
 
-                    showToast("Creativo eliminado de la Bóveda", "ti-trash");
-                    await logActivity('Eliminación', `Se eliminó el creativo "${title}" de la Bóveda.`);
+                    showToast("Creativo enviado al Archivo 📦", "ti-archive");
+                    await logActivity('Eliminación a Archivo', `Se envió el creativo "${title}" al Archivo.`);
                     loadLibraryContent(); // reload
                 } catch(e) {
-                    console.error("Error deleting piece:", e);
-                    showToast("Error al eliminar de Supabase: " + e.message, "ti-alert-circle");
+                    console.error("Error archiving piece:", e);
+                    showToast("Error al enviar a Archivo: " + e.message, "ti-alert-circle");
                 }
             }
         };

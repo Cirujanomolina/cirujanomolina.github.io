@@ -565,6 +565,7 @@ async function loadIdeas() {
     const { data, error } = await supabase
       .from('ideas')
       .select('*')
+      .is('deleted_at', null)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
@@ -1110,22 +1111,34 @@ async function confirmTransfer() {
 }
 function quickTransfer(id){openTransfer(id);}
 
-// DISCARD
+// DISCARD (SOFT-DELETE A ARCHIVO)
 function askDiscard(id){
   const idea=IDEAS.find(i=>i.id===id);
-  document.getElementById('confTitle').textContent='¿Descartar idea?';
-  document.getElementById('confMsg').textContent=`"${idea?S(idea.desc,55):'esta idea'}" pasará a Descartada. Puedes recuperarla cambiando el estado.`;
+  document.getElementById('confTitle').textContent='¿Enviar idea al Archivo?';
+  document.getElementById('confMsg').textContent=`"${idea?S(idea.desc,55):'esta idea'}" se moverá al Archivo protegido. Podrás restaurarla en cualquier momento.`;
   pendingConfirm=async ()=>{
-    const idx=IDEAS.findIndex(i=>i.id===id);
-    if(idx>-1) {
-      IDEAS[idx].estado='Descartada';
-      await saveIdeaToSupabase(IDEAS[idx]);
-      await logActivity('Eliminación', `Se descartó la idea: "${IDEAS[idx].desc}"`);
+    try {
+      const userEmail = typeof activeUser !== 'undefined' && activeUser ? activeUser.email : 'usuario';
+      const { error } = await supabase
+        .from('ideas')
+        .update({
+          deleted_at: new Date().toISOString(),
+          deleted_by: userEmail
+        })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      IDEAS = IDEAS.filter(i => i.id !== id);
+      filtered = [...IDEAS];
+      renderAll();
+      closeConfirm();
+      showToast('Idea enviada al Archivo 📦');
+      await logActivity('Eliminación a Archivo', `Se envió la idea al Archivo: "${idea ? idea.desc : id}"`);
+    } catch(err) {
+      console.error('Error archivando idea:', err);
+      showToast('Error al archivar idea: ' + err.message);
     }
-    filtered=[...IDEAS];
-    renderAll();
-    closeConfirm();
-    showToast('Idea descartada');
   };
   const ov=document.getElementById('confirmOverlay');ov.classList.add('open');ov.onclick=e=>{if(e.target===ov)closeConfirm();};
 }

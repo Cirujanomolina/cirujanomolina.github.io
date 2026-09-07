@@ -10,8 +10,10 @@
 <link rel="stylesheet" href="../design-system.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--f-body);background:var(--bg);color:var(--text);font-size:14px;transition:background .3s,color .3s;display: flex;flex-direction: column;height: 100vh;overflow: hidden;}
-.app{display:flex;flex-direction:column;flex: 1;min-height: 0;overflow: hidden;}
+body{font-family:var(--f-body);background:var(--bg);color:var(--text);font-size:14px;transition:background .3s,color .3s;display: flex;flex-direction: column;min-height: 100vh;overflow-y: auto;}
+.app{display:flex;flex-direction:column;flex: 1;min-height: 0;}
+.tab-pane{display:none;flex-direction:column;flex:1;}
+.tab-pane.active{display:flex;}
 
 /* ── HEADER PREMIUM ── */
 .vb-header {
@@ -735,6 +737,7 @@ async function loadHooks() {
     const { data, error } = await supabase
       .from('hooks')
       .select('*')
+      .is('deleted_at', null)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
@@ -809,24 +812,29 @@ async function saveHookToSupabase(hook) {
   }
 }
 
-// DELETE FROM SUPABASE
+// SOFT DELETE TO ARCHIVE
 async function deleteHookFromSupabase(id) {
   if (String(id).startsWith('local-')) return true;
   
   try {
+    const userEmail = typeof activeUser !== 'undefined' && activeUser ? activeUser.email : 'usuario';
     const { error } = await supabase
       .from('hooks')
-      .delete()
+      .update({
+        deleted_at: new Date().toISOString(),
+        deleted_by: userEmail
+      })
       .eq('id', id);
     if (error) throw error;
+    await logActivity('Eliminación a Archivo', `Se envió el hook ID ${id} al Archivo.`);
     return true;
   } catch (err) {
-    console.error('Error deleting hook from Supabase:', err);
+    console.error('Error enviando hook al archivo en Supabase:', err);
     let detail = err.message || '';
     if (err.details) detail += (detail ? ' - ' : '') + err.details;
     if (err.code) detail += ` (Código: ${err.code})`;
     if (!detail) detail = typeof err === 'object' ? JSON.stringify(err) : String(err);
-    showToast(`⚠️ Error al eliminar en Supabase: ${detail}`);
+    showToast(`⚠️ Error al enviar a Archivo: ${detail}`);
     return false;
   }
 }

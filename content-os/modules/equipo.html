@@ -312,14 +312,25 @@
                         </div>
                         
                         <div class="field">
-                            <label class="flabel">Función Especializada</label>
+                            <label class="flabel">Función / Área</label>
                             <select id="collabFunction" class="input-control">
-                                <option value="Editor de Video">Editor de Video</option>
-                                <option value="Diseñador">Diseñador</option>
-                                <option value="Copywriter">Copywriter</option>
-                                <option value="Trafficker">Trafficker</option>
-                                <option value="Administrador">Administrador</option>
-                                <option value="Otros">Otros</option>
+                                <optgroup label="Equipo de Redes y Marketing">
+                                    <option value="redes">Especialista en Redes</option>
+                                    <option value="community_manager">Community Manager</option>
+                                    <option value="creador_contenido">Creador de Contenido / Diseñador</option>
+                                    <option value="editor_video">Editor de Video</option>
+                                    <option value="copywriter">Copywriter / Guionista</option>
+                                </optgroup>
+                                <optgroup label="Equipo Clínico Multidisciplinario">
+                                    <option value="cirugia_bariatrica">Cirugía Bariátrica</option>
+                                    <option value="nutricionista">Nutrición Clínica</option>
+                                    <option value="psicologa">Psicología</option>
+                                    <option value="med_interna">Medicina Interna</option>
+                                    <option value="med_deporte">Medicina del Deporte</option>
+                                </optgroup>
+                                <optgroup label="Administración">
+                                    <option value="admin">Superadmin (Dr. Molina)</option>
+                                </optgroup>
                             </select>
                         </div>
                     </div>
@@ -445,7 +456,7 @@
 
             try {
                 const { data, error } = await supabase
-                    .from('colaboradores')
+                    .from('team')
                     .select('*')
                     .order('created_at', { ascending: true });
 
@@ -474,28 +485,53 @@
             }
         }
 
+        const ROLE_LABELS = {
+            admin: 'Superadmin (Dr. Molina)',
+            redes: 'Especialista en Redes',
+            community_manager: 'Community Manager',
+            creador_contenido: 'Creador de Contenido',
+            editor_video: 'Editor de Video',
+            copywriter: 'Copywriter / Guionista',
+            collaborator: 'Colaborador General',
+            cirugia_bariatrica: 'Cirugía Bariátrica',
+            nutricionista: 'Nutrición Clínica',
+            psicologa: 'Psicología',
+            med_interna: 'Medicina Interna',
+            med_deporte: 'Medicina del Deporte'
+        };
+
+        const CLINICAL_ROLES_LIST = ['cirugia_bariatrica', 'nutricionista', 'psicologa', 'med_interna', 'med_deporte'];
+
         // Render Colaboradores Cards
         function renderColaboradores() {
             const grid = document.getElementById('collabGrid');
             grid.innerHTML = '';
 
             colaboradoresList.forEach(user => {
-                const initials = user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                const displayName = user.name || `${user.nombres || ''} ${user.apellidos || ''}`.trim() || user.email;
+                const initials = displayName.split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'U';
+                const photo = user.avatar_url || user.photo_url;
+                const isVerified = user.activo !== false;
+                const userRole = user.role || 'redes';
+                const roleLabel = ROLE_LABELS[userRole] || userRole;
+                const isClinical = CLINICAL_ROLES_LIST.includes(userRole);
+                const isSuperAdmin = userRole === 'admin';
+                const username = user.email ? user.email.split('@')[0] : 'usuario';
                 
                 const card = document.createElement('div');
                 card.className = 'collab-card';
                 
                 // Construct photo block
                 let avatarHtml = `<div class="collab-avatar">${initials}</div>`;
-                if (user.photo_url) {
-                    avatarHtml = `<img class="collab-avatar" src="${user.photo_url}" onerror="this.outerHTML='<div class=collab-avatar>${initials}</div>'" alt="${user.name}">`;
+                if (photo) {
+                    avatarHtml = `<img class="collab-avatar" src="${photo}" onerror="this.outerHTML='<div class=collab-avatar>${initials}</div>'" alt="${displayName}">`;
                 }
 
                 // Action buttons logic
                 let actionButtonsHtml = '';
                 if (isAdmin) {
                     let approveBtn = '';
-                    if (!user.verified) {
+                    if (!isVerified) {
                         approveBtn = `<button class="btn btn-primary approve-btn" data-id="${user.id}" style="padding: 4px 10px; font-size: 11px;"><i class="ti ti-check"></i> Aprobar</button>`;
                     }
                     
@@ -507,21 +543,31 @@
                     `;
                 }
 
+                // Department badge
+                let deptBadge = '';
+                if (isSuperAdmin) {
+                    deptBadge = `<span class="badge" style="background: rgba(42, 191, 176, 0.2); color: var(--accent); border: 1px solid var(--accent);"><i class="ti ti-shield-check"></i> Superadmin</span>`;
+                } else if (isClinical) {
+                    deptBadge = `<span class="badge" style="background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3);"><i class="ti ti-stethoscope"></i> Equipo Clínico</span>`;
+                } else {
+                    deptBadge = `<span class="badge" style="background: rgba(46, 204, 113, 0.15); color: #2ecc71; border: 1px solid rgba(46, 204, 113, 0.3);"><i class="ti ti-brand-instagram"></i> Redes & Marketing</span>`;
+                }
+
                 card.innerHTML = `
                     <div class="collab-info">
                         ${avatarHtml}
                         <div style="flex: 1; min-width: 0;">
-                            <h3 style="font-size: 15px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 0;">${user.name}</h3>
-                            <div style="font-size: 11px; color: var(--text3); margin-top: 2px;">@${user.username}</div>
+                            <h3 style="font-size: 15px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 0;">${displayName}</h3>
+                            <div style="font-size: 11px; color: var(--text3); margin-top: 2px;">@${username}</div>
                             <div style="font-size: 12px; color: var(--text2); margin-top: 6px; display: flex; align-items: center; gap: 4px;">
-                                <i class="ti ti-briefcase" style="font-size: 13px;"></i> ${user.function}
+                                <i class="ti ti-briefcase" style="font-size: 13px;"></i> ${roleLabel}
                             </div>
                             <div style="font-size: 11px; color: var(--text3); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                                 <i class="ti ti-mail" style="font-size: 13px; vertical-align: middle;"></i> ${user.email}
                             </div>
-                            <div style="margin-top: 10px; display: flex; gap: 4px; flex-wrap: wrap;">
-                                <span class="badge ${user.verified ? 'badge-success' : 'badge-warning'}">${user.verified ? 'Verificado' : 'Pendiente'}</span>
-                                <span class="badge badge-info">${user.role === 'administrador' ? 'Admin' : 'Colaborador'}</span>
+                            <div style="margin-top: 10px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
+                                <span class="badge ${isVerified ? 'badge-success' : 'badge-warning'}">${isVerified ? 'Activo' : 'Pendiente'}</span>
+                                ${deptBadge}
                             </div>
                         </div>
                     </div>
@@ -546,19 +592,20 @@
         async function approveCollab(id) {
             const targetUser = colaboradoresList.find(u => u.id === id);
             if (!targetUser) return;
+            const targetName = targetUser.name || targetUser.email;
 
-            if (!confirm(`¿Estás seguro de que quieres verificar y permitir el acceso a "${targetUser.name}"?`)) return;
+            if (!confirm(`¿Estás seguro de que quieres verificar y permitir el acceso a "${targetName}"?`)) return;
 
             try {
                 const { error } = await supabase
-                    .from('colaboradores')
-                    .update({ verified: true })
+                    .from('team')
+                    .update({ activo: true })
                     .eq('id', id);
 
                 if (error) throw error;
 
-                alert(`El colaborador "${targetUser.name}" ha sido verificado con éxito.`);
-                await logActivity('Aprobación de Colaborador', `Se verificó y habilitó el acceso de ${targetUser.name} (@${targetUser.username}).`);
+                alert(`El colaborador "${targetName}" ha sido verificado con éxito.`);
+                await logActivity('Aprobación de Colaborador', `Se verificó y habilitó el acceso de ${targetName} (${targetUser.email}).`);
                 loadColaboradores();
             } catch (err) {
                 alert(`Error al aprobar: ${err.message}`);
@@ -574,26 +621,26 @@
         function openEditModal(id) {
             const user = colaboradoresList.find(u => u.id === id);
             if (!user) return;
+            const displayName = user.name || `${user.nombres || ''} ${user.apellidos || ''}`.trim() || user.email;
+            const username = user.email ? user.email.split('@')[0] : '';
+            const photo = user.avatar_url || user.photo_url || '';
+            const isVerified = user.activo !== false;
 
             document.getElementById('collabId').value = user.id;
-            document.getElementById('collabUsername').value = user.username;
-            document.getElementById('collabName').value = user.name;
+            document.getElementById('collabUsername').value = username;
+            document.getElementById('collabName').value = displayName;
             document.getElementById('collabEmail').value = user.email;
-            
-            // Password optional during edit
-            document.getElementById('collabPassword').value = '';
-            document.getElementById('collabPassword').required = false;
-            document.getElementById('passwordHelp').textContent = 'Deja este campo en blanco si no quieres cambiar la contraseña.';
 
-            document.getElementById('collabRole').value = user.role;
-            document.getElementById('collabFunction').value = user.function;
-            document.getElementById('collabPhotoUrl').value = user.photo_url || '';
-            document.getElementById('collabVerified').checked = user.verified;
+            const isSysAdmin = user.role === 'admin';
+            document.getElementById('collabRole').value = isSysAdmin ? 'administrador' : 'colaborador';
+            document.getElementById('collabFunction').value = user.role || 'redes';
+            document.getElementById('collabPhotoUrl').value = photo;
+            document.getElementById('collabVerified').checked = isVerified;
             
             // Set avatar preview in modal
-            const initials = user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-            if (user.photo_url) {
-                document.getElementById('modalAvatarPreview').innerHTML = `<img src="${user.photo_url}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            const initials = displayName.split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'U';
+            if (photo) {
+                document.getElementById('modalAvatarPreview').innerHTML = `<img src="${photo}" style="width: 100%; height: 100%; object-fit: cover;">`;
             } else {
                 document.getElementById('modalAvatarPreview').textContent = initials;
             }
@@ -618,10 +665,6 @@
         };
 
         // Save Colaborador
-        // SEGURIDAD: este módulo ya NO crea contraseñas ni cuentas nuevas. Los nuevos
-        // colaboradores se registran ellos mismos desde la pantalla de login (Supabase
-        // Auth gestiona su contraseña de forma segura). Aquí el administrador solo
-        // puede editar el perfil (rol, función, foto) y verificar/aprobar el acceso.
         async function saveCollab() {
             const id = document.getElementById('collabId').value;
             if (!id) {
@@ -629,13 +672,15 @@
                 return;
             }
 
-            const username = document.getElementById('collabUsername').value.trim().toLowerCase();
             const name = document.getElementById('collabName').value.trim();
             const email = document.getElementById('collabEmail').value.trim().toLowerCase();
-            const role = document.getElementById('collabRole').value;
+            const sysRole = document.getElementById('collabRole').value;
             const specFunction = document.getElementById('collabFunction').value;
             const photoUrl = document.getElementById('collabPhotoUrl').value.trim();
             const verified = document.getElementById('collabVerified').checked;
+
+            // If sysRole is administrador, role is 'admin', otherwise it takes specFunction
+            const finalRole = (sysRole === 'administrador') ? 'admin' : specFunction;
 
             const saveBtn = document.getElementById('saveBtn');
             const originalText = saveBtn.textContent;
@@ -643,25 +688,29 @@
             saveBtn.disabled = true;
 
             try {
+                const nameParts = name.split(' ');
+                const nombres = nameParts[0] || name;
+                const apellidos = nameParts.slice(1).join(' ') || '';
+
                 let payload = {
-                    username: username,
                     name: name,
+                    nombres: nombres,
+                    apellidos: apellidos,
                     email: email,
-                    role: role,
-                    function: specFunction,
-                    photo_url: photoUrl || null,
-                    verified: verified
+                    role: finalRole,
+                    avatar_url: photoUrl || null,
+                    activo: verified
                 };
 
                 const { error } = await supabase
-                    .from('colaboradores')
+                    .from('team')
                     .update(payload)
                     .eq('id', id);
 
                 if (error) throw error;
 
                 alert('Colaborador actualizado con éxito.');
-                await logActivity('Edición de Colaborador', `Se actualizaron los datos de ${name} (@${username}). Estado verificado: ${verified}.`);
+                await logActivity('Edición de Colaborador', `Se actualizaron los datos de ${name} (${email}). Estado activo: ${verified}. Rol: ${finalRole}.`);
 
                 // Si edita su propio perfil, no hace falta nada más: la sesión sigue
                 // siendo la misma sesión real de Supabase Auth (ya no se cachea en localStorage).

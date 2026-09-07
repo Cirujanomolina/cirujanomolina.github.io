@@ -487,8 +487,14 @@
 
             <!-- FOOTER OPTIONS -->
             <div class="sidebar-foot">
+                <a class="foot-icon-btn" id="archiveBtn" title="Archivo Protegido">
+                    <i class="ti ti-archive"></i>
+                </a>
                 <a class="foot-icon-btn" id="configBtn" title="Configuración">
                     <i class="ti ti-settings"></i>
+                </a>
+                <a class="foot-icon-btn" id="clinicalDashBtn" title="Dashboard Clínico Multidisciplinario" style="display: none;">
+                    <i class="ti ti-stethoscope"></i>
                 </a>
                 <a class="foot-icon-btn danger" id="logoutBtn" title="Cerrar Sesión">
                     <i class="ti ti-logout"></i>
@@ -607,7 +613,9 @@
         const dropdownEmail = document.getElementById('dropdownEmail');
         
         // Sidebar foot icons
+        const archiveBtn = document.getElementById('archiveBtn');
         const configBtn = document.getElementById('configBtn');
+        const clinicalDashBtn = document.getElementById('clinicalDashBtn');
         const logoutBtn = document.getElementById('logoutBtn');
 
         // Sidebar status indicators
@@ -914,6 +922,14 @@
             if (profile && profile.verified) {
                 updateUIForUser(profile);
                 loginOverlay.style.display = 'none';
+
+                // Mostrar botón de Dashboard Clínico solo si tiene rol admin o rol clínico
+                if (profile.role === 'administrador' || profile.role === 'admin') {
+                    if (clinicalDashBtn) clinicalDashBtn.style.display = 'inline-flex';
+                } else {
+                    if (clinicalDashBtn) clinicalDashBtn.style.display = 'none';
+                }
+
                 reloadCurrentModule();
             } else {
                 if (profile && !profile.verified) {
@@ -924,6 +940,14 @@
         }
 
         // Sidebar foot options actions
+        if (archiveBtn) {
+            archiveBtn.addEventListener('click', () => {
+                currentModule = 'archivo';
+                reloadCurrentModule();
+                navLinks.forEach(l => l.classList.remove('active'));
+            });
+        }
+
         configBtn.addEventListener('click', () => {
             const configLink = document.querySelector('.nav-link[data-target="configuracion"]');
             if (configLink) {
@@ -934,6 +958,12 @@
                 navLinks.forEach(l => l.classList.remove('active'));
             }
         });
+
+        if (clinicalDashBtn) {
+            clinicalDashBtn.addEventListener('click', () => {
+                window.location.href = '/dashboard_admin';
+            });
+        }
 
         logoutBtn.addEventListener('click', async () => {
             if (confirm('¿Estás seguro que deseas cerrar sesión?')) {
@@ -948,6 +978,7 @@
                 dropdownEmail.textContent = 'cirujano@molina.com';
                 userAvatar.textContent = 'U';
                 userAvatar.style.background = 'var(--surface3)';
+                if (clinicalDashBtn) clinicalDashBtn.style.display = 'none';
             }
         });
 

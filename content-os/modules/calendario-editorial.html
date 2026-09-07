@@ -173,29 +173,30 @@ body{font-family:'Archivo',sans-serif;background:var(--bg);color:var(--text);fon
 /* ── FULL MONTH VIEW (TABLE NATIVA PARA ALINEACIÓN 100% PERFECTA) ── */
 .month-full-panel{flex:1;display:flex;flex-direction:column;overflow-y:auto;background:var(--bg);min-height:0}
 .cal-month-table{width:100%;table-layout:fixed;border-collapse:collapse;min-width:650px}
-.cal-month-table th{padding:10px 4px;text-align:center;font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;background:var(--bg);border-bottom:1px solid var(--border2);border-right:1px solid var(--border2);position:sticky;top:0;z-index:4}
+.cal-month-table th{padding:12px 6px;text-align:center;font-size:11px;font-weight:700;color:#F4F5F0;text-transform:uppercase;letter-spacing:.1em;background:#244c58;border-bottom:2px solid var(--accent);border-right:1px solid rgba(255,255,255,0.12);position:sticky;top:0;z-index:4;text-shadow:0 1px 2px rgba(0,0,0,0.5)}
 .cal-month-table th:last-child{border-right:none}
-.cal-month-table td{border-right:1px solid var(--border2);border-bottom:1px solid var(--border2);vertical-align:top;height:120px;padding:6px 6px 8px;cursor:pointer;transition:background .15s}
+.cal-month-table td{border-right:1px solid var(--border2);border-bottom:1px solid var(--border2);vertical-align:top;height:120px;padding:6px 6px 8px;cursor:pointer;transition:all .15s;position:relative}
 .cal-month-table td:last-child{border-right:none}
-.cal-month-table td:hover{background:rgba(42,191,176,0.03)}
-.cal-month-table td.other-month{opacity:0.35;background:rgba(0,0,0,0.08)}
-.cal-month-table td.today{background:rgba(42,191,176,0.05)}
+.cal-month-table td:hover{background:rgba(42,191,176,0.04)}
+.cal-month-table td.drag-over-cell{background:rgba(42,191,176,0.15) !important;outline:2px dashed var(--accent) !important;outline-offset:-2px}
+.cal-month-table td.other-month{opacity:0.4;background:rgba(0,0,0,0.12)}
+.cal-month-table td.today{background:rgba(42,191,176,0.06)}
 .mfg-day-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
 .mfg-day-num{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:400;color:var(--text)}
-.cal-month-table td.today .mfg-day-num{font-weight:700;color:var(--accent);background:rgba(42,191,176,0.15);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.cal-month-table td.today .mfg-day-num{font-weight:700;color:var(--accent);background:rgba(42,191,176,0.18);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .cal-month-table td.selected-day{outline:2px solid var(--accent);outline-offset:-2px}
-.mfg-day-count{font-size:9px;color:var(--text2);opacity:0.6}
+.mfg-day-count{font-size:9px;color:var(--text2);opacity:0.8}
 .mfg-pieces{display:flex;flex-direction:column;gap:3px;overflow-y:auto;max-height:85px}
 
 /* ── WEEK VIEW ── */
 .weekly-panel{flex:1;overflow-y:auto;display:flex;flex-direction:column}
 .week-grid{display:grid;grid-template-columns:48px repeat(7,1fr);min-width:0}
-.week-header{display:grid;grid-template-columns:48px repeat(7,1fr);position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--border2)}
-.wh-spacer{border-right:1px solid var(--border2)}
-.wh-day{padding:8px 6px;text-align:center;border-right:1px solid var(--border2);cursor:pointer}
-.wh-dow{font-size:9px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em}
-.wh-num{font-size:18px;font-family:'Cormorant Garamond',serif;font-weight:300;color:var(--text);line-height:1;margin-top:2px}
-.wh-day.today .wh-num{color:var(--accent);font-weight:600}
+.week-header{display:grid;grid-template-columns:48px repeat(7,1fr);position:sticky;top:0;z-index:5;background:#244c58;border-bottom:2px solid var(--accent)}
+.wh-spacer{border-right:1px solid rgba(255,255,255,0.12);background:#244c58}
+.wh-day{padding:10px 6px;text-align:center;border-right:1px solid rgba(255,255,255,0.12);cursor:pointer;background:#244c58}
+.wh-dow{font-size:11px;font-weight:700;color:#F4F5F0;text-transform:uppercase;letter-spacing:.08em;text-shadow:0 1px 2px rgba(0,0,0,0.5)}
+.wh-num{font-size:18px;font-family:'Cormorant Garamond',serif;font-weight:400;color:#F4F5F0;line-height:1;margin-top:2px}
+.wh-day.today .wh-num{color:var(--accent);font-weight:700}
 .wh-day.today .wh-dow{color:var(--accent)}
 /* Time slots */
 .time-col{border-right:1px solid var(--border2)}
@@ -259,6 +260,25 @@ body{font-family:'Archivo',sans-serif;background:var(--bg);color:var(--text);fon
 .ms-stat:last-child{border-bottom:none}
 .ms-label{color:var(--text2);display:flex;align-items:center;gap:6px}
 .ms-val{font-weight:600;color:var(--text);font-family:'Cormorant Garamond',serif;font-size:14px}
+
+/* Horizontal month summary bar */
+.month-summary-bar{padding:6px 20px;background:var(--bg);border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:11px;}
+.ms-bar-label{font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;display:flex;align-items:center;gap:6px;}
+.ms-bar-chips{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.ms-bar-chip{display:flex;align-items:center;gap:5px;padding:3px 9px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid var(--border2);font-size:11px;}
+.ms-bar-chip .ms-val{font-family:'Archivo',sans-serif;font-size:11px;font-weight:700;margin-left:2px;}
+
+/* Modal Overlay & Card System */
+.overlay{position:fixed;inset:0;background:rgba(10,20,25,0.85);backdrop-filter:blur(10px);z-index:99999;display:none;align-items:center;justify-content:center;padding:16px;}
+.overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid rgba(42,191,176,0.25);border-radius:20px;width:100%;max-width:380px;box-shadow:0 24px 60px rgba(0,0,0,0.7);animation:fadeIn .2s cubic-bezier(0.16,1,0.3,1);overflow:hidden;}
+.modal-hdr{padding:14px 18px;border-bottom:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px;}
+.modal-close{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);border:1px solid var(--border2);font-size:12px;transition:all .15s;}
+.modal-close:hover{border-color:#f55a8a;color:#f55a8a;}
+.modal-body{padding:16px 18px;}
+.modal-foot{padding:12px 18px 16px;display:flex;gap:8px;justify-content:flex-end;border-top:1px solid var(--border2);background:var(--bg2);}
+
 /* Upcoming pieces list */
 .upcoming{padding:0 14px 14px}
 .upcoming-title{font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
@@ -411,9 +431,9 @@ select option{background:var(--bg2);color:var(--text)}
 <!-- MAIN -->
 <div class="main">
 
-  <!-- FILTERS BAR -->
-  <div class="filters-bar">
-    <div class="plat-filters">
+  <!-- FILTERS BAR (FILA 1: PLATAFORMAS + FORMATOS + ESTADOS + PILARES) -->
+  <div class="filters-bar" style="padding: 8px 20px; display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; overflow-x: auto;">
+    <div class="plat-filters" style="flex-shrink: 0;">
       <div class="plat-chip plat-ig on" onclick="togglePlat(this,'ig')"><i class="fa-brands fa-instagram"></i>IG</div>
       <div class="plat-chip plat-tk on" onclick="togglePlat(this,'tk')"><i class="fa-brands fa-tiktok"></i>TK</div>
       <div class="plat-chip plat-fb on" onclick="togglePlat(this,'fb')"><i class="fa-brands fa-facebook"></i>FB</div>
@@ -428,7 +448,24 @@ select option{background:var(--bg2);color:var(--text)}
       <option value="">Todos los estados</option>
       <option>Idea</option><option>Guionización</option><option>Grabación</option><option>Edición</option><option>Listo</option><option>Programado</option><option>Publicado</option>
     </select>
-    <div class="config-btn" onclick="toggleConfig()"><i class="fa-solid fa-sliders"></i>Configurar vista</div>
+    <select class="fsel" id="fil-pilar" onchange="renderAll()">
+      <option value="">Todos los pilares</option>
+      <option>Validación emocional</option><option>Educación premium</option>
+      <option>Contrarian / Mitos</option><option>Autoridad humana</option>
+      <option>Transformación de vida</option><option>Conversión directa</option>
+    </select>
+    <div class="config-btn" onclick="toggleConfig()" style="margin-left:auto;"><i class="fa-solid fa-sliders"></i>Configurar vista</div>
+  </div>
+
+  <!-- RESUMEN DEL MES (FILA 2 DIRECTAMENTE DEBAJO) -->
+  <div class="month-summary-bar">
+    <span class="ms-bar-label"><i class="fa-solid fa-chart-pie" style="color:var(--accent);"></i>Resumen del mes:</span>
+    <div class="ms-bar-chips">
+      <div class="ms-bar-chip"><i class="fa-solid fa-video" style="color:#2ABFB0;font-size:10px;"></i>Reels:<span class="ms-val" id="ms-reels">0</span></div>
+      <div class="ms-bar-chip"><i class="fa-solid fa-table-columns" style="color:#5ba3f5;font-size:10px;"></i>Carruseles:<span class="ms-val" id="ms-carruseles">0</span></div>
+      <div class="ms-bar-chip"><i class="fa-solid fa-circle-check" style="color:#27ae60;font-size:10px;"></i>Publicados:<span class="ms-val" id="ms-publicados">0</span></div>
+      <div class="ms-bar-chip"><i class="fa-solid fa-clock" style="color:#f5d35a;font-size:10px;"></i>Pendientes:<span class="ms-val" id="ms-pendientes">0</span></div>
+    </div>
   </div>
 
   <!-- WORKSPACE: CALENDARIO (IZQ) + PANEL LATERAL CONSTANTE (DER) -->
@@ -454,9 +491,14 @@ select option{background:var(--bg2);color:var(--text)}
 
     <!-- BARRA LATERAL DERECHA CONSTANTE -->
     <div class="cal-sidebar-right" id="calSidebarRight">
-      <div class="cs-header">
-        <div class="cs-title" id="pieceModalTitle"><i class="fa-solid fa-plus" style="color:var(--accent)"></i>Nueva pieza</div>
-        <button class="btn" style="padding:3px 8px;font-size:11px;" onclick="resetToNewPiece()"><i class="fa-solid fa-plus" style="margin-right:3px;"></i>Limpiar</button>
+      <div class="cs-header" style="flex-direction:column; align-items:stretch; gap:10px;">
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div class="cs-title" id="pieceModalTitle"><i class="fa-solid fa-plus" style="color:var(--accent)"></i>Nueva pieza</div>
+          <button class="btn" style="padding:3px 8px;font-size:11px;" onclick="resetToNewPiece()"><i class="fa-solid fa-rotate-left" style="margin-right:3px;"></i>Limpiar</button>
+        </div>
+        <button class="btn btn-p" onclick="openBovedaSelector()" style="width: 100%; justify-content: center; padding: 7px 12px; font-size: 12px;">
+          <i class="fa-solid fa-box-archive"></i>Asignar de Bóveda
+        </button>
       </div>
       <div class="cs-body">
         <input type="hidden" id="p-id">
@@ -478,11 +520,17 @@ select option{background:var(--bg2);color:var(--text)}
         <div class="frow">
           <div class="field">
             <div class="flabel">Fecha publicación</div>
-            <input type="date" id="p-fecha">
+            <div style="position:relative;cursor:pointer;" onclick="openDatePickerModal('p-fecha')">
+              <input type="text" id="p-fecha" readonly placeholder="AAAA-MM-DD" style="cursor:pointer;padding-right:32px;">
+              <i class="fa-regular fa-calendar" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--accent);pointer-events:none;"></i>
+            </div>
           </div>
           <div class="field">
             <div class="flabel">Fecha límite</div>
-            <input type="date" id="p-fechalimite">
+            <div style="position:relative;cursor:pointer;" onclick="openDatePickerModal('p-fechalimite')">
+              <input type="text" id="p-fechalimite" readonly placeholder="AAAA-MM-DD" style="cursor:pointer;padding-right:32px;">
+              <i class="fa-regular fa-calendar" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--accent);pointer-events:none;"></i>
+            </div>
           </div>
         </div>
         <div class="field">
@@ -523,17 +571,10 @@ select option{background:var(--bg2);color:var(--text)}
           <div class="flabel">Notas</div>
           <textarea id="p-notas" rows="2" placeholder="Referencias, ideas, recordatorios..."></textarea>
         </div>
-
-        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border2)">
-          <div class="ms-title">Resumen del mes</div>
-          <div class="ms-stat"><span class="ms-label"><i class="fa-solid fa-video" style="color:#2ABFB0;font-size:10px"></i>Reels</span><span class="ms-val" id="ms-reels">0</span></div>
-          <div class="ms-stat"><span class="ms-label"><i class="fa-solid fa-table-columns" style="color:#5ba3f5;font-size:10px"></i>Carruseles</span><span class="ms-val" id="ms-carruseles">0</span></div>
-          <div class="ms-stat"><span class="ms-label"><i class="fa-solid fa-circle-check" style="color:#27ae60;font-size:10px"></i>Publicados</span><span class="ms-val" id="ms-publicados">0</span></div>
-          <div class="ms-stat"><span class="ms-label"><i class="fa-solid fa-clock" style="color:#f5d35a;font-size:10px"></i>Pendientes</span><span class="ms-val" id="ms-pendientes">0</span></div>
-        </div>
       </div>
-      <div class="cs-foot">
-        <button class="btn btn-p" style="width:100%;justify-content:center;" onclick="savePiece()"><i class="fa-solid fa-floppy-disk"></i>Guardar en Calendario</button>
+      <div class="cs-foot" style="display:flex;gap:8px;">
+        <button class="btn btn-p" style="flex:1;justify-content:center;" onclick="savePiece()"><i class="fa-solid fa-floppy-disk"></i>Guardar</button>
+        <button class="btn" id="btn-archivar-pieza" style="display:none;background:rgba(245,90,138,0.15);border-color:#f55a8a;color:#f55a8a;padding:8px 12px;" onclick="archiveCurrentPiece()" title="Enviar al Archivo"><i class="fa-solid fa-trash"></i></button>
       </div>
     </div>
 
@@ -575,6 +616,137 @@ select option{background:var(--bg2);color:var(--text)}
       <div class="config-section-title">Semana</div>
       <div class="config-row"><span class="config-row-label">Empezar semana el lunes</span><div class="toggle on" id="cfg-lunes" onclick="toggleCfg(this);renderAll()"><div class="toggle-dot"></div></div></div>
       <div class="config-row"><span class="config-row-label">Mostrar fines de semana</span><div class="toggle on" id="cfg-fds" onclick="toggleCfg(this);renderAll()"><div class="toggle-dot"></div></div></div>
+    </div>
+  </div>
+</div><!-- /configPanel -->
+
+<!-- MODAL SELECTOR DE FECHA INTERACTIVO ESTILO PRECONSULTA -->
+<div id="datePickerModal" class="dob-modal-overlay" style="display:none; position: fixed; inset: 0; z-index: 99999; background: rgba(10, 20, 25, 0.85); backdrop-filter: blur(10px); align-items: center; justify-content: center; padding: 20px;">
+  <div class="dob-modal-card" style="background: #14262D; border: 1px solid rgba(42, 191, 176, 0.25); border-radius: 28px; width: 100%; max-width: 380px; padding: 22px 20px; box-shadow: 0 24px 60px rgba(0,0,0,0.7); position: relative; animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);">
+    
+    <!-- Top Bar: Title & Close Button -->
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid rgba(42, 191, 176, 0.12);">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="var(--accent)" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        <span id="dpModalTitle" style="font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 1.2px; color: var(--accent);">Fecha de Publicación</span>
+      </div>
+      <button type="button" onclick="closeDatePickerModal()" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(244,245,240,0.7); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;">✕</button>
+    </div>
+
+    <!-- Month & Year Menu Overlay Views -->
+    <!-- Month Menu Popover -->
+    <div id="dpMonthMenuView" style="display:none; position: absolute; top: 65px; left: 16px; right: 16px; z-index: 20; background: #14262D; border: 1.5px solid var(--accent); border-radius: 20px; padding: 16px; box-shadow: 0 16px 40px rgba(0,0,0,0.85); animation: fadeIn 0.2s ease;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
+        <span style="font-size: 11px; text-transform: uppercase; color: var(--accent); font-weight: 700; letter-spacing: 1px;">Seleccionar Mes</span>
+        <button type="button" onclick="closeDpMenus()" style="background: none; border: none; color: var(--text2); font-size: 14px; cursor: pointer;">✕</button>
+      </div>
+      <div id="dpMonthGrid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;"></div>
+    </div>
+
+    <!-- Year Menu Popover -->
+    <div id="dpYearMenuView" style="display:none; position: absolute; top: 65px; left: 16px; right: 16px; z-index: 20; background: #14262D; border: 1.5px solid var(--accent); border-radius: 20px; padding: 16px; box-shadow: 0 16px 40px rgba(0,0,0,0.85); animation: fadeIn 0.2s ease;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
+        <span style="font-size: 11px; text-transform: uppercase; color: var(--accent); font-weight: 700; letter-spacing: 1px;">Seleccionar Año</span>
+        <button type="button" onclick="closeDpMenus()" style="background: none; border: none; color: var(--text2); font-size: 14px; cursor: pointer;">✕</button>
+      </div>
+      <div id="dpYearGrid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-height: 220px; overflow-y: auto; padding-right: 4px;"></div>
+    </div>
+
+    <!-- Navigation Header (Prev Month, Separated Month & Year Pills, Next Month) -->
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; padding: 0 2px;">
+      <button type="button" onclick="changeDpMonth(-1)" style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #F4F5F0; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button type="button" onclick="toggleDpMonthMenu()" style="cursor: pointer; display: flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 16px; background: rgba(42,191,176,0.08); border: 1px solid rgba(42,191,176,0.25); color: #F4F5F0; font-family: 'Archivo', sans-serif; font-size: 14.5px; font-weight: 600;">
+          <span id="dpMonthPillText">Enero</span>
+          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="var(--accent)" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+
+        <button type="button" onclick="toggleDpYearMenu()" style="cursor: pointer; display: flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 16px; background: rgba(42,191,176,0.08); border: 1px solid rgba(42,191,176,0.25); color: #F4F5F0; font-family: 'Archivo', sans-serif; font-size: 14.5px; font-weight: 600;">
+          <span id="dpYearPillText">2026</span>
+          <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="var(--accent)" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+      </div>
+
+      <button type="button" onclick="changeDpMonth(1)" style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); color: #F4F5F0; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+
+    <!-- Calendar Days View Container -->
+    <div id="dpCalendarMainView">
+      <div style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; margin-bottom: 10px;">
+        <span style="font-size: 11px; font-weight: 700; color: rgba(244,245,240,0.5); letter-spacing: 0.5px;">LUN</span>
+        <span style="font-size: 11px; font-weight: 700; color: rgba(244,245,240,0.5); letter-spacing: 0.5px;">MAR</span>
+        <span style="font-size: 11px; font-weight: 700; color: rgba(244,245,240,0.5); letter-spacing: 0.5px;">MIÉ</span>
+        <span style="font-size: 11px; font-weight: 700; color: rgba(244,245,240,0.5); letter-spacing: 0.5px;">JUE</span>
+        <span style="font-size: 11px; font-weight: 700; color: rgba(244,245,240,0.5); letter-spacing: 0.5px;">VIE</span>
+        <span style="font-size: 11px; font-weight: 700; color: rgba(244,245,240,0.5); letter-spacing: 0.5px;">SÁB</span>
+        <span style="font-size: 11px; font-weight: 700; color: rgba(244,245,240,0.5); letter-spacing: 0.5px;">DOM</span>
+      </div>
+      <div id="dpDaysGrid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; margin-bottom: 18px;"></div>
+    </div>
+
+    <!-- Preview & Action Buttons -->
+    <div style="background: rgba(42, 191, 176, 0.06); border: 1px dashed rgba(42, 191, 176, 0.2); border-radius: 14px; padding: 10px 14px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between;">
+      <div>
+        <span style="font-size: 9.5px; text-transform: uppercase; color: var(--text2); display: block; letter-spacing: 0.5px;">Fecha seleccionada</span>
+        <span id="dpSelectedDateText" style="font-size: 13.5px; font-weight: 600; color: #F4F5F0;">-- / -- / ----</span>
+      </div>
+      <button type="button" onclick="clearDpDate()" style="background: none; border: 1px solid rgba(255,255,255,0.1); color: var(--text2); padding: 4px 8px; border-radius: 8px; font-size: 11px; cursor: pointer;">Limpiar</button>
+    </div>
+
+    <!-- Buttons -->
+    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+      <button type="button" onclick="closeDatePickerModal()" style="flex: 1; background: transparent; border: 1px solid rgba(255,255,255,0.15); color: #F4F5F0; font-size: 12.5px; font-weight: 400; padding: 10px; border-radius: 12px; cursor: pointer;">Cancelar</button>
+      <button type="button" onclick="confirmDpDateSelection()" style="flex: 1.2; background: var(--accent); border: none; color: #14262D; font-size: 13px; font-weight: 700; padding: 10px; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 16px rgba(42,191,176,0.35);">Confirmar Fecha</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ASIGNAR DESDE BÓVEDA DE CREATIVOS -->
+<div id="bovedaModal" class="dob-modal-overlay" style="display:none; position: fixed; inset: 0; z-index: 99998; background: rgba(10, 20, 25, 0.85); backdrop-filter: blur(10px); align-items: center; justify-content: center; padding: 20px;">
+  <div class="dob-modal-card" style="background: #14262D; border: 1px solid rgba(42, 191, 176, 0.25); border-radius: 24px; width: 100%; max-width: 540px; max-height: 85vh; display: flex; flex-direction: column; padding: 22px; box-shadow: 0 24px 60px rgba(0,0,0,0.7); position: relative; animation: fadeIn 0.25s ease;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(42, 191, 176, 0.12);">
+      <div>
+        <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 600; color: #F4F5F0; margin: 0;"><i class="fa-solid fa-box-archive" style="color:var(--accent);margin-right:8px;"></i>Bóveda de Creativos sin Fecha</h3>
+        <p style="font-size: 11px; color: var(--text2); margin: 3px 0 0;">Selecciona una pieza guardada para asignarle fecha en el calendario</p>
+      </div>
+      <button type="button" onclick="closeBovedaSelector()" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(244,245,240,0.7); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">✕</button>
+    </div>
+
+    <div id="bovedaPiecesList" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; min-height: 160px; max-height: 55vh;">
+      <div style="text-align:center;padding:30px;color:var(--text2);font-size:12px;">Cargando piezas de la Bóveda...</div>
+    </div>
+
+    <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border2); display: flex; justify-content: flex-end;">
+      <button class="btn" onclick="closeBovedaSelector()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMAR ARCHIVAR PIEZA (ESTILO BRAND PERSONALIZADO) -->
+<div class="overlay" id="confirmArchiveModal" style="display:none; position: fixed; inset: 0; z-index: 99999; background: rgba(10, 20, 25, 0.85); backdrop-filter: blur(10px); align-items: center; justify-content: center; padding: 20px;">
+  <div class="modal" style="background: #14262D; border: 1px solid rgba(42, 191, 176, 0.25); border-radius: 24px; width: 100%; max-width: 380px; padding: 22px; box-shadow: 0 24px 60px rgba(0,0,0,0.7); position: relative;">
+    <div class="modal-hdr" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+      <div class="modal-title" style="font-size:16px; color:#F4F5F0; display: flex; align-items: center; gap: 10px;">
+        <i class="fa-solid fa-triangle-exclamation" style="color:#f55a8a"></i>
+        <span>Enviar al Archivo</span>
+      </div>
+      <div class="modal-close" onclick="closeConfirmArchiveModal()" style="cursor: pointer; color: rgba(255,255,255,0.5);"><i class="fa-solid fa-xmark"></i></div>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:12px;color:var(--text2);line-height:1.5;margin:0 0 16px;" id="confirmArchiveMsg">
+        ¿Estás seguro de enviar esta pieza al Archivo? Podrás restaurarla o gestionarla en cualquier momento desde el módulo Archivo.
+      </p>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button class="btn" onclick="closeConfirmArchiveModal()" style="background:transparent; border:1px solid rgba(255,255,255,0.1); color:#F4F5F0; padding:8px 12px; border-radius:8px; cursor:pointer;">Cancelar</button>
+        <button class="btn" style="border-color:#f55a8a;color:#f55a8a;background:rgba(245,90,138,0.12); padding:8px 12px; border-radius:8px; cursor:pointer;" onclick="executeArchivePiece()">
+          <i class="fa-solid fa-box-archive"></i>Enviar a Archivo
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -639,13 +811,31 @@ function getWeekDays(){
 }
 
 function getPiecesForDay(d){
-  const fmt=document.getElementById('fil-formato').value;
-  const est=document.getElementById('fil-estado').value;
+  const fmt = document.getElementById('fil-formato')?.value || '';
+  const est = document.getElementById('fil-estado')?.value || '';
+  const pil = document.getElementById('fil-pilar')?.value || '';
+  
   return PIECES.filter(p=>{
     const pd=parseDate(p.fecha);
     if(!pd||!sameDay(pd,d))return false;
-    if(fmt&&p.formato!==fmt)return false;
-    if(est&&p.estado!==est)return false;
+
+    // Filtro por plataforma (IG, TK, FB, YT)
+    // Si no hay ninguna plataforma activa seleccionada, no mostrar ninguna pieza
+    if (!activePlatforms || activePlatforms.size === 0) return false;
+
+    const rawPlat = (p.plataforma || '').toLowerCase();
+    const platKey = rawPlat.includes('instagram') || rawPlat === 'ig' ? 'ig' :
+                    rawPlat.includes('tiktok') || rawPlat === 'tk' ? 'tk' :
+                    rawPlat.includes('facebook') || rawPlat === 'fb' ? 'fb' :
+                    rawPlat.includes('youtube') || rawPlat === 'yt' ? 'yt' : '';
+    
+    // Si la plataforma tiene correspondencia con las 4 principales, debe estar en activePlatforms
+    if (platKey && !activePlatforms.has(platKey)) return false;
+
+    if(fmt && p.formato !== fmt) return false;
+    if(est && p.estado !== est) return false;
+    if(pil && p.pilar !== pil) return false;
+
     return true;
   });
 }
@@ -667,7 +857,7 @@ function pieceHTML(p, compact=false) {
   if(showFmt&&!compact) meta+=`<i class="fa-solid ${fmtIcon}" style="font-size:8px;opacity:.7"></i>`;
   if(showPlat&&!compact) meta+=`<span>${p.plataforma==='Instagram'?'IG':p.plataforma==='TikTok'?'TK':p.plataforma==='Facebook'?'FB':p.plataforma==='YouTube'?'YT':p.plataforma}</span>`;
 
-  return `<div class="piece ${pieceClass(p)}" onclick="event.stopPropagation();openEditPiece('${p.id}')">
+  return `<div class="piece ${pieceClass(p)}" draggable="true" ondragstart="onPieceDragStart(event,'${p.id}')" ondragend="onPieceDragEnd(event)" onclick="event.stopPropagation();openEditPiece('${p.id}')" title="Arrastra a otro día para reprogramar">
     <div class="piece-title">${p.titulo}</div>
     ${meta?`<div class="piece-meta">${meta}</div>`:''}
   </div>`;
@@ -753,6 +943,7 @@ async function loadPieces() {
     const { data, error } = await supabase
       .from('content_pieces')
       .select('*')
+      .is('deleted_at', null)
       .order('publish_date', { ascending: true });
 
     if (error) throw error;
@@ -872,7 +1063,11 @@ function renderFullMonth() {
     const isSel = activeInputDate === dateStr;
 
     allCells.push(`
-      <td class="other-month${isSel ? ' selected-day' : ''}" onclick="selectCalendarDay('${dateStr}')">
+      <td class="other-month${isSel ? ' selected-day' : ''}" 
+          ondragover="onCalendarDayDragOver(event, this)" 
+          ondragleave="onCalendarDayDragLeave(this)" 
+          ondrop="onCalendarDayDrop(event, '${dateStr}')" 
+          onclick="selectCalendarDay('${dateStr}')">
         <div class="mfg-day-header">
           <span class="mfg-day-num">${prevDayNum}</span>
           ${pieces.length ? `<span class="mfg-day-count">${pieces.length} pieza${pieces.length > 1 ? 's' : ''}</span>` : ''}
@@ -893,7 +1088,11 @@ function renderFullMonth() {
     const isSel = activeInputDate === dateStr;
 
     allCells.push(`
-      <td class="${isToday ? 'today ' : ''}${isSel ? 'selected-day' : ''}" onclick="selectCalendarDay('${dateStr}')">
+      <td class="${isToday ? 'today ' : ''}${isSel ? 'selected-day' : ''}" 
+          ondragover="onCalendarDayDragOver(event, this)" 
+          ondragleave="onCalendarDayDragLeave(this)" 
+          ondrop="onCalendarDayDrop(event, '${dateStr}')" 
+          onclick="selectCalendarDay('${dateStr}')">
         <div class="mfg-day-header">
           <span class="mfg-day-num">${d}</span>
           ${pieces.length ? `<span class="mfg-day-count">${pieces.length} pieza${pieces.length > 1 ? 's' : ''}</span>` : ''}
@@ -914,7 +1113,11 @@ function renderFullMonth() {
     const isSel = activeInputDate === dateStr;
 
     allCells.push(`
-      <td class="other-month${isSel ? ' selected-day' : ''}" onclick="selectCalendarDay('${dateStr}')">
+      <td class="other-month${isSel ? ' selected-day' : ''}" 
+          ondragover="onCalendarDayDragOver(event, this)" 
+          ondragleave="onCalendarDayDragLeave(this)" 
+          ondrop="onCalendarDayDrop(event, '${dateStr}')" 
+          onclick="selectCalendarDay('${dateStr}')">
         <div class="mfg-day-header">
           <span class="mfg-day-num">${d}</span>
           ${pieces.length ? `<span class="mfg-day-count">${pieces.length} pieza${pieces.length > 1 ? 's' : ''}</span>` : ''}
@@ -1239,6 +1442,8 @@ function openEditPiece(id){
     if(sp.textContent.trim()===p.estado)sp.classList.add('on');
   });
   document.getElementById('p-estado').value=p.estado;
+  const archBtn = document.getElementById('btn-archivar-pieza');
+  if (archBtn) archBtn.style.display = 'inline-flex';
   
   // Scroll suave al formulario en el panel derecho
   document.getElementById('calSidebarRight')?.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1263,6 +1468,8 @@ function resetPieceForm(){
   document.getElementById('p-formato').value='Reel';
   document.querySelectorAll('.sp').forEach((sp,i)=>sp.classList.toggle('on',i===0));
   document.getElementById('p-estado').value='Idea';
+  const archBtn = document.getElementById('btn-archivar-pieza');
+  if (archBtn) archBtn.style.display = 'none';
 }
 
 function setFmt(el,fmt){
@@ -1311,15 +1518,417 @@ async function savePiece() {
   renderAll();
 }
 
-// ══ HELPERS ══
-function navTo(el){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');}
-let isLight=false;
-function toggleTheme(){isLight=!isLight;document.body.classList.toggle('light',isLight);document.getElementById('tpill').classList.toggle('on',isLight);}
-function showToast(msg){
-  if(activeToast){activeToast.remove();activeToast=null;}
-  const t=document.createElement('div');t.className='toast';t.textContent=msg;
-  document.body.appendChild(t);activeToast=t;
-  setTimeout(()=>{t.remove();if(activeToast===t)activeToast=null;},3000);
+// ══ ARCHIVAR PIEZA AL ARCHIVO (SOFT-DELETE CON MODAL PERSONALIZADO) ══
+function archiveCurrentPiece() {
+  if (!editingId) return;
+  const p = PIECES.find(i => String(i.id) === String(editingId));
+  const titulo = p ? p.titulo : 'esta pieza';
+
+  const msgEl = document.getElementById('confirmArchiveMsg');
+  if (msgEl) {
+    msgEl.innerHTML = `¿Estás seguro de enviar "<strong>${titulo}</strong>" al Archivo?<br><br>Podrás restaurarla o gestionarla en cualquier momento desde el módulo <strong>Archivo</strong> protegido.`;
+  }
+
+  const modal = document.getElementById('confirmArchiveModal');
+  if (modal) modal.style.display = 'flex';
+}
+
+function closeConfirmArchiveModal() {
+  const modal = document.getElementById('confirmArchiveModal');
+  if (modal) modal.style.display = 'none';
+}
+
+async function executeArchivePiece() {
+  if (!editingId) {
+    closeConfirmArchiveModal();
+    return;
+  }
+  closeConfirmArchiveModal();
+
+  try {
+    const userEmail = typeof activeUser !== 'undefined' && activeUser ? activeUser.email : 'usuario';
+    const { error } = await supabase
+      .from('content_pieces')
+      .update({
+        deleted_at: new Date().toISOString(),
+        deleted_by: userEmail
+      })
+      .eq('id', editingId);
+
+    if (error) throw error;
+
+    PIECES = PIECES.filter(i => String(i.id) !== String(editingId));
+    resetToNewPiece();
+    renderAll();
+    showToast('Pieza enviada al Archivo 📦');
+  } catch (err) {
+    console.error('Error archivando pieza:', err);
+    showToast('Error al archivar pieza: ' + err.message);
+  }
+}
+
+// ══ DRAG & DROP ENTRE DÍAS DEL CALENDARIO ══
+let draggedPieceId = null;
+
+function onPieceDragStart(e, id) {
+  draggedPieceId = id;
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', id);
+}
+
+function onPieceDragEnd(e) {
+  draggedPieceId = null;
+  document.querySelectorAll('.drag-over-cell').forEach(el => el.classList.remove('drag-over-cell'));
+}
+
+function onCalendarDayDragOver(e, el) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  if (el) el.classList.add('drag-over-cell');
+}
+
+function onCalendarDayDragLeave(el) {
+  if (el) el.classList.remove('drag-over-cell');
+}
+
+async function onCalendarDayDrop(e, targetDateStr) {
+  e.preventDefault();
+  document.querySelectorAll('.drag-over-cell').forEach(el => el.classList.remove('drag-over-cell'));
+  
+  const id = e.dataTransfer.getData('text/plain') || draggedPieceId;
+  if (!id || !targetDateStr) return;
+
+  const piece = PIECES.find(p => String(p.id) === String(id));
+  if (!piece) return;
+  if (piece.fecha === targetDateStr) return; // ya está en este día
+
+  const oldDate = piece.fecha;
+  piece.fecha = targetDateStr;
+
+  // Actualizar inmediatamente en memoria y renderizar
+  renderAll();
+  showToast(`Reprogramado al ${targetDateStr} 🗓️`);
+
+  // Persistir en Supabase
+  try {
+    const { error } = await supabase
+      .from('content_pieces')
+      .update({
+        publish_date: targetDateStr,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id);
+
+    if (error) throw error;
+  } catch (err) {
+    console.error('Error al reprogramar fecha:', err);
+    piece.fecha = oldDate; // revertir
+    renderAll();
+    showToast('⚠️ No se pudo guardar la nueva fecha');
+  }
+}
+
+// ══ SELECTOR DE FECHA INTERACTIVO ESTILO PRECONSULTA ══
+let dpTargetFieldId = null;
+let dpSelectedDate = null;
+let dpViewDate = new Date();
+const dpMonthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+function openDatePickerModal(targetFieldId) {
+  dpTargetFieldId = targetFieldId;
+  const currentVal = document.getElementById(targetFieldId)?.value;
+  
+  const titleEl = document.getElementById('dpModalTitle');
+  if (titleEl) {
+    titleEl.textContent = targetFieldId === 'p-fechalimite' ? 'Fecha Límite' : 'Fecha de Publicación';
+  }
+
+  if (currentVal && currentVal.length === 10) {
+    const parsed = parseDate(currentVal);
+    dpSelectedDate = parsed || new Date();
+    dpViewDate = new Date(dpSelectedDate.getTime());
+  } else {
+    dpSelectedDate = new Date();
+    dpViewDate = new Date();
+  }
+
+  const modal = document.getElementById('datePickerModal');
+  if (modal) {
+    modal.style.display = 'flex';
+    closeDpMenus();
+    renderDpCalendar();
+  }
+}
+
+function closeDatePickerModal() {
+  const modal = document.getElementById('datePickerModal');
+  if (modal) modal.style.display = 'none';
+  closeDpMenus();
+}
+
+function closeDpMenus() {
+  const m = document.getElementById('dpMonthMenuView');
+  const y = document.getElementById('dpYearMenuView');
+  if (m) m.style.display = 'none';
+  if (y) y.style.display = 'none';
+}
+
+function toggleDpMonthMenu() {
+  const m = document.getElementById('dpMonthMenuView');
+  const y = document.getElementById('dpYearMenuView');
+  if (y) y.style.display = 'none';
+  if (!m) return;
+  if (m.style.display === 'none') {
+    renderDpMonthGrid();
+    m.style.display = 'block';
+  } else {
+    m.style.display = 'none';
+  }
+}
+
+function toggleDpYearMenu() {
+  const m = document.getElementById('dpMonthMenuView');
+  const y = document.getElementById('dpYearMenuView');
+  if (m) m.style.display = 'none';
+  if (!y) return;
+  if (y.style.display === 'none') {
+    renderDpYearGrid();
+    y.style.display = 'block';
+  } else {
+    y.style.display = 'none';
+  }
+}
+
+function renderDpMonthGrid() {
+  const grid = document.getElementById('dpMonthGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  const currentM = dpViewDate.getMonth();
+  dpMonthNames.forEach((name, idx) => {
+    const btn = document.createElement('div');
+    btn.style.cssText = `padding: 8px; border-radius: 10px; text-align: center; cursor: pointer; font-size: 12px; color: ${idx === currentM ? '#14262D' : '#F4F5F0'}; background: ${idx === currentM ? 'var(--accent)' : 'rgba(255,255,255,0.06)'}; font-weight: ${idx === currentM ? '700' : '400'}; transition: all 0.15s;`;
+    btn.textContent = name.substring(0, 3);
+    btn.onclick = () => {
+      dpViewDate.setMonth(idx);
+      closeDpMenus();
+      renderDpCalendar();
+    };
+    grid.appendChild(btn);
+  });
+}
+
+function renderDpYearGrid() {
+  const grid = document.getElementById('dpYearGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  const currentY = dpViewDate.getFullYear();
+  const startYear = new Date().getFullYear() - 1;
+  for (let y = startYear; y <= startYear + 10; y++) {
+    const btn = document.createElement('div');
+    btn.style.cssText = `padding: 8px; border-radius: 10px; text-align: center; cursor: pointer; font-size: 12px; color: ${y === currentY ? '#14262D' : '#F4F5F0'}; background: ${y === currentY ? 'var(--accent)' : 'rgba(255,255,255,0.06)'}; font-weight: ${y === currentY ? '700' : '400'}; transition: all 0.15s;`;
+    btn.textContent = '' + y;
+    btn.onclick = () => {
+      dpViewDate.setFullYear(y);
+      closeDpMenus();
+      renderDpCalendar();
+    };
+    grid.appendChild(btn);
+  }
+}
+
+function changeDpMonth(delta) {
+  dpViewDate.setMonth(dpViewDate.getMonth() + delta);
+  closeDpMenus();
+  renderDpCalendar();
+}
+
+function renderDpCalendar() {
+  const monthPill = document.getElementById('dpMonthPillText');
+  const yearPill = document.getElementById('dpYearPillText');
+  if (monthPill) monthPill.textContent = dpMonthNames[dpViewDate.getMonth()];
+  if (yearPill) yearPill.textContent = '' + dpViewDate.getFullYear();
+
+  const grid = document.getElementById('dpDaysGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+
+  const year = dpViewDate.getFullYear();
+  const month = dpViewDate.getMonth();
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const paddingDays = firstDay === 0 ? 6 : firstDay - 1;
+
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const prevMonthDays = new Date(year, month, 0).getDate();
+
+  for (let p = paddingDays - 1; p >= 0; p--) {
+    const dayNum = prevMonthDays - p;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = '' + dayNum;
+    btn.style.cssText = 'width: 36px; height: 36px; border-radius: 50%; background: transparent; border: none; color: rgba(244,245,240,0.25); font-size: 13px; margin: 0 auto; display: flex; align-items: center; justify-content: center; cursor: pointer;';
+    btn.onclick = () => { changeDpMonth(-1); };
+    grid.appendChild(btn);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = '' + d;
+
+    const isSelected = dpSelectedDate &&
+      dpSelectedDate.getFullYear() === year &&
+      dpSelectedDate.getMonth() === month &&
+      dpSelectedDate.getDate() === d;
+
+    if (isSelected) {
+      btn.style.cssText = 'width: 36px; height: 36px; border-radius: 50%; background: var(--accent); border: none; color: #14262D; font-size: 14px; font-weight: 800; margin: 0 auto; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 0 16px rgba(42,191,176,0.6); transform: scale(1.05);';
+    } else {
+      btn.style.cssText = 'width: 36px; height: 36px; border-radius: 50%; background: transparent; border: none; color: #F4F5F0; font-size: 13.5px; font-weight: 400; margin: 0 auto; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s;';
+      btn.onmouseenter = function() { this.style.background = 'rgba(42,191,176,0.15)'; this.style.color = 'var(--accent)'; };
+      btn.onmouseleave = function() { this.style.background = 'transparent'; this.style.color = '#F4F5F0'; };
+    }
+
+    btn.onclick = () => {
+      dpSelectedDate = new Date(year, month, d);
+      renderDpCalendar();
+    };
+
+    grid.appendChild(btn);
+  }
+
+  const totalSlots = paddingDays + daysInMonth;
+  const remainingSlots = (totalSlots % 7 === 0) ? 0 : 7 - (totalSlots % 7);
+  for (let n = 1; n <= remainingSlots; n++) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = '' + n;
+    btn.style.cssText = 'width: 36px; height: 36px; border-radius: 50%; background: transparent; border: none; color: rgba(244,245,240,0.25); font-size: 13px; margin: 0 auto; display: flex; align-items: center; justify-content: center; cursor: pointer;';
+    btn.onclick = () => { changeDpMonth(1); };
+    grid.appendChild(btn);
+  }
+
+  updateDpPreview();
+}
+
+function updateDpPreview() {
+  const dateText = document.getElementById('dpSelectedDateText');
+  if (!dateText) return;
+  if (!dpSelectedDate) {
+    dateText.textContent = '-- / -- / ----';
+    return;
+  }
+  const d = dpSelectedDate.getDate();
+  const m = dpSelectedDate.getMonth() + 1;
+  const y = dpSelectedDate.getFullYear();
+  dateText.textContent = `${d < 10 ? '0' + d : d} / ${m < 10 ? '0' + m : m} / ${y}`;
+}
+
+function clearDpDate() {
+  dpSelectedDate = null;
+  updateDpPreview();
+  if (dpTargetFieldId) {
+    const el = document.getElementById(dpTargetFieldId);
+    if (el) el.value = '';
+  }
+  closeDatePickerModal();
+}
+
+function confirmDpDateSelection() {
+  if (dpSelectedDate && dpTargetFieldId) {
+    const dStr = toInputDate(dpSelectedDate);
+    const el = document.getElementById(dpTargetFieldId);
+    if (el) el.value = dStr;
+  }
+  closeDatePickerModal();
+}
+
+// ══ SELECTOR DE BÓVEDA DE CREATIVOS (SIN FECHA) ══
+async function openBovedaSelector() {
+  const modal = document.getElementById('bovedaModal');
+  const list = document.getElementById('bovedaPiecesList');
+  if (modal) modal.style.display = 'flex';
+  if (list) list.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text2);font-size:12px;">Consultando Bóveda de Creativos...</div>';
+
+  try {
+    const { data, error } = await supabase
+      .from('content_pieces')
+      .select('*')
+      .is('deleted_at', null)
+      .or('publish_date.is.null,publish_date.eq.')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      list.innerHTML = `
+        <div style="text-align:center;padding:36px 16px;color:var(--text2);">
+          <i class="fa-solid fa-circle-check" style="font-size:28px;color:var(--accent);margin-bottom:8px;display:block;"></i>
+          <p style="font-size:13px;font-weight:600;color:var(--text);margin:0 0 4px;">¡Todos tus creativos tienen fecha!</p>
+          <span style="font-size:11px;opacity:0.7;">No hay piezas sin fecha pendiente en la Bóveda de Creativos.</span>
+        </div>
+      `;
+      return;
+    }
+
+    list.innerHTML = data.map(row => {
+      const piece = mapRowToPiece(row);
+      const fmtClass = FMT_CLASS[piece.formato] || 'fmt-reel';
+      return `
+        <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;transition:all 0.15s;cursor:pointer;" 
+             onmouseenter="this.style.borderColor='var(--accent)'" 
+             onmouseleave="this.style.borderColor='var(--border2)'"
+             onclick="assignPieceFromBoveda('${piece.id}')">
+          <div style="min-width:0;flex:1;">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+              <span class="piece ${fmtClass}" style="display:inline-block;padding:2px 6px;margin:0;font-size:9px;">${piece.formato}</span>
+              ${piece.pilar ? `<span style="font-size:10px;color:var(--text3);">· ${piece.pilar}</span>` : ''}
+            </div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${piece.titulo}</div>
+            ${piece.hook ? `<div style="font-size:11px;color:var(--text2);font-style:italic;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">"${piece.hook}"</div>` : ''}
+          </div>
+          <button class="btn btn-p" style="padding:6px 12px;font-size:11px;white-space:nowrap;" onclick="event.stopPropagation();assignPieceFromBoveda('${piece.id}')">
+            Asignar <i class="fa-solid fa-arrow-right" style="margin-left:4px;"></i>
+          </button>
+        </div>
+      `;
+    }).join('');
+
+  } catch (err) {
+    console.error('Error cargando bóveda:', err);
+    if (list) list.innerHTML = `<div style="text-align:center;padding:24px;color:var(--danger);font-size:12px;">Error al consultar piezas: ${err.message}</div>`;
+  }
+}
+
+function closeBovedaSelector() {
+  const modal = document.getElementById('bovedaModal');
+  if (modal) modal.style.display = 'none';
+}
+
+function assignPieceFromBoveda(pieceId) {
+  closeBovedaSelector();
+  // Asignar en el formulario derecho con la fecha actualmente seleccionada o de hoy
+  const activeDate = document.getElementById('p-fecha')?.value || toInputDate(new Date());
+  
+  // Buscar si ya está en PIECES
+  let p = PIECES.find(i => String(i.id) === String(pieceId));
+  if (p) {
+    p.fecha = activeDate;
+    openEditPiece(pieceId);
+    document.getElementById('p-fecha').value = activeDate;
+  } else {
+    // Si vino de la consulta directa de Supabase
+    supabase.from('content_pieces').select('*').eq('id', pieceId).single().then(({ data }) => {
+      if (data) {
+        const mapped = mapRowToPiece(data);
+        mapped.fecha = activeDate;
+        PIECES.unshift(mapped);
+        openEditPiece(mapped.id);
+        document.getElementById('p-fecha').value = activeDate;
+      }
+    });
+  }
+  showToast('Pieza cargada en panel lateral. Haz clic en Guardar para agendarla.');
 }
 
 window.setViewMode = setViewMode;
@@ -1340,8 +1949,26 @@ window.selectCalendarDay = selectCalendarDay;
 window.setFmt = setFmt;
 window.setStatus = setStatus;
 window.savePiece = savePiece;
-window.toggleTheme = toggleTheme;
-window.selectMobDay = selectMobDay;
+window.archiveCurrentPiece = archiveCurrentPiece;
+window.closeConfirmArchiveModal = closeConfirmArchiveModal;
+window.executeArchivePiece = executeArchivePiece;
+window.onPieceDragStart = onPieceDragStart;
+window.onPieceDragEnd = onPieceDragEnd;
+window.onCalendarDayDragOver = onCalendarDayDragOver;
+window.onCalendarDayDragLeave = onCalendarDayDragLeave;
+window.onCalendarDayDrop = onCalendarDayDrop;
+window.openDatePickerModal = openDatePickerModal;
+window.closeDatePickerModal = closeDatePickerModal;
+window.closeDpMenus = closeDpMenus;
+window.toggleDpMonthMenu = toggleDpMonthMenu;
+window.toggleDpYearMenu = toggleDpYearMenu;
+window.changeDpMonth = changeDpMonth;
+window.clearDpDate = clearDpDate;
+window.confirmDpDateSelection = confirmDpDateSelection;
+window.openBovedaSelector = openBovedaSelector;
+window.closeBovedaSelector = closeBovedaSelector;
+window.assignPieceFromBoveda = assignPieceFromBoveda;
+window.renderAll = renderAll;
 
 // INIT
 loadPieces().then(() => {

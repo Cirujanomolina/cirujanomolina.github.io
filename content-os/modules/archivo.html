@@ -1,0 +1,518 @@
+﻿<!DOCTYPE html>
+<html lang=es>
+<head>
+    <meta charset=UTF-8>
+    <meta name=viewport content=width=device-width, initial-scale=1.0>
+    <title>Archivo Protegido — Content OS</title>
+    <link rel=stylesheet href=../design-system.css>
+    <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            font-family: var(--f-body);
+        }
+
+        .container {
+            flex: 1;
+            overflow-y: auto;
+            padding: clamp(1rem, 3vw, 2rem);
+        }
+
+        /* ── HEADER PREMIUM ── */
+        .vb-header {
+            background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 1.25rem 2rem;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            flex-shrink: 0;
+        }
+        .vb-header-main {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 1;
+        }
+        .vb-title {
+            font-family: var(--f-display);
+            font-size: clamp(22px, 3vw, 30px);
+            font-weight: 300;
+            color: var(--text);
+            line-height: 1.1;
+            margin: 0;
+        }
+        .vb-title em {
+            color: var(--accent);
+            font-style: italic;
+        }
+        .vb-badges {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .vb-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 11px;
+            border-radius: 20px;
+            background: rgba(42, 191, 176, 0.1);
+            border: 1px solid rgba(42, 191, 176, 0.25);
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--accent);
+        }
+
+        /* ── TABS BAR ── */
+        .tabs-bar {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid var(--border2);
+            margin-bottom: 1.5rem;
+            padding-bottom: 2px;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text3);
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: var(--r-sm) var(--r-sm) 0 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .tab-btn:hover {
+            color: var(--text);
+            background: var(--surface2);
+        }
+        .tab-btn.active {
+            color: var(--accent);
+            background: var(--surface);
+        }
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+        }
+        .tab-count {
+            padding: 2px 7px;
+            font-size: 11px;
+            border-radius: 10px;
+            background: var(--surface3);
+            color: var(--text2);
+        }
+        .tab-btn.active .tab-count {
+            background: rgba(42, 191, 176, 0.2);
+            color: var(--accent);
+        }
+
+        /* ── CARDS GRID ── */
+        .archive-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.25rem;
+        }
+        .archive-card {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: var(--r);
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1rem;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .archive-card:hover {
+            border-color: var(--border);
+            transform: translateY(-2px);
+        }
+        .archive-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .archive-type-badge {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text2);
+        }
+        .archive-card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 6px 0 4px 0;
+            line-height: 1.3;
+        }
+        .archive-card-desc {
+            font-size: 12px;
+            color: var(--text2);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .archive-meta {
+            font-size: 11px;
+            color: var(--text3);
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            border-top: 1px solid var(--border3);
+            padding-top: 8px;
+        }
+        .archive-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        .btn-restore {
+            background: rgba(42, 191, 176, 0.12);
+            color: var(--accent);
+            border: 1px solid rgba(42, 191, 176, 0.3);
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: var(--r-sm);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-restore:hover {
+            background: var(--accent);
+            color: #14262D;
+        }
+        .btn-hard-delete {
+            background: rgba(231, 76, 60, 0.12);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: var(--r-sm);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-hard-delete:hover {
+            background: #e74c3c;
+            color: #fff;
+        }
+        .empty-archive {
+            text-align: center;
+            padding: 4rem 1rem;
+            color: var(--text3);
+        }
+        .empty-archive i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+            color: var(--text3);
+        }
+    </style>
+</head>
+<body>
+    <header class=vb-header>
+        <div class=vb-header-main>
+            <h1 class=vb-title>Archivo <em>Protegido</em></h1>
+            <div class=vb-badges>
+                <span class=vb-badge><i class=ti ti-shield-lock></i> Papelera Permanente</span>
+                <span class=vb-badge><i class=ti ti-history></i> Sin Vencimiento</span>
+                <span class=vb-badge><i class=ti ti-lock></i> Eliminación Definitiva Exclusiva Dr. Molina</span>
+            </div>
+        </div>
+        <div class=vb-header-actions>
+            <button class=btn btn-outline id=refreshBtn style=font-size: 12px; padding: 7px 12px;>
+                <i class=ti ti-refresh></i> Actualizar
+            </button>
+        </div>
+    </header>
+
+    <div class=container fade-in>
+        <!-- TABS -->
+        <div class=tabs-bar>
+            <button class=tab-btn active data-tab=pieces>
+                <i class=ti ti-lock></i> Creativos y Piezas
+                <span class=tab-count id=countPieces>0</span>
+            </button>
+            <button class=tab-btn data-tab=ideas>
+                <i class=ti ti-bulb></i> Ideas
+                <span class=tab-count id=countIdeas>0</span>
+            </button>
+            <button class=tab-btn data-tab=hooks>
+                <i class=ti ti-fish-hook></i> Hooks
+                <span class=tab-count id=countHooks>0</span>
+            </button>
+        </div>
+
+        <div id=loadingState style=text-align: center; padding: 3rem; color: var(--text2);>
+            <i class=ti ti-loader ti-spin style=font-size: 2.5rem; color: var(--accent);></i>
+            <p style=margin-top: 10px; font-size: 14px;>Cargando elementos archivados...</p>
+        </div>
+
+        <div class=archive-grid id=archiveGrid style=display: none;></div>
+
+        <div class=empty-archive id=emptyArchive style=display: none;>
+            <i class=ti ti-archive-off></i>
+            <h3 style=color: var(--text); margin-bottom: 6px;>No hay elementos archivados en esta sección</h3>
+            <p style=font-size: 13px; max-width: 400px; margin: 0 auto;>Cualquier pieza, idea o hook que sea eliminado se resguardará aquí para proteger tu biblioteca.</p>
+        </div>
+    </div>
+
+    <script type=module>
+        import { supabase } from '../supabase-client.js';
+        import { requireAuth } from '../auth-guard.js';
+
+        let activeUser = null;
+        let isAdmin = false;
+        let currentTab = 'pieces';
+
+        let archivedPieces = [];
+        let archivedIdeas = [];
+        let archivedHooks = [];
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            activeUser = await requireAuth();
+            isAdmin = (activeUser.role === 'administrador' || activeUser.role === 'admin');
+
+            setupEventListeners();
+            loadAllArchived();
+        });
+
+        function setupEventListeners() {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentTab = btn.dataset.tab;
+                    renderCurrentTab();
+                });
+            });
+
+            document.getElementById('refreshBtn').addEventListener('click', () => {
+                loadAllArchived();
+            });
+        }
+
+        async function loadAllArchived() {
+            const loading = document.getElementById('loadingState');
+            const grid = document.getElementById('archiveGrid');
+            const empty = document.getElementById('emptyArchive');
+            loading.style.display = 'block';
+            grid.style.display = 'none';
+            empty.style.display = 'none';
+
+            try {
+                const [pRes, iRes, hRes] = await Promise.all([
+                    supabase.from('content_pieces').select('*').not('deleted_at', 'is', null).order('deleted_at', { ascending: false }),
+                    supabase.from('ideas').select('*').not('deleted_at', 'is', null).order('deleted_at', { ascending: false }),
+                    supabase.from('hooks').select('*').not('deleted_at', 'is', null).order('deleted_at', { ascending: false })
+                ]);
+
+                archivedPieces = pRes.data || [];
+                archivedIdeas = iRes.data || [];
+                archivedHooks = hRes.data || [];
+
+                document.getElementById('countPieces').textContent = archivedPieces.length;
+                document.getElementById('countIdeas').textContent = archivedIdeas.length;
+                document.getElementById('countHooks').textContent = archivedHooks.length;
+
+                loading.style.display = 'none';
+                renderCurrentTab();
+            } catch (err) {
+                console.error(Error loading archived data:, err);
+                loading.style.display = 'none';
+                alert(Error al cargar el archivo protegido:  + err.message);
+            }
+        }
+
+        function formatDate(isoStr) {
+            if (!isoStr) return 'Fecha desconocida';
+            const d = new Date(isoStr);
+            return d.toLocaleDateString('es-CO', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        function renderCurrentTab() {
+            const grid = document.getElementById('archiveGrid');
+            const empty = document.getElementById('emptyArchive');
+            grid.innerHTML = '';
+
+            let list = [];
+            if (currentTab === 'pieces') list = archivedPieces;
+            else if (currentTab === 'ideas') list = archivedIdeas;
+            else if (currentTab === 'hooks') list = archivedHooks;
+
+            if (list.length === 0) {
+                grid.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+
+            empty.style.display = 'none';
+            grid.style.display = 'grid';
+
+            list.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'archive-card';
+
+                let title = '';
+                let desc = '';
+                let badge = '';
+
+                if (currentTab === 'pieces') {
+                    title = item.title || 'Sin título';
+                    desc = item.copy || item.notes || '(Sin descripción)';
+                    badge = <span class=archive-type-badge></span>;
+                } else if (currentTab === 'ideas') {
+                    title = item.topic || item.idea || 'Idea';
+                    desc = item.notes || item.angle || '(Sin descripción)';
+                    badge = <span class=archive-type-badge></span>;
+                } else if (currentTab === 'hooks') {
+                    title = item.hook || 'Hook';
+                    desc = item.description || item.formula || '(Sin descripción)';
+                    badge = <span class=archive-type-badge></span>;
+                }
+
+                const deletedAtStr = formatDate(item.deleted_at);
+                const deletedByStr = item.deleted_by || 'Usuario del equipo';
+
+                let deletePermanentBtn = '';
+                if (isAdmin) {
+                    deletePermanentBtn = 
+                        <button class=btn-hard-delete data-id=" data-type=>
+ <i class=ti ti-trash></i> Eliminar Definitivamente
+ </button>
+ ;
+ }
+
+ card.innerHTML = 
+ <div>
+ <div class=archive-card-header>
+ 
+ <span style=font-size: 11px; color: var(--text3);><i class=ti ti-trash></i> Archivada</span>
+ </div>
+ <h4 class=archive-card-title></h4>
+ <p class=archive-card-desc></p>
+ </div>
+ <div>
+ <div class=archive-meta>
+ <span><i class=ti ti-clock></i> Eliminado: <strong></strong></span>
+ <span><i class=ti ti-user></i> Por: <strong></strong></span>
+ </div>
+ <div class=archive-actions style=margin-top: 12px;>
+ <button class=btn-restore data-id= data-type=>
+ <i class=ti ti-rotate-clockwise></i> Restaurar
+ </button>
+ 
+ </div>
+ </div>
+ ;
+
+ grid.appendChild(card);
+ });
+
+ // Bind restore buttons
+ grid.querySelectorAll('.btn-restore').forEach(btn => {
+ btn.addEventListener('click', () => restoreItem(btn.dataset.id, btn.dataset.type));
+ });
+
+ // Bind hard delete buttons (admin only)
+ if (isAdmin) {
+ grid.querySelectorAll('.btn-hard-delete').forEach(btn => {
+ btn.addEventListener('click', () => hardDeleteItem(btn.dataset.id, btn.dataset.type));
+ });
+ }
+ }
+
+ async function restoreItem(id, type) {
+ const tableMap = {
+ pieces: 'content_pieces',
+ ideas: 'ideas',
+ hooks: 'hooks'
+ };
+ const tableName = tableMap[type];
+ if (!tableName) return;
+
+ if (!confirm('¿Deseas restaurar este elemento a su estado activo?')) return;
+
+ try {
+ const { error } = await supabase
+ .from(tableName)
+ .update({ deleted_at: null, deleted_by: null })
+ .eq('id', id);
+
+ if (error) throw error;
+
+ alert('¡Elemento restaurado con éxito!');
+ loadAllArchived();
+ } catch (err) {
+ alert('Error al restaurar: ' + err.message);
+ }
+ }
+
+ async function hardDeleteItem(id, type) {
+ if (!isAdmin) {
+ alert('Solo el Administrador (Dr. Molina) tiene permisos para eliminar permanentemente.');
+ return;
+ }
+
+ const tableMap = {
+ pieces: 'content_pieces',
+ ideas: 'ideas',
+ hooks: 'hooks'
+ };
+ const tableName = tableMap[type];
+ if (!tableName) return;
+
+ if (!confirm('⚠️ ATENCIÓN:\n¿Estás completamente seguro de ELIMINAR DEFINITIVAMENTE este registro de la base de datos?\nEsta acción NO se puede deshacer.')) {
+ return;
+ }
+
+ try {
+ const { error } = await supabase
+ .from(tableName)
+ .delete()
+ .eq('id', id);
+
+ if (error) throw error;
+
+ alert('Elemento eliminado de forma definitiva.');
+ loadAllArchived();
+ } catch (err) {
+ alert('Error al eliminar definitivamente: ' + err.message);
+ }
+ }
+ </script>
+</body>
+</html>
