@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang=es>
 <head>
     <meta charset=UTF-8>
@@ -351,9 +351,9 @@
                 loading.style.display = 'none';
                 renderCurrentTab();
             } catch (err) {
-                console.error(Error loading archived data:, err);
+                console.error('Error loading archived data:', err);
                 loading.style.display = 'none';
-                alert(Error al cargar el archivo protegido:  + err.message);
+                alert('Error al cargar el archivo protegido: ' + err.message);
             }
         }
 
