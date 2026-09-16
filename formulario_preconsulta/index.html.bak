@@ -630,7 +630,7 @@ body:not(.started) .hero-btn-wrap {
 <form id="frm" novalidate>
 <!-- 1. DATOS PERSONALES -->
 <div class="sec" data-step="1">
-  <div class="sec-hd"><div class="sec-num">1</div><h2 class="sec-title">Sobre ti — Datos Personales</h2></div>
+  <div class="sec-hd"><div class="sec-num">1</div><h2 class="sec-title">Datos Personales</h2></div>
   <div class="g2">
     <!-- Split Nombres and Apellidos -->
     <div class="s2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
@@ -780,114 +780,9 @@ body:not(.started) .hero-btn-wrap {
   </div>
 </div>
 
-<!-- 2. TU SALUD MÉDICA Y QUIRÚRGICA -->
+<!-- 2. HISTORIA DE PESO -->
 <div class="sec" data-step="2">
-  <div class="sec-hd"><div class="sec-num">2</div><h2 class="sec-title">Tu Salud Médica y Quirúrgica</h2></div>
-  
-  <p style="font-size:12.5px;color:var(--beige);margin-bottom:12px;">¿Tienes o te han diagnosticado alguna de estas condiciones? Marca todas las que apliquen:</p>
-  <div class="ckg">
-    <label class="ck"><input type="checkbox" name="condiciones[]" value="diabetes_t2"/><div class="ck-box"></div><span class="ck-lbl">Diabetes tipo 2</span></label>
-    <label class="ck"><input type="checkbox" name="condiciones[]" value="prediabetes"/><div class="ck-box"></div><span class="ck-lbl">Prediabetes / resistencia a insulina</span></label>
-    <label class="ck"><input type="checkbox" name="condiciones[]" value="hipertension"/><div class="ck-box"></div><span class="ck-lbl">Hipertensión arterial</span></label>
-    <label class="ck"><input type="checkbox" name="condiciones[]" value="hipotiroidismo"/><div class="ck-box"></div><span class="ck-lbl">Hipotiroidismo</span></label>
-    <label class="ck"><input type="checkbox" name="condiciones[]" value="apnea"/><div class="ck-box"></div><span class="ck-lbl">Apnea del sueño</span></label>
-    <label class="ck"><input type="checkbox" name="condiciones[]" value="reflujo"/><div class="ck-box"></div><span class="ck-lbl">Reflujo gastroesofágico (ERGE)</span></label>
-    <label class="ck"><input type="checkbox" name="condiciones[]" value="higado_graso"/><div class="ck-box"></div><span class="ck-lbl">Hígado graso (EHNA)</span></label>
-    <label class="ck"><input type="checkbox" name="condiciones[]" value="sop"/><div class="ck-box"></div><span class="ck-lbl">Ovario poliquístico</span></label>
-    <label class="ck"><input type="checkbox" name="condiciones[]" value="dislipidemia"/><div class="ck-box"></div><span class="ck-lbl">Colesterol / triglicéridos altos</span></label>
-    <label class="ck"><input type="checkbox" name="condiciones[]" value="dolor_articular"/><div class="ck-box"></div><span class="ck-lbl">Dolor articular / artrosis</span></label>
-    <label class="ck"><input type="checkbox" name="condiciones[]" value="depresion"/><div class="ck-box"></div><span class="ck-lbl">Depresión / ansiedad</span></label>
-    <label class="ck"><input type="checkbox" name="condiciones[]" value="asma"/><div class="ck-box"></div><span class="ck-lbl">Asma</span></label>
-    <label class="ck"><input type="checkbox" name="condiciones[]" value="reumatologica_lupus"/><div class="ck-box"></div><span class="ck-lbl">Reumatológicas como Lupus</span></label>
-    <label class="ck"><input type="checkbox" name="condiciones[]" value="cardiopatia"/><div class="ck-box"></div><span class="ck-lbl">Enfermedad cardíaca</span></label>
-    <label class="ck" id="condicionesOtroCk"><input type="checkbox" name="condiciones_otro_select" id="condicionesOtroSelect" value="Otro"/><div class="ck-box"></div><span class="ck-lbl">Otro, ¿cuál?</span></label>
-    <div id="condicionesOtroCustomContainer" class="fld" style="display:none; margin-top:8px; position:relative; width:100%; grid-column: 1 / -1;">
-      <input type="text" name="condiciones_otro_custom" id="condicionesOtroCustom" class="premium-input" autocomplete="off" placeholder="¿Qué otra condición médica tienes?" style="padding-right: 70px !important;"/>
-      <button type="button" id="condicionesOtroResetBtn" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:var(--teal); font-family:'Archivo',sans-serif; font-size:12px; cursor:pointer; font-weight:500; text-transform:uppercase;">Volver</button>
-    </div>
-  </div>
-
-  <div class="g2" style="margin-top: 18px;">
-    <!-- Cirugías previas: Sí/No dinámico -->
-    <div class="fld s2">
-      <label>¿Te han hecho alguna cirugía antes? <span class="r">*</span></label>
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <div class="rw" id="cirugiasRadioGroup" style="display: flex; gap: 8px; margin-top: 0;">
-          <label class="ri" style="padding: 10px 18px;"><input type="radio" name="cirugias_radio" value="no" required/><span class="rl">No</span></label>
-          <label class="ri" style="padding: 10px 18px;"><input type="radio" name="cirugias_radio" value="si" required/><span class="rl">Sí</span></label>
-        </div>
-        <div id="cirugiasContainer" style="display: none; margin-top: 4px;">
-          <textarea name="cirugias_detalle_texto" id="cirugiasDetalleTexto" placeholder="Describe qué cirugías te han realizado (ej: apéndice, vesícula, cesárea, etc.)" style="min-height: 65px;"></textarea>
-        </div>
-      </div>
-    </div>
-
-    <!-- Medicamentos actuales: Sí/No dinámico -->
-    <div class="fld s2">
-      <label>¿Tomas algún medicamento actualmente? <span class="r">*</span></label>
-      <div style="display: flex; flex-direction: column; gap: 8px;">
-        <div class="rw" id="medicamentosRadioGroup" style="display: flex; gap: 8px; margin-top: 0;">
-          <label class="ri" style="padding: 10px 18px;"><input type="radio" name="medicamentos_radio" value="no" required/><span class="rl">No</span></label>
-          <label class="ri" style="padding: 10px 18px;"><input type="radio" name="medicamentos_radio" value="si" required/><span class="rl">Sí</span></label>
-        </div>
-        <div id="medicamentosContainer" style="display: none; margin-top: 4px;">
-          <textarea name="medicamentos_actuales_texto" id="medicamentosActualesTexto" placeholder="Escribe los nombres de los medicamentos que tomas (o para qué condición son)..." style="min-height: 65px;"></textarea>
-        </div>
-      </div>
-    </div>
-
-    <!-- Antecedentes respiratorios -->
-    <div class="fld">
-      <label>¿Roncas al dormir? <span class="r">*</span></label>
-      <div class="rw" style="display: flex; gap: 8px; margin-top: 0;">
-        <label class="ri" style="padding: 10px 18px;"><input type="radio" name="ronquidos_radio" value="no" required/><span class="rl">No</span></label>
-        <label class="ri" style="padding: 10px 18px;"><input type="radio" name="ronquidos_radio" value="si" required/><span class="rl">Sí</span></label>
-      </div>
-    </div>
-    <div class="fld">
-      <label>¿Usas CPAP u oxígeno para dormir? <span class="r">*</span></label>
-      <div class="rw" style="display: flex; gap: 8px; margin-top: 0;">
-        <label class="ri" style="padding: 10px 18px;"><input type="radio" name="cpap_radio" value="no" required/><span class="rl">No</span></label>
-        <label class="ri" style="padding: 10px 18px;"><input type="radio" name="cpap_radio" value="si" required/><span class="rl">Sí</span></label>
-      </div>
-    </div>
-
-    <!-- Reflujo o acidez -->
-    <div class="fld s2">
-      <label>¿Sufres de reflujo o acidez frecuentemente? <span class="r">*</span></label>
-      <div class="rw" style="display: flex; gap: 8px; margin-top: 0;">
-        <label class="ri" style="padding: 10px 18px;"><input type="radio" name="reflujo_radio" value="no" required/><span class="rl">No</span></label>
-        <label class="ri" style="padding: 10px 18px;"><input type="radio" name="reflujo_radio" value="si" required/><span class="rl">Sí</span></label>
-      </div>
-    </div>
-
-    <!-- Alergias con lógica dinámica -->
-    <div class="fld s2">
-      <label style="display: block; margin-bottom: 7px; font-size: 10.5px; font-weight: 500; letter-spacing: 1.1px; text-transform: uppercase; color: var(--beige);">¿Sufres de alguna alergia? <span class="r">*</span></label>
-      <div style="display: flex; flex-direction: row; align-items: center; gap: 8px; width: 100%; flex-wrap: nowrap;">
-        <div class="rw" id="alergiaRadioGroup" style="display: flex; gap: 6px; flex-shrink: 0; margin-top: 0; margin-bottom: 0;">
-          <label class="ri" style="margin: 0; padding: 11px 16px; width: 72px; justify-content: center; display: inline-flex;"><input type="radio" name="alergia_radio" value="no" required/><span class="rl">No</span></label>
-          <label class="ri" style="margin: 0; padding: 11px 16px; width: 72px; justify-content: center; display: inline-flex;"><input type="radio" name="alergia_radio" value="si" required/><span class="rl">Sí</span></label>
-        </div>
-        <div id="alergiaCustomContainer" style="flex: 1; min-width: 0; display: flex; position: relative; margin-top: 0;">
-          <input type="text" name="alergia_custom" id="alergiaCustom" placeholder="¿A qué medicamento o sustancia?" disabled class="premium-input" style="width: 100%; opacity: 0.4; pointer-events: none; border-color: rgba(42, 191, 176, 0.1) !important; background: rgba(255,255,255,0.02) !important;"/>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="btn-group">
-    <button type="button" class="btn-sec prev-btn">Atrás</button>
-    <button type="button" class="btn next-btn">
-      Continuar
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-    </button>
-  </div>
-</div>
-
-<!-- 3. HISTORIA CON EL PESO -->
-<div class="sec" data-step="3">
-  <div class="sec-hd"><div class="sec-num">3</div><h2 class="sec-title">Historia con el Peso</h2></div>
+  <div class="sec-hd"><div class="sec-num">2</div><h2 class="sec-title">Historia de Peso</h2></div>
   <div class="g2">
     <!-- Forced 2-column on mobile -->
     <div class="s2 g2-force">
@@ -905,7 +800,7 @@ body:not(.started) .hero-btn-wrap {
       </div>
     </div>
 
-    <!-- Peso mínimo with tooltip -->
+    <!-- Peso mínimo with yellow ? tooltip -->
     <div class="fld full-row">
       <label style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
         <span>Peso mínimo en la vida adulta (kg)</span>
@@ -914,7 +809,7 @@ body:not(.started) .hero-btn-wrap {
       <input type="number" name="peso_minimo" id="pesoMinInput" placeholder="Ej. 65"/>
     </div>
 
-    <!-- Peso máximo with tooltip -->
+    <!-- Peso máximo with yellow ? tooltip -->
     <div class="fld full-row">
       <label style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
         <span>Peso máximo en la vida adulta (kg)</span>
@@ -941,7 +836,7 @@ body:not(.started) .hero-btn-wrap {
       </div>
     </div>
 
-    <!-- Dropdown for weight loss goal -->
+    <!-- Dropdown for weight loss goal with conditional Otro -->
     <div class="fld full-row">
       <label>¿Qué tanto peso quisieras perder?</label>
       <select name="meta_peso_select" id="metaPesoSelect">
@@ -961,32 +856,9 @@ body:not(.started) .hero-btn-wrap {
 
     <div class="fld full-row">
       <label>¿Qué eventos asocias al aumento de peso?</label>
-      <textarea name="eventos_aumento_peso" placeholder="Embarazo, estrés, medicamentos, cambio de trabajo..."></textarea>
-    </div>
-
-    <!-- Intentos Previos integrado -->
-    <div class="fld full-row" style="margin-top: 10px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.07);">
-      <label style="margin-bottom: 8px;">¿Qué has intentado antes para tratar de bajar de peso?</label>
-      <div class="ckg c3">
-        <label class="ck"><input type="checkbox" name="intentos[]" value="dietas"/><div class="ck-box"></div><span class="ck-lbl">Dietas / control calórico</span></label>
-        <label class="ck"><input type="checkbox" name="intentos[]" value="nutricionista"/><div class="ck-box"></div><span class="ck-lbl">Nutricionista</span></label>
-        <label class="ck"><input type="checkbox" name="intentos[]" value="ejercicio"/><div class="ck-box"></div><span class="ck-lbl">Ejercicio / gym</span></label>
-        <label class="ck"><input type="checkbox" name="intentos[]" value="medicamentos"/><div class="ck-box"></div><span class="ck-lbl">Medicamentos (Ozempic...)</span></label>
-        <label class="ck"><input type="checkbox" name="intentos[]" value="endocrino"/><div class="ck-box"></div><span class="ck-lbl">Endocrinólogo</span></label>
-        <label class="ck"><input type="checkbox" name="intentos[]" value="psicologo"/><div class="ck-box"></div><span class="ck-lbl">Psicólogo / psiquiatra</span></label>
-        <label class="ck"><input type="checkbox" name="intentos[]" value="balon"/><div class="ck-box"></div><span class="ck-lbl">Balón gástrico</span></label>
-        <label class="ck"><input type="checkbox" name="intentos[]" value="cirugia_previa"/><div class="ck-box"></div><span class="ck-lbl">Cirugía bariátrica previa</span></label>
-        <label class="ck"><input type="checkbox" name="intentos[]" value="naturistas"/><div class="ck-box"></div><span class="ck-lbl">Productos naturistas</span></label>
-        <label class="ck" id="intentosOtroCk"><input type="checkbox" name="intentos_otro_select" id="intentosOtroSelect" value="Otro"/><div class="ck-box"></div><span class="ck-lbl">Otro, ¿cuál?</span></label>
-      </div>
-      <div id="intentosOtroCustomContainer" class="fld" style="display:none; margin-top:8px; position:relative; width:100%;">
-        <input type="text" name="intentos_otro_custom" id="intentosOtroCustom" class="premium-input" autocomplete="off" placeholder="¿Qué otro intento realizaste?" style="padding-right: 70px !important;"/>
-        <button type="button" id="intentosOtroResetBtn" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:var(--teal); font-family:'Archivo',sans-serif; font-size:12px; cursor:pointer; font-weight:500; text-transform:uppercase;">Volver</button>
-      </div>
-      <div style="margin-top:14px;" class="fld"><label>¿Por qué crees que no funcionaron?</label><textarea name="resultado_intentos" placeholder="Cuéntanos brevemente..."></textarea></div>
+      <textarea name="eventos_aumento_peso" placeholder="Embarazo, estrés, pandemia, medicamentos, cambio de trabajo..."></textarea>
     </div>
   </div>
-
   <div class="btn-group">
     <button type="button" class="btn-sec prev-btn">Atrás</button>
     <button type="button" class="btn next-btn">
@@ -996,34 +868,117 @@ body:not(.started) .hero-btn-wrap {
   </div>
 </div>
 
-<!-- 4. HÁBITOS Y ESTILO DE VIDA -->
+<!-- 3. INTENTOS PREVIOS -->
+<div class="sec" data-step="3">
+  <div class="sec-hd"><div class="sec-num">3</div><h2 class="sec-title">Intentos Previos</h2></div>
+  <p style="font-size:12.5px;color:var(--beige);margin-bottom:12px;">¿Qué has intentado antes para tratar de bajar de peso? Marca todo lo que aplique:</p>
+  <div class="ckg c3">
+    <label class="ck"><input type="checkbox" name="intentos[]" value="dietas"/><div class="ck-box"></div><span class="ck-lbl">Dietas / control calórico</span></label>
+    <label class="ck"><input type="checkbox" name="intentos[]" value="nutricionista"/><div class="ck-box"></div><span class="ck-lbl">Nutricionista</span></label>
+    <label class="ck"><input type="checkbox" name="intentos[]" value="ejercicio"/><div class="ck-box"></div><span class="ck-lbl">Ejercicio / gym</span></label>
+    <label class="ck"><input type="checkbox" name="intentos[]" value="medicamentos"/><div class="ck-box"></div><span class="ck-lbl">Medicamentos (Ozempic, Saxenda...)</span></label>
+    <label class="ck"><input type="checkbox" name="intentos[]" value="endocrino"/><div class="ck-box"></div><span class="ck-lbl">Endocrinólogo</span></label>
+    <label class="ck"><input type="checkbox" name="intentos[]" value="psicologo"/><div class="ck-box"></div><span class="ck-lbl">Psicólogo / psiquiatra</span></label>
+    <label class="ck"><input type="checkbox" name="intentos[]" value="balon"/><div class="ck-box"></div><span class="ck-lbl">Balón gástrico</span></label>
+    <label class="ck"><input type="checkbox" name="intentos[]" value="cirugia_previa"/><div class="ck-box"></div><span class="ck-lbl">Cirugía bariátrica previa</span></label>
+  </div>
+  <div class="ckg" style="margin-top:12px;">
+    <label class="ck"><input type="checkbox" name="intentos[]" value="naturistas"/><div class="ck-box"></div><span class="ck-lbl">Productos naturistas</span></label>
+    <label class="ck" id="intentosOtroCk"><input type="checkbox" name="intentos_otro_select" id="intentosOtroSelect" value="Otro"/><div class="ck-box"></div><span class="ck-lbl">Otro, ¿cuál?</span></label>
+  </div>
+  <div id="intentosOtroCustomContainer" class="fld" style="display:none; margin-top:8px; position:relative; width:100%;">
+    <input type="text" name="intentos_otro_custom" id="intentosOtroCustom" class="premium-input" autocomplete="off" placeholder="¿Qué otro intento realizaste?" style="padding-right: 70px !important;"/>
+    <button type="button" id="intentosOtroResetBtn" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:var(--teal); font-family:'Archivo',sans-serif; font-size:12px; cursor:pointer; font-weight:500; text-transform:uppercase;">Volver</button>
+  </div>
+  <div style="margin-top:14px;" class="fld"><label>¿Por qué crees que no funcionaron?</label><textarea name="resultado_intentos" placeholder="Cuéntanos brevemente..."></textarea></div>
+  <div class="btn-group">
+    <button type="button" class="btn-sec prev-btn">Atrás</button>
+    <button type="button" class="btn next-btn">
+      Continuar
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+    </button>
+  </div>
+</div>
+
+<!-- 4. ANTECEDENTES MÉDICOS - COMORBILIDADES -->
 <div class="sec" data-step="4">
-  <div class="sec-hd"><div class="sec-num">4</div><h2 class="sec-title">Hábitos y Estilo de Vida</h2></div>
+  <div class="sec-hd"><div class="sec-num">4</div><h2 class="sec-title">Antecedentes Médicos — Condiciones</h2></div>
+  <p style="font-size:12.5px;color:var(--beige);margin-bottom:12px;">¿Tiene alguna de estas condiciones? Marca todas las que apliquen:</p>
+  <div class="ckg">
+    <label class="ck"><input type="checkbox" name="condiciones[]" value="diabetes_t2"/><div class="ck-box"></div><span class="ck-lbl">Diabetes tipo 2</span></label>
+    <label class="ck"><input type="checkbox" name="condiciones[]" value="prediabetes"/><div class="ck-box"></div><span class="ck-lbl">Prediabetes / resistencia a insulina</span></label>
+    <label class="ck"><input type="checkbox" name="condiciones[]" value="hipertension"/><div class="ck-box"></div><span class="ck-lbl">Hipertensión arterial</span></label>
+    <label class="ck"><input type="checkbox" name="condiciones[]" value="hipotiroidismo"/><div class="ck-box"></div><span class="ck-lbl">Hipotiroidismo</span></label>
+    <label class="ck"><input type="checkbox" name="condiciones[]" value="apnea"/><div class="ck-box"></div><span class="ck-lbl">Apnea del sueño</span></label>
+    <label class="ck"><input type="checkbox" name="condiciones[]" value="reflujo"/><div class="ck-box"></div><span class="ck-lbl">Reflujo gastroesofágico (ERGE)</span></label>
+    <label class="ck"><input type="checkbox" name="condiciones[]" value="higado_graso"/><div class="ck-box"></div><span class="ck-lbl">Hígado graso (EHNA)</span></label>
+    <label class="ck"><input type="checkbox" name="condiciones[]" value="sop"/><div class="ck-box"></div><span class="ck-lbl">SOP (ovario poliquístico)</span></label>
+    <label class="ck"><input type="checkbox" name="condiciones[]" value="dislipidemia"/><div class="ck-box"></div><span class="ck-lbl">Colesterol / triglicéridos altos</span></label>
+    <label class="ck"><input type="checkbox" name="condiciones[]" value="dolor_articular"/><div class="ck-box"></div><span class="ck-lbl">Dolor articular / artrosis</span></label>
+    <label class="ck"><input type="checkbox" name="condiciones[]" value="depresion"/><div class="ck-box"></div><span class="ck-lbl">Depresión / ansiedad</span></label>
+    <label class="ck"><input type="checkbox" name="condiciones[]" value="cardiopatia"/><div class="ck-box"></div><span class="ck-lbl">Enfermedad cardíaca</span></label>
+    <label class="ck" id="condicionesOtroCk"><input type="checkbox" name="condiciones_otro_select" id="condicionesOtroSelect" value="Otro"/><div class="ck-box"></div><span class="ck-lbl">Otro, ¿cuál?</span></label>
+    <div id="condicionesOtroCustomContainer" class="fld" style="display:none; margin-top:8px; position:relative; width:100%; grid-column: 1 / -1;">
+      <input type="text" name="condiciones_otro_custom" id="condicionesOtroCustom" class="premium-input" autocomplete="off" placeholder="¿Qué otra condición médica tienes?" style="padding-right: 70px !important;"/>
+      <button type="button" id="condicionesOtroResetBtn" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:var(--teal); font-family:'Archivo',sans-serif; font-size:12px; cursor:pointer; font-weight:500; text-transform:uppercase;">Volver</button>
+    </div>
+  </div>
+  <div class="btn-group">
+    <button type="button" class="btn-sec prev-btn">Atrás</button>
+    <button type="button" class="btn next-btn">
+      Continuar
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+    </button>
+  </div>
+</div>
+
+<!-- 5. ANTECEDENTES MÉDICOS - DETALLES -->
+<div class="sec" data-step="5">
+  <div class="sec-hd"><div class="sec-num">5</div><h2 class="sec-title">Antecedentes Médicos — Detalles</h2></div>
   <div class="g2">
-    <div class="fld">
-      <label>Comidas al día</label>
-      <select name="comidas_dia"><option value="" disabled selected>Selecciona</option><option value="1-2">1 a 2 comidas</option><option value="3">3 comidas principales</option><option value="4-5">4 a 5 (con meriendas)</option><option value="6+">Más de 5 comidas</option><option value="desordenado">Muy desordenado / sin horario</option></select>
+    <div class="fld s2"><label>Medicamentos actuales (escribe los nombres si te acuerdas)</label><textarea name="medicamentos_actuales" placeholder="Escribe los nombres de los medicamentos que tomas usualmente..."></textarea></div>
+    
+    <!-- Alergias con lógica de desactivación/gris en una sola línea responsive -->
+    <div class="fld s2">
+      <label style="display: block; margin-bottom: 7px; font-size: 10.5px; font-weight: 500; letter-spacing: 1.1px; text-transform: uppercase; color: var(--beige);">¿Sufres de alguna alergia? <span class="r">*</span></label>
+      <div style="display: flex; flex-direction: row; align-items: center; gap: 8px; width: 100%; flex-wrap: nowrap;">
+        <div class="rw" id="alergiaRadioGroup" style="display: flex; gap: 6px; flex-shrink: 0; margin-top: 0; margin-bottom: 0;">
+          <label class="ri" style="margin: 0; padding: 11px 16px; width: 72px; justify-content: center; display: inline-flex;"><input type="radio" name="alergia_radio" value="no" required/><span class="rl">No</span></label>
+          <label class="ri" style="margin: 0; padding: 11px 16px; width: 72px; justify-content: center; display: inline-flex;"><input type="radio" name="alergia_radio" value="si" required/><span class="rl">Sí</span></label>
+        </div>
+        <div id="alergiaCustomContainer" style="flex: 1; min-width: 0; display: flex; position: relative; margin-top: 0;">
+          <input type="text" name="alergia_custom" id="alergiaCustom" placeholder="¿A qué?" disabled class="premium-input" style="width: 100%; opacity: 0.4; pointer-events: none; border-color: rgba(42, 191, 176, 0.1) !important; background: rgba(255,255,255,0.02) !important;"/>
+        </div>
+      </div>
     </div>
-    <div class="fld">
-      <label>Actividad física actual</label>
-      <select name="actividad_fisica"><option value="" disabled selected>Selecciona</option><option value="sedentario">Sedentario (casi nada)</option><option value="ligera">Ligera (caminar ocasionalmente)</option><option value="moderada">Moderada (1–3 veces por semana)</option><option value="intensa">Intensa (4+ veces por semana)</option></select>
-    </div>
-    <div class="fld"><label>Horas de sueño por noche</label><input type="number" name="horas_sueno" placeholder="Ej. 7" min="3" max="14"/></div>
-    <div class="fld">
-      <label>Consumo de alcohol</label>
-      <select name="alcohol"><option value="" disabled selected>Selecciona</option><option value="no">No consumo</option><option value="ocasional">Ocasional (eventos / fines de semana)</option><option value="frecuente">Frecuente (varias veces por semana)</option><option value="diario">Diario</option></select>
+
+    <!-- Cirugías abdominales con dropdown y otro dinámico -->
+    <div class="fld s2">
+      <label>¿Te han hecho alguna cirugía abdominal?</label>
+      <select name="cirugias_previas_select" id="cirugiasSelect">
+        <option value="" disabled selected>Selecciona</option>
+        <option value="Ninguna">No</option>
+        <option value="Bariátrica">Bariátrica</option>
+        <option value="Apéndice">Apéndice</option>
+        <option value="Vesícula">Vesícula</option>
+        <option value="Otro">Otro</option>
+      </select>
+      <div id="cirugiasOtroCustomContainer" class="fld" style="display:none; margin-top:8px; position:relative; width:100%;">
+        <input type="text" name="cirugias_otro_custom" id="cirugiasOtroCustom" class="premium-input" autocomplete="off" placeholder="¿Qué otra cirugía abdominal?" style="padding-right: 70px !important;"/>
+        <button type="button" id="cirugiasOtroResetBtn" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:var(--teal); font-family:'Archivo',sans-serif; font-size:12px; cursor:pointer; font-weight:500; text-transform:uppercase;">Volver</button>
+      </div>
     </div>
 
     <!-- Tabaquismo con dropdown y otro dinámico -->
     <div class="fld s2">
-      <label>¿Fumas o has fumado? (tabaco, vapeador...)</label>
+      <label>¿Fumas o has fumado?</label>
       <select name="tabaquismo_select" id="tabaquismoSelect">
         <option value="" disabled selected>Selecciona</option>
         <option value="No fumo">No fumo</option>
         <option value="Sí, actualmente">Sí, actualmente</option>
         <option value="Ex-fumador (menos de 1 año)">Ex-fumador (menos de 1 año)</option>
         <option value="Ex-fumador (más de 1 año)">Ex-fumador (más de 1 año)</option>
-        <option value="Fumo otras cosas">Vapeador / cigarrillo electrónico</option>
+        <option value="Fumo otras cosas">Fumo otras cosas (vapeador, pipa, etc.)</option>
         <option value="Otro">Otro</option>
       </select>
       <div id="tabaquismoOtroCustomContainer" class="fld" style="display:none; margin-top:8px; position:relative; width:100%;">
@@ -1031,21 +986,7 @@ body:not(.started) .hero-btn-wrap {
         <button type="button" id="tabaquismoOtroResetBtn" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:var(--teal); font-family:'Archivo',sans-serif; font-size:12px; cursor:pointer; font-weight:500; text-transform:uppercase;">Volver</button>
       </div>
     </div>
-
-    <!-- Patrones de alimentación -->
-    <div class="fld s2" style="margin-top: 6px;">
-      <label style="margin-bottom: 8px;">¿Te identificas con alguno de estos patrones?</label>
-      <div class="ckg">
-        <label class="ck"><input type="checkbox" name="patrones[]" value="picoteo"/><div class="ck-box"></div><span class="ck-lbl">Picoteo constante entre comidas</span></label>
-        <label class="ck"><input type="checkbox" name="patrones[]" value="ansiedad"/><div class="ck-box"></div><span class="ck-lbl">Comer por ansiedad / estrés</span></label>
-        <label class="ck"><input type="checkbox" name="patrones[]" value="nocturno"/><div class="ck-box"></div><span class="ck-lbl">Comer mucho en la noche</span></label>
-        <label class="ck"><input type="checkbox" name="patrones[]" value="atracones"/><div class="ck-box"></div><span class="ck-lbl">Atracones o pérdida de control</span></label>
-        <label class="ck"><input type="checkbox" name="patrones[]" value="dulces"/><div class="ck-box"></div><span class="ck-lbl">Gusto excesivo por dulces</span></label>
-        <label class="ck"><input type="checkbox" name="patrones[]" value="porciones_grandes"/><div class="ck-box"></div><span class="ck-lbl">Porciones muy grandes</span></label>
-      </div>
-    </div>
   </div>
-
   <div class="btn-group">
     <button type="button" class="btn-sec prev-btn">Atrás</button>
     <button type="button" class="btn next-btn">
@@ -1055,50 +996,115 @@ body:not(.started) .hero-btn-wrap {
   </div>
 </div>
 
-<!-- 5. ASPECTO EMOCIONAL Y MOTIVACIÓN -->
-<div class="sec" data-step="5">
-  <div class="sec-hd"><div class="sec-num">5</div><h2 class="sec-title">Aspecto Emocional y Motivación</h2></div>
-  
-  <div class="fld" style="margin-bottom:18px;">
-    <label>¿Qué tanto afecta tu peso tu calidad de vida? (1 = nada, 10 = totalmente)</label>
+<!-- 6. HÁBITOS GENERALES -->
+<div class="sec" data-step="6">
+  <div class="sec-hd"><div class="sec-num">6</div><h2 class="sec-title">Hábitos Generales</h2></div>
+  <div class="g2">
+    <div class="fld"><label>¿Cuántas veces comes al día usualmente?</label>
+      <select name="comidas_dia"><option value="" disabled selected>Selecciona</option><option>1–2 comidas</option><option>3 comidas</option><option>3 comidas + snacks frecuentes</option><option>Sin horario fijo</option></select></div>
+    <div class="fld"><label>¿Qué tanta actividad física realizas?</label>
+      <select name="actividad_fisica"><option value="" disabled selected>Selecciona</option><option>Sedentario (nada de ejercicio)</option><option>Camino un poco</option><option>Ejercicio 1–2 veces por semana</option><option>Ejercicio 3–4 veces por semana</option><option>Ejercicio intenso 5+ veces/semana</option></select></div>
+    <div class="fld"><label>¿Cuántas horas duermes en las noches?</label>
+      <select name="horas_sueno"><option value="" disabled selected>Selecciona</option><option>Menos de 5 h</option><option>5–6 h</option><option>6–7 h</option><option>7–8 h</option><option>Más de 8 h</option></select></div>
+    <div class="fld"><label>¿Consumes alcohol?</label>
+      <select name="alcohol"><option value="" disabled selected>Selecciona</option><option>No consumo</option><option>Ocasional (eventos sociales)</option><option>Moderado (fines de semana)</option><option>Frecuente (varios días/semana)</option></select></div>
+  </div>
+  <div class="btn-group">
+    <button type="button" class="btn-sec prev-btn">Atrás</button>
+    <button type="button" class="btn next-btn">
+      Continuar
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+    </button>
+  </div>
+</div>
+
+<!-- 7. PATRONES DE ALIMENTACIÓN -->
+<div class="sec" data-step="7">
+  <div class="sec-hd"><div class="sec-num">7</div><h2 class="sec-title">Patrones de Alimentación</h2></div>
+  <p style="font-size:12.5px;color:var(--beige);margin-bottom:12px;">¿Alguno de estos patrones te identifica? Marca todas las que apliquen:</p>
+  <div class="ckg">
+    <label class="ck"><input type="checkbox" name="patrones[]" value="ansiedad"/><div class="ck-box"></div><span class="ck-lbl">Como por ansiedad / estrés</span></label>
+    <label class="ck"><input type="checkbox" name="patrones[]" value="atracones"/><div class="ck-box"></div><span class="ck-lbl">Episodios de atracón</span></label>
+    <label class="ck"><input type="checkbox" name="patrones[]" value="nocturno"/><div class="ck-box"></div><span class="ck-lbl">Como principalmente de noche</span></label>
+    <label class="ck"><input type="checkbox" name="patrones[]" value="dulces"/><div class="ck-box"></div><span class="ck-lbl">Fuerte antojo por dulces / azúcar</span></label>
+    <label class="ck"><input type="checkbox" name="patrones[]" value="liquidos"/><div class="ck-box"></div><span class="ck-lbl">Muchas bebidas azucaradas</span></label>
+    <label class="ck"><input type="checkbox" name="patrones[]" value="picoteo"/><div class="ck-box"></div><span class="ck-lbl">Picoteo constante entre comidas</span></label>
+  </div>
+  <div class="btn-group">
+    <button type="button" class="btn-sec prev-btn">Atrás</button>
+    <button type="button" class="btn next-btn">
+      Continuar
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+    </button>
+  </div>
+</div>
+
+<!-- 8. IMPACTO DEL PESO -->
+<div class="sec" data-step="8">
+  <div class="sec-hd"><div class="sec-num">8</div><h2 class="sec-title">Impacto del Peso</h2></div>
+  <div style="margin-bottom:20px;">
+    <p style="font-size:10.5px;font-weight:500;letter-spacing:1.1px;text-transform:uppercase;color:var(--beige);margin-bottom:9px;">¿Cómo afecta el peso tu vida diaria? (1 = poco impacto · 10 = afecta todo)</p>
     <div class="sc-track" id="scImpact">
-      <button type="button" class="sc-btn" data-v="1">1</button><button type="button" class="sc-btn" data-v="2">2</button>
-      <button type="button" class="sc-btn" data-v="3">3</button><button type="button" class="sc-btn" data-v="4">4</button>
-      <button type="button" class="sc-btn" data-v="5">5</button><button type="button" class="sc-btn" data-v="6">6</button>
-      <button type="button" class="sc-btn" data-v="7">7</button><button type="button" class="sc-btn" data-v="8">8</button>
-      <button type="button" class="sc-btn" data-v="9">9</button><button type="button" class="sc-btn" data-v="10">10</button>
+      <button type="button" class="sc-btn" data-v="1">1</button><button type="button" class="sc-btn" data-v="2">2</button><button type="button" class="sc-btn" data-v="3">3</button><button type="button" class="sc-btn" data-v="4">4</button><button type="button" class="sc-btn" data-v="5">5</button><button type="button" class="sc-btn" data-v="6">6</button><button type="button" class="sc-btn" data-v="7">7</button><button type="button" class="sc-btn" data-v="8">8</button><button type="button" class="sc-btn" data-v="9">9</button><button type="button" class="sc-btn" data-v="10">10</button>
     </div>
-    <div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(244,245,240,0.4);"><span style="text-align:left;">1 — Casi nada</span><span style="text-align:right;">10 — Muy afectado</span></div>
+    <div class="sc-lbls"><span>Poco impacto</span><span>Afecta todo</span></div>
     <input type="hidden" name="impacto_vida" id="hImpacto"/>
   </div>
 
-  <p style="font-size:12.5px;color:var(--beige);margin-bottom:10px;">¿Qué aspectos de tu vida sientes más afectados? Marca todo lo que aplique:</p>
+  <p style="font-size:12.5px;color:var(--beige);margin-bottom:10px;">¿En qué áreas ha impactado el peso tu vida?</p>
   <div class="ckg">
-    <label class="ck"><input type="checkbox" name="impacto_areas[]" value="salud_fisica"/><div class="ck-box"></div><span class="ck-lbl">Salud física / movilidad</span></label>
-    <label class="ck"><input type="checkbox" name="impacto_areas[]" value="autoestima"/><div class="ck-box"></div><span class="ck-lbl">Autoestima / imagen corporal</span></label>
-    <label class="ck"><input type="checkbox" name="impacto_areas[]" value="energia"/><div class="ck-box"></div><span class="ck-lbl">Energía / vitalidad diaria</span></label>
-    <label class="ck"><input type="checkbox" name="impacto_areas[]" value="vida_social"/><div class="ck-box"></div><span class="ck-lbl">Vida social / relaciones</span></label>
-    <label class="ck"><input type="checkbox" name="impacto_areas[]" value="vida_laboral"/><div class="ck-box"></div><span class="ck-lbl">Vida laboral / rendimiento</span></label>
+    <label class="ck"><input type="checkbox" name="impacto_areas[]" value="autoestima"/><div class="ck-box"></div><span class="ck-lbl">Autoestima e imagen personal</span></label>
+    <label class="ck"><input type="checkbox" name="impacto_areas[]" value="pareja"/><div class="ck-box"></div><span class="ck-lbl">Relación de pareja / vida íntima</span></label>
+    <label class="ck"><input type="checkbox" name="impacto_areas[]" value="social"/><div class="ck-box"></div><span class="ck-lbl">Vida social (evita salir)</span></label>
+    <label class="ck"><input type="checkbox" name="impacto_areas[]" value="movilidad"/><div class="ck-box"></div><span class="ck-lbl">Movilidad / actividades básicas</span></label>
+    <label class="ck"><input type="checkbox" name="impacto_areas[]" value="familia"/><div class="ck-box"></div><span class="ck-lbl">Familia / crianza</span></label>
+    <label class="ck"><input type="checkbox" name="impacto_areas[]" value="trabajo"/><div class="ck-box"></div><span class="ck-lbl">Trabajo / desempeño profesional</span></label>
     <label class="ck" id="impactoAreasOtroCk"><input type="checkbox" name="impacto_areas_otro_select" id="impactoAreasOtroSelect" value="Otro"/><div class="ck-box"></div><span class="ck-lbl">Otro, ¿cuál?</span></label>
     <div id="impactoAreasOtroCustomContainer" class="fld" style="display:none; margin-top:8px; position:relative; width:100%; grid-column: 1 / -1;">
-      <input type="text" name="impacto_areas_otro_custom" id="impactoAreasOtroCustom" class="premium-input" autocomplete="off" placeholder="¿Qué otro aspecto se ve afectado?" style="padding-right: 70px !important;"/>
+      <input type="text" name="impacto_areas_otro_custom" id="impactoAreasOtroCustom" class="premium-input" autocomplete="off" placeholder="¿En qué otra área?" style="padding-right: 70px !important;"/>
       <button type="button" id="impactoAreasOtroResetBtn" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); background:transparent; border:none; color:var(--teal); font-family:'Archivo',sans-serif; font-size:12px; cursor:pointer; font-weight:500; text-transform:uppercase;">Volver</button>
     </div>
   </div>
+  <div class="btn-group">
+    <button type="button" class="btn-sec prev-btn">Atrás</button>
+    <button type="button" class="btn next-btn">
+      Continuar
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+    </button>
+  </div>
+</div>
 
-  <div class="g2" style="margin-top: 18px;">
-    <div class="fld s2">
-      <label>¿Cómo te sientes respecto a la opción de una cirugía bariátrica?</label>
-      <div class="rw" style="margin-top:2px;">
-        <label class="ri"><input type="radio" name="sentimiento_cirugia" value="muy_decidido"/><span class="rl">Totalmente decidido/a</span></label>
-        <label class="ri"><input type="radio" name="sentimiento_cirugia" value="interesado_dudas"/><span class="rl">Interesado/a pero con dudas</span></label>
-        <label class="ri"><input type="radio" name="sentimiento_cirugia" value="solo_informacion"/><span class="rl">Solo busco información</span></label>
-        <label class="ri"><input type="radio" name="sentimiento_cirugia" value="miedo_riesgos"/><span class="rl">Tengo miedo de los riesgos</span></label>
-        <label class="ri"><input type="radio" name="sentimiento_cirugia" value="otra_persona"/><span class="rl">Vengo porque mi familia insiste</span></label>
-      </div>
+<!-- 9. MOTIVACIÓN Y PREPARACIÓN -->
+<div class="sec" data-step="9">
+  <div class="sec-hd"><div class="sec-num">9</div><h2 class="sec-title">Motivación y Preparación</h2></div>
+  <div class="ib"><p>Estas preguntas son completamente confidenciales. Nos ayudan a entenderte como persona, no solo como paciente.</p></div>
+
+  <div class="fld"><label>¿Qué te motivó a buscar ayuda ahora? <span class="r">*</span></label><textarea name="motivacion" placeholder="¿Por qué este momento?" required></textarea></div>
+  <div style="margin-top:14px;" class="fld"><label>¿Qué esperas lograr con el tratamiento?</label><textarea name="expectativas" placeholder="En tus propias palabras..."></textarea></div>
+
+  <div style="margin-top:18px;">
+    <p style="font-size:10.5px;font-weight:500;letter-spacing:1.1px;text-transform:uppercase;color:var(--beige);margin-bottom:9px;">¿Cómo te sientes respecto a operarte?</p>
+    <div class="rw" id="rSent">
+      <label class="ri"><input type="radio" name="sentimiento_cirugia" value="muy_dispuesto"/><span class="rl">Lo quiero ya</span></label>
+      <label class="ri"><input type="radio" name="sentimiento_cirugia" value="quiero_info"/><span class="rl">Quiero más información</span></label>
+      <label class="ri"><input type="radio" name="sentimiento_cirugia" value="dudoso"/><span class="rl">Aún tengo dudas</span></label>
+      <label class="ri"><input type="radio" name="sentimiento_cirugia" value="miedo"/><span class="rl">Me da miedo, pero lo considero</span></label>
+      <label class="ri"><input type="radio" name="sentimiento_cirugia" value="alternativas"/><span class="rl">Prefiero alternativas a la cirugía</span></label>
     </div>
-    <div class="fld s2"><label>¿Qué te motivó a buscar ayuda en este momento?</label><textarea name="motivacion" placeholder="Un evento de salud, un viaje, mis hijos, ya no puedo más..."></textarea></div>
-    <div class="fld s2"><label>¿Qué es lo más importante que esperas lograr con el tratamiento?</label><textarea name="expectativas" placeholder="Mejorar mi salud, jugar con mis hijos, dejar medicamentos, sentirme bien con mi cuerpo..."></textarea></div>
+  </div>
+
+  <div style="margin-top:18px;">
+    <p style="font-size:10.5px;font-weight:500;letter-spacing:1.1px;text-transform:uppercase;color:var(--beige);margin-bottom:9px;">¿Cómo te enteraste de nosotros?</p>
+    <div class="rw" id="rEntero">
+      <label class="ri"><input type="radio" name="como_se_entero" value="Instagram"/><span class="rl">Instagram</span></label>
+      <label class="ri"><input type="radio" name="como_se_entero" value="TikTok"/><span class="rl">TikTok</span></label>
+      <label class="ri"><input type="radio" name="como_se_entero" value="Facebook"/><span class="rl">Facebook</span></label>
+      <label class="ri"><input type="radio" name="como_se_entero" value="Doctoralia"/><span class="rl">Doctoralia</span></label>
+      <label class="ri"><input type="radio" name="como_se_entero" value="Recomendación médica"/><span class="rl">Recomendación médica</span></label>
+      <label class="ri"><input type="radio" name="como_se_entero" value="Amigo o familiar"/><span class="rl">Un amigo / familiar</span></label>
+      <label class="ri"><input type="radio" name="como_se_entero" value="Búsqueda Web"/><span class="rl">Google / Web</span></label>
+      <label class="ri"><input type="radio" name="como_se_entero" value="Otro"/><span class="rl">Otro</span></label>
+    </div>
   </div>
 
   <div class="btn-group">
@@ -1110,34 +1116,26 @@ body:not(.started) .hero-btn-wrap {
   </div>
 </div>
 
-<!-- 6. PREGUNTAS Y AUTORIZACIÓN -->
-<div class="sec" data-step="6">
-  <div class="sec-hd"><div class="sec-num">6</div><h2 class="sec-title">Preguntas y Autorización</h2></div>
-  <div class="g2">
-    <div class="fld s2">
-      <label>¿Tienes alguna pregunta específica para el Dr. Molina?</label>
-      <textarea name="preguntas_consulta" placeholder="Cualquier duda que quieras asegurarte de resolver en la consulta..."></textarea>
-    </div>
-    <div class="fld s2">
-      <label>¿Cómo te enteraste de nosotros?</label>
-      <select name="como_se_entero">
-        <option value="" disabled selected>Selecciona una opción</option>
-        <option value="Instagram">Instagram (@cirujanomolina)</option>
-        <option value="Google">Búsqueda en Google</option>
-        <option value="Recomendación">Recomendación de un paciente o conocido</option>
-        <option value="Médico remitente">Remisión médica de otro profesional</option>
-        <option value="TikTok">TikTok</option>
-        <option value="Otro">Otro medio</option>
-      </select>
-    </div>
-    <div class="fld s2" style="margin-top:8px;">
-      <label class="ck">
-        <input type="checkbox" name="autoriza_datos" required/>
-        <div class="ck-box"></div>
-        <span class="ck-lbl" style="font-size:12px;line-height:1.5;">Autorizo el tratamiento de mis datos personales de conformidad con la ley de protección de datos (Ley 1581 de 2012 de Colombia) y la política de privacidad del Dr. Juan Santiago Molina V. La información médica aquí consignada es confidencial y será utilizada exclusivamente para orientar mi atención clínica. <span class="r">*</span></span>
-      </label>
-    </div>
+<!-- 10. PREGUNTAS Y AUTORIZACIÓN -->
+<div class="sec" data-step="10">
+  <div class="sec-hd"><div class="sec-num">10</div><h2 class="sec-title">Preguntas y Autorización</h2></div>
+
+  <div class="fld"><label>¿Preguntas específicas para la consulta?</label><textarea name="preguntas_consulta" placeholder="¿Qué quieres preguntarle al Dr. Molina?"></textarea></div>
+
+  <div style="margin-top:24px; padding-top:16px; border-top:1px solid rgba(255,255,255,0.07);">
+    <label class="ck" style="border: 1px dashed rgba(42,191,176,0.2); background: rgba(42,191,176,0.02);">
+      <input type="checkbox" name="autoriza_datos" value="si" required/>
+      <div class="ck-box"></div>
+      <span class="ck-lbl" style="font-size:12px; line-height:1.4;">
+        Autorizo el tratamiento de mis datos personales y de salud para los fines de la consulta médica, conforme a la política de protección de datos. <span class="r">*</span>
+      </span>
+    </label>
   </div>
+
+  <p style="font-size:12.5px;color:var(--beige);margin-top:20px;text-align:center;line-height:1.6;">
+    Tu información llega de forma segura y confidencial al equipo del Dr. Molina.<br>Se usa únicamente para preparar tu consulta.
+  </p>
+
   <div class="btn-group">
     <button type="button" class="btn-sec prev-btn">Atrás</button>
     <button type="submit" class="btn" id="sbBtn">
@@ -1175,7 +1173,7 @@ const TABLE = 'Preconsulta_Bariatrica';
 
 // Steps Controller
 let currentStep = 1;
-const totalSteps = 6;
+const totalSteps = 10;
 
 function showStep(stepNum) {
   const currentActive = document.querySelector('.sec.active');
@@ -1665,55 +1663,6 @@ if (tabaquismoSelect) {
   }
 }
 
-
-// Cirugías previas Sí/No toggle
-const cirugiasRadios = document.querySelectorAll('input[name="cirugias_radio"]');
-const cirugiasContainer = document.getElementById('cirugiasContainer');
-const cirugiasDetalleTexto = document.getElementById('cirugiasDetalleTexto');
-if (cirugiasRadios.length > 0 && cirugiasContainer) {
-  cirugiasRadios.forEach(radio => {
-    radio.addEventListener('change', () => {
-      if (radio.value === 'si') {
-        cirugiasContainer.style.display = 'block';
-        if (cirugiasDetalleTexto) {
-          cirugiasDetalleTexto.required = true;
-          cirugiasDetalleTexto.focus();
-        }
-      } else {
-        cirugiasContainer.style.display = 'none';
-        if (cirugiasDetalleTexto) {
-          cirugiasDetalleTexto.required = false;
-          cirugiasDetalleTexto.value = '';
-        }
-      }
-    });
-  });
-}
-
-// Medicamentos actuales Sí/No toggle
-const medicamentosRadios = document.querySelectorAll('input[name="medicamentos_radio"]');
-const medicamentosContainer = document.getElementById('medicamentosContainer');
-const medicamentosActualesTexto = document.getElementById('medicamentosActualesTexto');
-if (medicamentosRadios.length > 0 && medicamentosContainer) {
-  medicamentosRadios.forEach(radio => {
-    radio.addEventListener('change', () => {
-      if (radio.value === 'si') {
-        medicamentosContainer.style.display = 'block';
-        if (medicamentosActualesTexto) {
-          medicamentosActualesTexto.required = true;
-          medicamentosActualesTexto.focus();
-        }
-      } else {
-        medicamentosContainer.style.display = 'none';
-        if (medicamentosActualesTexto) {
-          medicamentosActualesTexto.required = false;
-          medicamentosActualesTexto.value = '';
-        }
-      }
-    });
-  });
-}
-
 // Alergias toggle
 const alergiaRadios = document.querySelectorAll('input[name="alergia_radio"]');
 const alergiaCustom = document.getElementById('alergiaCustom');
@@ -1968,48 +1917,27 @@ function gather(form){
   const alergiaRadio = fd.get('alergia_radio');
   const alergiaVal = (alergiaRadio === 'si') ? fd.get('alergia_custom') : '';
   
-  let extraNotes = [];
+  let otrasConds = '';
   if (alergiaVal && alergiaVal.trim()) {
-    extraNotes.push(`Alergias: ${alergiaVal.trim()}`);
+    otrasConds += `Alergias: ${alergiaVal.trim()}`;
   } else if (alergiaRadio === 'no') {
-    extraNotes.push('Alergias: Ninguna');
+    otrasConds += 'Alergias: Ninguna';
   }
   
   if (condicionesOtroVal && condicionesOtroVal.trim()) {
-    extraNotes.push(`Otras condiciones: ${condicionesOtroVal.trim()}`);
+    if (otrasConds) otrasConds += ' | ';
+    otrasConds += `Otras condiciones: ${condicionesOtroVal.trim()}`;
   }
-  if (roncaVal === 'si') extraNotes.push('Ronca al dormir: Sí');
-  if (cpapVal === 'si') extraNotes.push('Usa CPAP/Oxígeno: Sí');
-  if (reflujoVal === 'si') extraNotes.push('Reflujo/Acidez frecuente: Sí');
-  d['otras_condiciones'] = extraNotes.length > 0 ? extraNotes.join(' | ') : null;
+  d['otras_condiciones'] = otrasConds || null;
 
-  // Handle cirugías previas (Sí / No con texto)
-  const cirugiaRadio = fd.get('cirugias_radio');
-  const cirugiaTexto = fd.get('cirugias_detalle_texto');
-  if (cirugiaRadio === 'si' && cirugiaTexto && cirugiaTexto.trim()) {
-    d['cirugias_previas'] = 'Sí';
-    d['detalle_cirugias'] = cirugiaTexto.trim();
+  // Handle abdominal surgeries dropdown
+  const cirSelect = fd.get('cirugias_previas_select');
+  if (cirSelect === 'Otro') {
+    d['cirugias_previas'] = 'Otro';
+    d['detalle_cirugias'] = fd.get('cirugias_otro_custom') || null;
   } else {
-    d['cirugias_previas'] = 'Ninguna';
+    d['cirugias_previas'] = cirSelect || null;
     d['detalle_cirugias'] = null;
-  }
-
-  // Handle medicamentos actuales (Sí / No con texto)
-  const medRadio = fd.get('medicamentos_radio');
-  const medTexto = fd.get('medicamentos_actuales_texto');
-  if (medRadio === 'si' && medTexto && medTexto.trim()) {
-    d['medicamentos_actuales'] = medTexto.trim();
-  } else {
-    d['medicamentos_actuales'] = 'Ninguno';
-  }
-
-  // Handle respiratorio y gastro
-  const roncaVal = fd.get('ronquidos_radio');
-  const cpapVal = fd.get('cpap_radio');
-  const reflujoVal = fd.get('reflujo_radio');
-
-  if (reflujoVal === 'si' && !d['condiciones'].includes('reflujo')) {
-    d['condiciones'].push('reflujo');
   }
 
   // Handle tabaquismo dropdown
@@ -2051,13 +1979,6 @@ function gather(form){
   delete d['condiciones_otro_custom'];
   delete d['alergia_radio'];
   delete d['alergia_custom'];
-  delete d['cirugias_radio'];
-  delete d['cirugias_detalle_texto'];
-  delete d['medicamentos_radio'];
-  delete d['medicamentos_actuales_texto'];
-  delete d['ronquidos_radio'];
-  delete d['cpap_radio'];
-  delete d['reflujo_radio'];
   delete d['cirugias_previas_select'];
   delete d['cirugias_otro_custom'];
   delete d['tabaquismo_select'];
@@ -2312,42 +2233,22 @@ function prefillForm(d) {
   setCheckboxes('intentos[]', d.intentos);
 
   set('resultado_intentos', d.resultado_intentos);
+  set('medicamentos_actuales', d.medicamentos_actuales);
 
   // Condiciones (checkboxes)
   setCheckboxes('condiciones[]', d.condiciones);
 
-  // Cirugías previas (Sí/No)
-  if (d.cirugias_previas && d.cirugias_previas !== 'Ninguna') {
-    setRadio('cirugias_radio', 'si');
-    const cirCont = document.getElementById('cirugiasContainer');
-    if (cirCont) cirCont.style.display = 'block';
-    set('cirugias_detalle_texto', d.detalle_cirugias || (d.cirugias_previas !== 'Sí' ? d.cirugias_previas : ''));
-  } else {
-    setRadio('cirugias_radio', 'no');
-  }
-
-  // Medicamentos actuales (Sí/No)
-  if (d.medicamentos_actuales && d.medicamentos_actuales !== 'Ninguno') {
-    setRadio('medicamentos_radio', 'si');
-    const medCont = document.getElementById('medicamentosContainer');
-    if (medCont) medCont.style.display = 'block';
-    set('medicamentos_actuales_texto', d.medicamentos_actuales);
-  } else {
-    setRadio('medicamentos_radio', 'no');
-  }
-
-  // Respiratorios y reflujo
-  if (d.otras_condiciones) {
-    if (d.otras_condiciones.includes('Ronca al dormir: Sí')) setRadio('ronquidos_radio', 'si');
-    else setRadio('ronquidos_radio', 'no');
-
-    if (d.otras_condiciones.includes('Usa CPAP/Oxígeno: Sí')) setRadio('cpap_radio', 'si');
-    else setRadio('cpap_radio', 'no');
-
-    if (d.otras_condiciones.includes('Reflujo/Acidez frecuente: Sí') || (Array.isArray(d.condiciones) && d.condiciones.includes('reflujo'))) {
-      setRadio('reflujo_radio', 'si');
-    } else {
-      setRadio('reflujo_radio', 'no');
+  // Cirugías previas
+  if (d.cirugias_previas) {
+    const cirEl = frm.querySelector('[name="cirugias_previas_select"]');
+    if (cirEl) {
+      if (cirEl.querySelector(`option[value="${d.cirugias_previas}"]`)) {
+        cirEl.value = d.cirugias_previas;
+      } else {
+        cirEl.value = 'Otro';
+        set('cirugias_otro_custom', d.detalle_cirugias || d.cirugias_previas);
+      }
+      cirEl.dispatchEvent(new Event('change'));
     }
   }
 
