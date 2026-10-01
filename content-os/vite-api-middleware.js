@@ -182,6 +182,26 @@ async function analyzeImageWithGemini(imgPath, apiKey) {
     }
 }
 
+// Helper a nivel de módulo: parsea JSON de Instagram de forma segura.
+// Si Instagram devuelve HTML (login redirect) en lugar de JSON, lanza un error claro
+// en lugar de dejar que JSON.parse falle con "Unexpected token '<'" y rompa el handler.
+async function safeInstagramJson(fetchRes, label) {
+    const contentType = fetchRes.headers.get("content-type") || "";
+    const text = await fetchRes.text();
+    if (contentType.includes("text/html") || text.trimStart().startsWith("<")) {
+        throw new Error(
+            `Instagram devolvió HTML en lugar de JSON (${label}). ` +
+            `La cookie de sesión probablemente expiró o está mal configurada. ` +
+            `Ve a Configuración → "Session Cookie" y renueva la cookie.`
+        );
+    }
+    try {
+        return JSON.parse(text);
+    } catch (e) {
+        throw new Error(`Respuesta no-JSON de Instagram (${label}): ${text.slice(0, 120)}`);
+    }
+}
+
 export function viteApiMiddleware(req, res, next) {
     const cleanPath = req.url.split("?")[0];
 
@@ -727,11 +747,74 @@ export function viteApiMiddleware(req, res, next) {
             return;
         }
 
+        // ── DEBUG ENDPOINT ──────────────────────────────────────────────────────────
+        if (cleanPath === "/api/debug-instagram") {
+            readBody().then(async (body) => {
+                const sessionVal = body.session || "";
+                if (!sessionVal) return sendJson({ error: "Envía { session: '...' }" }, 400);
+
+                const sessionCookie = sessionVal.includes("sessionid=") ? sessionVal : `sessionid=${sessionVal}`;
+                const csrfMatch = sessionCookie.match(/csrftoken=([^;]+)/);
+                const csrfToken = csrfMatch ? csrfMatch[1].trim() : "";
+                const dsUserIdMatch = sessionCookie.match(/ds_user_id=([^;]+)/);
+                const userId = dsUserIdMatch ? dsUserIdMatch[1].trim() : "";
+
+                const makeHeaders = (ua) => ({
+                    "Cookie": sessionCookie,
+                    "User-Agent": ua,
+                    "X-IG-App-ID": "936619743392459",
+                    "X-CSRFToken": csrfToken,
+                    "X-Instagram-AJAX": "1",
+                    "Origin": "https://www.instagram.com",
+                    "Referer": "https://www.instagram.com/",
+                    "Accept": "*/*",
+                    "Accept-Language": "en-US,en;q=0.9",
+                });
+
+                const webUA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36";
+                const mobileUA = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1";
+
+                const probe = async (label, url, ua) => {
+                    try {
+                        const r = await fetch(url, { headers: makeHeaders(ua) });
+                        const text = await r.text();
+                        return {
+                            label, url,
+                            status: r.status,
+                            ok: r.ok,
+                            contentType: r.headers.get("content-type"),
+                            isHtml: text.trimStart().startsWith("<"),
+                            body: text.slice(0, 400)
+                        };
+                    } catch(e) {
+                        return { label, url, error: e.message };
+                    }
+                };
+
+                const results = await Promise.all([
+                    probe("topsearch (web)", `https://www.instagram.com/web/search/topsearch/?context=blended&query=instagram&include_reel=false`, webUA),
+                    probe("web_profile_info (web)", `https://www.instagram.com/api/v1/users/web_profile_info/?username=instagram`, webUA),
+                    probe("feed/user numeric (web UA)", userId ? `https://www.instagram.com/api/v1/feed/user/${userId}/?count=3` : "SKIP_no_ds_user_id", webUA),
+                    probe("feed/user numeric (mobile UA)", userId ? `https://www.instagram.com/api/v1/feed/user/${userId}/?count=3` : "SKIP_no_ds_user_id", mobileUA),
+                ]);
+
+                return sendJson({
+                    cookieParts: ['mid','ds_user_id','sessionid','csrftoken','ig_did','rur'].filter(p => sessionCookie.includes(p)),
+                    csrfTokenPreview: csrfToken ? csrfToken.slice(0,12)+"..." : "⚠️ FALTA csrftoken en la cookie",
+                    userIdFromCookie: userId || "⚠️ FALTA ds_user_id en la cookie",
+                    cookieLength: sessionCookie.length,
+                    probes: results
+                });
+            }).catch(err => sendJson({ error: err.message }, 400));
+            return;
+        }
+
         if (cleanPath === "/api/scrape-instagram") {
             if (req.socket && req.socket.setTimeout) req.socket.setTimeout(0);
             if (res.setTimeout) res.setTimeout(0);
 
             readBody().then(async (body) => {
+              try { // ← MASTER TRY/CATCH: captura cualquier error que escape a los bloques internos
                 const action = body.action || "test";
                 const apiKey = body.hikerapiKey || "";
                 const sessionVal = body.session || "";
@@ -980,31 +1063,47 @@ export function viteApiMiddleware(req, res, next) {
                 // --- CASO 2: Instagram Session Cookie (Native HTTP Fetches simulating Browser) ---
                 if (sessionVal) {
                     const sessionCookie = (sessionVal.includes("sessionid=") || sessionVal.includes("sessionid%3D")) ? sessionVal : `sessionid=${sessionVal}`;
-                    const userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36";
-                    const xIgAppId = "936619743392459"; // Default Instagram Web App ID
+                    const userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1";
+                    const xIgAppId = "936619743392459";
+
+                    // Extraer csrftoken de la cookie para X-CSRFToken (requerido por Instagram)
+                    const csrfMatch = sessionCookie.match(/csrftoken=([^;]+)/);
+                    const csrfToken = csrfMatch ? csrfMatch[1] : "missing";
 
                     const headers = {
                         "Cookie": sessionCookie,
                         "User-Agent": userAgent,
                         "X-IG-App-ID": xIgAppId,
-                        "Sec-Fetch-Site": "same-origin"
+                        "X-CSRFToken": csrfToken,
+                        "X-Instagram-AJAX": "1",
+                        "Origin": "https://www.instagram.com",
+                        "Referer": "https://www.instagram.com/",
+                        "Accept": "*/*",
+                        "Accept-Language": "en-US,en;q=0.9",
+                        "Sec-Fetch-Site": "same-origin",
+                        "Sec-Fetch-Mode": "cors",
+                        "Sec-Fetch-Dest": "empty"
                     };
 
                     // Diagnóstico: qué partes de la cookie están presentes
                     const cookieParts = ['mid', 'ds_user_id', 'sessionid', 'csrftoken', 'ig_did', 'rur', 'ig_nrcb'].filter(p => sessionCookie.includes(p));
-                    console.log(`[Cookie Diagnóstico] Cookie tiene: [${cookieParts.join(', ')}] | Longitud: ${sessionCookie.length} chars`);
+                    console.log(`[Cookie Diagnóstico] Cookie tiene: [${cookieParts.join(', ')}] | csrftoken=${csrfToken.slice(0,8)}... | Longitud: ${sessionCookie.length} chars`);
+
                     try {
                         let targetId = id;
                         if (targetId.startsWith("@")) targetId = targetId.slice(1);
 
                         if (action === "test") {
-                            const url = "https://www.instagram.com/api/v1/feed/user/instagram/username/";
+                            // Probar con topsearch (el endpoint más confiable con cookie)
+                            const url = `https://www.instagram.com/web/search/topsearch/?context=blended&query=instagram&include_reel=false`;
                             console.log(`[Scraper Local Test] Fetching: ${url}`);
                             const res = await fetch(url, { headers });
-                            if (!res.ok) {
-                                throw new Error(`El test falló con código HTTP ${res.status}. Es posible que las cookies no sean válidas.`);
+                            // Verificar que la respuesta sea JSON real, no HTML de login
+                            const data = await safeInstagramJson(res, "test");
+                            if (data.status === "ok" || Array.isArray(data.users) || data.users !== undefined) {
+                                return sendJson({ success: true });
                             }
-                            return sendJson({ success: true });
+                            throw new Error(`Respuesta inesperada de Instagram. Verifica que la cookie sea completa (debe incluir sessionid= y csrftoken=).`);
                         }
 
                         if (action === "user") {
@@ -1027,7 +1126,7 @@ export function viteApiMiddleware(req, res, next) {
                                 console.log(`[Scraper Paso 0] Buscando user_id via topsearch...`);
                                 const searchRes = await fetch(searchUrl, { headers });
                                 if (searchRes.ok) {
-                                    const searchData = await searchRes.json();
+                                    const searchData = await safeInstagramJson(searchRes, "topsearch");
                                     const users = searchData.users || [];
                                     console.log(`[Scraper Paso 0] Topsearch devolvió ${users.length} resultados`);
                                     // Los resultados vienen como {user: {...}, position: N}
@@ -1064,7 +1163,7 @@ export function viteApiMiddleware(req, res, next) {
                                     };
                                     const res = await fetch(profileUrl, { headers: webHeaders });
                                     if (res.ok) {
-                                        const profileData = await res.json();
+                                        const profileData = await safeInstagramJson(res, "web_profile_info");
                                         const user = profileData?.data?.user;
                                         if (user) {
                                             userId = user.id || user.pk;
@@ -1119,7 +1218,7 @@ export function viteApiMiddleware(req, res, next) {
                                     console.log(`[Scraper Paso 0C] Obteniendo info completa del usuario via: ${userInfoUrl}`);
                                     const infoRes = await fetch(userInfoUrl, { headers });
                                     if (infoRes.ok) {
-                                        const infoData = await infoRes.json();
+                                        const infoData = await safeInstagramJson(infoRes, "user_info");
                                         const infoUser = infoData.user;
                                         if (infoUser) {
                                             userData = { ...(userData || {}), ...infoUser };
@@ -1130,6 +1229,68 @@ export function viteApiMiddleware(req, res, next) {
                                     }
                                 } catch (e) {
                                     console.warn(`[Scraper Paso 0C] ❌ ${e.message}`);
+                                }
+                            }
+
+                            // ═══════════════════════════════════════════════════════════
+                            // CAPA 0.5: GraphQL via /api/graphql (no usa el feed endpoint rate-limited)
+                            // ═══════════════════════════════════════════════════════════
+                            if (items.length === 0 && userId) {
+                                try {
+                                    console.log(`[Scraper Capa 0.5] Intentando GraphQL doc_id para pk=${userId}`);
+                                    const gqlHeaders = {
+                                        ...headers,
+                                        "Content-Type": "application/x-www-form-urlencoded",
+                                        "X-FB-Friendly-Name": "PolarisProfilePostsQuery",
+                                    };
+                                    // doc_id para PolarisProfilePostsQuery (posts de un usuario)
+                                    const gqlBody = new URLSearchParams({
+                                        variables: JSON.stringify({ id: userId, first: Math.min(count, 24), after: null }),
+                                        doc_id: "17888483320059182"
+                                    });
+                                    const gqlRes = await fetch("https://www.instagram.com/api/graphql", {
+                                        method: "POST",
+                                        headers: gqlHeaders,
+                                        body: gqlBody.toString()
+                                    });
+                                    if (gqlRes.ok) {
+                                        const gqlData = await safeInstagramJson(gqlRes, "capa05_graphql");
+                                        const edges = gqlData?.data?.user?.edge_owner_to_timeline_media?.edges || [];
+                                        if (edges.length > 0) {
+                                            items = edges.map(edge => {
+                                                const node = edge.node;
+                                                let carousel = [];
+                                                if (node.edge_sidecar_to_children?.edges) {
+                                                    carousel = node.edge_sidecar_to_children.edges.map(c => ({
+                                                        is_video: c.node.is_video || false,
+                                                        thumbnail: c.node.display_url || "",
+                                                        display_url: c.node.video_url || c.node.display_url || ""
+                                                    }));
+                                                }
+                                                return {
+                                                    id: node.id,
+                                                    shortcode: node.shortcode,
+                                                    thumbnail_src: node.display_url || node.thumbnail_src || "",
+                                                    display_url: node.video_url || node.display_url || "",
+                                                    is_video: node.is_video || false,
+                                                    video_duration: node.video_duration || 0,
+                                                    views: node.video_view_count || 0,
+                                                    likes: node.edge_media_preview_like?.count || node.like_count || 0,
+                                                    comments: node.edge_media_to_comment?.count || node.comment_count || 0,
+                                                    description: node.edge_media_to_caption?.edges?.[0]?.node?.text || "",
+                                                    taken_at_timestamp: node.taken_at_timestamp || Math.floor(Date.now() / 1000),
+                                                    owner: { username: targetId },
+                                                    carousel_media: carousel
+                                                };
+                                            });
+                                            scrapeMethod = "graphql";
+                                            console.log(`[Scraper Capa 0.5] ✅ ${items.length} posts via GraphQL`);
+                                        }
+                                    } else {
+                                        console.warn(`[Scraper Capa 0.5] HTTP ${gqlRes.status}`);
+                                    }
+                                } catch (errGql) {
+                                    console.warn(`[Scraper Capa 0.5] ❌ GraphQL falló: ${errGql.message}`);
                                 }
                             }
 
@@ -1151,11 +1312,26 @@ export function viteApiMiddleware(req, res, next) {
                                         console.log(`[Scraper Capa 1] Pág ${page}: ${url}`);
                                         const res = await fetch(url, { headers });
                                         if (!res.ok) {
+                                            // Detectar feedback_required (rate limit de Instagram) — NO es error de cookie
+                                            const errText = await res.text().catch(() => "");
+                                            if (res.status === 400 && errText.includes("feedback_required")) {
+                                                throw new Error(
+                                                    `Instagram limitó temporalmente esta cuenta (rate limit). ` +
+                                                    `Esto ocurre cuando se hacen muchas peticiones seguidas. ` +
+                                                    `La cookie es válida — espera 1-4 horas e intenta de nuevo.`
+                                                );
+                                            }
                                             console.warn(`[Scraper Capa 1] HTTP ${res.status} en pág ${page}`);
                                             if (page === 1) throw new Error(`HTTP ${res.status}`);
                                             break;
                                         }
-                                        const data = await res.json();
+                                        const data = await safeInstagramJson(res, "capa1_feed");
+                                        // Detectar feedback_required en respuesta 200 (raro pero posible)
+                                        if (data.message === "feedback_required") {
+                                            throw new Error(
+                                                `Instagram limitó temporalmente esta cuenta (rate limit). La cookie es válida — espera 1-4 horas.`
+                                            );
+                                        }
                                         console.log(`[Scraper Capa 1] Pág ${page} keys: [${Object.keys(data).join(',')}] items=${data.items?.length || 0}`);
                                         
                                         if (page === 1 && data.user) {
@@ -1177,6 +1353,10 @@ export function viteApiMiddleware(req, res, next) {
                                     }
                                 } catch (err1) {
                                     console.warn(`[Scraper Capa 1] ❌ Feed numérico falló: ${err1.message}`);
+                                    // Si es rate limit, propagar el error directamente
+                                    if (err1.message.includes("rate limit") || err1.message.includes("limitó temporalmente")) {
+                                        throw err1;
+                                    }
                                 }
                             }
 
@@ -1199,7 +1379,7 @@ export function viteApiMiddleware(req, res, next) {
                                         if (page === 1) throw new Error(`Instagram retornó código HTTP ${res.status}. Las cookies podrían haber expirado.`);
                                         break;
                                     }
-                                    const mobileData = await res.json();
+                                    const mobileData = await safeInstagramJson(res, "capa2_legacy_feed");
                                     lastUserData = mobileData;
                                     if (page === 1 && mobileData.user) userData = mobileData.user;
 
@@ -1325,7 +1505,7 @@ export function viteApiMiddleware(req, res, next) {
                             if (!res.ok) {
                                 throw new Error(`Instagram retornó código HTTP ${res.status}. Las cookies podrían haber expirado.`);
                             }
-                            const hashData = await res.json();
+                            const hashData = await safeInstagramJson(res, "hashtag_web_info");
                             const recentSec = hashData.data?.recent?.sections || [];
                             const topSec = hashData.data?.top?.sections || [];
                             const sections = recentSec.length > 0 ? recentSec : topSec;
@@ -1398,7 +1578,7 @@ export function viteApiMiddleware(req, res, next) {
                             if (!res.ok) {
                                 throw new Error(`Instagram retornó código HTTP ${res.status} al buscar el post.`);
                             }
-                            const postData = await res.json();
+                            const postData = await safeInstagramJson(res, "media_info");
                             const item = postData.items?.[0];
                             if (!item) throw new Error("No se encontraron datos de la publicación.");
 
@@ -1433,8 +1613,17 @@ export function viteApiMiddleware(req, res, next) {
                         }, 500);
                     }
                 }
+              } catch (masterErr) {
+                // MASTER CATCH: cualquier error no capturado internamente llega aquí.
+                // Garantiza que siempre se devuelva JSON, nunca HTML de error de Vite.
+                console.error("[API scrape-instagram] Error maestro no capturado:", masterErr.message);
+                try {
+                    sendJson({ success: false, error: masterErr.message || "Error interno del servidor" }, 500);
+                } catch (_) { /* res ya enviado, ignorar */ }
+              }
             }).catch(err => {
-                return sendJson({ error: err.message }, 400);
+                // readBody() rechazó — cuerpo de la petición malformado
+                try { sendJson({ error: `Error al leer petición: ${err.message}` }, 400); } catch (_) {}
             });
             return;
         }

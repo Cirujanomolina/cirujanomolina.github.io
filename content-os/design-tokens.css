@@ -1,0 +1,554 @@
+/*
+ * ════════════════════════════════════════════════════════════════════════
+ *  CONTENT-OS  ·  DESIGN TOKENS  ·  Archivo de tokens de diseño central
+ *  Este archivo es la ÚNICA fuente de verdad para colores del sistema.
+ *  Todos los módulos deben importar este archivo y NO declarar sus propias
+ *  variables :root de color. Si necesitas un color nuevo, agrégalo aquí.
+ * ════════════════════════════════════════════════════════════════════════
+ *
+ *  ARQUITECTURA DE COLOR:
+ *  ─────────────────────
+ *  HEADERS  → siempre verde oscuro (#14262D → #1F434E), en dark Y light
+ *  SIDEBAR  → siempre verde oscuro, nunca cambia
+ *  MAIN     → dark: tonos #0f1e24 / light: blanco (#fff) + tonos verdes
+ *  CAMPOS   → dark: superficie oscura / light: fondo blanco con borde verde
+ *  BOTÓN PRIMARIO → acento teal (#2ABFB0) siempre
+ *
+ * ════════════════════════════════════════════════════════════════════════
+ */
+
+/* ── MODO OSCURO (default) ─────────────────────────────────────────── */
+:root {
+  /* Fondo principal y superficies */
+  --cos-bg:         #0f1e24;    /* fondo raíz */
+  --cos-bg2:        #14262D;    /* headers, sidebar — VERDE OSCURO */
+  --cos-bg3:        #1F434E;    /* headers gradiente fin — VERDE MED */
+  --cos-surface:    #182f38;    /* cards, paneles */
+  --cos-surface2:   #1c3641;    /* campos, inputs */
+  --cos-surface3:   #213e4b;    /* hover estados */
+
+  /* Tipografía */
+  --cos-text:       #F4F5F0;    /* texto principal */
+  --cos-text2:      #9db8c0;    /* texto secundario */
+  --cos-text3:      #6a8f98;    /* texto tenue */
+  --cos-text-hdr:   #F4F5F0;    /* texto sobre headers oscuros */
+
+  /* Acento — teal */
+  --cos-accent:     #2ABFB0;
+  --cos-accent-bg:  rgba(42,191,176,0.12);
+  --cos-accent-bg2: rgba(42,191,176,0.06);
+  --cos-accent-hover: #22a89a;
+
+  /* Colores semánticos */
+  --cos-success:    #27ae60;
+  --cos-warning:    #f5d35a;
+  --cos-danger:     #f55a8a;
+  --cos-info:       #5ba3f5;
+  --cos-purple:     #b48ef0;
+  --cos-amber:      #C9862A;
+  --cos-amber-bg:   rgba(201,134,42,0.12);
+  --cos-beige:      #CCC2A7;
+
+  /* Bordes */
+  --cos-border:     rgba(42,191,176,0.12);
+  --cos-border2:    rgba(244,245,240,0.07);
+  --cos-border3:    rgba(244,245,240,0.04);
+
+  /* Colores de pilares de contenido */
+  --cos-pilar-validacion:     var(--cos-accent);
+  --cos-pilar-educacion:      var(--cos-info);
+  --cos-pilar-contrarian:     var(--cos-amber);
+  --cos-pilar-autoridad:      var(--cos-purple);
+  --cos-pilar-transformacion: var(--cos-warning);
+  --cos-pilar-conversion:     var(--cos-danger);
+
+  /* Colores de estado de ideas (kanban) */
+  --cos-estado-nueva-bg:   rgba(91,163,245,0.07);
+  --cos-estado-nueva-bd:   rgba(91,163,245,0.25);
+  --cos-estado-nueva-dot:  #5ba3f5;
+  --cos-estado-eval-bg:    rgba(245,211,90,0.07);
+  --cos-estado-eval-bd:    rgba(245,211,90,0.25);
+  --cos-estado-eval-dot:   #f5d35a;
+  --cos-estado-trans-bg:   rgba(39,174,96,0.07);
+  --cos-estado-trans-bd:   rgba(39,174,96,0.25);
+  --cos-estado-trans-dot:  #27ae60;
+  --cos-estado-desc-bg:    rgba(120,120,120,0.05);
+  --cos-estado-desc-bd:    rgba(120,120,120,0.18);
+  --cos-estado-desc-dot:   #888;
+
+  /* Radii */
+  --cos-r:    10px;
+  --cos-r-sm: 7px;
+  --cos-r-lg: 14px;
+
+  /* Layout */
+  --cos-topbar-h:  75px;
+  --cos-sidebar-w: 224px;
+
+  /* Tipografía */
+  --cos-font-display: 'Cormorant Garamond', Georgia, serif;
+  --cos-font-body:    'Archivo', system-ui, sans-serif;
+
+  /* Alias cortos para retrocompatibilidad con módulos existentes */
+  --bg:           var(--cos-bg);
+  --bg2:          var(--cos-bg2);
+  --bg3:          var(--cos-bg3);
+  --surface:      var(--cos-surface);
+  --surface2:     var(--cos-surface2);
+  --surface3:     var(--cos-surface3);
+  --text:         var(--cos-text);
+  --text2:        var(--cos-text2);
+  --text3:        var(--cos-text3);
+  --teal:         var(--cos-accent);
+  --accent:       var(--cos-accent);
+  --teal-bg:      var(--cos-accent-bg);
+  --teal-bg2:     var(--cos-accent-bg2);
+  --teal2:        var(--cos-accent-bg);
+  --beige:        var(--cos-beige);
+  --amber:        var(--cos-amber);
+  --amber2:       var(--cos-amber-bg);
+  --success:      var(--cos-success);
+  --warning:      var(--cos-warning);
+  --danger:       var(--cos-danger);
+  --info:         var(--cos-info);
+  --purple:       var(--cos-purple);
+  --border:       var(--cos-border);
+  --border2:      var(--cos-border2);
+  --border3:      var(--cos-border3);
+  --r:            var(--cos-r);
+  --r-sm:         var(--cos-r-sm);
+  --r-lg:         var(--cos-r-lg);
+  --radius:       var(--cos-r);
+  --radius-lg:    var(--cos-r-lg);
+  --f-display:    var(--cos-font-display);
+  --f-body:       var(--cos-font-body);
+
+  /* Kanban color aliases */
+  --col-nueva-bg:   var(--cos-estado-nueva-bg);
+  --col-nueva-bd:   var(--cos-estado-nueva-bd);
+  --col-nueva-dot:  var(--cos-estado-nueva-dot);
+  --col-eval-bg:    var(--cos-estado-eval-bg);
+  --col-eval-bd:    var(--cos-estado-eval-bd);
+  --col-eval-dot:   var(--cos-estado-eval-dot);
+  --col-trans-bg:   var(--cos-estado-trans-bg);
+  --col-trans-bd:   var(--cos-estado-trans-bd);
+  --col-trans-dot:  var(--cos-estado-trans-dot);
+  --col-desc-bg:    var(--cos-estado-desc-bg);
+  --col-desc-bd:    var(--cos-estado-desc-bd);
+  --col-desc-dot:   var(--cos-estado-desc-dot);
+}
+
+/* ── MODO CLARO ─────────────────────────────────────────────────────── */
+/*
+ * REGLAS DE COLOR DEL DESIGN SYSTEM:
+ *   MAIN BACKGROUND    → #a4b8b4 (salvia / teal grisáceo calmado)
+ *   CONTENEDORES/CARDS → Blanco (#ffffff) con sombra suave y borde verde tenue
+ *   CAMPOS / INPUTS    → Fondo verde suave (#f0f7f6), borde verde (#b2cdc7)
+ *   HEADERS            → Verde oscuro (#14262D → #1F434E), texto blanco
+ *   TIPOGRAFÍA TÍTULOS → 'Cormorant Garamond', Georgia, serif
+ *   TIPOGRAFÍA CUERPO  → 'Archivo', system-ui, sans-serif
+ *   SIDEBAR            → Verde oscuro (#14262D)
+ */
+body.light {
+  /* 1. Fondo principal de los mains: #a4b8b4 */
+  --cos-bg:         #a4b8b4;
+  --bg:             #a4b8b4;
+
+  /* 2. Contenedores y tarjetas: Blanco puro para contrastar sobre #a4b8b4 */
+  --cos-surface:    #ffffff;
+  --surface:        #ffffff;
+  --cos-bg2:        #ffffff;
+  --bg2:            #ffffff;
+  --cos-bg3:        #e2ece9;
+  --bg3:            #e2ece9;
+
+  /* 3. Campos e inputs: Gama verde suave */
+  --cos-surface2:   #f0f7f6;    /* campos: tinte verde muy suave */
+  --surface2:       #f0f7f6;
+  --cos-surface3:   #e2ece9;    /* hover en campos / opciones */
+  --surface3:       #e2ece9;
+
+  /* 4. Tipografía y textos sobre fondos claros */
+  --cos-text:       #14262D;    /* Texto principal: verde oscuro profundo */
+  --text:           #14262D;
+  --cos-text2:      #3d565e;    /* Texto secundario */
+  --text2:          #3d565e;
+  --cos-text3:      #5a757e;    /* Texto tenue / placeholders */
+  --text3:          #5a757e;
+  --cos-text-hdr:   #F4F5F0;    /* Texto sobre headers oscuros (blanco) */
+
+  /* 5. Acento y Bordes */
+  --cos-accent:     #2ABFB0;
+  --accent:         #2ABFB0;
+  --cos-border:     rgba(42, 191, 176, 0.35);
+  --border:         rgba(42, 191, 176, 0.35);
+  --cos-border2:    rgba(20, 38, 45, 0.12);
+  --border2:        rgba(20, 38, 45, 0.12);
+  --cos-border3:    rgba(20, 38, 45, 0.06);
+  --border3:        rgba(20, 38, 45, 0.06);
+
+  /* Kanban estados en modo claro */
+  --cos-estado-nueva-bg:   rgba(91,163,245,0.08);
+  --cos-estado-eval-bg:    rgba(245,211,90,0.09);
+  --cos-estado-trans-bg:   rgba(39,174,96,0.08);
+  --cos-estado-desc-bg:    rgba(120,120,120,0.06);
+
+  --col-nueva-bg:  var(--cos-estado-nueva-bg);
+  --col-eval-bg:   var(--cos-estado-eval-bg);
+  --col-trans-bg:  var(--cos-estado-trans-bg);
+  --col-desc-bg:   var(--cos-estado-desc-bg);
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+ *  REGLAS UNIVERSALES DE MODO CLARO (MAIN #a4b8b4, CARDS BLANCAS)
+ * ══════════════════════════════════════════════════════════════════════ */
+body.light {
+  background-color: #a4b8b4 !important;
+  color: #14262D !important;
+}
+
+/* Background del main y de los lienzos detrás de las cards: SIEMPRE #a4b8b4 */
+body.light .container,
+body.light .main,
+body.light .app,
+body.light .shell-main,
+body.light .split-view,
+body.light .left-panel,
+body.light .right-panel,
+body.light .panel,
+body.light .vb-panel,
+body.light .kcol-cards,
+body.light .kanban-board,
+body.light #moduleContainer,
+body.light .module-container {
+  background-color: #a4b8b4 !important;
+}
+
+/* Contenedores y Cards: Blanco puro contrastando sobre #a4b8b4 */
+body.light .card,
+body.light .config-card,
+body.light .search-card,
+body.light .table-container,
+body.light .kanban-column,
+body.light .idea-card,
+body.light .gc,
+body.light .modal,
+body.light .modal-content {
+  background-color: #ffffff !important;
+  border-color: rgba(20, 38, 45, 0.12) !important;
+  box-shadow: 0 2px 8px rgba(20, 38, 45, 0.06) !important;
+}
+
+/* Campos, inputs y selectores: Gama verde suave con borde verde */
+body.light input,
+body.light select,
+body.light textarea,
+body.light .omnibox-wrapper,
+body.light .dropdown-trigger,
+body.light .filter-pill,
+body.light .select-custom,
+body.light .recent-tag {
+  background-color: #f0f7f6 !important;
+  border-color: #b2cdc7 !important;
+  color: #14262D !important;
+}
+
+body.light input:focus,
+body.light select:focus,
+body.light textarea:focus,
+body.light .omnibox-wrapper:focus-within {
+  background-color: #ffffff !important;
+  border-color: #2ABFB0 !important;
+  box-shadow: 0 0 0 2px rgba(42, 191, 176, 0.15) !important;
+}
+
+/* Tipografía de títulos en modo claro */
+body.light .vb-title {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: clamp(22px, 3vw, 30px) !important;
+  font-weight: 300 !important;
+  color: #F4F5F0 !important; /* Siempre blanco dentro del header */
+}
+
+body.light .card-title,
+body.light .config-card-title,
+body.light .modal-title {
+  font-family: 'Cormorant Garamond', Georgia, serif !important;
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  color: #14262D !important;
+}
+
+/* 1. Títulos de secciones sobre fondo main (Visual Brain, Estrategia, etc.) */
+body.light .sec-title {
+  color: #ffffff !important;
+  font-weight: 300 !important;
+  text-shadow: 0 1px 3px rgba(20, 38, 45, 0.3) !important;
+}
+body.light .sec-title em {
+  color: #14262D !important;
+  font-style: italic !important;
+  font-weight: 600 !important;
+}
+body.light .sec-desc {
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+body.light .sec-label {
+  color: #14262D !important;
+  font-weight: 700 !important;
+}
+body.light .sec-label i {
+  color: #2ABFB0 !important;
+}
+
+/* 2. Pestañas en Spy System y módulos sobre fondo #a4b8b4 */
+body.light .tabs-container {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+body.light .tab-btn {
+  color: #ffffff !important;
+  opacity: 0.9 !important;
+  font-weight: 600 !important;
+  text-shadow: 0 1px 2px rgba(20, 38, 45, 0.25) !important;
+}
+body.light .tab-btn:hover {
+  opacity: 1 !important;
+  color: #ffffff !important;
+}
+body.light .tab-btn.active {
+  color: #ffffff !important;
+  border-bottom: 3px solid #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* 3. Columnas Kanban en Depósito de Ideas */
+body.light .kcol-nueva {
+  background: #eff6ff !important;
+  border: 2px solid #3b82f6 !important;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.12) !important;
+}
+body.light .kcol-nueva .kcol-title { color: #1d4ed8 !important; }
+body.light .kcol-nueva .kdot { background: #3b82f6 !important; }
+
+body.light .kcol-eval {
+  background: #fffbeb !important;
+  border: 2px solid #f59e0b !important;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.12) !important;
+}
+body.light .kcol-eval .kcol-title { color: #b45309 !important; }
+body.light .kcol-eval .kdot { background: #f59e0b !important; }
+
+body.light .kcol-trans {
+  background: #ecfdf5 !important;
+  border: 2px solid #10b981 !important;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.12) !important;
+}
+body.light .kcol-trans .kcol-title { color: #047857 !important; }
+body.light .kcol-trans .kdot { background: #10b981 !important; }
+
+body.light .kcol-desc {
+  background: #f8fafc !important;
+  border: 2px solid #64748b !important;
+  box-shadow: 0 2px 8px rgba(100, 116, 139, 0.12) !important;
+}
+body.light .kcol-desc .kcol-title { color: #334155 !important; }
+body.light .kcol-desc .kdot { background: #64748b !important; }
+
+/* 4. Calendario Editorial: Fondo 100% blanco y pills sólidas */
+body.light .cal-content-area,
+body.light .month-full-panel,
+body.light .cal-month-table,
+body.light .weekly-panel,
+body.light .week-grid,
+body.light .allday-row,
+body.light .cal-sidebar-right {
+  background-color: #ffffff !important;
+}
+body.light .cal-month-table td {
+  background-color: #ffffff !important;
+  border-right: 1px solid #d0e8e4 !important;
+  border-bottom: 1px solid #d0e8e4 !important;
+}
+body.light .cal-month-table td.other-month {
+  background-color: #f8fafc !important;
+  opacity: 0.55 !important;
+}
+body.light .cal-month-table td.today {
+  background-color: rgba(42, 191, 176, 0.08) !important;
+}
+body.light .day-cell,
+body.light .allday-cell {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #d0e8e4 !important;
+  border-right: 1px solid #d0e8e4 !important;
+}
+body.light .plat-chip {
+  background-color: #ffffff !important;
+  border: 1px solid #b2cdc7 !important;
+  color: #14262D !important;
+  font-weight: 600 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+}
+body.light .plat-ig.on { background: #e1306c !important; color: #ffffff !important; border-color: #e1306c !important; }
+body.light .plat-tk.on { background: #000000 !important; color: #ffffff !important; border-color: #000000 !important; }
+body.light .plat-fb.on { background: #1877f2 !important; color: #ffffff !important; border-color: #1877f2 !important; }
+body.light .plat-yt.on { background: #ff0000 !important; color: #ffffff !important; border-color: #ff0000 !important; }
+body.light .config-btn {
+  background-color: #ffffff !important;
+  border: 1px solid #b2cdc7 !important;
+  color: #14262D !important;
+  font-weight: 600 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+}
+body.light .config-btn:hover {
+  background-color: #e2ece9 !important;
+  border-color: #2ABFB0 !important;
+  color: #2ABFB0 !important;
+}
+body.light .ms-bar-chip {
+  background-color: #ffffff !important;
+  border: 1px solid #b2cdc7 !important;
+  color: #14262D !important;
+  font-weight: 600 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+body.light .ms-bar-label {
+  color: #14262D !important;
+  font-weight: 700 !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+ *  COMPONENTE HEADER — .vb-header
+ *  CSS completo del header. Los módulos NO deben redeclarar esto.
+ *  Solo agregar `<link rel="stylesheet" href="../design-tokens.css">`.
+ * ══════════════════════════════════════════════════════════════════════ */
+
+/* Layout base */
+.vb-header {
+  background: linear-gradient(135deg, #14262D 0%, #1F434E 100%) !important;
+  border-bottom: 1px solid rgba(42,191,176,0.2) !important;
+  color: #F4F5F0 !important;
+  padding: 1.25rem 2rem;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-shrink: 0;
+}
+
+/* Decoración — orbe superior derecho */
+.vb-header::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  right: -100px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: #2ABFB0;
+  opacity: 0.04;
+  pointer-events: none;
+}
+
+/* Decoración — orbe inferior izquierdo */
+.vb-header::after {
+  content: '';
+  position: absolute;
+  bottom: -60px;
+  left: 5%;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: #CCC2A7;
+  opacity: 0.03;
+  pointer-events: none;
+}
+
+/* Lado izquierdo: título + badges */
+.vb-header-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 1;
+  min-width: 0;
+}
+
+/* Lado derecho: botones de acción */
+.vb-header-actions {
+  z-index: 1;
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+/* Título principal */
+.vb-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 300;
+  color: #F4F5F0;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.vb-title em {
+  color: #2ABFB0;
+  font-style: italic;
+}
+
+/* Subtítulo / descripción */
+.vb-sub {
+  font-size: 12px;
+  color: #9db8c0;
+  line-height: 1.4;
+}
+
+/* Fila de badges informativos */
+.vb-badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.vb-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 11px;
+  border-radius: 20px;
+  background: rgba(42,191,176,0.10);
+  border: 1px solid rgba(42,191,176,0.25);
+  font-size: 11px;
+  font-weight: 500;
+  color: #2ABFB0;
+}
+
+/* Separador vertical entre grupos de acciones */
+.vb-header-sep {
+  width: 1px;
+  height: 28px;
+  background: rgba(255,255,255,0.12);
+  flex-shrink: 0;
+}
+
+/* Protección universal de inputs de búsqueda con lupa */
+.search-wrap, .search-wrapper {
+  position: relative !important;
+}
+.search-wrap i, .search-wrapper i {
+  position: absolute !important;
+  left: 14px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  pointer-events: none !important;
+  z-index: 2 !important;
+}
+.search-wrap input,
+.search-wrap input[type="text"],
+.search-wrapper input,
+.search-wrapper input[type="text"] {
+  padding-left: 38px !important;
+}

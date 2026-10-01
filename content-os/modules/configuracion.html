@@ -1,10 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configuración — Content OS</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../design-tokens.css">
     <link rel="stylesheet" href="../design-system.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <style>
@@ -26,86 +27,15 @@
             padding: 2rem;
         }
 
-        /* ── HEADER PREMIUM ── */
-        .vb-header {
-            background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
-            border-bottom: 1px solid var(--border);
-            padding: 1.25rem 2rem;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1.5rem;
-            flex-shrink: 0;
-        }
-        .vb-header::before {
-            content: '';
-            position: absolute;
-            top: -100px;
-            right: -100px;
-            width: 320px;
-            height: 320px;
-            border-radius: 50%;
-            background: var(--accent);
-            opacity: 0.04;
-            pointer-events: none;
-        }
-        .vb-header::after {
-            content: '';
-            position: absolute;
-            bottom: -60px;
-            left: 5%;
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background: var(--beige);
-            opacity: 0.03;
-            pointer-events: none;
-        }
-        .vb-header-main {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            z-index: 1;
-            min-width: 0;
-        }
-        .vb-header-actions {
-            z-index: 1;
-            flex-shrink: 0;
-        }
-        .vb-title {
-            font-family: var(--f-display);
-            font-size: clamp(22px, 3vw, 30px);
-            font-weight: 300;
-            color: var(--text);
-            line-height: 1.1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin: 0;
-        }
-        .vb-title em {
-            color: var(--accent);
-            font-style: italic;
-        }
-        .vb-badges {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-        .vb-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 4px 11px;
-            border-radius: 20px;
-            background: rgba(42, 191, 176, 0.1);
-            border: 1px solid rgba(42, 191, 176, 0.25);
-            font-size: 11px;
-            font-weight: 500;
-            color: var(--accent);
-        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         .config-grid {
             display: grid;
@@ -304,6 +234,7 @@
             <button class="tab active" id="tab-system" style="padding: 0.75rem 0.5rem; font-weight: 600; cursor: pointer;"><i class="ti ti-settings"></i> Configuración de Sistema</button>
             <button class="tab" id="tab-video-formats" style="padding: 0.75rem 0.5rem; font-weight: 600; cursor: pointer;"><i class="ti ti-video"></i> Formatos de Video</button>
             <button class="tab" id="tab-topics" style="padding: 0.75rem 0.5rem; font-weight: 600; cursor: pointer;"><i class="ti ti-tags"></i> Temas Personalizables</button>
+            <button class="tab" id="tab-dropdowns" style="padding: 0.75rem 0.5rem; font-weight: 600; cursor: pointer;"><i class="ti ti-list-details"></i> Listas de Dropdowns</button>
             <button class="tab" id="tab-activity" style="padding: 0.75rem 0.5rem; font-weight: 600; cursor: pointer;"><i class="ti ti-history"></i> Historial de Actividad</button>
             <button class="tab" id="tab-user-profile" style="padding: 0.75rem 0.5rem; font-weight: 600; cursor: pointer;"><i class="ti ti-user"></i> Mi Perfil</button>
         </div>
@@ -497,10 +428,19 @@
                                 </details>
                             </div>
 
-                            <div style="display:flex; gap:8px;">
+                            <!-- Badge de estado — siempre visible, muestra qué hay guardado -->
+                            <div id="insta-saved-status" style="font-size:11.5px; padding:7px 10px; background:var(--bg); border:1px solid var(--border2); border-radius:var(--r-xs); line-height:1.4; margin-bottom:6px;">
+                                Sin configurar
+                            </div>
+
+                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
                                 <button class="btn btn-primary" style="flex:1; font-size:12px; padding:7px 10px;" onclick="guardarClaveInstagram()"><i class="ti ti-device-floppy"></i> Guardar</button>
                                 <button class="btn btn-outline" style="flex:1; font-size:12px; padding:7px 10px;" onclick="probarClaveInstagram()" id="btn-test-insta-config"><i class="ti ti-flask"></i> Probar</button>
+                                <button class="btn btn-outline" style="flex:1; font-size:12px; padding:7px 10px; border-color:#f5a623; color:#f5a623;" onclick="debugInstagram()" id="btn-debug-insta"><i class="ti ti-bug"></i> Debug</button>
                             </div>
+
+                            <!-- Panel de resultados de debug -->
+                            <div id="insta-debug-result" style="display:none; margin-top:8px; background:var(--bg); border:1px solid #f5a62366; border-radius:var(--r-xs); padding:10px; font-size:10.5px; font-family:monospace; line-height:1.6; max-height:320px; overflow-y:auto; white-space:pre-wrap; word-break:break-all;"></div>
                         </div>
                     </div>
                 </div>
@@ -635,6 +575,104 @@
                 </div>
             </div>
         </div>
+
+        <!-- SECCIÓN DE LISTAS DE LOS DROPDOWNS -->
+        <div id="section-dropdowns" style="display: none;">
+            <div style="margin-bottom: 1.5rem;">
+                <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px;">
+                    <i class="ti ti-list-details" style="color:var(--accent);"></i> Gestión de Listas de Dropdowns
+                </h2>
+                <p style="font-size: 12.5px; color: var(--text2); margin-top: 4px; line-height: 1.4;">
+                    Personaliza las opciones que aparecen en los menús desplegables del Depósito de Ideas y otros módulos. Los elementos que agregues aquí o mediante la opción <em>"Otro"</em> se sincronizarán automáticamente.
+                </p>
+            </div>
+
+            <div class="config-grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+                <!-- TARJETA: PILARES -->
+                <div class="config-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h2 class="config-card-title" style="margin: 0;"><i class="ti ti-pillar"></i> Pilares de Contenido</h2>
+                        <button class="btn btn-outline" style="font-size: 11px; padding: 4px 8px;" onclick="resetDropdownList('pilar')"><i class="ti ti-rotate"></i> Por defecto</button>
+                    </div>
+                    <p style="font-size: 11.5px; color: var(--text3); margin-bottom: 12px;">Ejes estratégicos del contenido (ej: Educación, Mitos, Autoridad humana).</p>
+                    
+                    <div id="dropdown-items-pilar" style="display: flex; flex-wrap: wrap; gap: 6px; min-height: 80px; align-content: flex-start; padding: 10px; background: var(--bg); border: 1px solid var(--border2); border-radius: var(--radius); margin-bottom: 12px;">
+                        <!-- Se llena con JS -->
+                    </div>
+
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="input-new-pilar" placeholder="Nuevo pilar..." style="flex: 1;" onkeydown="if(event.key==='Enter'){addDropdownItem('pilar')}">
+                        <button class="btn btn-primary" onclick="addDropdownItem('pilar')" style="padding: 7px 12px; font-size: 12px;"><i class="ti ti-plus"></i> Agregar</button>
+                    </div>
+                </div>
+
+                <!-- TARJETA: FORMATOS -->
+                <div class="config-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h2 class="config-card-title" style="margin: 0;"><i class="ti ti-layout-grid"></i> Formatos de Idea</h2>
+                        <button class="btn btn-outline" style="font-size: 11px; padding: 4px 8px;" onclick="resetDropdownList('formato')"><i class="ti ti-rotate"></i> Por defecto</button>
+                    </div>
+                    <p style="font-size: 11.5px; color: var(--text3); margin-bottom: 12px;">Tipo de pieza visual o audiovisual a producir (ej: Reel, Carrusel, Historia).</p>
+                    
+                    <div id="dropdown-items-formato" style="display: flex; flex-wrap: wrap; gap: 6px; min-height: 80px; align-content: flex-start; padding: 10px; background: var(--bg); border: 1px solid var(--border2); border-radius: var(--radius); margin-bottom: 12px;">
+                        <!-- Se llena con JS -->
+                    </div>
+
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="input-new-formato" placeholder="Nuevo formato..." style="flex: 1;" onkeydown="if(event.key==='Enter'){addDropdownItem('formato')}">
+                        <button class="btn btn-primary" onclick="addDropdownItem('formato')" style="padding: 7px 12px; font-size: 12px;"><i class="ti ti-plus"></i> Agregar</button>
+                    </div>
+                </div>
+
+                <!-- TARJETA: TEMAS -->
+                <div class="config-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h2 class="config-card-title" style="margin: 0;"><i class="ti ti-tags"></i> Temas de Contenido</h2>
+                        <button class="btn btn-outline" style="font-size: 11px; padding: 4px 8px;" onclick="resetDropdownList('tema')"><i class="ti ti-rotate"></i> Por defecto</button>
+                    </div>
+                    <p style="font-size: 11.5px; color: var(--text3); margin-bottom: 12px;">Áreas médicas o tópicos tratados (ej: Bariátrica, Hernia, Reflujo).</p>
+                    
+                    <div id="dropdown-items-tema" style="display: flex; flex-wrap: wrap; gap: 6px; min-height: 80px; align-content: flex-start; padding: 10px; background: var(--bg); border: 1px solid var(--border2); border-radius: var(--radius); margin-bottom: 12px;">
+                        <!-- Se llena con JS -->
+                    </div>
+
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="input-new-tema" placeholder="Nuevo tema..." style="flex: 1;" onkeydown="if(event.key==='Enter'){addDropdownItem('tema')}">
+                        <button class="btn btn-primary" onclick="addDropdownItem('tema')" style="padding: 7px 12px; font-size: 12px;"><i class="ti ti-plus"></i> Agregar</button>
+                    </div>
+                </div>
+
+                <!-- TARJETA: PRIORIDAD -->
+                <div class="config-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h2 class="config-card-title" style="margin: 0;"><i class="ti ti-flag"></i> Niveles de Prioridad</h2>
+                        <button class="btn btn-outline" style="font-size: 11px; padding: 4px 8px;" onclick="resetDropdownList('prioridad')"><i class="ti ti-rotate"></i> Por defecto</button>
+                    </div>
+                    <p style="font-size: 11.5px; color: var(--text3); margin-bottom: 12px;">Urgencia para clasificar cada idea (ej: Alta, Media, Baja).</p>
+                    <div id="dropdown-items-prioridad" style="display: flex; flex-wrap: wrap; gap: 6px; min-height: 80px; align-content: flex-start; padding: 10px; background: var(--bg); border: 1px solid var(--border2); border-radius: var(--radius); margin-bottom: 12px;"></div>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="input-new-prioridad" placeholder="Nueva prioridad..." style="flex: 1;" onkeydown="if(event.key==='Enter'){addDropdownItem('prioridad')}">
+                        <button class="btn btn-primary" onclick="addDropdownItem('prioridad')" style="padding: 7px 12px; font-size: 12px;"><i class="ti ti-plus"></i> Agregar</button>
+                    </div>
+                </div>
+
+                <!-- TARJETA: ETIQUETAS -->
+                <div class="config-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <h2 class="config-card-title" style="margin: 0;"><i class="ti ti-bookmark"></i> Etiquetas (Tags)</h2>
+                        <button class="btn btn-outline" style="font-size: 11px; padding: 4px 8px;" onclick="resetDropdownList('etiquetas')"><i class="ti ti-rotate"></i> Por defecto</button>
+                    </div>
+                    <p style="font-size: 11.5px; color: var(--text3); margin-bottom: 12px;">Palabras clave para agrupar y filtrar ideas rápidamente.</p>
+                    <div id="dropdown-items-etiquetas" style="display: flex; flex-wrap: wrap; gap: 6px; min-height: 80px; align-content: flex-start; padding: 10px; background: var(--bg); border: 1px solid var(--border2); border-radius: var(--radius); margin-bottom: 12px;"></div>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="input-new-etiquetas" placeholder="Nueva etiqueta..." style="flex: 1;" onkeydown="if(event.key==='Enter'){addDropdownItem('etiquetas')}">
+                        <button class="btn btn-primary" onclick="addDropdownItem('etiquetas')" style="padding: 7px 12px; font-size: 12px;"><i class="ti ti-plus"></i> Agregar</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
 
         <!-- SECCIÓN DE HISTORIAL DE ACTIVIDAD -->
         <div id="section-activity" style="display: none;">
@@ -852,31 +890,30 @@
         });
         window.parent.postMessage({ type: 'IFRAME_READY' }, '*');
 
+        // Definida aquí (antes del DOMContentLoaded) para que esté disponible cuando se llama durante el init
+        window.toggleInstaFields = () => {
+            const methodEl = document.getElementById('insta-method');
+            if (!methodEl) return;
+            const method = methodEl.value;
+            const hikerField = document.getElementById('field-hikerapi');
+            const sessionField = document.getElementById('field-session');
+            if (hikerField) hikerField.style.display = method === 'hikerapi' ? 'block' : 'none';
+            if (sessionField) sessionField.style.display = method === 'session' ? 'block' : 'none';
+        };
+
         // Cargar claves e información al iniciar
-        window.addEventListener('DOMContentLoaded', () => {
-            // Cargar las claves
+        // El script está al fondo del <body> → DOMContentLoaded ya ocurrió → llamar directo
+        function initConfig() {
             document.getElementById('key-gemini-flash').value = localStorage.getItem('ai_key_gemini_flash') || localStorage.getItem('gemini_api_key') || '';
             document.getElementById('key-gemini-pro').value   = localStorage.getItem('ai_key_gemini_pro')   || localStorage.getItem('gemini_api_key') || '';
             document.getElementById('key-claude').value       = localStorage.getItem('ai_key_claude')        || '';
-            document.getElementById('key-hikerapi').value = localStorage.getItem('hikerapi_key') || '';
+            document.getElementById('key-hikerapi').value     = localStorage.getItem('hikerapi_key') || '';
             document.getElementById('key-instagram-session').value = localStorage.getItem('instagram_session_id') || '';
+
             const activeMethod = localStorage.getItem('instagram_method') || 'hikerapi';
             document.getElementById('insta-method').value = activeMethod;
-            // SEGURIDAD: la sesión de Instagram y la clave de HikerAPI ya NO se leen ni se
-            // guardan en Supabase (tabla 'global_settings'), porque esa tabla es legible
-            // por cualquiera que tenga la clave anon del sitio. Estos dos secretos viven
-            // únicamente en el localStorage de este navegador. Cada colaborador que necesite
-            // usar el spy-system debe introducir su propia clave aquí, en su propio equipo.
-            if (typeof window.toggleInstaFields === 'function') {
-                window.toggleInstaFields();
-            }
-
-            // Delay toggle just in case the DOM elements are resolving
-            setTimeout(() => {
-                if (typeof window.toggleInstaFields === 'function') {
-                    window.toggleInstaFields();
-                }
-            }, 100);
+            window.toggleInstaFields();
+            updateInstaStatus();
 
             // Cargar modelo activo
             const activeModel = localStorage.getItem('ai_active_model') || 'gemini-flash';
@@ -906,7 +943,7 @@
             });
 
             checkBackendConnection();
-        });
+        }
 
         // Iluminar la tarjeta del modelo activo
         function actualizarTarjetasModelo(model) {
@@ -1063,11 +1100,33 @@
         // Alias retrocompatible
         window.testApiKey = () => window.probarClave('gemini-flash');
 
-        window.toggleInstaFields = () => {
-            const method = document.getElementById('insta-method').value;
-            document.getElementById('field-hikerapi').style.display = method === 'hikerapi' ? 'block' : 'none';
-            document.getElementById('field-session').style.display = method === 'session' ? 'block' : 'none';
-        };
+        // (toggleInstaFields ya está definida antes del DOMContentLoaded)
+
+        // Muestra un badge de estado persistente para que el usuario siempre sepa qué hay guardado
+        function updateInstaStatus() {
+            const method = localStorage.getItem('instagram_method') || 'hikerapi';
+            const hikerKey = localStorage.getItem('hikerapi_key') || '';
+            const sessionId = localStorage.getItem('instagram_session_id') || '';
+            const statusEl = document.getElementById('insta-saved-status');
+            if (!statusEl) return;
+
+            if (method === 'session' && sessionId) {
+                const preview = sessionId.slice(0, 18) + '...';
+                statusEl.innerHTML = `<span style="color:#2abfb0; font-weight:600;">✅ Activo: Cookie de Sesión</span> <span style="opacity:.6; font-size:10px; font-family:monospace;">${preview}</span>`;
+                statusEl.style.display = 'block';
+            } else if (method === 'hikerapi' && hikerKey) {
+                statusEl.innerHTML = `<span style="color:#2abfb0; font-weight:600;">✅ Activo: HikerAPI</span> <span style="opacity:.6; font-size:10px; font-family:monospace;">${hikerKey.slice(0,12)}...</span>`;
+                statusEl.style.display = 'block';
+            } else if (sessionId) {
+                // Hay cookie guardada pero el método dice hikerapi (inconsistencia)
+                const preview = sessionId.slice(0, 18) + '...';
+                statusEl.innerHTML = `<span style="color:#f5a623; font-weight:600;">⚠️ Cookie guardada pero método = HikerAPI.</span> Cambia el selector a "Session Cookie" y guarda.`;
+                statusEl.style.display = 'block';
+            } else {
+                statusEl.innerHTML = `<span style="color:var(--text3);">Sin configurar</span>`;
+                statusEl.style.display = 'block';
+            }
+        }
 
         window.guardarClaveInstagram = async () => {
             const method = document.getElementById('insta-method').value;
@@ -1079,14 +1138,19 @@
             localStorage.setItem('hikerapi_key', hikerKey);
             localStorage.setItem('instagram_session_id', sessionVal);
             
-            // SEGURIDAD: ya no se sincroniza con Supabase ('global_settings'). Estos son
-            // secretos sensibles (la sesión de Instagram equivale a acceso a la cuenta) y
-            // esa tabla es legible por cualquiera con la clave anon pública del sitio.
-            // Se guardan solo en este navegador.
-            
             window.parent.postMessage({ type: 'API_CONFIG_UPDATE' }, '*');
-            alert('Configuración de Instagram guardada en este dispositivo (ya no se sincroniza con la base de datos por seguridad).');
+            updateInstaStatus(); // Actualizar badge de estado inmediatamente
+            
+            // Toast visual en lugar de alert bloqueante
+            const btn = document.querySelector('[onclick="guardarClaveInstagram()"]');
+            if (btn) {
+                const orig = btn.innerHTML;
+                btn.innerHTML = '<i class="ti ti-check"></i> ¡Guardado!';
+                btn.style.background = '#2abfb0';
+                setTimeout(() => { btn.innerHTML = orig; btn.style.background = ''; }, 2000);
+            }
         };
+
 
         window.probarClaveInstagram = async () => {
             const method = document.getElementById('insta-method').value;
@@ -1385,9 +1449,12 @@
 
         let videoFormatsList = [];
 
+        const tabDropdowns = document.getElementById('tab-dropdowns');
+        const sectionDropdowns = document.getElementById('section-dropdowns');
+
         function activateTab(tabBtn, sectionEl) {
-            [tabSystem, tabVideoFormats, tabTopics, tabActivity, tabUserProfile].forEach(t => t?.classList.remove('active'));
-            [sectionSystem, sectionVideoFormats, sectionTopics, sectionActivity, sectionUserProfile].forEach(s => {
+            [tabSystem, tabVideoFormats, tabTopics, tabDropdowns, tabActivity, tabUserProfile].forEach(t => t?.classList.remove('active'));
+            [sectionSystem, sectionVideoFormats, sectionTopics, sectionDropdowns, sectionActivity, sectionUserProfile].forEach(s => {
                 if (s) s.style.display = 'none';
             });
             tabBtn?.classList.add('active');
@@ -1402,6 +1469,10 @@
         tabTopics?.addEventListener('click', () => {
             activateTab(tabTopics, sectionTopics);
             loadTopics();
+        });
+        tabDropdowns?.addEventListener('click', () => {
+            activateTab(tabDropdowns, sectionDropdowns);
+            loadDropdownsManager();
         });
         tabActivity?.addEventListener('click', () => {
             activateTab(tabActivity, sectionActivity);
@@ -1972,6 +2043,107 @@
             document.getElementById('topic-name-input').focus();
         }
 
+        // ── GESTIÓN DE LISTAS DE DROPDOWNS (PILARES, FORMATOS, TEMAS) ──
+        const DEFAULT_DROPDOWN_LISTS = {
+            pilar: ['Validación emocional', 'Educación premium', 'Contrarian / Mitos', 'Autoridad humana', 'Transformación de vida', 'Conversión directa'],
+            formato: ['Reel', 'Carrusel', 'Historia', 'Publicación', 'En vivo', 'Preguntas'],
+            tema: ['Bariátrica', 'Hernia', 'Reflujo', 'Vesícula', 'Metabólico', 'Marca personal', 'Equipo'],
+            prioridad: ['Alta', 'Media', 'Baja'],
+            etiquetas: ['metabolismo', 'mitos', 'comparativa', 'equipo', 'paciente', 'cirugia', 'nutricion']
+        };
+
+        function getDropdownItems(key) {
+            try {
+                const raw = localStorage.getItem('cos_list_' + key);
+                if (raw) {
+                    const arr = JSON.parse(raw);
+                    if (Array.isArray(arr) && arr.length > 0) return arr;
+                }
+            } catch(e) {}
+            return [...(DEFAULT_DROPDOWN_LISTS[key] || [])];
+        }
+
+        function saveDropdownItems(key, arr) {
+            localStorage.setItem('cos_list_' + key, JSON.stringify(arr));
+            window.parent.postMessage({ type: 'LISTS_UPDATE' }, '*');
+        }
+
+        function loadDropdownsManager() {
+            renderDropdownManager('pilar');
+            renderDropdownManager('formato');
+            renderDropdownManager('tema');
+            renderDropdownManager('prioridad');
+            renderDropdownManager('etiquetas');
+        }
+
+        function renderDropdownManager(key) {
+            const container = document.getElementById('dropdown-items-' + key);
+            if (!container) return;
+            const items = getDropdownItems(key);
+            container.innerHTML = '';
+            if (items.length === 0) {
+                container.innerHTML = '<span style="color:var(--text3); font-size:11px; font-style:italic;">Lista vacía</span>';
+                return;
+            }
+            items.forEach((item, index) => {
+                const tag = document.createElement('div');
+                tag.style.display = 'inline-flex';
+                tag.style.alignItems = 'center';
+                tag.style.gap = '6px';
+                tag.style.padding = '4px 10px';
+                tag.style.background = 'var(--surface2)';
+                tag.style.border = '1px solid var(--border)';
+                tag.style.borderRadius = 'var(--r-sm)';
+                tag.style.fontSize = '11.5px';
+                tag.style.color = 'var(--text)';
+                tag.innerHTML = `<span>${item}</span><i class="ti ti-x" style="cursor:pointer; color:var(--text3); font-size:11px; margin-left:4px;" title="Eliminar" onclick="removeDropdownItem('${key}', ${index})"></i>`;
+                const icon = tag.querySelector('i');
+                if (icon) {
+                    icon.onmouseover = function() { this.style.color = 'var(--danger)'; };
+                    icon.onmouseout = function() { this.style.color = 'var(--text3)'; };
+                }
+                container.appendChild(tag);
+            });
+        }
+
+        window.addDropdownItem = function(key) {
+            const inp = document.getElementById('input-new-' + key);
+            if (!inp) return;
+            const val = inp.value.trim();
+            if (!val) {
+                inp.focus();
+                return;
+            }
+            const items = getDropdownItems(key);
+            if (!items.includes(val)) {
+                items.push(val);
+                saveDropdownItems(key, items);
+                renderDropdownManager(key);
+                logActivity('Edición Listas', `Se agregó "${val}" a la lista de ${key}`);
+            }
+            inp.value = '';
+            inp.focus();
+        };
+
+        window.removeDropdownItem = function(key, index) {
+            const items = getDropdownItems(key);
+            if (index >= 0 && index < items.length) {
+                const removed = items.splice(index, 1);
+                saveDropdownItems(key, items);
+                renderDropdownManager(key);
+                logActivity('Edición Listas', `Se eliminó "${removed[0]}" de la lista de ${key}`);
+            }
+        };
+
+        window.resetDropdownList = function(key) {
+            if (confirm(`¿Restablecer la lista de ${key} a sus valores predeterminados?`)) {
+                saveDropdownItems(key, [...(DEFAULT_DROPDOWN_LISTS[key] || [])]);
+                renderDropdownManager(key);
+            }
+        };
+
+        window.loadDropdownsManager = loadDropdownsManager;
+
         // Bind filter event listeners
         document.getElementById('log-search-user').addEventListener('input', applyLogFilters);
         document.getElementById('log-filter-action').addEventListener('change', applyLogFilters);
@@ -2218,6 +2390,58 @@
             activateTab(tabUserProfile, sectionUserProfile);
             loadUserProfile();
         }
+
+
+        window.debugInstagram = async () => {
+            const sessionCookie = localStorage.getItem('instagram_session_id') || '';
+            const resultEl = document.getElementById('insta-debug-result');
+            const btn = document.getElementById('btn-debug-insta');
+            if (!sessionCookie) {
+                resultEl.textContent = '⚠️ No hay cookie guardada. Pega la cookie y guarda primero.';
+                resultEl.style.display = 'block';
+                return;
+            }
+            btn.innerHTML = '<i class="ti ti-loader ti-spin"></i> Analizando...';
+            btn.disabled = true;
+            resultEl.textContent = '⏳ Probando 4 endpoints de Instagram, espera ~10s...';
+            resultEl.style.display = 'block';
+
+            try {
+                const res = await fetch('/api/debug-instagram', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ session: sessionCookie })
+                });
+                const data = await res.json();
+
+                let out = `━━ COOKIE INFO ━━\n`;
+                out += `Partes detectadas: ${(data.cookieParts||[]).join(', ') || 'ninguna'}\n`;
+                out += `csrftoken: ${data.csrfTokenPreview}\n`;
+                out += `ds_user_id: ${data.userIdFromCookie}\n`;
+                out += `Longitud total: ${data.cookieLength} chars\n\n`;
+                out += `━━ RESULTADOS DE ENDPOINTS ━━\n`;
+                for (const p of (data.probes || [])) {
+                    const icon = p.error ? '💥' : p.isHtml ? '🔴 HTML' : p.ok ? '✅' : `⚠️ ${p.status}`;
+                    out += `\n[${icon}] ${p.label}\n`;
+                    out += `  URL: ${p.url}\n`;
+                    if (p.error) {
+                        out += `  Error: ${p.error}\n`;
+                    } else {
+                        out += `  Status: ${p.status} | ContentType: ${p.contentType}\n`;
+                        out += `  Body: ${(p.body||'').slice(0,200)}\n`;
+                    }
+                }
+                resultEl.textContent = out;
+            } catch(e) {
+                resultEl.textContent = '❌ Error llamando debug: ' + e.message;
+            } finally {
+                btn.innerHTML = '<i class="ti ti-bug"></i> Debug';
+                btn.disabled = false;
+            }
+        };
+
+        // Inicializar config — debe ir al FINAL del script para que todas las funciones estén definidas
+        initConfig();
     </script>
 </body>
 </html>

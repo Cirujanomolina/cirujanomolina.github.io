@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Content OS — Dr. Molina</title>
+    <link rel="stylesheet" href="design-tokens.css">
     <link rel="stylesheet" href="design-system.css">
     <style>
         /* Shell Specific Layout */
@@ -273,6 +274,12 @@
             display: block;
         }
 
+        /* Tema light: solo el área de módulos cambia a #a4b8b4, sidebar queda dark */
+        .module-container.light {
+            background: #a4b8b4;
+        }
+
+
         /* FAB for mobile */
         .fab {
             display: none;
@@ -487,6 +494,9 @@
 
             <!-- FOOTER OPTIONS -->
             <div class="sidebar-foot">
+                <a class="foot-icon-btn" id="themeToggleBtn" title="Cambiar Tema (Claro / Oscuro)">
+                    <i class="ti ti-sun" id="themeIcon"></i>
+                </a>
                 <a class="foot-icon-btn" id="archiveBtn" title="Archivo Protegido">
                     <i class="ti ti-archive"></i>
                 </a>
@@ -503,7 +513,7 @@
         </aside>
 
         <!-- CONTENEDOR MODULOS -->
-        <main class="module-container">
+        <main class="module-container" id="moduleContainer">
             <iframe id="moduleFrame" class="module-iframe" src="about:blank"></iframe>
         </main>
     </div>
@@ -577,8 +587,12 @@
         let currentModule = 'dashboard';
         let authMode = 'login'; // 'login' or 'register'
 
-        // Apply cached theme immediately
-        document.body.classList.toggle('light', isLight);
+        // Apply cached theme immediately — ONLY to module area, sidebar stays dark
+        if (isLight) {
+            // We'll set it after DOM is ready — done in DOMContentLoaded below
+        }
+        document.body.classList.remove('light'); // sidebar never gets light
+
 
         // DOM Elements
         const menuToggle = document.getElementById('menuToggle');
@@ -1018,13 +1032,65 @@
             if(window.innerWidth <= 768) toggleMenu();
         });
 
+        // Helper para sincronizar tema
+        function applyAppTheme(lightMode) {
+            isLight = !!lightMode;
+            const prefStr = isLight ? 'light' : 'dark';
+            localStorage.setItem('theme_preference', prefStr);
+            document.getElementById('moduleContainer')?.classList.toggle('light', isLight);
+            document.body.classList.remove('light'); // La sidebar del shell siempre se mantiene dark
+
+            const themeIcon = document.getElementById('themeIcon');
+            if (themeIcon) {
+                themeIcon.className = isLight ? 'ti ti-moon' : 'ti ti-sun';
+            }
+
+            try {
+                moduleFrame?.contentWindow?.postMessage({
+                    type: 'THEME_CHANGE',
+                    theme: prefStr,
+                    payload: prefStr
+                }, '*');
+            } catch(err) {}
+        }
+
+        // Botón toggle rápido en el footer de la sidebar
+        document.getElementById('themeToggleBtn')?.addEventListener('click', () => {
+            applyAppTheme(!isLight);
+        });
+
+        // Sincronización automática de tema al cargar cualquier iframe
+        moduleFrame?.addEventListener('load', () => {
+            const currentPref = localStorage.getItem('theme_preference') || 'dark';
+            try {
+                moduleFrame?.contentWindow?.postMessage({
+                    type: 'THEME_CHANGE',
+                    theme: currentPref,
+                    payload: currentPref
+                }, '*');
+                if (currentPref === 'light') {
+                    moduleFrame.contentDocument?.body?.classList.add('light');
+                } else {
+                    moduleFrame.contentDocument?.body?.classList.remove('light');
+                }
+            } catch(e) {}
+        });
+
         // Listen for messages
         window.addEventListener('message', (e) => {
             if (!e.data || !e.data.type) return;
             if (e.data.type === 'THEME_UPDATE') {
-                isLight = e.data.payload === 'light';
-                localStorage.setItem('theme_preference', e.data.payload);
-                document.body.classList.toggle('light', isLight);
+                applyAppTheme(e.data.payload === 'light');
+            }
+            if (e.data.type === 'IFRAME_READY') {
+                const currentPref = localStorage.getItem('theme_preference') || 'dark';
+                try {
+                    moduleFrame?.contentWindow?.postMessage({
+                        type: 'THEME_CHANGE',
+                        theme: currentPref,
+                        payload: currentPref
+                    }, '*');
+                } catch(err) {}
             }
             if (e.data.type === 'API_CONFIG_UPDATE') {
                 updateAPIStatusIndicator();
@@ -1045,6 +1111,10 @@
                 }
             }
         });
+
+        // Aplicar tema guardado al arrancar
+        const savedTheme = localStorage.getItem('theme_preference');
+        applyAppTheme(savedTheme === 'light');
 
         // Run session check
         validateSession();

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <link rel="stylesheet" href="../design-tokens.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Visual Brain — @cirujanomolina</title>
@@ -17,32 +18,33 @@
   --am:#C9862A;--r:12px;--rsm:8px;--rlg:16px;
 }
 body.light{
-  --bg:#F4F5F0;--bg2:#e8e4da;--bg3:#dbd6cb;
-  --sf:#ffffff;--sf2:#f0ece4;--sf3:#e6e2da;
-  --tx:#14262D;--tx2:#4a6068;--tx3:#82959c;
-  --br:rgba(42,191,176,0.3);--br2:rgba(20,38,45,0.1);--br3:rgba(20,38,45,0.05);
+  --bg:#a4b8b4;--bg2:#ffffff;--bg3:#edf2f7;
+  --sf:#ffffff;--sf2:#f0f7f6;--sf3:#e2f0ed;
+  --tx:#14262D;--tx2:#4a6068;--tx3:#7a8f96;
+  --br:rgba(42,191,176,0.3);--br2:#d0e8e4;--br3:rgba(42,191,176,0.12);
 }
+body.light .vb-nav{background:#ffffff !important;border-bottom:1px solid #d0e8e4 !important;}
+body.light .vbt{color:#4a6068 !important;}
+body.light .vbt:hover{color:#14262D !important;}
+body.light .vbt.on{color:var(--tl) !important;border-bottom-color:var(--tl) !important;}
+body.light .card{background:#ffffff !important;border-color:#d0e8e4 !important;}
+body.light .sec-title{color:#ffffff !important;font-weight:300 !important;text-shadow:0 1px 3px rgba(20,38,45,0.3) !important;}
+body.light .sec-title em{color:#14262D !important;font-style:italic !important;font-weight:600 !important;}
+body.light .sec-desc{color:rgba(255,255,255,0.95) !important;}
+body.light .sec-label{color:#14262D !important;font-weight:700 !important;}
+body.light .sec-label i{color:#2ABFB0 !important;}
 html,body{min-height:100%;background:var(--bg);color:var(--tx);font-family:'Archivo',sans-serif;font-size:13px;line-height:1.5}
 ::-webkit-scrollbar{width:3px;height:3px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:rgba(42,191,176,.2);border-radius:4px}
 
-/* ── HEADER ── */
-.vb-header{
-  background:linear-gradient(135deg,var(--bg2) 0%,var(--bg3) 100%);
-  border-bottom:1px solid var(--br);
-  padding:1.25rem 2rem 1.25rem;
-  position:relative;overflow:hidden;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-}
-.vb-header::before{content:'';position:absolute;top:-100px;right:-100px;width:320px;height:320px;border-radius:50%;background:var(--tl);opacity:.04;pointer-events:none}
-.vb-header::after{content:'';position:absolute;bottom:-60px;left:5%;width:200px;height:200px;border-radius:50%;background:var(--be);opacity:.03;pointer-events:none}
-.vb-title{font-family:'Cormorant Garamond',serif;font-size:clamp(20px,3vw,30px);font-weight:300;color:var(--tx);line-height:1.1;margin-bottom:0.75rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.vb-title em{color:var(--tl);font-style:italic}
-.vb-badges{display:flex;gap:6px;flex-wrap:wrap}
-.vb-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:20px;background:rgba(42,191,176,.1);border:1px solid rgba(42,191,176,.25);font-size:11px;font-weight:500;color:var(--tl)}
+
+
+
+
+
+
+
 
 /* ── NAV TABS ── */
 .vb-nav{
@@ -338,14 +340,16 @@ html,body{min-height:100%;background:var(--bg);color:var(--tx);font-family:'Arch
 <body>
 
 <!-- HEADER -->
-<div class="vb-header">
-  <div class="vb-title">Visual Brain · Sistema de Marca Completo</div>
-  <div class="vb-badges">
-    <span class="vb-badge"><i class="ti ti-stethoscope"></i> Cirugía Bariátrica y Metabólica</span>
-    <span class="vb-badge"><i class="ti ti-brand-instagram"></i> @cirujanomolina</span>
-    <span class="vb-badge"><i class="ti ti-map-pin"></i> Medellín, Colombia</span>
+<header class="vb-header">
+  <div class="vb-header-main">
+    <h1 class="vb-title">Visual Brain <em>· Sistema de Marca Completo</em></h1>
+    <div class="vb-badges">
+      <span class="vb-badge"><i class="ti ti-stethoscope"></i> Cirugía Bariátrica y Metabólica</span>
+      <span class="vb-badge"><i class="ti ti-brand-instagram"></i> @cirujanomolina</span>
+      <span class="vb-badge"><i class="ti ti-map-pin"></i> Medellín, Colombia</span>
+    </div>
   </div>
-</div>
+</header>
 
 <!-- NAV -->
 <div class="vb-nav">
@@ -1222,5 +1226,21 @@ window.addEventListener('message', (e) => {
 });
 window.parent.postMessage({ type: 'IFRAME_READY' }, '*');
 </script>
+
+<script>
+window.addEventListener('message', (e) => {
+    if (e.data && e.data.type === 'THEME_CHANGE') {
+        if (e.data.theme === 'light' || e.data.payload === 'light') {
+            document.body.classList.add('light');
+        } else {
+            document.body.classList.remove('light');
+        }
+    }
+});
+if (localStorage.getItem('theme_preference') === 'light') {
+    document.body.classList.add('light');
+}
+</script>
+
 </body>
 </html>

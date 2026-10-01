@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -6,7 +6,7 @@
     <title>Spy System — Content OS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Archivo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../design-system.css">
+    <link rel="stylesheet" href="../design-tokens.css"><link rel="stylesheet" href="../design-system.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -31,97 +31,58 @@
             gap: 20px;
         }
 
-        /* ── HEADER PREMIUM EXACTO ── */
-        .vb-header {
-            background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
-            border-bottom: 1px solid var(--border2);
-            padding: 1.25rem 2rem;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1.5rem;
-            flex-shrink: 0;
+        
+        
+        
+        
+        
+        
+        
+
+                /* ── NAV TABS (IDÉNTICO A VISUAL BRAIN) ── */
+        .vb-nav {
+            position: sticky; top: 0; z-index: 20;
+            background: var(--bg2, #14262D); border-bottom: 1px solid var(--border2);
+            padding: 0 2rem;
+            display: flex; gap: 0; overflow-x: auto;
         }
-        .vb-header::before {
-            content: '';
-            position: absolute;
-            top: -100px;
-            right: -100px;
-            width: 320px;
-            height: 320px;
-            border-radius: 50%;
-            background: var(--accent);
-            opacity: 0.04;
-            pointer-events: none;
+        .vb-nav::-webkit-scrollbar { height: 0; }
+        .vbt {
+            flex: 0 0 auto; padding: 14px 18px;
+            font-family: 'Archivo', sans-serif !important;
+            font-size: 12px !important;
+            font-weight: 400 !important;
+            letter-spacing: normal !important;
+            text-transform: none !important;
+            color: var(--text3, #6a8f98) !important;
+            cursor: pointer; border: none !important; border-bottom: 2px solid transparent !important;
+            background: transparent !important;
+            transition: all .15s ease; display: flex; align-items: center; gap: 6px;
+            white-space: nowrap; user-select: none;
+            line-height: normal !important;
         }
-        .vb-header-main {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            z-index: 1;
-            min-width: 0;
-        }
-        .vb-title {
-            font-family: var(--f-display);
-            font-size: clamp(22px, 3vw, 30px);
-            font-weight: 300;
-            color: var(--text);
-            line-height: 1.1;
-            margin: 0;
-        }
-        .vb-title em {
-            color: var(--accent);
-            font-style: italic;
-        }
-        .vb-badges {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-        .vb-badge {
-            font-size: 11px;
-            font-weight: 500;
-            background: var(--surface);
-            border: 1px solid var(--border2);
-            padding: 4px 10px;
-            border-radius: 30px;
-            color: var(--text2);
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+        .vbt i { font-size: 14px !important; }
+        .vbt:hover { color: var(--text, #F4F5F0) !important; }
+        .vbt.active, .vbt.on {
+            color: var(--accent, #2ABFB0) !important;
+            border-bottom-color: var(--accent, #2ABFB0) !important;
+            font-weight: 500 !important;
         }
 
-        /* ── PESTAÑAS (TABS) ── */
-        .tabs-container {
-            display: flex;
-            gap: 12px;
-            border-bottom: 1px solid var(--border2);
-            padding-bottom: 2px;
-            margin-bottom: 15px;
+        body.light .vb-nav, .light .vb-nav {
+            background: #ffffff !important;
+            border-bottom: 1px solid #d0e8e4 !important;
         }
-        .tab-btn {
-            background: none;
-            border: none;
-            color: var(--text3);
-            font-family: var(--f-body);
-            font-weight: 600;
-            font-size: 14px;
-            padding: 8px 16px;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: all 0.25s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        body.light .vbt, .light .vbt {
+            color: #4a6068 !important;
         }
-        .tab-btn:hover {
-            color: var(--text);
+        body.light .vbt:hover, .light .vbt:hover {
+            color: #14262D !important;
         }
-        .tab-btn.active {
-            color: var(--accent);
-            border-bottom-color: var(--accent);
+        body.light .vbt.active, body.light .vbt.on, .light .vbt.active, .light .vbt.on {
+            color: var(--accent, #2ABFB0) !important;
+            border-bottom-color: var(--accent, #2ABFB0) !important;
+            font-weight: 600 !important;
         }
 
         /* ── OMNIBUSCADOR Y FILTROS ── */
@@ -1147,6 +1108,96 @@
             from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
+    
+        /* ── LIGHT MODE STYLES ── */
+        body.light {
+            background: #a4b8b4 !important;
+            color: #14262D !important;
+        }
+        body.light .search-card {
+            background: #ffffff !important;
+            border-color: #d0e8e4 !important;
+            box-shadow: 0 2px 10px rgba(20, 38, 45, 0.04) !important;
+        }
+        body.light .omnibox-wrapper {
+            background: #f0f7f6 !important;
+            border-color: #d0e8e4 !important;
+        }
+        body.light .omnibox-wrapper:focus-within {
+            background: #ffffff !important;
+            border-color: var(--accent) !important;
+        }
+        body.light .omnibox-input {
+            color: #14262D !important;
+        }
+        body.light .dropdown-trigger {
+            background: #f0f7f6 !important;
+            border-color: #d0e8e4 !important;
+            color: #14262D !important;
+        }
+        body.light .dropdown-trigger:hover {
+            background: #e2f0ed !important;
+        }
+        body.light .dropdown-menu {
+            background: #ffffff !important;
+            border-color: #d0e8e4 !important;
+            box-shadow: 0 10px 25px rgba(20, 38, 45, 0.1) !important;
+        }
+        body.light .dropdown-item {
+            color: #4a6068 !important;
+        }
+        body.light .dropdown-item:hover {
+            background: #f0f7f6 !important;
+            color: #14262D !important;
+        }
+        body.light .filter-pill {
+            background: #f0f7f6 !important;
+            border-color: #d0e8e4 !important;
+            color: #4a6068 !important;
+        }
+        body.light .filter-pill:hover {
+            background: #e2f0ed !important;
+            color: #14262D !important;
+        }
+        body.light .select-custom {
+            background: #f0f7f6 !important;
+            border-color: #d0e8e4 !important;
+            color: #14262D !important;
+        }
+        body.light .recent-tag {
+            background: #f0f7f6 !important;
+            border-color: #d0e8e4 !important;
+            color: #4a6068 !important;
+        }
+        body.light .table-container {
+            background: #ffffff !important;
+            border-color: #d0e8e4 !important;
+        }
+        body.light th {
+            background: #f0f7f6 !important;
+            color: #14262D !important;
+            border-bottom: 1px solid #d0e8e4 !important;
+        }
+        body.light td {
+            color: #14262D !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+        }
+        body.light tr:hover td {
+            background: rgba(42, 191, 176, 0.05) !important;
+        }
+        body.light .reel-title {
+            color: #14262D !important;
+        }
+        body.light .view-toggle-btns {
+            background: #f0f7f6 !important;
+            border-color: #d0e8e4 !important;
+        }
+        body.light .view-toggle-btn.active {
+            background: #ffffff !important;
+            color: var(--accent) !important;
+        }
+
+
     </style>
 </head>
 <body class="dark">
@@ -1243,7 +1294,97 @@
 }
 .acc-slider-ghost:hover { background: rgba(42,191,176,0.1); transform: translateY(-3px); }
 .acc-slider-ghost i { font-size: 26px; }
-</style>
+
+        /* ── LIGHT MODE STYLES ── */
+        body.light {
+            background: #a4b8b4 !important;
+            color: #14262D !important;
+        }
+        body.light .search-card {
+            background: #ffffff !important;
+            border-color: #d0e8e4 !important;
+            box-shadow: 0 2px 10px rgba(20, 38, 45, 0.04) !important;
+        }
+        body.light .omnibox-wrapper {
+            background: #f0f7f6 !important;
+            border-color: #d0e8e4 !important;
+        }
+        body.light .omnibox-wrapper:focus-within {
+            background: #ffffff !important;
+            border-color: var(--accent) !important;
+        }
+        body.light .omnibox-input {
+            color: #14262D !important;
+        }
+        body.light .dropdown-trigger {
+            background: #f0f7f6 !important;
+            border-color: #d0e8e4 !important;
+            color: #14262D !important;
+        }
+        body.light .dropdown-trigger:hover {
+            background: #e2f0ed !important;
+        }
+        body.light .dropdown-menu {
+            background: #ffffff !important;
+            border-color: #d0e8e4 !important;
+            box-shadow: 0 10px 25px rgba(20, 38, 45, 0.1) !important;
+        }
+        body.light .dropdown-item {
+            color: #4a6068 !important;
+        }
+        body.light .dropdown-item:hover {
+            background: #f0f7f6 !important;
+            color: #14262D !important;
+        }
+        body.light .filter-pill {
+            background: #f0f7f6 !important;
+            border-color: #d0e8e4 !important;
+            color: #4a6068 !important;
+        }
+        body.light .filter-pill:hover {
+            background: #e2f0ed !important;
+            color: #14262D !important;
+        }
+        body.light .select-custom {
+            background: #f0f7f6 !important;
+            border-color: #d0e8e4 !important;
+            color: #14262D !important;
+        }
+        body.light .recent-tag {
+            background: #f0f7f6 !important;
+            border-color: #d0e8e4 !important;
+            color: #4a6068 !important;
+        }
+        body.light .table-container {
+            background: #ffffff !important;
+            border-color: #d0e8e4 !important;
+        }
+        body.light th {
+            background: #f0f7f6 !important;
+            color: #14262D !important;
+            border-bottom: 1px solid #d0e8e4 !important;
+        }
+        body.light td {
+            color: #14262D !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+        }
+        body.light tr:hover td {
+            background: rgba(42, 191, 176, 0.05) !important;
+        }
+        body.light .reel-title {
+            color: #14262D !important;
+        }
+        body.light .view-toggle-btns {
+            background: #f0f7f6 !important;
+            border-color: #d0e8e4 !important;
+        }
+        body.light .view-toggle-btn.active {
+            background: #ffffff !important;
+            color: var(--accent) !important;
+        }
+
+
+    </style>
     <!-- CABECERA -->
     <header class="vb-header">
         <div class="vb-header-main">
@@ -1270,22 +1411,23 @@
         </div>
     </header>
 
-    <div class="container fade-in">
-        <!-- TABS BAR -->
-        <div class="tabs-container">
-            <button class="tab-btn active" id="tab-btn-discover" onclick="switchTab('discover')">
-                <i class="ti ti-compass"></i> Descubrir
-            </button>
-            <button class="tab-btn" id="tab-btn-favorites" onclick="switchTab('favorites')">
-                <i class="ti ti-star"></i> Favoritos
-            </button>
-            <button class="tab-btn" id="tab-btn-analytics" onclick="switchTab('analytics')">
-                <i class="ti ti-chart-bar"></i> Análisis de Reels
-            </button>
-            <button class="tab-btn" id="tab-btn-accounts" onclick="switchTab('accounts')">
-                <i class="ti ti-users"></i> Cuentas Espiadas
-            </button>
+    <!-- NAV TABS (IGUAL A VISUAL BRAIN) -->
+    <div class="vb-nav">
+        <div class="vbt on active" id="tab-btn-discover" onclick="switchTab('discover')">
+            <i class="ti ti-compass"></i>Descubrir
         </div>
+        <div class="vbt" id="tab-btn-favorites" onclick="switchTab('favorites')">
+            <i class="ti ti-star"></i>Favoritos
+        </div>
+        <div class="vbt" id="tab-btn-analytics" onclick="switchTab('analytics')">
+            <i class="ti ti-chart-bar"></i>Análisis de Reels
+        </div>
+        <div class="vbt" id="tab-btn-accounts" onclick="switchTab('accounts')">
+            <i class="ti ti-users"></i>Cuentas Espiadas
+        </div>
+    </div>
+
+    <div class="container fade-in">
 
         <!-- SETUP BANNER CONDICIONAL (SI NO HAY HIKERAPI KEY) -->
         <div id="session-setup-banner" class="setup-banner" style="display:none;">
@@ -1951,8 +2093,15 @@
         // ── CONTROL DE PESTAÑAS ──
         window.switchTab = (tabId) => {
             activeTab = tabId;
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`tab-btn-${tabId}`).classList.add('active');
+            document.querySelectorAll('.vb-nav .vbt, .tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.remove('on');
+            });
+            const activeTabEl = document.getElementById(`tab-btn-${tabId}`);
+            if (activeTabEl) {
+                activeTabEl.classList.add('active');
+                activeTabEl.classList.add('on');
+            }
 
             document.querySelectorAll('.tab-section-content').forEach(sect => sect.style.display = 'none');
             document.getElementById(`tab-${tabId}`).style.display = 'block';
@@ -2114,12 +2263,15 @@
             const hikerKey = localStorage.getItem('hikerapi_key') || '';
             const sessionCookie = localStorage.getItem('instagram_session_id') || '';
 
+            // Smart fallback: si el método es hikerapi pero no hay clave, y SÍ hay cookie → usar cookie
+            const effectiveMethod = (method === 'hikerapi' && !hikerKey && sessionCookie) ? 'session' : method;
+
             const requestBody = {
                 action: 'user',
                 id: username,
                 count: 30
             };
-            if (method === 'hikerapi') {
+            if (effectiveMethod === 'hikerapi') {
                 requestBody.hikerapiKey = hikerKey;
             } else {
                 requestBody.session = sessionCookie;
@@ -2578,9 +2730,11 @@
             const method = localStorage.getItem('instagram_method') || 'hikerapi';
             const searchType = document.getElementById('search-type').value;
             
-            const hikerKey = localStorage.getItem('hikerapi_key');
-            const sessionCookie = localStorage.getItem('instagram_session_id');
-            const activeToken = method === 'hikerapi' ? hikerKey : sessionCookie;
+            const hikerKey = localStorage.getItem('hikerapi_key') || '';
+            const sessionCookie = localStorage.getItem('instagram_session_id') || '';
+            // Smart fallback: si no hay clave hikerapi pero sí hay cookie → usar cookie
+            const effectiveMethod = (method === 'hikerapi' && !hikerKey && sessionCookie) ? 'session' : method;
+            const activeToken = effectiveMethod === 'hikerapi' ? hikerKey : sessionCookie;
 
             const loading = document.getElementById('results-loading');
             const errorArea = document.getElementById('results-error');
@@ -2624,7 +2778,7 @@
                     id: searchId,
                     count: 50 // Aumentado a 50 para permitir un filtrado temporal real (30/60/90 días)
                 };
-                if (method === 'hikerapi') {
+                if (effectiveMethod === 'hikerapi') {
                     requestBody.hikerapiKey = hikerKey;
                 } else {
                     requestBody.session = sessionCookie;
@@ -4896,6 +5050,96 @@
     /* Scrollbar for left col */
     .acc-detail-left::-webkit-scrollbar { width: 4px; }
     .acc-detail-left::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+    
+        /* ── LIGHT MODE STYLES ── */
+        body.light {
+            background: #a4b8b4 !important;
+            color: #14262D !important;
+        }
+        body.light .search-card {
+            background: #ffffff !important;
+            border-color: #d0e8e4 !important;
+            box-shadow: 0 2px 10px rgba(20, 38, 45, 0.04) !important;
+        }
+        body.light .omnibox-wrapper {
+            background: #f0f7f6 !important;
+            border-color: #d0e8e4 !important;
+        }
+        body.light .omnibox-wrapper:focus-within {
+            background: #ffffff !important;
+            border-color: var(--accent) !important;
+        }
+        body.light .omnibox-input {
+            color: #14262D !important;
+        }
+        body.light .dropdown-trigger {
+            background: #f0f7f6 !important;
+            border-color: #d0e8e4 !important;
+            color: #14262D !important;
+        }
+        body.light .dropdown-trigger:hover {
+            background: #e2f0ed !important;
+        }
+        body.light .dropdown-menu {
+            background: #ffffff !important;
+            border-color: #d0e8e4 !important;
+            box-shadow: 0 10px 25px rgba(20, 38, 45, 0.1) !important;
+        }
+        body.light .dropdown-item {
+            color: #4a6068 !important;
+        }
+        body.light .dropdown-item:hover {
+            background: #f0f7f6 !important;
+            color: #14262D !important;
+        }
+        body.light .filter-pill {
+            background: #f0f7f6 !important;
+            border-color: #d0e8e4 !important;
+            color: #4a6068 !important;
+        }
+        body.light .filter-pill:hover {
+            background: #e2f0ed !important;
+            color: #14262D !important;
+        }
+        body.light .select-custom {
+            background: #f0f7f6 !important;
+            border-color: #d0e8e4 !important;
+            color: #14262D !important;
+        }
+        body.light .recent-tag {
+            background: #f0f7f6 !important;
+            border-color: #d0e8e4 !important;
+            color: #4a6068 !important;
+        }
+        body.light .table-container {
+            background: #ffffff !important;
+            border-color: #d0e8e4 !important;
+        }
+        body.light th {
+            background: #f0f7f6 !important;
+            color: #14262D !important;
+            border-bottom: 1px solid #d0e8e4 !important;
+        }
+        body.light td {
+            color: #14262D !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+        }
+        body.light tr:hover td {
+            background: rgba(42, 191, 176, 0.05) !important;
+        }
+        body.light .reel-title {
+            color: #14262D !important;
+        }
+        body.light .view-toggle-btns {
+            background: #f0f7f6 !important;
+            border-color: #d0e8e4 !important;
+        }
+        body.light .view-toggle-btn.active {
+            background: #ffffff !important;
+            color: var(--accent) !important;
+        }
+
+
     </style>
 
     <script>
@@ -5144,6 +5388,22 @@
         el.parentNode && el.parentNode.replaceChild(div, el);
     };
     </script>
+
+
+<script>
+window.addEventListener('message', (e) => {
+    if (e.data && e.data.type === 'THEME_CHANGE') {
+        if (e.data.theme === 'light' || e.data.payload === 'light') {
+            document.body.classList.add('light');
+        } else {
+            document.body.classList.remove('light');
+        }
+    }
+});
+if (localStorage.getItem('theme_preference') === 'light') {
+    document.body.classList.add('light');
+}
+</script>
 
 </body>
 </html>

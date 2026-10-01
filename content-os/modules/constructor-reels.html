@@ -7,35 +7,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Archivo:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
 <link rel="stylesheet" href="../design-system.css">
+<link rel="stylesheet" href="../design-tokens.css">
 <style>
 /* ═══════════════════════════════════════════
-   RESET & TOKENS
+   RESET & LAYOUT BASE
 ═══════════════════════════════════════════ */
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:       #0f1e24;
-  --bg2:      #14262D;
-  --bg3:      #1F434E;
-  --surface:  #182f38;
-  --surface2: #1c3641;
-  --surface3: #213e4b;
-  --text:     #F4F5F0;
-  --text2:    #9db8c0;
-  --text3:    #6a8f98;
-  --teal:     #2ABFB0;
-  --teal2:    rgba(42,191,176,0.12);
-  --teal3:    rgba(42,191,176,0.06);
-  --beige:    #CCC2A7;
-  --border:   rgba(42,191,176,0.12);
-  --border2:  rgba(244,245,240,0.07);
-  --border3:  rgba(244,245,240,0.04);
-  --amber:    #C9862A;
-  --amber2:   rgba(201,134,42,0.12);
-  --r:        10px;
-  --r-sm:     7px;
-  --r-lg:     14px;
+  /* Variables únicas de este módulo (no colores — esos vienen de design-tokens.css) */
   --sidebar:  224px;
   --topbar:   56px;
+  /* alias local de accent para usar var(--teal) en este módulo */
+  --teal2:    rgba(42,191,176,0.12);
+  --teal3:    rgba(42,191,176,0.06);
 }
 
 html,body{height:100%;overflow:hidden}
@@ -161,88 +145,15 @@ body{
 ═══════════════════════════════════════════ */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 
-/* ── HEADER PREMIUM ── */
-.vb-header {
-  background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
-  border-bottom: 1px solid var(--border);
-  padding: 1.25rem 2rem;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  flex-shrink: 0;
-}
-.vb-header::before {
-  content: '';
-  position: absolute;
-  top: -100px;
-  right: -100px;
-  width: 320px;
-  height: 320px;
-  border-radius: 50%;
-  background: var(--teal);
-  opacity: 0.04;
-  pointer-events: none;
-}
-.vb-header::after {
-  content: '';
-  position: absolute;
-  bottom: -60px;
-  left: 5%;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: var(--beige);
-  opacity: 0.03;
-  pointer-events: none;
-}
-.vb-header-main {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  z-index: 1;
-  min-width: 0;
-}
-.vb-header-actions {
-  z-index: 1;
-  flex-shrink: 0;
-  display: flex;
-  gap: 6px;
-}
-.vb-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(22px, 3vw, 30px);
-  font-weight: 300;
-  color: var(--text);
-  line-height: 1.1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin: 0;
-}
-.vb-title em {
-  color: var(--teal);
-  font-style: italic;
-}
-.vb-badges {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-.vb-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 11px;
-  border-radius: 20px;
-  background: rgba(42, 191, 176, 0.1);
-  border: 1px solid rgba(42, 191, 176, 0.25);
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--teal);
-}
+
+
+
+
+
+
+
+
+
 
 /* Buttons */
 .btn{
@@ -337,24 +248,41 @@ body{
 .card-title i{font-size:13px;color:var(--teal)}
 
 /* ═══════════════════════════════════════════
-   TABS
+   NAV TABS (IGUAL A VISUAL BRAIN)
 ═══════════════════════════════════════════ */
-.tabs{
-  display:flex;gap:2px;margin-bottom:16px;
-  background:var(--surface);border-radius:var(--r);
-  padding:3px;border:1px solid var(--border2);
+.vb-nav{
+  position:sticky;top:0;z-index:20;
+  background:var(--bg2);border-bottom:1px solid var(--border2);
+  padding:0 2rem;
+  display:flex;gap:0;overflow-x:auto;
 }
-.tab{
-  flex:1;padding:8px 6px;text-align:center;
-  border-radius:var(--r-sm);cursor:pointer;
-  font-size:11px;font-weight:400;color:var(--text2);
-  transition:all 0.15s;user-select:none;
+.vb-nav::-webkit-scrollbar{height:0}
+.vbt{
+  flex:0 0 auto;padding:14px 18px;
+  font-size:12px;font-weight:400;color:var(--text3);
+  cursor:pointer;border-bottom:2px solid transparent;
+  transition:all .15s;display:flex;align-items:center;gap:6px;
+  white-space:nowrap;user-select:none;
+  background:transparent;border-top:none;border-left:none;border-right:none;
+  font-family:var(--f-body, 'Archivo', sans-serif);
 }
-.tab:hover{color:var(--text)}
-.tab.active{
-  background:var(--surface2);color:var(--text);
-  font-weight:500;box-shadow:0 1px 4px rgba(0,0,0,0.2);
-}
+.vbt i{font-size:14px}
+.vbt:hover{color:var(--text)}
+.vbt.active, .vbt.on{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+
+body.light .vb-nav, .light .vb-nav { background: #ffffff !important; border-bottom: 1px solid #d0e8e4 !important; }
+body.light .vbt, .light .vbt { color: #4a6068 !important; }
+body.light .vbt:hover, .light .vbt:hover { color: #14262D !important; }
+body.light .vbt.active, body.light .vbt.on, .light .vbt.active, .light .vbt.on { color: var(--accent) !important; border-bottom-color: var(--accent) !important; font-weight: 600 !important; }
+
+/* Progress bar (stepbar) in light mode */
+body.light .stepbar { background: #ffffff !important; border-color: #d0e8e4 !important; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+body.light .step.pending .step-num, body.light .step.pending .step-label { color: #64748b !important; }
+body.light .step.done { background: rgba(42,191,176,0.12) !important; border: 1px solid rgba(42,191,176,0.3) !important; }
+body.light .step.done .step-num, body.light .step.done .step-label { color: #14262D !important; }
+body.light .step.active { background: #14262D !important; box-shadow: 0 2px 10px rgba(20,38,45,0.2) !important; }
+body.light .step.active .step-num, body.light .step.active .step-label { color: #ffffff !important; font-weight: 600 !important; }
+
 .tab-panel{display:none}
 .tab-panel.active{display:block}
 
@@ -792,6 +720,32 @@ select option{background:var(--surface2)}
   .frow{grid-template-columns:1fr}
   .meta-grid{grid-template-columns:1fr 1fr}
 }
+
+/* ── TOAST NOTIFICACIÓN ── */
+.toast {
+  position: fixed !important;
+  bottom: 28px !important;
+  right: 28px !important;
+  background: var(--teal, #2ABFB0) !important;
+  color: #0f1e24 !important;
+  padding: 12px 20px !important;
+  border-radius: 12px !important;
+  font-family: 'Archivo', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.45), 0 2px 8px rgba(42,191,176,0.3) !important;
+  z-index: 999999 !important;
+  animation: toastPop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+@keyframes toastPop {
+  0% { transform: translateY(20px) scale(0.9); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
 </style>
 </head>
 <body>
@@ -810,16 +764,26 @@ select option{background:var(--surface2)}
     </div>
     <div class="vb-header-actions">
       <button class="btn" onclick="openImportModal()"><i class="ti ti-file-import"></i>Importar JSON</button>
-      <button class="btn"><i class="ti ti-bulb"></i>Desde idea</button>
+      <button class="btn" onclick="openDesdeIdeaModal()"><i class="ti ti-bulb"></i>Desde idea</button>
       <button class="btn"><i class="ti ti-calendar"></i>Al calendario</button>
       <button class="btn btn-primary" onclick="saveReel()"><i class="ti ti-device-floppy"></i>Guardar</button>
     </div>
   </header>
 
+  <!-- NAV TABS (ESTILO VISUAL BRAIN) -->
+  <div class="vb-nav">
+    <div class="vbt tab active on" data-tab="info"   onclick="switchTab('info')"><i class="ti ti-info-circle"></i>Información</div>
+    <div class="vbt tab"        data-tab="guion"  onclick="switchTab('guion')"><i class="ti ti-script"></i>Guión</div>
+    <div class="vbt tab"        data-tab="hooks"  onclick="switchTab('hooks')"><i class="ti ti-bulb"></i>Hooks &amp; CTA</div>
+    <div class="vbt tab"        data-tab="brief"  onclick="switchTab('brief')"><i class="ti ti-photo"></i>Brief visual</div>
+    <div class="vbt tab"        data-tab="tareas" onclick="switchTab('tareas')"><i class="ti ti-checkbox"></i>Tareas</div>
+    <div class="vbt tab"        data-tab="refs"   onclick="switchTab('refs')"><i class="ti ti-link"></i>Referencias</div>
+  </div>
+
   <!-- Content -->
   <div class="content">
 
-    <!-- STEP BAR -->
+    <!-- STEP BAR (BARRA DE PROGRESO DEBAJO DE LAS TABS) -->
     <div class="stepbar">
       <div class="step done"   data-i="0" onclick="clickStepbar(0)"><span class="step-num">01</span><span class="step-label">Idea</span></div>
       <div class="step done"   data-i="1" onclick="clickStepbar(1)"><span class="step-num">02</span><span class="step-label">Investigación</span></div>
@@ -829,16 +793,6 @@ select option{background:var(--surface2)}
       <div class="step pending" data-i="5" onclick="clickStepbar(5)"><span class="step-num">06</span><span class="step-label">Revisión</span></div>
       <div class="step pending" data-i="6" onclick="clickStepbar(6)"><span class="step-num">07</span><span class="step-label">Publicación</span></div>
     </div>
-
-        <!-- TABS -->
-        <div class="tabs" style="overflow-x:auto;flex-wrap:nowrap">
-          <div class="tab active" data-tab="info"   onclick="switchTab('info')"  style="flex:0 0 auto">Información</div>
-          <div class="tab"        data-tab="guion"  onclick="switchTab('guion')" style="flex:0 0 auto">Guión</div>
-          <div class="tab"        data-tab="hooks"  onclick="switchTab('hooks')" style="flex:0 0 auto">Hooks &amp; CTA</div>
-          <div class="tab"        data-tab="brief"  onclick="switchTab('brief')" style="flex:0 0 auto">Brief visual</div>
-          <div class="tab"        data-tab="tareas" onclick="switchTab('tareas')" style="flex:0 0 auto">Tareas</div>
-          <div class="tab"        data-tab="refs"   onclick="switchTab('refs')"   style="flex:0 0 auto">Referencias</div>
-        </div>
 
         <!-- ── TAB: INFORMACIÓN ── -->
         <div class="tab-panel active" id="panel-info">
@@ -852,6 +806,30 @@ select option{background:var(--surface2)}
             <div class="field">
               <div class="flabel">Nombre del reel <span class="req">*</span></div>
               <input type="text" id="reel-nombre" placeholder="Ej: Por qué tu cuerpo recupera el peso aunque hagas todo bien">
+            </div>
+
+            <!-- Imagen representativa / Portada del Reel -->
+            <div class="field" style="border:1px solid var(--border2);border-radius:var(--r-lg, 12px);padding:14px;background:var(--surface2);margin-bottom:14px;">
+              <div style="font-size:10px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between">
+                <span><i class="ti ti-photo" style="margin-right:4px;color:var(--teal)"></i>Imagen de portada / miniatura del Reel</span>
+                <span style="font-size:9.5px;color:var(--text3);text-transform:none">Para identificar visualmente el reel</span>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+                <!-- Opción A: Subir desde PC -->
+                <label style="cursor:pointer;padding:7px 13px;font-size:11.5px;font-weight:500;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:var(--r-sm, 8px);display:flex;align-items:center;gap:6px;white-space:nowrap;flex-shrink:0;transition:all .15s">
+                  <i class="ti ti-upload" style="color:var(--teal)"></i> Subir archivo desde el PC
+                  <input type="file" id="reel-cover-file" accept="image/*" style="display:none" onchange="onReelCoverFileChange(this)">
+                </label>
+                <!-- Opción B: URL manual -->
+                <input type="text" id="reel-cover-url-manual" placeholder="O ingresa tú mismo la URL de la imagen..." style="flex:1;font-size:11.5px;min-width:180px;height:34px;padding:0 12px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--r-sm, 8px);color:var(--text);" oninput="onReelCoverUrlManual(this)">
+              </div>
+              <!-- Preview -->
+              <div id="reel-cover-preview-wrap" style="display:none;margin-top:10px;position:relative;width:fit-content;max-width:100%;">
+                <img id="reel-cover-preview" src="" style="max-height:160px;max-width:100%;object-fit:cover;border-radius:10px;border:1px solid var(--border2);display:block;box-shadow:0 4px 12px rgba(0,0,0,0.15)">
+                <div onclick="clearReelCoverImage()" style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.75);color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;transition:all .15s" title="Eliminar imagen"><i class="ti ti-x"></i></div>
+                <div id="reel-cover-preview-label" style="font-size:10px;color:var(--text3);margin-top:4px">Imagen cargada</div>
+              </div>
+              <input type="hidden" id="reel-cover-image">
             </div>
 
             <div class="field" style="position: relative;">
@@ -1089,7 +1067,7 @@ select option{background:var(--surface2)}
                   }
                 </style>
                 <div class="flabel">Fecha publicación</div>
-                <input type="date" id="reel-fecha" onchange="document.getElementById('meta-fecha').textContent=this.value.split('-').slice(1).join('/')" style="height: 26px; padding: 0 12px; border-radius: 20px !important; font-size: 11px; background-color: var(--surface2); border: 1px solid var(--border2); color: var(--text2); outline: none; transition: all 0.15s; font-weight: 500; width: 100%; margin-top: 5px;">
+                <input type="date" id="reel-fecha" onchange="const mf=document.getElementById('meta-fecha');if(mf)mf.textContent=this.value.split('-').slice(1).join('/')" style="height: 26px; padding: 0 12px; border-radius: 20px !important; font-size: 11px; background-color: var(--surface2); border: 1px solid var(--border2); color: var(--text2); outline: none; transition: all 0.15s; font-weight: 500; width: 100%; margin-top: 5px;">
               </div>
               <div class="field">
                 <style>
@@ -1324,6 +1302,7 @@ select option{background:var(--surface2)}
                 .fcard-slider-wrapper {
                   position: relative;
                   width: 100%;
+                  height: 470px;
                   margin-top: 5px;
                   overflow: hidden;
                 }
@@ -1331,7 +1310,7 @@ select option{background:var(--surface2)}
                 .fcard-fade {
                   position: absolute;
                   top: 0;
-                  height: 175px;
+                  height: 470px;
                   width: 45px;
                   pointer-events: none;
                   z-index: 2;
@@ -1348,10 +1327,14 @@ select option{background:var(--surface2)}
                   opacity: 1; /* Visible inicialmente */
                 }
                 .fcard-slider {
-                  display: flex;
+                  display: grid;
+                  grid-template-rows: repeat(2, 1fr);
+                  grid-auto-flow: column;
+                  grid-auto-columns: calc(20% - 8px);
                   gap: 10px;
                   overflow-x: auto;
-                  padding-bottom: 0px;
+                  height: 100%;
+                  padding-bottom: 4px;
                   scroll-behavior: smooth;
                   -webkit-overflow-scrolling: touch;
                   -ms-overflow-style: none;
@@ -1392,18 +1375,18 @@ select option{background:var(--surface2)}
                 .fcard-slider .fcard {
                   position: relative;
                   overflow: hidden;
-                  flex: 0 0 120px; /* Tarjeta vertical (ancho fijo 120px) */
-                  height: 175px; /* Altura total alineada con la cuadrícula anterior */
+                  aspect-ratio: 9 / 16;
+                  width: 100%;
                   display: flex;
                   flex-direction: column;
-                  justify-content: space-between;
-                  padding: 12px 10px;
+                  justify-content: flex-end;
+                  padding: 10px 8px;
                   border-radius: 8px !important;
                   border: 1px solid var(--border2);
                   cursor: pointer;
                   transition: all 0.2s ease;
                   user-select: none;
-                  background-color: var(--surface2);
+                  background-color: #14262D;
                   text-align: center;
                 }
                 .fcard-slider .fcard:hover {
@@ -1413,25 +1396,34 @@ select option{background:var(--surface2)}
                 }
                 .fcard-slider .fcard.on {
                   border-color: var(--teal) !important;
-                  background-color: var(--teal2);
-                  box-shadow: 0 0 0 1.5px var(--teal), 0 4px 14px rgba(42, 191, 176, 0.25) !important;
+                  box-shadow: 0 0 0 2px var(--teal), 0 4px 14px rgba(0, 0, 0, 0.4) !important;
                 }
+                .fcard-slider .fcard .fcard-overlay,
+                .fcard-slider .fcard.has-img .fcard-overlay,
                 .fcard-slider .fcard.has-img.on .fcard-overlay {
-                  background: linear-gradient(to top, rgba(14, 38, 45, 0.95) 50%, rgba(42, 191, 176, 0.3) 100%) !important;
+                  background: linear-gradient(to top, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.6) 40%, transparent 75%) !important;
                 }
                 .fcard-slider .fcard-t {
-                  font-size: 11.5px;
-                  font-weight: 600;
-                  color: var(--text);
-                  margin-bottom: 6px;
-                  line-height: 1.25;
-                  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+                  font-size: 11px;
+                  font-weight: 700;
+                  color: #F4F5F0 !important;
+                  margin-bottom: 3px;
+                  line-height: 1.2;
+                  text-shadow: 0 1px 4px rgba(0,0,0,0.9), 0 2px 8px rgba(0,0,0,0.7);
+                  position: relative;
+                  z-index: 1;
                 }
                 .fcard-slider .fcard-d {
-                  font-size: 10px;
-                  color: var(--text3);
-                  line-height: 1.35;
-                  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+                  font-size: 9.5px;
+                  color: rgba(244,245,240,0.8) !important;
+                  line-height: 1.25;
+                  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+                  display: -webkit-box;
+                  -webkit-line-clamp: 2;
+                  -webkit-box-orient: vertical;
+                  overflow: hidden;
+                  position: relative;
+                  z-index: 1;
                 }
                 .fcard-slider .fcard.on .fcard-t {
                   color: var(--teal) !important;
@@ -1847,16 +1839,11 @@ select option{background:var(--surface2)}
                 </div>
                 <div class="field">
                   <div class="flabel">URLs de referencia</div>
-                  <div style="display:flex;gap:6px;margin-bottom:7px">
-                    <input type="text" id="urlIn" placeholder="https://www.instagram.com/reel/...">
-                    <button class="btn" onclick="addUrl()" style="padding:7px 11px;flex-shrink:0"><i class="ti ti-plus"></i></button>
+                  <div style="display:flex;gap:8px;margin-bottom:8px">
+                    <input type="text" id="urlIn" placeholder="Pega aquí la URL de Instagram, TikTok o web..." onkeydown="if(event.key==='Enter'){event.preventDefault();addUrl();}" style="flex:1;">
+                    <button class="btn btn-primary" onclick="addUrl()" style="padding:7px 14px;flex-shrink:0;gap:5px;" title="Agregar URL de referencia"><i class="ti ti-plus"></i> Agregar</button>
                   </div>
                   <div id="urllist">
-                    <div class="ref-item">
-                      <i class="ti ti-brand-instagram" style="color:var(--teal);font-size:13px;flex-shrink:0"></i>
-                      <span class="ref-url">https://www.instagram.com/reel/ABC123...</span>
-                      <i class="ti ti-x" style="font-size:12px;color:var(--text3);cursor:pointer;flex-shrink:0" onclick="this.parentElement.remove()"></i>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -1899,7 +1886,7 @@ const __activeProfile = await requireAuth();
 
 async function logActivity(action, details) {
   const activeUser = __activeProfile;
-  if (!activeUser.email) return;
+  if (!activeUser || !activeUser.email) return;
   try {
     await supabase.from('audit_logs').insert({
       user_email: activeUser.email,
@@ -1950,7 +1937,11 @@ function getStepbarIndex(statusIdx) {
 
 /* ── TABS ── */
 function switchTab(id){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===id));
+  document.querySelectorAll('.tab, .vbt').forEach(t=>{
+    const isAct = t.dataset.tab===id;
+    t.classList.toggle('active', isAct);
+    t.classList.toggle('on', isAct);
+  });
   document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active',p.id==='panel-'+id));
 }
 
@@ -2034,17 +2025,119 @@ function updateHtCount(){
 }
 
 /* ── URLS ── */
-function addUrl(){
+function addUrl(explicitUrl){
   const inp=document.getElementById('urlIn');
-  const v=inp.value.trim();
+  const v=(explicitUrl !== undefined && explicitUrl !== null ? explicitUrl : (inp ? inp.value : '')).trim();
   if(!v)return;
+  const list = document.getElementById('urllist');
+  if(!list) return;
+  // Si solo está el ejemplo estático ABC123, limpiarlo
+  const placeholder = list.querySelector('.ref-url');
+  if (placeholder && placeholder.textContent.includes('ABC123...')) {
+    list.innerHTML = '';
+  }
   const icon=v.includes('instagram')?'ti-brand-instagram':v.includes('tiktok')?'ti-brand-tiktok':'ti-link';
   const d=document.createElement('div');
   d.className='ref-item';
   d.innerHTML=`<i class="ti ${icon}" style="color:var(--teal);font-size:13px;flex-shrink:0"></i><span class="ref-url">${v}</span><i class="ti ti-x" style="font-size:12px;color:var(--text3);cursor:pointer;flex-shrink:0" onclick="this.parentElement.remove()"></i>`;
-  document.getElementById('urllist').appendChild(d);
-  inp.value='';
+  list.appendChild(d);
+  if(inp && !explicitUrl) inp.value='';
 }
+
+
+// ── GESTIÓN DE IMAGEN DE PORTADA DEL REEL ──
+window.currentReelCover = '';
+
+function compressCoverImage(src, maxDim, quality, callback) {
+  const img = new Image();
+  img.onload = function() {
+    let w = img.width;
+    let h = img.height;
+    if (w > maxDim || h > maxDim) {
+      if (w > h) {
+        h = Math.round((h * maxDim) / w);
+        w = maxDim;
+      } else {
+        w = Math.round((w * maxDim) / h);
+        h = maxDim;
+      }
+    }
+    const canvas = document.createElement('canvas');
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, w, h);
+    try {
+      const optimized = canvas.toDataURL('image/jpeg', quality);
+      callback(optimized);
+    } catch(err) {
+      callback(src);
+    }
+  };
+  img.onerror = function() {
+    callback(src);
+  };
+  img.src = src;
+}
+
+function onReelCoverFileChange(input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  if (!file.type.startsWith('image/')) { showToast('⚠️ Solo se admiten archivos de imagen'); return; }
+  
+  showToast('Optimizando imagen de portada... ⏳');
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const rawDataUrl = e.target.result;
+    compressCoverImage(rawDataUrl, 1080, 0.85, function(optimizedDataUrl) {
+      setReelCover(optimizedDataUrl, file.name);
+      showToast('Imagen de portada cargada y lista ✅');
+    });
+  };
+  reader.readAsDataURL(file);
+}
+
+function onReelCoverUrlManual(input) {
+  const url = (input.value || '').trim();
+  if (!url) { clearReelCoverImage(); return; }
+  setReelCover(url, 'URL de imagen');
+}
+
+function setReelCover(src, label) {
+  window.currentReelCover = src || '';
+  const hiddenInp = document.getElementById('reel-cover-image');
+  const img = document.getElementById('reel-cover-preview');
+  const wrap = document.getElementById('reel-cover-preview-wrap');
+  const lbl = document.getElementById('reel-cover-preview-label');
+  const urlInput = document.getElementById('reel-cover-url-manual');
+
+  if (hiddenInp) hiddenInp.value = src || '';
+  if (img) img.src = src || '';
+  if (wrap) wrap.style.display = src ? 'block' : 'none';
+  if (lbl && label) lbl.textContent = label;
+  if (urlInput && src && !src.startsWith('data:')) urlInput.value = src;
+}
+
+function clearReelCoverImage() {
+  window.currentReelCover = '';
+  const hiddenInp = document.getElementById('reel-cover-image');
+  const img = document.getElementById('reel-cover-preview');
+  const wrap = document.getElementById('reel-cover-preview-wrap');
+  const fileInp = document.getElementById('reel-cover-file');
+  const urlInput = document.getElementById('reel-cover-url-manual');
+
+  if (hiddenInp) hiddenInp.value = '';
+  if (img) img.src = '';
+  if (wrap) wrap.style.display = 'none';
+  if (fileInp) fileInp.value = '';
+  if (urlInput) urlInput.value = '';
+}
+
+window.onReelCoverFileChange = onReelCoverFileChange;
+window.onReelCoverUrlManual = onReelCoverUrlManual;
+window.setReelCover = setReelCover;
+window.clearReelCoverImage = clearReelCoverImage;
+window.compressCoverImage = compressCoverImage;
 
 /* ── CHECKLIST ── */
 function toggleCk(el){
@@ -2638,7 +2731,7 @@ async function loadReel(id) {
       document.getElementById('reel-nombre').value = data.title || '';
       document.getElementById('reel-fecha').value = data.publish_date || '';
       if (data.publish_date) {
-        document.getElementById('meta-fecha').textContent = data.publish_date.split('-').slice(1).join('/');
+        const mf = document.getElementById('meta-fecha'); if (mf) mf.textContent = data.publish_date.split('-').slice(1).join('/');
       }
       
       // Set pilar
@@ -2649,7 +2742,11 @@ async function loadReel(id) {
       }
       
       // Load content_data
-      const content = data.content_data || {};
+      let content = data.content_data || {};
+      if (typeof content === 'string') {
+        try { content = JSON.parse(content); } catch(e) { content = {}; }
+      }
+      content = content || {};
       const uiState = content.ui_state || {};
       
       // Set exact status
@@ -2742,7 +2839,7 @@ async function loadReel(id) {
       
       // Set copy txt
       document.getElementById('copyTxt').value = content.copy || '';
-      document.getElementById('charCt').textContent = (content.copy || '').length;
+      const charCtEl = document.getElementById('charCt'); if (charCtEl) charCtEl.textContent = (content.copy || '').length;
       
       // Set hashtags
       const hashtags = content.hashtags || [];
@@ -2785,6 +2882,19 @@ async function loadReel(id) {
       if (document.getElementById('cta-tipo')) document.getElementById('cta-tipo').value = cta.tipo || 'Implícito';
       if (document.getElementById('cta-friccion')) document.getElementById('cta-friccion').value = cta.friccion || 'Baja';
       
+      // Cover image / portada
+      let coverVal = content.cover_image || content.portada || content.thumbnail || data.cover_image || '';
+      if (!coverVal && content.brief?.cover_image) {
+        coverVal = content.brief.cover_image;
+      } else if (!coverVal && content.brief?.imagen && (String(content.brief.imagen).startsWith('http') || String(content.brief.imagen).startsWith('data:'))) {
+        coverVal = content.brief.imagen;
+      }
+      if (coverVal) {
+        setReelCover(coverVal, 'Imagen guardada');
+      } else {
+        clearReelCoverImage();
+      }
+
       // Brief visual
       const brief = content.brief || {};
       document.getElementById('brief-musica').value = brief.musica || '';
@@ -2848,210 +2958,262 @@ async function loadReel(id) {
 }
 
 async function saveReel() {
-  const nombre = document.getElementById('reel-nombre').value.trim();
+  const saveBtn = document.querySelector('button[onclick="saveReel()"]');
+  const originalBtnHtml = saveBtn ? saveBtn.innerHTML : '<i class="ti ti-device-floppy"></i>Guardar';
+
+  const nombre = (document.getElementById('reel-nombre')?.value || '').trim();
   if (!nombre) {
+    switchTab('info');
     const el = document.getElementById('reel-nombre');
-    el.style.borderColor = '#f55a8a';
-    setTimeout(() => el.style.borderColor = '', 1600);
-    el.focus();
-    showToast('⚠️ El nombre del reel es obligatorio');
+    if (el) {
+      el.style.borderColor = '#f55a8a';
+      setTimeout(() => el.style.borderColor = '', 1800);
+      el.focus();
+    }
+    showToast('⚠️ Por favor asigna un nombre al reel en la pestaña Información');
     return;
   }
   
-  // Read fields from DOM
-  const pilarVal = document.querySelector('#reel-pilar .tag.on')?.textContent || '';
-  const publishDateVal = document.getElementById('reel-fecha').value || null;
-  
-  // Read exact status
-  const exactStatus = document.querySelector('#reel-estado .sbtn.on')?.textContent || 'Idea';
-  let statusVal = 'en_creacion';
-  if (exactStatus === 'Idea' || exactStatus === 'Investigación' || exactStatus === 'Borrador' || exactStatus === 'Guionización') {
-    statusVal = 'en_creacion';
-  } else if (exactStatus === 'Grabación' || exactStatus === 'Edición' || exactStatus === 'Revisado') {
-    statusVal = 'revision';
-  } else if (exactStatus === 'Programado') {
-    statusVal = 'listo';
-  } else if (exactStatus === 'Publicado') {
-    statusVal = 'publicado';
+  // Feedback visual inmediato en el botón
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<i class="ti ti-loader" style="display:inline-block;animation:spin 0.8s linear infinite;margin-right:4px;"></i> Guardando...';
   }
-  
-  // Gather other content_data properties
-  const descripcion = document.getElementById('reel-descripcion')?.value.trim() || '';
-  const emocion = document.getElementById('reel-emocion').value.trim();
-  const obj_psicologico = document.getElementById('reel-obj-p').value.trim();
-  
-  const obj_algoritmico = [document.getElementById('reel-obj-algo-select').value];
-  
-  const tema = [];
-  document.querySelectorAll('#reel-tema .tag.on').forEach(t => tema.push(t.textContent.trim()));
-  
-  const platform_tags = [];
-  document.querySelectorAll('#reel-plataforma .tag.on').forEach(t => platform_tags.push(t.textContent.trim()));
-  
-  const funnel = document.getElementById('funnel-g')?.value || 'TOFU';
-  const dia_recomendado = document.querySelector('#dia-g .pill.on')?.textContent || 'Lun';
-  const rawFase = document.querySelector('#fase-g .pill.on')?.textContent || 'IGNITE';
-  const fase_plan = rawFase.replace(/[^\wÁÉÍÓÚÑ]/gi, '').trim().toUpperCase();
-  
-  const ubicacion = document.getElementById('reel-ubic').value.trim();
-  const vestuario = document.getElementById('reel-vest').value.trim();
-  
-  const formato_video = document.querySelector('#reel-formato-video .fcard.on .fcard-t')?.textContent || 'Talking head';
-  
-  const tipo_edicion = [];
-  document.querySelectorAll('#reel-tipo-edicion .tag.on').forEach(t => tipo_edicion.push(t.textContent.trim()));
-  
-  const duracion = document.querySelector('#dur-group .pill.on')?.textContent || '45s';
-  const copy = document.getElementById('copyTxt').value.trim();
-  
-  const hashtags = [];
-  document.querySelectorAll('#htwrap .htag').forEach(ht => {
-    let text = ht.textContent.replace('✖', '').trim();
-    text = text.replace(/\s/g, '');
-    hashtags.push(text);
-  });
-  
-  const hooks = {
-    hook_a: {
-      tipo: document.getElementById('ha-tipo')?.textContent || '',
-      escena: document.getElementById('ha-escena')?.value || '',
-      visual: document.getElementById('ha-vis')?.value || '',
-      verbal: document.getElementById('ha-verb')?.value || '',
-      sonido: document.getElementById('ha-sonido')?.value || ''
-    },
-    hook_b: {
-      tipo: document.getElementById('hb-tipo')?.textContent || '',
-      escena: document.getElementById('hb-escena')?.value || '',
-      visual: document.getElementById('hb-vis')?.value || '',
-      verbal: document.getElementById('hb-verb')?.value || '',
-      sonido: document.getElementById('hb-sonido')?.value || ''
-    },
-    hook_c: {
-      tipo: document.getElementById('hc-tipo')?.textContent || '',
-      escena: document.getElementById('hc-escena')?.value || '',
-      visual: document.getElementById('hc-vis')?.value || '',
-      verbal: document.getElementById('hc-verb')?.value || '',
-      sonido: document.getElementById('hc-sonido')?.value || ''
-    }
-  };
-  
-  const cta = {
-    verbal: document.getElementById('cta-verbal').value || '',
-    visual: document.getElementById('cta-visual').value || '',
-    kw: document.getElementById('cta-kw').value || '',
-    tipo: document.getElementById('cta-tipo')?.value || 'Implícito',
-    friccion: document.getElementById('cta-friccion')?.value || 'Baja'
-  };
-  
-  const brief = {
-    musica: document.getElementById('brief-musica').value || '',
-    imagen: document.getElementById('brief-imagen').value || '',
-    historias: document.getElementById('brief-historias').value || '',
-    subtitulos: document.getElementById('brief-subtitulos')?.value || '',
-    iluminacion: document.getElementById('brief-iluminacion')?.value || '',
-    encuadre: document.getElementById('brief-encuadre')?.value || '',
-    movimiento: document.getElementById('brief-movimiento')?.value || '',
-    elementos_escena: document.getElementById('brief-elementos')?.value || '',
-    transiciones: document.getElementById('brief-transiciones')?.value || '',
-    silencio: document.getElementById('brief-silencio')?.value || ''
-  };
 
-  const pilar_secundario = document.getElementById('reel-pilar-sec')?.value || '';
-  const emocion_secundaria = document.getElementById('reel-emocion-sec')?.value || '';
-  const obj_secundario = document.getElementById('reel-obj-sec')?.value || '';
-  const respuesta_buscada = document.getElementById('reel-respuesta-buscada')?.value.trim() || '';
-  const audiencia = document.getElementById('reel-audiencia')?.value.trim() || '';
-  const por_que_ahora = document.getElementById('reel-por-que-ahora')?.value.trim() || '';
-  const fuente_idea = document.getElementById('reel-fuente-idea')?.value || '';
-  const metrica_exito = document.getElementById('reel-metrica-exito')?.value.trim() || '';
-  const storytelling = {
-    deseo: document.getElementById('reel-story-deseo')?.value.trim() || '',
-    conflicto: document.getElementById('reel-story-conflicto')?.value.trim() || '',
-    cambio: document.getElementById('reel-story-cambio')?.value.trim() || ''
-  };
-  
-  const idea_id = document.getElementById('reel-idea-vinculada')?.value || window.linkedIdeaId || null;
-  
-  const references = [];
-  document.querySelectorAll('#urllist .ref-url').forEach(ru => references.push(ru.textContent.trim()));
-  
-  const guion = [];
-  document.querySelectorAll('#guion-tbody tr').forEach(tr => {
-    const tas = tr.querySelectorAll('textarea');
-    const ti  = tr.querySelector('input');
-    const tp  = tr.dataset.rowtype || 'normal';
-    guion.push({
-      tiempo: ti ? ti.value : '',
-      tipo: tp,
-      dialogo: tas[0] ? tas[0].value : '',
-      plano: tas[1] ? tas[1].value : '',
-      movimiento: tas[2] ? tas[2].value : '',
-      texto: tas[3] ? tas[3].value : '',
-      pip: tas[4] ? tas[4].value : '',
-      notes: tas[5] ? tas[5].value : ''
-    });
-  });
-  
-  const tasks_states = TASKS.map(t => t.done);
-  const ui_state = {
-    exact_status: exactStatus,
-    exact_format: 'Reel'
-  };
-  
-  const content_data = {
-    ui_state,
-    descripcion,
-    emocion,
-    emocion_secundaria,
-    obj_psicologico,
-    obj_secundario,
-    obj_algoritmico,
-    pilar_secundario,
-    respuesta_buscada,
-    audiencia,
-    por_que_ahora,
-    fuente_idea,
-    metrica_exito,
-    storytelling,
-    tema,
-    platform_tags,
-    funnel,
-    dia_recomendado,
-    fase_plan,
-    ubicacion,
-    vestuario,
-    formato_video,
-    tipo_edicion,
-    duracion,
-    copy,
-    hashtags,
-    hooks,
-    cta,
-    brief,
-    references,
-    guion,
-    tasks_states
-  };
-  
-  const row = {
-    title: nombre,
-    type: 'reel',
-    pillar: pilarVal,
-    platform: platform_tags.includes('IG') ? 'Instagram' : (platform_tags.includes('TK') ? 'TikTok' : 'Instagram'),
-    status: statusVal,
-    publish_date: publishDateVal,
-    idea_id,
-    content_data,
-    updated_at: new Date().toISOString()
-  };
-  
   try {
+    // Read fields from DOM
+    const pilarVal = document.querySelector('#reel-pilar .tag.on')?.textContent.trim() || '';
+    const publishDateVal = document.getElementById('reel-fecha')?.value || null;
+    
+    // Read exact status
+    const exactStatus = document.querySelector('#reel-estado .sbtn.on')?.textContent.trim() || 'Idea';
+    let statusVal = 'en_creacion';
+    if (exactStatus === 'Idea' || exactStatus === 'Investigación' || exactStatus === 'Borrador' || exactStatus === 'Guionización') {
+      statusVal = 'en_creacion';
+    } else if (exactStatus === 'Grabación' || exactStatus === 'Edición' || exactStatus === 'Revisado') {
+      statusVal = 'revision';
+    } else if (exactStatus === 'Programado') {
+      statusVal = 'listo';
+    } else if (exactStatus === 'Publicado') {
+      statusVal = 'publicado';
+    }
+    
+    // Gather other content_data properties
+    const descripcion = document.getElementById('reel-descripcion')?.value.trim() || '';
+    const emocion = document.getElementById('reel-emocion')?.value.trim() || '';
+    const obj_psicologico = document.getElementById('reel-obj-p')?.value.trim() || '';
+    
+    const algoEl = document.getElementById('reel-obj-algo-select');
+    const obj_algoritmico = algoEl && algoEl.value ? [algoEl.value] : ['Compartidos'];
+    
+    const tema = [];
+    document.querySelectorAll('#reel-tema .tag.on').forEach(t => tema.push(t.textContent.trim()));
+    
+    const platform_tags = [];
+    document.querySelectorAll('#reel-plataforma .tag.on').forEach(t => platform_tags.push(t.textContent.trim()));
+    
+    const funnel = document.getElementById('funnel-g')?.value || 'TOFU';
+    const dia_recomendado = document.querySelector('#dia-g .pill.on')?.textContent.trim() || 'Lun';
+    const rawFase = document.querySelector('#fase-g .pill.on')?.textContent.trim() || 'IGNITE';
+    const fase_plan = rawFase.replace(/[^\wÁÉÍÓÚÑ]/gi, '').trim().toUpperCase();
+    
+    const ubicacion = document.getElementById('reel-ubic')?.value.trim() || '';
+    const vestuario = document.getElementById('reel-vest')?.value.trim() || '';
+    
+    const formato_video = document.querySelector('#reel-formato-video .fcard.on .fcard-t')?.textContent.trim() || 'Juan a cámara (Talking Head)';
+    
+    const tipo_edicion = [];
+    document.querySelectorAll('#reel-tipo-edicion .tag.on').forEach(t => tipo_edicion.push(t.textContent.trim()));
+    
+    const duracion = document.querySelector('#dur-group .pill.on')?.textContent.trim() || '45s';
+    const copy = document.getElementById('copyTxt')?.value.trim() || '';
+    
+    const hashtags = [];
+    document.querySelectorAll('#htwrap .htag').forEach(ht => {
+      let text = ht.textContent.replace('✖', '').trim();
+      text = text.replace(/\s/g, '');
+      if (text) hashtags.push(text);
+    });
+    
+    const hooks = {
+      hook_a: {
+        tipo: document.getElementById('ha-tipo')?.textContent || '',
+        escena: document.getElementById('ha-escena')?.value || '',
+        visual: document.getElementById('ha-vis')?.value || '',
+        verbal: document.getElementById('ha-verb')?.value || '',
+        sonido: document.getElementById('ha-sonido')?.value || ''
+      },
+      hook_b: {
+        tipo: document.getElementById('hb-tipo')?.textContent || '',
+        escena: document.getElementById('hb-escena')?.value || '',
+        visual: document.getElementById('hb-vis')?.value || '',
+        verbal: document.getElementById('hb-verb')?.value || '',
+        sonido: document.getElementById('hb-sonido')?.value || ''
+      },
+      hook_c: {
+        tipo: document.getElementById('hc-tipo')?.textContent || '',
+        escena: document.getElementById('hc-escena')?.value || '',
+        visual: document.getElementById('hc-vis')?.value || '',
+        verbal: document.getElementById('hc-verb')?.value || '',
+        sonido: document.getElementById('hc-sonido')?.value || ''
+      }
+    };
+    
+    const cta = {
+      verbal: document.getElementById('cta-verbal')?.value || '',
+      visual: document.getElementById('cta-visual')?.value || '',
+      kw: document.getElementById('cta-kw')?.value || '',
+      tipo: document.getElementById('cta-tipo')?.value || 'Implícito',
+      friccion: document.getElementById('cta-friccion')?.value || 'Baja'
+    };
+    
+    const brief = {
+      musica: document.getElementById('brief-musica')?.value || '',
+      imagen: document.getElementById('brief-imagen')?.value || '',
+      historias: document.getElementById('brief-historias')?.value || '',
+      subtitulos: document.getElementById('brief-subtitulos')?.value || '',
+      iluminacion: document.getElementById('brief-iluminacion')?.value || '',
+      encuadre: document.getElementById('brief-encuadre')?.value || '',
+      movimiento: document.getElementById('brief-movimiento')?.value || '',
+      elementos_escena: document.getElementById('brief-elementos')?.value || '',
+      transiciones: document.getElementById('brief-transiciones')?.value || '',
+      silencio: document.getElementById('brief-silencio')?.value || ''
+    };
+
+    const pilar_secundario = document.getElementById('reel-pilar-sec')?.value || '';
+    const emocion_secundaria = document.getElementById('reel-emocion-sec')?.value || '';
+    const obj_secundario = document.getElementById('reel-obj-sec')?.value || '';
+    const respuesta_buscada = document.getElementById('reel-respuesta-buscada')?.value.trim() || '';
+    const audiencia = document.getElementById('reel-audiencia')?.value.trim() || '';
+    const por_que_ahora = document.getElementById('reel-por-que-ahora')?.value.trim() || '';
+    const fuente_idea = document.getElementById('reel-fuente-idea')?.value || '';
+    const metrica_exito = document.getElementById('reel-metrica-exito')?.value.trim() || '';
+    const storytelling = {
+      deseo: document.getElementById('reel-story-deseo')?.value.trim() || '',
+      conflicto: document.getElementById('reel-story-conflicto')?.value.trim() || '',
+      cambio: document.getElementById('reel-story-cambio')?.value.trim() || ''
+    };
+    
+    // Idea vinculada (sanitizar para evitar UUID inválido)
+    const rawIdeaId = document.getElementById('reel-idea-vinculada')?.value || window.linkedIdeaId;
+    const idea_id = (rawIdeaId && String(rawIdeaId).trim().length > 6) ? String(rawIdeaId).trim() : null;
+    
+    // Referencias
+    const references = [];
+    const pendingUrlInp = document.getElementById('urlIn');
+    if (pendingUrlInp && pendingUrlInp.value.trim()) {
+      const pUrl = pendingUrlInp.value.trim();
+      references.push(pUrl);
+      addUrl(pUrl);
+    }
+    document.querySelectorAll('#urllist .ref-url').forEach(ru => {
+      const val = ru.textContent.trim();
+      if (val && !references.includes(val) && !val.includes('ABC123...')) {
+        references.push(val);
+      }
+    });
+    
+    const guion = [];
+    document.querySelectorAll('#guion-tbody tr').forEach(tr => {
+      const tas = tr.querySelectorAll('textarea');
+      const ti  = tr.querySelector('input');
+      const tp  = tr.dataset.rowtype || 'normal';
+      guion.push({
+        tiempo: ti ? ti.value : '',
+        tipo: tp,
+        dialogo: tas[0] ? tas[0].value : '',
+        plano: tas[1] ? tas[1].value : '',
+        movimiento: tas[2] ? tas[2].value : '',
+        texto: tas[3] ? tas[3].value : '',
+        pip: tas[4] ? tas[4].value : '',
+        notes: tas[5] ? tas[5].value : ''
+      });
+    });
+    
+    const tasks_states = TASKS.map(t => t.done);
+    const ui_state = {
+      exact_status: exactStatus,
+      exact_format: 'Reel'
+    };
+    
+    const cover_image = window.currentReelCover || document.getElementById('reel-cover-image')?.value || '';
+    if (brief) {
+      brief.cover_image = cover_image;
+    }
+
+    const content_data = {
+      ui_state,
+      cover_image,
+      portada: cover_image,
+      thumbnail: cover_image,
+      descripcion,
+      emocion,
+      emocion_secundaria,
+      obj_psicologico,
+      obj_secundario,
+      obj_algoritmico,
+      pilar_secundario,
+      respuesta_buscada,
+      audiencia,
+      por_que_ahora,
+      fuente_idea,
+      metrica_exito,
+      storytelling,
+      tema,
+      platform_tags,
+      funnel,
+      dia_recomendado,
+      fase_plan,
+      ubicacion,
+      vestuario,
+      formato_video,
+      tipo_edicion,
+      duracion,
+      copy,
+      hashtags,
+      hooks,
+      cta,
+      brief,
+      references,
+      guion,
+      tasks_states
+    };
+    
+    const row = {
+      title: nombre,
+      type: 'reel',
+      pillar: pilarVal,
+      platform: platform_tags.includes('IG') ? 'Instagram' : (platform_tags.includes('TK') ? 'TikTok' : 'Instagram'),
+      status: statusVal,
+      publish_date: publishDateVal,
+      idea_id,
+      content_data,
+      updated_at: new Date().toISOString()
+    };
+    
+    console.log("Enviando reel a Supabase...", row);
+
+    let savedOk = false;
+
     if (currentReelId) {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('content_pieces')
         .update(row)
-        .eq('id', currentReelId);
+        .eq('id', currentReelId)
+        .select();
+      
       if (error) throw error;
+
+      if (!data || data.length === 0) {
+        // Si el id no existía en Supabase, insertar como nuevo
+        const { data: insData, error: insErr } = await supabase
+          .from('content_pieces')
+          .insert([row])
+          .select();
+        if (insErr) throw insErr;
+        if (insData && insData[0]) currentReelId = insData[0].id;
+      }
+      savedOk = true;
       await logActivity('Edición', `Se actualizó el reel: "${nombre}" (Estado: ${exactStatus})`);
       showToast('Reel actualizado en Supabase ✅');
     } else {
@@ -3063,15 +3225,33 @@ async function saveReel() {
       if (data && data[0]) {
         currentReelId = data[0].id;
       }
+      savedOk = true;
       await logActivity('Creación', `Se creó el nuevo reel: "${nombre}"`);
       showToast('Reel guardado en Supabase ✅');
     }
+
+    if (saveBtn) {
+      saveBtn.innerHTML = '<i class="ti ti-check" style="margin-right:4px;"></i> ¡Guardado!';
+      saveBtn.style.background = '#27ae60';
+      saveBtn.style.borderColor = '#27ae60';
+      setTimeout(() => {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = originalBtnHtml;
+        saveBtn.style.background = '';
+        saveBtn.style.borderColor = '';
+      }, 2400);
+    }
   } catch (err) {
     console.error("Error saving reel:", err);
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = originalBtnHtml;
+    }
     let detail = err.message || '';
     if (err.details) detail += (detail ? ' - ' : '') + err.details;
     if (err.code) detail += ` (Código: ${err.code})`;
     if (!detail) detail = typeof err === 'object' ? JSON.stringify(err) : String(err);
+    alert(`⚠️ Error al guardar en Supabase:\n${detail}`);
     showToast(`⚠️ Error al guardar en Supabase: ${detail}`);
   }
 }
@@ -3502,7 +3682,7 @@ function renderVideoFormatsSlider() {
       overlay.className = 'fcard-overlay';
       overlay.style.position = 'absolute';
       overlay.style.inset = '0';
-      overlay.style.background = 'linear-gradient(to top, rgba(10,22,26,0.92) 48%, rgba(10,22,26,0.35) 100%)';
+      overlay.style.background = 'linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.6) 40%, transparent 75%)';
       overlay.style.borderRadius = '7px';
       overlay.style.zIndex = '2';
       card.appendChild(overlay);
@@ -3572,37 +3752,7 @@ async function init() {
   if (pending) {
     try {
       const data = JSON.parse(pending);
-      if (data.title && document.getElementById('reel-nombre')) document.getElementById('reel-nombre').value = data.title || '';
-      if (data.desc && document.getElementById('reel-descripcion')) document.getElementById('reel-descripcion').value = data.desc || '';
-      
-      if (data.pilar) {
-        document.querySelectorAll('#reel-pilar .tag').forEach(t => {
-          t.classList.toggle('on', t.textContent.trim().toLowerCase() === data.pilar.toLowerCase());
-        });
-      }
-      if (data.formato) {
-        document.querySelectorAll('#reel-formato-video .fcard').forEach(f => {
-          const match = f.querySelector('.fcard-t').textContent.trim().toLowerCase() === data.formato.trim().toLowerCase();
-          f.classList.toggle('on', match);
-        });
-      }
-      if (data.tema) {
-        document.querySelectorAll('#reel-tema .tag').forEach(t => {
-          t.classList.toggle('on', t.textContent.trim().toLowerCase() === data.tema.toLowerCase());
-        });
-      }
-      if (data.hook) {
-        if (document.getElementById('ha-vis')) document.getElementById('ha-vis').value = data.hook;
-      }
-      window.linkedIdeaId = data.idea_id || data.id || null;
-      if (document.getElementById('reel-idea-vinculada')) {
-        document.getElementById('reel-idea-vinculada').value = window.linkedIdeaId || '';
-      }
-      
-      // Auto open generator and fill input
-      openModal();
-      document.getElementById('ai-idea').value = data.title || '';
-      
+      aplicarIdeaAlReel(data);
     } catch (e) {
       console.error("Error reading pending transfer:", e);
     } finally {
@@ -3646,6 +3796,9 @@ window.addEventListener('message', (e) => {
     document.body.classList.toggle('light', isLight);
   }
 });
+if (localStorage.getItem('theme_preference') === 'light') {
+  document.body.classList.add('light');
+}
 
 // Auto refresh formats if updated in another tab/window
 window.addEventListener('focus', () => {
@@ -3779,6 +3932,176 @@ function ejecutarImportJSON() {
   }
 }
 
+// ══════════ DESDE IDEA (Cargar datos completos desde Depósito de Ideas) ══════════
+function aplicarIdeaAlReel(data) {
+  if (!data) return;
+
+  // Nombre
+  if (data.title && document.getElementById('reel-nombre')) {
+    document.getElementById('reel-nombre').value = data.title;
+  }
+
+  // Descripción / Notas
+  const descVal = data.notas || data.desc || '';
+  if (descVal && document.getElementById('reel-descripcion')) {
+    document.getElementById('reel-descripcion').value = descVal;
+  }
+
+  // Pilar
+  if (data.pilar) {
+    document.querySelectorAll('#reel-pilar .tag').forEach(t => {
+      t.classList.toggle('on', t.textContent.trim().toLowerCase() === data.pilar.toLowerCase());
+    });
+  }
+
+  // Formato
+  if (data.formato) {
+    document.querySelectorAll('#reel-formato-video .fcard').forEach(f => {
+      const match = f.querySelector('.fcard-t')?.textContent?.trim()?.toLowerCase() === data.formato.trim().toLowerCase();
+      f.classList.toggle('on', match);
+    });
+  }
+
+  // Tema
+  if (data.tema) {
+    document.querySelectorAll('#reel-tema .tag').forEach(t => {
+      t.classList.toggle('on', t.textContent.trim().toLowerCase() === data.tema.toLowerCase());
+    });
+  }
+
+  // Hook inicial
+  if (data.hook && document.getElementById('ha-vis')) {
+    document.getElementById('ha-vis').value = data.hook;
+  }
+
+  // Imagen de portada vinculada
+  if (data.cover_image) {
+    setReelCover(data.cover_image, 'Desde idea vinculada');
+  }
+
+  // URL de inspiración / Referencia
+  if (data.url) {
+    addUrl(data.url);
+    const fuenteSel = document.getElementById('reel-fuente-idea');
+    if (fuenteSel) fuenteSel.value = 'Referencia';
+  }
+
+  // Idea vinculada
+  window.linkedIdeaId = data.idea_id || data.id || null;
+  if (document.getElementById('reel-idea-vinculada') && window.linkedIdeaId) {
+    document.getElementById('reel-idea-vinculada').value = window.linkedIdeaId;
+  }
+
+  // Fecha
+  if (data.fecha && document.getElementById('reel-fecha')) {
+    document.getElementById('reel-fecha').value = data.fecha;
+  }
+
+  showToast('¡Datos de la idea cargados correctamente! 💡🎬');
+}
+
+let ideasListCache = [];
+
+async function openDesdeIdeaModal() {
+  const modal = document.getElementById('modal-desde-idea');
+  if (modal) modal.style.display = 'flex';
+  const listEl = document.getElementById('desde-idea-list');
+  if (listEl) listEl.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text3);font-size:12px;"><i class="ti ti-loader ti-spin"></i> Cargando ideas del depósito...</div>';
+  
+  try {
+    const { data, error } = await supabase
+      .from('ideas')
+      .select('*')
+      .is('deleted_at', null)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    ideasListCache = data || [];
+    renderDesdeIdeaList(ideasListCache);
+  } catch (err) {
+    console.error("Error al cargar ideas:", err);
+    if (listEl) listEl.innerHTML = '<div style="padding:15px;color:var(--danger);text-align:center;font-size:12px;">Error al conectar con la base de datos de ideas.</div>';
+  }
+}
+
+function closeDesdeIdeaModal() {
+  const modal = document.getElementById('modal-desde-idea');
+  if (modal) modal.style.display = 'none';
+}
+
+function renderDesdeIdeaList(ideas) {
+  const listEl = document.getElementById('desde-idea-list');
+  if (!listEl) return;
+  if (!ideas || ideas.length === 0) {
+    listEl.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text3);font-size:12px;">No se encontraron ideas.</div>';
+    return;
+  }
+  listEl.innerHTML = ideas.map(item => {
+    let meta = {};
+    try {
+      if (item.idea_text && item.idea_text.startsWith('{')) meta = JSON.parse(item.idea_text);
+    } catch(e) {}
+    const pilar = meta.pilar || 'Idea';
+    const hook = meta.hook ? `"${meta.hook}"` : '';
+    const url = meta.url || '';
+    const cover = meta.cover_image || '';
+    
+    // Objeto seguro para pasar
+    const safeData = {
+      idea_id: item.id,
+      title: item.title || '',
+      pilar: meta.pilar || '',
+      tema: meta.tema || '',
+      formato: meta.formato || '',
+      hook: meta.hook || '',
+      notas: meta.notas || '',
+      fecha: meta.fecha || '',
+      url: url,
+      cover_image: cover
+    };
+    const encoded = encodeURIComponent(JSON.stringify(safeData));
+
+    return `
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--teal)';" onmouseout="this.style.borderColor='var(--border2)';" onclick="seleccionarIdeaDesdeModal('${encoded}')">
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+            <span style="font-size:9.5px;padding:2px 7px;background:rgba(42,191,176,0.12);color:var(--teal);border-radius:6px;font-weight:600;text-transform:uppercase;">${pilar}</span>
+            ${meta.tema ? `<span style="font-size:9.5px;padding:2px 7px;background:rgba(91,163,245,0.12);color:#5ba3f5;border-radius:6px;">${meta.tema}</span>` : ''}
+            ${url ? `<i class="ti ti-link" style="font-size:11px;color:var(--teal);" title="${url}"></i>` : ''}
+          </div>
+          <div style="font-size:12.5px;font-weight:600;color:var(--text);line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.title}</div>
+          ${hook ? `<div style="font-size:11px;color:var(--text3);font-style:italic;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${hook}</div>` : ''}
+        </div>
+        <button class="btn btn-primary" style="padding:6px 12px;font-size:11px;flex-shrink:0;">
+          <i class="ti ti-arrow-right"></i> Usar
+        </button>
+      </div>
+    `;
+  }).join('');
+}
+
+function filtrarIdeasModal(query) {
+  const q = (query || '').toLowerCase().trim();
+  const filtradas = ideasListCache.filter(i => {
+    return (i.title || '').toLowerCase().includes(q) || (i.idea_text || '').toLowerCase().includes(q);
+  });
+  renderDesdeIdeaList(filtradas);
+}
+
+function seleccionarIdeaDesdeModal(encoded) {
+  try {
+    const data = JSON.parse(decodeURIComponent(encoded));
+    aplicarIdeaAlReel(data);
+    closeDesdeIdeaModal();
+  } catch(e) {
+    console.error("Error al seleccionar idea:", e);
+  }
+}
+
+window.aplicarIdeaAlReel = aplicarIdeaAlReel;
+window.openDesdeIdeaModal = openDesdeIdeaModal;
+window.closeDesdeIdeaModal = closeDesdeIdeaModal;
+window.filtrarIdeasModal = filtrarIdeasModal;
+window.seleccionarIdeaDesdeModal = seleccionarIdeaDesdeModal;
 window.openImportModal = openImportModal;
 window.closeImportModal = closeImportModal;
 window.handleJSONFileUpload = handleJSONFileUpload;
@@ -3816,5 +4139,32 @@ window.ejecutarImportJSON = ejecutarImportJSON;
     </div>
   </div>
 </div>
+
+<!-- ══════════ MODAL: DESDE IDEA ══════════ -->
+<div id="modal-desde-idea" style="display:none; position: fixed; inset: 0; z-index: 99999; background: rgba(10, 20, 25, 0.85); backdrop-filter: blur(10px); align-items: center; justify-content: center; padding: 20px;">
+  <div style="background: var(--surface1, #14262D); border: 1px solid rgba(42, 191, 176, 0.25); border-radius: 20px; width: 100%; max-width: 600px; max-height: 80vh; display: flex; flex-direction: column; padding: 24px; box-shadow: 0 24px 60px rgba(0,0,0,0.7);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+      <div style="font-size: 16px; font-weight: 600; color: var(--text); display:flex; align-items:center; gap:8px;">
+        <i class="ti ti-bulb" style="color:var(--teal);"></i> Cargar datos desde una Idea
+      </div>
+      <button onclick="closeDesdeIdeaModal()" style="background:none; border:none; color:var(--text3); cursor:pointer; font-size:18px; padding:4px;"><i class="ti ti-x"></i></button>
+    </div>
+    <div style="font-size: 12px; color: var(--text3); margin-bottom: 14px;">Selecciona una idea del depósito para pre-rellenar automáticamente el título, pilares, tema, notas, hook y URL de inspiración.</div>
+    
+    <div style="margin-bottom: 12px; position:relative;">
+      <input type="text" placeholder="Buscar ideas por título, tema o palabra clave..." style="width:100%; padding:9px 12px 9px 34px; background:var(--surface2); border:1px solid var(--border2); border-radius:10px; color:var(--text); font-size:12px; outline:none;" oninput="filtrarIdeasModal(this.value)">
+      <i class="ti ti-search" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text3); font-size:14px;"></i>
+    </div>
+
+    <div id="desde-idea-list" style="flex:1; overflow-y:auto; padding-right:4px;">
+      <!-- Se puebla con JS -->
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; margin-top:14px; border-top:1px solid var(--border2); padding-top:12px;">
+      <button class="btn" onclick="closeDesdeIdeaModal()" style="font-size:12px; padding:7px 16px;">Cerrar</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

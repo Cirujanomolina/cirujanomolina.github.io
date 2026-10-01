@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bóveda de Creativos — Content OS</title>
-    <link rel="stylesheet" href="../design-system.css">
+    <link rel="stylesheet" href="../design-tokens.css"><link rel="stylesheet" href="../design-system.css">
     <style>
         body {
             display: flex;
@@ -24,89 +24,15 @@
             padding: clamp(1rem, 3vw, 2rem);
         }
 
-        /* ── HEADER PREMIUM ── */
-        .vb-header {
-            background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
-            border-bottom: 1px solid var(--border);
-            padding: 1.25rem 2rem;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1.5rem;
-            flex-shrink: 0;
-        }
-        .vb-header::before {
-            content: '';
-            position: absolute;
-            top: -100px;
-            right: -100px;
-            width: 320px;
-            height: 320px;
-            border-radius: 50%;
-            background: var(--accent);
-            opacity: 0.04;
-            pointer-events: none;
-        }
-        .vb-header::after {
-            content: '';
-            position: absolute;
-            bottom: -60px;
-            left: 5%;
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background: var(--beige);
-            opacity: 0.03;
-            pointer-events: none;
-        }
-        .vb-header-main {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            z-index: 1;
-            min-width: 0;
-        }
-        .vb-header-actions {
-            z-index: 1;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .vb-title {
-            font-family: var(--f-display);
-            font-size: clamp(22px, 3vw, 30px);
-            font-weight: 300;
-            color: var(--text);
-            line-height: 1.1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin: 0;
-        }
-        .vb-title em {
-            color: var(--accent);
-            font-style: italic;
-        }
-        .vb-badges {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-        .vb-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 4px 11px;
-            border-radius: 20px;
-            background: rgba(42, 191, 176, 0.1);
-            border: 1px solid rgba(42, 191, 176, 0.25);
-            font-size: 11px;
-            font-weight: 500;
-            color: var(--accent);
-        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
         /* ── SEARCH & FILTERS BAR ── */
         .filters-panel {
@@ -155,68 +81,106 @@
             grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
+            align-items: start; /* Impide que las tarjetas vecinas se estiren en el grid */
         }
         .creative-card {
             background: var(--surface);
             border: 1px solid var(--border2);
-            border-radius: var(--r);
-            padding: 1.25rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            border-radius: 22px;
+            padding: 10px;
             position: relative;
             overflow: hidden;
-            transition: all 0.2s;
-        }
-        .creative-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(42, 191, 176, 0.1);
-        }
-        
-        .card-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 0.75rem;
-        }
-        .format-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-        .badge-reel {
-            background: rgba(91, 163, 245, 0.12);
-            color: var(--info);
-        }
-        .badge-carrusel {
-            background: rgba(42, 191, 176, 0.12);
-            color: var(--accent);
+            height: 410px; /* Altura fija inmutable para evitar estiramientos al entrar o salir de hover */
+            box-sizing: border-box;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
         }
 
+        body.light .creative-card {
+            background: #FFFFFF;
+            border-color: rgba(20, 38, 45, 0.1);
+            box-shadow: 0 4px 20px rgba(20, 38, 45, 0.06);
+        }
+
+        .creative-card:hover {
+            border-color: var(--teal);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.32), 0 0 0 1px var(--teal);
+        }
+
+        /* Contenedor Visual: Transición posicional limpia San Francisco ➔ New York */
         .card-visual {
-            width: 100%;
-            height: 160px;
-            border-radius: var(--r-sm);
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            height: 220px;
+            border-radius: 16px;
             overflow: hidden;
-            background: var(--bg2);
-            position: relative;
-            margin-bottom: 0.75rem;
-            border: 1px solid var(--border3);
+            background: #14262D;
+            border: none; /* Sin borde en la imagen */
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                        left 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                        right 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                        height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-radius 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: top, left, right, height, border-radius;
+            z-index: 1;
         }
+
+        .creative-card:hover .card-visual {
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 410px;
+            border-radius: 22px;
+            border: none;
+        }
+
         .card-visual img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            display: block;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
+        .creative-card:hover .card-visual img {
+            transform: scale(1.05);
+            /* Mantiene 100% los colores originales sin oscurecer toda la foto */
+        }
+
+        /* Overlay degradado cinemático: Desenfoque y oscuridad DEGRADADOS SOLO en la zona inferior de letras */
+        .card-overlay {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 60%; /* La parte superior (40%) queda 100% libre de oscuridad y blur */
+            background: linear-gradient(
+                to top,
+                rgba(10, 20, 26, 0.98) 0%,
+                rgba(10, 20, 26, 0.88) 35%,
+                rgba(10, 20, 26, 0.45) 70%,
+                rgba(10, 20, 26, 0) 100%
+            );
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 100%);
+            -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 100%);
+            z-index: 2;
+        }
+
+        .creative-card:hover .card-overlay {
+            opacity: 1;
+        }
+
         .visual-placeholder {
             display: flex;
             flex-direction: column;
@@ -225,76 +189,303 @@
             color: var(--text3);
         }
         .visual-placeholder i {
-            font-size: 2rem;
+            font-size: 2.2rem;
         }
 
-        .card-body {
-            flex: 1;
+        /* Esquinas flotantes sobre la imagen */
+        .card-corner-top-left {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 4;
             display: flex;
             flex-direction: column;
-            gap: 0.4rem;
-            margin-bottom: 1rem;
-        }
-        .card-title {
-            font-family: var(--f-body);
-            font-size: var(--fs-md);
-            font-weight: 600;
-            color: var(--text);
-            line-height: 1.3;
-        }
-        .card-pillar-row {
-            display: flex;
             gap: 6px;
-            flex-wrap: wrap;
-            margin-top: 2px;
+            align-items: flex-start;
         }
-        .pillar-tag {
-            font-size: 9px;
-            font-weight: 600;
-            padding: 2px 7px;
-            border-radius: 12px;
+
+        .card-pill-format {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
             text-transform: uppercase;
+            background: rgba(12, 22, 27, 0.76);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #FFFFFF;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
         }
-        .card-hook-desc {
-            font-size: 11px;
-            color: var(--text2);
-            font-style: italic;
+        .card-pill-format.reel {
+            color: #5BA3F5;
+            border-color: rgba(91, 163, 245, 0.4);
+        }
+        .card-pill-format.carrusel {
+            color: #2ABFB0;
+            border-color: rgba(42, 191, 176, 0.4);
+        }
+
+        .card-platforms-stack {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .plat-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(12, 22, 27, 0.76);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .plat-circle:hover {
+            transform: scale(1.15);
+            border-color: var(--teal);
+        }
+
+        .card-corner-top-right {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 4;
+        }
+
+        .card-pill-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            text-transform: capitalize;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 6px currentColor;
+        }
+
+        /* Cuerpo de información */
+        .card-content-wrap {
+            position: absolute;
+            top: 232px; /* Justo debajo de la imagen (y=225px) */
+            bottom: 12px;
+            left: 12px;
+            right: 12px;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: color 0.3s ease;
+            pointer-events: auto;
+        }
+
+        .card-title {
+            font-family: var(--f-display, 'Cormorant Garamond', Georgia, serif);
+            font-size: 18px; /* 2 puntos más grande */
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.35;
+            margin: 0 0 10px 0; /* Suficientemente alejada para no apretar el texto inferior */
+            transition: color 0.3s ease, text-shadow 0.3s ease;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
-            margin-top: 4px;
-            line-height: 1.4;
+            height: auto;
+            padding-bottom: 4px; /* Margen de respiro para que ningún descendente (g, y, p, q, j) se corte */
         }
 
-        .card-bottom-meta {
+        .creative-card:hover .card-title {
+            color: #FFFFFF !important;
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+        }
+
+        /* 3 renglones de metadata para aprovechar el espacio */
+        .card-meta-list {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 10px;
-            color: var(--text3);
-            padding-top: 8px;
-            border-top: 1px solid var(--border3);
-            margin-bottom: 0.75rem;
-        }
-        .status-pill {
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-weight: 600;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 8px;
         }
 
+        .card-meta-item {
+            font-size: 11.5px;
+            color: var(--text2);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            line-height: 1.2;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-meta-item i {
+            font-size: 13.5px;
+            opacity: 0.85;
+            flex-shrink: 0;
+            color: var(--teal);
+        }
+
+        .creative-card:hover .card-meta-item {
+            color: rgba(255, 255, 255, 0.95) !important;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.85);
+        }
+
+        .creative-card:hover .card-meta-item i {
+            color: var(--teal) !important;
+        }
+
+        .card-hover-tags-inline {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: auto;
+            opacity: 0;
+            transform: translateX(4px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .creative-card:hover .card-hover-tags-inline {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .card-hover-hook {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            font-size: 10.5px;
+            line-height: 1.25;
+            color: #E6F3F1;
+            font-style: italic;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+        }
+
+        .creative-card:hover .card-hover-hook {
+            max-height: 16px;
+            opacity: 1;
+            margin-top: 2px;
+        }
+
+        .funnel-badge {
+            font-size: 9px;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 12px;
+            background: rgba(42, 191, 176, 0.25);
+            color: #2ABFB0;
+            border: 1px solid rgba(42, 191, 176, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .pillar-mini {
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #FFFFFF;
+            text-transform: uppercase;
+        }
+
+        .emocion-mini {
+            font-size: 9px;
+            font-weight: 600;
+            padding: 2px 7px;
+            border-radius: 12px;
+            background: rgba(245, 90, 138, 0.15);
+            border: 1px solid rgba(245, 90, 138, 0.35);
+            color: #f77ca4;
+        }
+
+        /* 4 Botones de Acción */
         .card-actions {
             display: flex;
-            gap: 6px;
+            gap: 5px;
+            height: 32px;
         }
-        .card-actions button {
+
+        .btn-card-act {
             flex: 1;
-            padding: 0.4rem;
-            font-size: var(--fs-xs);
+            padding: 6px 4px;
+            font-size: 11px;
+            font-weight: 600;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 4px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--surface2);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        body.light .btn-card-act {
+            background: #F4F6F6;
+            border-color: rgba(20, 38, 45, 0.12);
+            color: #14262D;
+        }
+
+        .creative-card:hover .btn-card-act {
+            background: rgba(255, 255, 255, 0.18) !important;
+            border-color: rgba(255, 255, 255, 0.3) !important;
+            color: #FFFFFF !important;
+            backdrop-filter: blur(10px);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+        }
+
+        .creative-card:hover .btn-card-act:hover {
+            background: var(--teal) !important;
+            border-color: var(--teal) !important;
+            color: #0f1e24 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(42, 191, 176, 0.4);
+            text-shadow: none;
+        }
+
+        .btn-card-del {
+            flex: 0 0 34px !important;
+            color: var(--danger) !important;
+        }
+
+        .creative-card:hover .btn-card-del {
+            color: #ff8fab !important;
+        }
+
+        .creative-card:hover .btn-card-del:hover {
+            background: #f55a8a !important;
+            border-color: #f55a8a !important;
+            color: #FFFFFF !important;
+            box-shadow: 0 4px 12px rgba(245, 90, 138, 0.45);
         }
 
         /* ── TOASTS ── */
@@ -583,15 +774,21 @@
         }
 
         window.filtrarYRenderizar = () => {
-            const search = document.getElementById('search-text').value.toLowerCase();
-            const format = document.getElementById('filter-format').value;
-            const status = document.getElementById('filter-status').value;
+            const search = (document.getElementById('search-text')?.value || '').toLowerCase().trim();
+            const format = document.getElementById('filter-format')?.value || 'all';
+            const status = document.getElementById('filter-status')?.value || 'all';
 
             filteredPieces = allPieces.filter(p => {
-                const matchesSearch = p.title.toLowerCase().includes(search) || 
+                let cData = p.content_data;
+                if (typeof cData === 'string') {
+                    try { cData = JSON.parse(cData); } catch(e) { cData = {}; }
+                }
+                cData = cData || {};
+
+                const matchesSearch = (p.title || '').toLowerCase().includes(search) || 
                                       (p.pillar && p.pillar.toLowerCase().includes(search)) ||
-                                      (p.content_data?.hooks?.hook_a?.verbal && p.content_data.hooks.hook_a.verbal.toLowerCase().includes(search)) ||
-                                      (p.content_data?.brief?.historias && p.content_data.brief.historias.toLowerCase().includes(search));
+                                      (cData.hooks?.hook_a?.verbal && cData.hooks.hook_a.verbal.toLowerCase().includes(search)) ||
+                                      (cData.brief?.historias && cData.brief.historias.toLowerCase().includes(search));
                 
                 const matchesFormat = format === 'all' || p.type === format;
                 const matchesStatus = status === 'all' || p.status === status;
@@ -632,20 +829,77 @@
                 const card = document.createElement('div');
                 card.className = 'creative-card';
 
-                // Resolve preview image filename
+                // Safe parsing of content_data in case it came back as a string
+                let cData = p.content_data;
+                if (typeof cData === 'string') {
+                    try { cData = JSON.parse(cData); } catch(e) { cData = {}; }
+                }
+                cData = cData || {};
+
+                // Resolve preview image: cover_image, portada, thumbnail, slide bg, brief image, etc.
+                let imgSrc = '';
                 let assetName = '';
-                if (p.type === 'carrusel' && p.content_data?.slides && p.content_data.slides[0]) {
-                    const bg = p.content_data.slides[0].bg;
+
+                // Prioridad 1: cover_image guardada en el reel o pieza
+                if (cData.cover_image) {
+                    imgSrc = cData.cover_image;
+                    assetName = 'cover_image';
+                } else if (p.cover_image) {
+                    imgSrc = p.cover_image;
+                    assetName = 'cover_image';
+                } else if (cData.portada) {
+                    imgSrc = cData.portada;
+                    assetName = 'cover_image';
+                } else if (cData.thumbnail) {
+                    imgSrc = cData.thumbnail;
+                    assetName = 'cover_image';
+                } else if (cData.thumbnail_url) {
+                    imgSrc = cData.thumbnail_url;
+                    assetName = 'cover_image';
+                } else if (cData.image_url) {
+                    imgSrc = cData.image_url;
+                    assetName = 'cover_image';
+                } else if (cData.image) {
+                    imgSrc = cData.image;
+                    assetName = 'cover_image';
+                } else if (p.type === 'carrusel' && cData.slides && cData.slides[0]) {
+                    const bg = cData.slides[0].bg || cData.slides[0].image;
                     if (bg) {
-                        const parts = bg.split('/');
-                        assetName = parts[parts.length - 1];
+                        if (bg.startsWith('http') || bg.startsWith('data:') || bg.startsWith('/')) {
+                            imgSrc = bg;
+                        } else {
+                            const parts = bg.split('/');
+                            assetName = parts[parts.length - 1];
+                            imgSrc = `../assets/images_database/${assetName}`;
+                        }
                     }
-                } else if (p.type === 'reel') {
-                    assetName = p.content_data?.brief?.imagen || '';
+                } else if (cData.brief?.cover_image) {
+                    imgSrc = cData.brief.cover_image;
+                    assetName = 'cover_image';
+                } else if (cData.brief?.imagen) {
+                    const briefImg = String(cData.brief.imagen).trim();
+                    if (briefImg.startsWith('http') || briefImg.startsWith('data:') || briefImg.startsWith('/')) {
+                        imgSrc = briefImg;
+                    } else if (briefImg.endsWith('.jpg') || briefImg.endsWith('.png') || briefImg.endsWith('.webp')) {
+                        assetName = briefImg;
+                        imgSrc = `../assets/images_database/${briefImg}`;
+                    }
+                } else if (Array.isArray(cData.references) && cData.references.length > 0) {
+                    const imgRef = cData.references.find(r => typeof r === 'string' && (r.match(/\.(jpg|jpeg|png|webp|gif)($|\?)/i) || r.startsWith('data:image')));
+                    if (imgRef) {
+                        imgSrc = imgRef;
+                        assetName = 'reference_image';
+                    }
                 }
 
-                const assetPath = assetName ? `../assets/images_database/${assetName}` : '';
-                const imgHTML = assetPath ? `<img src="${assetPath}" onerror="this.parentNode.innerHTML='<div class=\"visual-placeholder\"><i class=\"ti ti-photo\"></i><span>Imagen no disponible</span></div>';">` : `
+                const safeTitle = (p.title || 'Creativo').replace(/"/g, '&quot;');
+                const imgHTML = imgSrc ? `
+                    <img src="${imgSrc}" alt="${safeTitle}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';">
+                    <div class="visual-placeholder" style="display:none;">
+                        <i class="ti ti-photo"></i>
+                        <span>Imagen no disponible</span>
+                    </div>
+                ` : `
                     <div class="visual-placeholder">
                         <i class="ti ${p.type === 'reel' ? 'ti-movie' : 'ti-carousel-horizontal'}"></i>
                         <span>Sin imagen asignada</span>
@@ -653,17 +907,63 @@
                 `;
 
                 // Status formatting
-                const statusLabel = p.status === 'en_creacion' ? 'Borrador' : (p.status === 'revision' ? 'Revisión' : (p.status === 'listo' ? 'Listo' : 'Publicado'));
-                const statusColor = p.status === 'en_creacion' ? 'var(--text3)' : (p.status === 'revision' ? 'var(--amber)' : (p.status === 'listo' ? 'var(--success)' : 'var(--info)'));
-                const statusBg = p.status === 'en_creacion' ? 'rgba(106, 143, 152, 0.15)' : (p.status === 'revision' ? 'rgba(201, 134, 42, 0.15)' : (p.status === 'listo' ? 'rgba(39, 174, 96, 0.15)' : 'rgba(91, 163, 245, 0.15)'));
+                const exactStatus = cData.ui_state?.exact_status || 
+                                    (p.status === 'en_creacion' ? 'Idea' : 
+                                    (p.status === 'revision' ? 'Edición' : 
+                                    (p.status === 'listo' ? 'Listo' : 'Publicado')));
+                const stStyle = getStatusStyle(exactStatus);
+
+                // Platforms
+                let platforms = [];
+                if (Array.isArray(cData.platform_tags) && cData.platform_tags.length > 0) {
+                    platforms = cData.platform_tags;
+                } else if (p.platform) {
+                    platforms = [p.platform.toLowerCase().includes('tik') ? 'TK' : 'IG'];
+                } else {
+                    platforms = ['IG'];
+                }
+
+                const platIconsHTML = platforms.map(plat => {
+                    const isTk = plat.toLowerCase().includes('tk') || plat.toLowerCase().includes('tiktok');
+                    const isYt = plat.toLowerCase().includes('yt') || plat.toLowerCase().includes('youtube');
+                    const isFb = plat.toLowerCase().includes('fb') || plat.toLowerCase().includes('facebook');
+                    const icon = isTk ? 'ti-brand-tiktok' : (isYt ? 'ti-brand-youtube' : (isFb ? 'ti-brand-facebook' : 'ti-brand-instagram'));
+                    const name = isTk ? 'TikTok' : (isYt ? 'YouTube' : (isFb ? 'Facebook' : 'Instagram'));
+                    return `<div class="plat-circle" title="${name}"><i class="ti ${icon}"></i></div>`;
+                }).join('');
+
+                // Format & duration
+                const videoFormat = cData.formato_video || (p.type === 'carrusel' ? 'Carrusel' : 'Juan a cámara');
+                const duracion = cData.duracion || (p.type === 'carrusel' ? (cData.slides?.length ? `${cData.slides.length} slides` : '10 slides') : '45s');
+
+                // Estimated publish date
+                let fechaStr = 'Sin fecha';
+                if (p.publish_date) {
+                    try {
+                        const parts = p.publish_date.split('-');
+                        if (parts.length === 3) {
+                            const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+                            const dia = parseInt(parts[2], 10);
+                            const mes = meses[parseInt(parts[1], 10) - 1] || parts[1];
+                            fechaStr = `${dia} ${mes}`;
+                        } else {
+                            fechaStr = p.publish_date;
+                        }
+                    } catch(e) {
+                        fechaStr = p.publish_date;
+                    }
+                }
 
                 // Extract Hook snippet
                 let hookText = '';
-                if (p.type === 'carrusel' && p.content_data?.slides && p.content_data.slides[0]) {
-                    hookText = p.content_data.slides[0].title1 || p.content_data.slides[0].line1 || '';
+                if (p.type === 'carrusel' && cData.slides && cData.slides[0]) {
+                    hookText = cData.slides[0].title1 || cData.slides[0].line1 || '';
                 } else if (p.type === 'reel') {
-                    hookText = p.content_data?.hooks?.hook_a?.verbal || '';
+                    hookText = cData.hooks?.hook_a?.verbal || '';
                 }
+
+                const funnel = cData.funnel || 'TOFU';
+                const pilar = p.pillar || 'General';
 
                 // Pillar color mapping
                 const pColor = p.pillar === 'Conversión directa' ? 'var(--pilar-conversion)' :
@@ -672,63 +972,78 @@
                                (p.pillar === 'Autoridad humana' ? 'var(--pilar-autoridad)' :
                                (p.pillar === 'Transformación de vida' ? 'var(--pilar-transformacion)' : 'var(--pilar-validacion)'))));
 
-                const dateHTML = p.publish_date ? `📅 ${p.publish_date}` : '❌ Sin fecha';
-
-                // Organic stats snippet if published and metrics exist
-                let organicStatsHTML = '';
-                if (p.status === 'publicado' && p.content_data?.metrics) {
-                    const m = p.content_data.metrics;
-                    if (m.views || m.followers || m.dms || m.saves) {
-                        organicStatsHTML = `
-                            <div style="display: flex; gap: 10px; font-size: 10px; color: var(--text2); margin-top: -4px; margin-bottom: 8px; font-weight: 600;">
-                                <span title="Vistas"><i class="ti ti-eye" style="color: var(--info);"></i> ${m.views || 0}</span>
-                                <span title="Seguidores"><i class="ti ti-user-plus" style="color: var(--teal);"></i> ${m.followers || 0}</span>
-                                <span title="DMs"><i class="ti ti-message-circle" style="color: var(--purple);"></i> ${m.dms || 0}</span>
-                                <span title="Guardados"><i class="ti ti-bookmark" style="color: var(--warning);"></i> ${m.saves || 0}</span>
-                            </div>
-                        `;
-                    }
-                }
-
                 card.innerHTML = `
-                    <div>
-                        <div class="card-top">
-                            <span class="format-badge ${p.type === 'reel' ? 'badge-reel' : 'badge-carrusel'}">
-                                <i class="ti ${p.type === 'reel' ? 'ti-movie' : 'ti-carousel-horizontal'}"></i> ${p.type}
-                            </span>
-                            <span class="pillar-tag" style="background: rgba(42,191,176,0.06); border: 1px solid ${pColor}; color: ${pColor}">${p.pillar || 'General'}</span>
+                    <!-- Contenedor Visual (Reposo arriba / Hover 100% fondo) -->
+                    <div class="card-visual">
+                        ${imgHTML}
+                        <div class="card-overlay"></div>
+
+                        <!-- Esquina Superior Izquierda: Tag format + Plataformas circulares -->
+                        <div class="card-corner-top-left">
+                            <div class="card-pill-format ${p.type}">
+                                <i class="ti ${p.type === 'reel' ? 'ti-movie' : 'ti-carousel-horizontal'}"></i>
+                                <span>${p.type}</span>
+                            </div>
+                            <div class="card-platforms-stack">
+                                ${platIconsHTML}
+                            </div>
                         </div>
 
-                        <div class="card-visual">
-                            ${imgHTML}
-                        </div>
-
-                        <div class="card-body">
-                            <span class="card-title">${p.title}</span>
-                            ${hookText ? `<span class="card-hook-desc">"${hookText.replace(/<[^>]*>/g, '')}"</span>` : ''}
+                        <!-- Esquina Superior Derecha: Tag Estado Granular Real con cambio rápido -->
+                        <div class="card-corner-top-right">
+                            <div class="card-pill-status" style="background:${stStyle.bg}; color:${stStyle.color}; border:1px solid ${stStyle.border}; position:relative; cursor:pointer;" title="Click para cambiar estado de producción">
+                                <span class="status-dot" style="background:${stStyle.color};"></span>
+                                <span>${exactStatus}</span>
+                                <i class="ti ti-chevron-down" style="font-size:9px;opacity:0.8;margin-left:2px;"></i>
+                                <select style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:14px;" onchange="window.changePieceExactStatus('${p.id}', this.value)">
+                                    <option value="Idea" ${exactStatus === 'Idea' ? 'selected' : ''}>💡 Idea</option>
+                                    <option value="Investigación" ${exactStatus === 'Investigación' ? 'selected' : ''}>🔍 Investigación</option>
+                                    <option value="Guionización" ${exactStatus === 'Guionización' ? 'selected' : ''}>📝 Guionización</option>
+                                    <option value="Grabación" ${exactStatus === 'Grabación' ? 'selected' : ''}>🎥 Grabación</option>
+                                    <option value="Edición" ${exactStatus === 'Edición' ? 'selected' : ''}>✂️ Edición</option>
+                                    <option value="Revisado" ${exactStatus === 'Revisado' ? 'selected' : ''}>👀 Revisado</option>
+                                    <option value="Programado" ${exactStatus === 'Programado' ? 'selected' : ''}>📅 Programado</option>
+                                    <option value="Publicado" ${exactStatus === 'Publicado' ? 'selected' : ''}>🚀 Publicado</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
-                    <div>
-                        <div class="card-bottom-meta">
-                            <span>${dateHTML}</span>
-                            <span class="status-pill" style="background: ${statusBg}; color: ${statusColor}; position: relative; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; gap: 4px;">
-                                ${statusLabel} <i class="ti ti-chevron-down" style="font-size: 10px; opacity: 0.8;"></i>
-                                <select style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; font-size: 16px;" onchange="window.changePieceStatus('${p.id}', this.value)">
-                                    <option value="en_creacion" ${p.status === 'en_creacion' ? 'selected' : ''}>Borrador</option>
-                                    <option value="revision" ${p.status === 'revision' ? 'selected' : ''}>Revisión</option>
-                                    <option value="listo" ${p.status === 'listo' ? 'selected' : ''}>Listo</option>
-                                    <option value="publicado" ${p.status === 'publicado' ? 'selected' : ''}>Publicado</option>
-                                </select>
-                            </span>
-                        </div>
-                        ${organicStatsHTML}
+                    <!-- Contenido de la tarjeta -->
+                    <div class="card-content-wrap">
+                        <div class="card-info-block">
+                            <h4 class="card-title" title="${safeTitle}">${safeTitle}</h4>
+                            
+                            <!-- 3 renglones de metadata: Formato, Duración, Fecha -->
+                            <div class="card-meta-list">
+                                <div class="card-meta-item">
+                                    <i class="ti ti-video"></i>
+                                    <span>${videoFormat}</span>
+                                </div>
+                                <div class="card-meta-item">
+                                    <i class="ti ti-clock"></i>
+                                    <span>${duracion}</span>
+                                    <div class="card-hover-tags-inline">
+                                        <span class="funnel-badge"><i class="ti ti-filter"></i> ${funnel}</span>
+                                        <span class="pillar-mini" style="border-color:${pColor}; color:${pColor};">${pilar}</span>
+                                    </div>
+                                </div>
+                                <div class="card-meta-item">
+                                    <i class="ti ti-calendar"></i>
+                                    <span>${fechaStr}</span>
+                                    ${cData.emocion ? `<span class="emocion-mini"><i class="ti ti-mood-smile"></i> ${cData.emocion}</span>` : ''}
+                                </div>
+                            </div>
 
+                            ${hookText ? `<div class="card-hover-hook">“${hookText.replace(/<[^>]*>/g, '')}”</div>` : ''}
+                        </div>
+
+                        <!-- 4 Botones de Acción -->
                         <div class="card-actions">
-                            <button class="btn btn-outline" onclick="window.editarPiece('${p.id}', '${p.type}')" title="Editar"><i class="ti ti-edit"></i> Editar</button>
-                            <button class="btn btn-outline" onclick="window.abrirModalProgramar('${p.id}', '${p.publish_date || ''}')" title="Agendar"><i class="ti ti-calendar"></i> Agendar</button>
-                            <button class="btn btn-outline" onclick="window.abrirModalPautar('${p.id}', '${p.title}', '${assetName}', '${hookText.replace(/'/g, "\\'")}')" title="Pautar"><i class="ti ti-speakerphone"></i> Pautar</button>
-                            <button class="btn btn-ghost" onclick="window.deletePiece('${p.id}')" title="Eliminar" style="color: var(--danger); flex: 0.4;"><i class="ti ti-trash"></i></button>
+                            <button class="btn btn-card-act" onclick="window.editarPiece('${p.id}', '${p.type}')" title="Editar"><i class="ti ti-edit"></i> Editar</button>
+                            <button class="btn btn-card-act" onclick="window.abrirModalProgramar('${p.id}', '${p.publish_date || ''}')" title="Agendar"><i class="ti ti-calendar"></i> Agendar</button>
+                            <button class="btn btn-card-act" onclick="window.abrirModalPautar('${p.id}', '${safeTitle}', '${assetName}', '${hookText.replace(/'/g, "\\'")}')" title="Pautar"><i class="ti ti-speakerphone"></i> Pautar</button>
+                            <button class="btn btn-card-act btn-card-del" onclick="window.deletePiece('${p.id}')" title="Eliminar"><i class="ti ti-trash"></i></button>
                         </div>
                     </div>
                 `;
@@ -736,6 +1051,62 @@
                 container.appendChild(card);
             });
         }
+
+        // Helper para estilos del estado granular real
+        function getStatusStyle(statusName) {
+            const s = (statusName || '').toLowerCase();
+            if (s.includes('idea')) return { color: '#60a5fa', bg: 'rgba(30, 58, 138, 0.78)', border: 'rgba(96, 165, 250, 0.55)' };
+            if (s.includes('investig')) return { color: '#c084fc', bg: 'rgba(88, 28, 135, 0.78)', border: 'rgba(192, 132, 252, 0.55)' };
+            if (s.includes('guion')) return { color: '#22d3ee', bg: 'rgba(21, 94, 117, 0.78)', border: 'rgba(34, 211, 238, 0.55)' };
+            if (s.includes('grabaci')) return { color: '#fbbf24', bg: 'rgba(146, 64, 14, 0.78)', border: 'rgba(251, 191, 36, 0.55)' };
+            if (s.includes('edici')) return { color: '#f472b6', bg: 'rgba(157, 23, 77, 0.78)', border: 'rgba(244, 114, 182, 0.55)' };
+            if (s.includes('revis')) return { color: '#38bdf8', bg: 'rgba(7, 89, 133, 0.78)', border: 'rgba(56, 189, 248, 0.55)' };
+            if (s.includes('program')) return { color: '#2ABFB0', bg: 'rgba(15, 76, 70, 0.82)', border: 'rgba(42, 191, 176, 0.55)' };
+            if (s.includes('listo')) return { color: '#4ade80', bg: 'rgba(20, 83, 45, 0.78)', border: 'rgba(74, 222, 128, 0.55)' };
+            if (s.includes('public')) return { color: '#34d399', bg: 'rgba(6, 78, 59, 0.82)', border: 'rgba(52, 211, 153, 0.55)' };
+            return { color: '#94a3b8', bg: 'rgba(30, 41, 59, 0.78)', border: 'rgba(148, 163, 184, 0.55)' };
+        }
+
+        // Action: Cambiar estado granular real directamente
+        window.changePieceExactStatus = async (id, newExactStatus) => {
+            try {
+                const piece = allPieces.find(p => p.id === id);
+                const title = piece ? piece.title : 'Creativo';
+                
+                let cData = piece?.content_data;
+                if (typeof cData === 'string') {
+                    try { cData = JSON.parse(cData); } catch(e) { cData = {}; }
+                }
+                cData = cData || {};
+                if (!cData.ui_state) cData.ui_state = {};
+                cData.ui_state.exact_status = newExactStatus;
+
+                let stdStatus = 'en_creacion';
+                if (['Idea', 'Investigación', 'Guionización', 'Borrador'].includes(newExactStatus)) stdStatus = 'en_creacion';
+                else if (['Grabación', 'Edición', 'Revisado'].includes(newExactStatus)) stdStatus = 'revision';
+                else if (['Programado', 'Listo'].includes(newExactStatus)) stdStatus = 'listo';
+                else if (newExactStatus === 'Publicado') stdStatus = 'publicado';
+
+                const updatePayload = {
+                    status: stdStatus,
+                    content_data: cData,
+                    updated_at: new Date().toISOString()
+                };
+                if (newExactStatus === 'Publicado' && !piece.publish_date) {
+                    updatePayload.publish_date = new Date().toISOString().split('T')[0];
+                }
+
+                const { error } = await supabase.from('content_pieces').update(updatePayload).eq('id', id);
+                if (error) throw error;
+
+                showToast(`Estado actualizado: ${newExactStatus} ✅`);
+                await logActivity('Edición', `Se cambió el estado del creativo "${title}" a: ${newExactStatus}`);
+                loadLibraryContent();
+            } catch(err) {
+                console.error("Error updating exact status:", err);
+                showToast("Error al actualizar estado: " + err.message, "ti-alert-circle");
+            }
+        };
 
         // Action: Edit Redirection
         window.editarPiece = (id, type) => {
@@ -1019,5 +1390,12 @@
             }, 3000);
         }
     </script>
+
+<script>
+if (localStorage.getItem('theme_preference') === 'light') {
+    document.body.classList.add('light');
+}
+</script>
+
 </body>
 </html>

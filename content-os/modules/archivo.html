@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang=es>
 <head>
     <meta charset=UTF-8>
     <meta name=viewport content=width=device-width, initial-scale=1.0>
     <title>Archivo Protegido — Content OS</title>
-    <link rel=stylesheet href=../design-system.css>
+    <link rel="stylesheet" href="../design-tokens.css"><link rel=stylesheet href=../design-system.css>
     <link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css>
     <style>
         body {
@@ -24,54 +24,12 @@
             padding: clamp(1rem, 3vw, 2rem);
         }
 
-        /* ── HEADER PREMIUM ── */
-        .vb-header {
-            background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
-            border-bottom: 1px solid var(--border);
-            padding: 1.25rem 2rem;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1.5rem;
-            flex-shrink: 0;
-        }
-        .vb-header-main {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            z-index: 1;
-        }
-        .vb-title {
-            font-family: var(--f-display);
-            font-size: clamp(22px, 3vw, 30px);
-            font-weight: 300;
-            color: var(--text);
-            line-height: 1.1;
-            margin: 0;
-        }
-        .vb-title em {
-            color: var(--accent);
-            font-style: italic;
-        }
-        .vb-badges {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-        .vb-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 4px 11px;
-            border-radius: 20px;
-            background: rgba(42, 191, 176, 0.1);
-            border: 1px solid rgba(42, 191, 176, 0.25);
-            font-size: 11px;
-            font-weight: 500;
-            color: var(--accent);
-        }
+        
+        
+        
+        
+        
+        
 
         /* ── TABS BAR ── */
         .tabs-bar {
@@ -514,5 +472,21 @@
  }
  }
  </script>
+
+<script>
+window.addEventListener('message', (e) => {
+    if (e.data && e.data.type === 'THEME_CHANGE') {
+        if (e.data.theme === 'light' || e.data.payload === 'light') {
+            document.body.classList.add('light');
+        } else {
+            document.body.classList.remove('light');
+        }
+    }
+});
+if (localStorage.getItem('theme_preference') === 'light') {
+    document.body.classList.add('light');
+}
+</script>
+
 </body>
 </html>

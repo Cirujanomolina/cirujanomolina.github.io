@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <link rel="stylesheet" href="../design-tokens.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Content OS — Calendario Editorial · Dr. Molina</title>
@@ -16,10 +17,84 @@
   --sidebar-w:210px;
 }
 .light{
-  --bg:#F4F5F0;--bg2:#e8e4da;--surface:#fff;--surface2:#f0ece4;
+  --bg:#a4b8b4;--bg2:#ffffff;--surface:#ffffff;--surface2:#f0f7f6;
   --text:#14262D;--text2:#4a6068;
-  --border:rgba(42,191,176,0.25);--border2:rgba(20,38,45,0.12);
+  --border:rgba(42,191,176,0.25);--border2:#d0e8e4;
 }
+body.light .cal-content-area,
+body.light .month-full-panel,
+body.light .cal-month-table,
+body.light .weekly-panel,
+body.light .week-grid,
+body.light .allday-row,
+body.light .cal-sidebar-right {
+  background-color: #ffffff !important;
+}
+body.light .cal-month-table td {
+  background-color: #ffffff !important;
+  border-right: 1px solid #d0e8e4 !important;
+  border-bottom: 1px solid #d0e8e4 !important;
+}
+body.light .cal-month-table td.other-month {
+  background-color: #f8fafc !important;
+  opacity: 0.55 !important;
+}
+body.light .cal-month-table td.today {
+  background-color: rgba(42, 191, 176, 0.08) !important;
+}
+body.light .day-cell,
+body.light .allday-cell {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #d0e8e4 !important;
+  border-right: 1px solid #d0e8e4 !important;
+}
+body.light .plat-chip {
+  background-color: #ffffff !important;
+  border: 1.5px solid #b2cdc7 !important;
+  color: #14262D !important;
+  font-weight: 600 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+}
+body.light .plat-ig.on { background: #e1306c !important; color: #ffffff !important; border-color: #e1306c !important; }
+body.light .plat-tk.on { background: #000000 !important; color: #ffffff !important; border-color: #000000 !important; }
+body.light .plat-fb.on { background: #1877f2 !important; color: #ffffff !important; border-color: #1877f2 !important; }
+body.light .plat-yt.on { background: #ff0000 !important; color: #ffffff !important; border-color: #ff0000 !important; }
+body.light .config-btn {
+  background-color: #ffffff !important;
+  border: 1.5px solid #b2cdc7 !important;
+  color: #14262D !important;
+  font-weight: 600 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+}
+body.light .config-btn:hover {
+  background-color: #e2ece9 !important;
+  border-color: #2ABFB0 !important;
+  color: #2ABFB0 !important;
+}
+body.light .ms-bar-chip {
+  background-color: #ffffff !important;
+  border: 1.5px solid #b2cdc7 !important;
+  color: #14262D !important;
+  font-weight: 600 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+}
+body.light .ms-bar-label {
+  color: #14262D !important;
+  font-weight: 700 !important;
+}
+body.light .fsel {
+  background-color: #ffffff !important;
+  border: 1.5px solid #b2cdc7 !important;
+  color: #14262D !important;
+  font-weight: 500 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+}
+body.light .filters-bar,
+body.light .month-summary-bar {
+  background-color: #a4b8b4 !important;
+  border-bottom: 1px solid rgba(20, 38, 45, 0.12) !important;
+}
+body.light .card { background-color: #ffffff !important; border-color: #d0e8e4 !important; }
 body{font-family:'Archivo',sans-serif;background:var(--bg);color:var(--text);font-size:14px;transition:background .3s,color .3s;display: flex;flex-direction: column;height: 100vh;overflow: hidden;}
 .app{display:flex;flex: 1;min-height: 0;overflow: hidden;}
 
@@ -46,87 +121,15 @@ body{font-family:'Archivo',sans-serif;background:var(--bg);color:var(--text);fon
 /* ── MAIN ── */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 
-/* ── HEADER PREMIUM ── */
-.vb-header {
-  background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
-  border-bottom: 1px solid var(--border);
-  padding: 1.25rem 2rem;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  flex-shrink: 0;
-}
-.vb-header::before {
-  content: '';
-  position: absolute;
-  top: -100px;
-  right: -100px;
-  width: 320px;
-  height: 320px;
-  border-radius: 50%;
-  background: var(--accent);
-  opacity: 0.04;
-  pointer-events: none;
-}
-.vb-header::after {
-  content: '';
-  position: absolute;
-  bottom: -60px;
-  left: 5%;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: var(--text2);
-  opacity: 0.03;
-  pointer-events: none;
-}
-.vb-header-main {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  z-index: 1;
-  min-width: 0;
-}
-.vb-header-actions {
-  z-index: 1;
-  display: flex;
-  gap: 10px;
-  flex-shrink: 0;
-}
-.vb-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(22px, 3vw, 30px);
-  font-weight: 300;
-  color: var(--text);
-  line-height: 1.1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.vb-title em {
-  color: var(--accent);
-  font-style: italic;
-}
-.vb-badges {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-.vb-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 11px;
-  border-radius: 20px;
-  background: rgba(42, 191, 176, 0.1);
-  border: 1px solid rgba(42, 191, 176, 0.25);
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--accent);
-}
+
+
+
+
+
+
+
+
+
 .nav-week{display:flex;align-items:center;gap:4px}
 .nav-arr{width:28px;height:28px;border-radius:var(--radius);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:12px;transition:all .15s}
 .nav-arr:hover{border-color:var(--accent);color:var(--accent)}
@@ -573,7 +576,7 @@ select option{background:var(--bg2);color:var(--text)}
         </div>
       </div>
       <div class="cs-foot" style="display:flex;gap:8px;">
-        <button class="btn btn-p" style="flex:1;justify-content:center;" onclick="savePiece()"><i class="fa-solid fa-floppy-disk"></i>Guardar</button>
+        <button class="btn btn-p" id="btn-save-piece" style="flex:1;justify-content:center;" onclick="savePiece()"><i class="fa-solid fa-floppy-disk"></i>Guardar</button>
         <button class="btn" id="btn-archivar-pieza" style="display:none;background:rgba(245,90,138,0.15);border-color:#f55a8a;color:#f55a8a;padding:8px 12px;" onclick="archiveCurrentPiece()" title="Enviar al Archivo"><i class="fa-solid fa-trash"></i></button>
       </div>
     </div>
@@ -763,6 +766,85 @@ let PIECES = [];
 let editingId = null;
 let activeToast = null;
 
+function formatDateNice(dateStr) {
+  if (!dateStr) return '';
+  try {
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+      const dia = parseInt(parts[2], 10);
+      const mes = meses[parseInt(parts[1], 10) - 1] || parts[1];
+      return `${dia} ${mes}`;
+    }
+  } catch(e) {}
+  return dateStr;
+}
+
+function showToast(msg, type = 'info') {
+  let toast = document.getElementById('cal-active-toast');
+  if (toast) {
+    try { toast.remove(); } catch(e) {}
+  }
+  
+  toast = document.createElement('div');
+  toast.id = 'cal-active-toast';
+  
+  let icon = 'fa-circle-check';
+  let bg = 'var(--accent, #2ABFB0)';
+  let color = '#0f1e24';
+  
+  if (type === 'error') {
+    icon = 'fa-circle-exclamation';
+    bg = '#f55a8a';
+    color = '#FFFFFF';
+  } else if (type === 'loading') {
+    icon = 'fa-spinner fa-spin';
+    bg = '#1F434E';
+    color = '#F4F5F0';
+  } else if (type === 'success') {
+    icon = 'fa-circle-check';
+    bg = '#27ae60';
+    color = '#FFFFFF';
+  }
+
+  toast.style.cssText = `
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: ${bg};
+    color: ${color};
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    z-index: 999999;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: toastIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: auto;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+  `;
+  
+  toast.innerHTML = `<i class="fa-solid ${icon}" style="font-size: 16px;"></i> <span>${msg}</span>`;
+  document.body.appendChild(toast);
+  activeToast = toast;
+
+  if (type !== 'loading') {
+    setTimeout(() => {
+      if (toast && toast.parentNode) {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        toast.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        setTimeout(() => {
+          if (toast && toast.parentNode) toast.remove();
+        }, 300);
+      }
+    }, 3800);
+  }
+}
+
 // State
 let currentWeekStart = getWeekStart(new Date());
 let miniMonth = new Date().getMonth();
@@ -865,7 +947,11 @@ function pieceHTML(p, compact=false) {
 
 // ══ SUPABASE MAPPING ══
 function mapRowToPiece(row) {
-  let uiState = row.content_data?.ui_state || {};
+  let cData = row.content_data || {};
+  if (typeof cData === 'string') {
+    try { cData = JSON.parse(cData); } catch(e) { cData = {}; }
+  }
+  let uiState = cData?.ui_state || {};
   
   let exactStatus = uiState.exact_status;
   if (!exactStatus) {
@@ -896,7 +982,8 @@ function mapRowToPiece(row) {
     plataforma: row.platform || 'Instagram',
     hook: uiState.hook || '',
     notas: uiState.notes || uiState.notas || '',
-    idea_id: row.idea_id || null
+    idea_id: row.idea_id || null,
+    _raw_content_data: cData
   };
 }
 
@@ -914,7 +1001,11 @@ function mapPieceToRow(piece) {
   else if (piece.estado === 'Listo' || piece.estado === 'Programado') statusVal = 'listo';
   else if (piece.estado === 'Publicado') statusVal = 'publicado';
 
+  const existingData = piece._raw_content_data || {};
+  const existingUiState = existingData.ui_state || {};
+
   const ui_state = {
+    ...existingUiState,
     fechalimite: piece.fechalimite || '',
     hook: piece.hook || '',
     notas: piece.notas || '',
@@ -930,7 +1021,7 @@ function mapPieceToRow(piece) {
     status: statusVal,
     publish_date: piece.fecha || null,
     idea_id: piece.idea_id || null,
-    content_data: { ui_state },
+    content_data: { ...existingData, ui_state },
     updated_at: new Date().toISOString()
   };
 
@@ -970,17 +1061,17 @@ async function loadPieces() {
     if (e.details) detail += (detail ? ' - ' : '') + e.details;
     if (e.code) detail += ` (Código: ${e.code})`;
     if (!detail) detail = typeof e === 'object' ? JSON.stringify(e) : String(e);
-    showToast(`⚠️ Error al cargar calendario de Supabase: ${detail}`);
+    showToast(`⚠️ Error al cargar calendario de Supabase: ${detail}`, 'error');
   }
   renderAll();
 }
 
 async function savePieceToSupabase(piece) {
-  const row = mapPieceToRow(piece);
   const isNew = !piece.id || String(piece.id).length < 10;
 
   try {
     if (isNew) {
+      const row = mapPieceToRow(piece);
       const { data, error } = await supabase
         .from('content_pieces')
         .insert([row])
@@ -988,22 +1079,93 @@ async function savePieceToSupabase(piece) {
       if (error) throw error;
       if (data && data[0]) {
         piece.id = data[0].id;
+        piece._raw_content_data = data[0].content_data;
       }
+      showToast('¡Nueva pieza guardada exitosamente en Supabase! ✅', 'success');
     } else {
-      const { error } = await supabase
+      // 1. Obtener la fila actual de Supabase para hacer MERGE quirúrgico y NO perder nada (foto, hooks, guion, slides, etc.)
+      const { data: freshRow, error: fetchErr } = await supabase
         .from('content_pieces')
-        .update(row)
+        .select('*')
+        .eq('id', piece.id)
+        .single();
+
+      let baseContentData = {};
+      if (freshRow && freshRow.content_data) {
+        baseContentData = typeof freshRow.content_data === 'string'
+          ? JSON.parse(freshRow.content_data)
+          : freshRow.content_data;
+      } else if (piece._raw_content_data) {
+        baseContentData = piece._raw_content_data;
+      }
+
+      // Preservar íntegramente todo el content_data (cover_image, portada, thumbnail, hooks, guion, slides, etc.)
+      const baseUiState = baseContentData.ui_state || {};
+      const mergedContentData = {
+        ...baseContentData,
+        ui_state: {
+          ...baseUiState,
+          fechalimite: piece.fechalimite !== undefined ? piece.fechalimite : (baseUiState.fechalimite || ''),
+          hook: piece.hook !== undefined ? piece.hook : (baseUiState.hook || ''),
+          notas: piece.notas !== undefined ? piece.notas : (baseUiState.notas || ''),
+          exact_status: piece.estado || baseUiState.exact_status || 'Idea',
+          exact_format: piece.formato || baseUiState.exact_format || 'Reel'
+        }
+      };
+
+      // Mapeo canónico de estado
+      let statusVal = 'en_creacion';
+      if (piece.estado === 'Idea' || piece.estado === 'Guionización') statusVal = 'en_creacion';
+      else if (piece.estado === 'Grabación' || piece.estado === 'Edición') statusVal = 'revision';
+      else if (piece.estado === 'Listo' || piece.estado === 'Programado') statusVal = 'listo';
+      else if (piece.estado === 'Publicado') statusVal = 'publicado';
+
+      // Tipo canónico
+      let typeVal = freshRow?.type || 'reel';
+      if (piece.formato === 'Reel') typeVal = 'reel';
+      else if (piece.formato === 'Carrusel') typeVal = 'carrusel';
+      else if (piece.formato === 'Historia') typeVal = 'story';
+      else if (piece.formato === 'Publicación') typeVal = 'post';
+
+      // Payload quirúrgico: SOLO actualiza lo editado desde el calendario
+      const updatePayload = {
+        title: piece.titulo,
+        pillar: piece.pilar !== undefined ? piece.pilar : (freshRow?.pillar || ''),
+        platform: piece.plataforma || (freshRow?.platform || 'Instagram'),
+        type: typeVal,
+        status: statusVal,
+        publish_date: piece.fecha || null,
+        content_data: mergedContentData,
+        updated_at: new Date().toISOString()
+      };
+
+      // Si existía cover_image en columna directa de la tabla, conservarla
+      if (freshRow && freshRow.cover_image) {
+        updatePayload.cover_image = freshRow.cover_image;
+      }
+
+      const { error: updateErr } = await supabase
+        .from('content_pieces')
+        .update(updatePayload)
         .eq('id', piece.id);
-      if (error) throw error;
+
+      if (updateErr) throw updateErr;
+
+      piece._raw_content_data = mergedContentData;
+      if (freshRow && freshRow.cover_image) piece.cover_image = freshRow.cover_image;
+      showToast('¡Cambios guardados exitosamente en Supabase! ✅', 'success');
     }
-    showToast(isNew ? 'Pieza guardada en Supabase ✅' : 'Pieza actualizada ✅');
+
+    window.parent.postMessage({ type: 'PIECE_SAVED', payload: piece }, '*');
+    return true;
   } catch (err) {
     console.error('Error saving content piece:', err);
     let detail = err.message || '';
     if (err.details) detail += (detail ? ' - ' : '') + err.details;
     if (err.code) detail += ` (Código: ${err.code})`;
     if (!detail) detail = typeof err === 'object' ? JSON.stringify(err) : String(err);
-    showToast(`⚠️ Error al guardar en Supabase: ${detail}`);
+    showToast(`⚠️ Error al guardar en Supabase: ${detail}`, 'error');
+    return false;
   }
 }
 
@@ -1177,11 +1339,11 @@ function renderWeek() {
         cells+=`<div class="day-cell" onclick="openNewPieceOnDay('${toInputDate(d)}')"></div>`;
       });
       const colPieces=pieces.map((p,i)=>`
-        <div class="piece-abs ${pieceClass(p)}" style="top:${8+i*56}px;min-height:48px;" onclick="event.stopPropagation();openEditPiece('${p.id}')">
+        <div class="piece-abs ${pieceClass(p)}" draggable="true" ondragstart="onPieceDragStart(event,'${p.id}')" ondragend="onPieceDragEnd(event)" style="top:${8+i*56}px;min-height:48px;cursor:grab;" onclick="event.stopPropagation();openEditPiece('${p.id}')" title="Arrastra para reprogramar">
           <div class="piece-title" style="font-size:10px;font-weight:500">${p.titulo}</div>
           <div class="piece-meta">${pieceMetaHTML(p)}</div>
         </div>`).join('');
-      grid.innerHTML+=`<div class="day-col" style="position:relative">${cells}${colPieces}</div>`;
+      grid.innerHTML+=`<div class="day-col" style="position:relative" ondragover="onCalendarDayDragOver(event, this)" ondragleave="onCalendarDayDragLeave(this)" ondrop="onCalendarDayDrop(event, '${toInputDate(d)}')">${cells}${colPieces}</div>`;
     });
   }
 
@@ -1486,36 +1648,69 @@ function setStatus(el,est){
 
 // ══ SAVE ══
 async function savePiece() {
-  const titulo=document.getElementById('p-titulo').value.trim();
+  const titulo = document.getElementById('p-titulo').value.trim();
   if(!titulo){
-    const el=document.getElementById('p-titulo');
-    el.style.borderColor='#f55a8a';setTimeout(()=>el.style.borderColor='',1500);el.focus();return;
+    const el = document.getElementById('p-titulo');
+    el.style.borderColor = '#f55a8a';
+    setTimeout(() => el.style.borderColor = '', 1500);
+    el.focus();
+    return;
   }
+
+  const btnSave = document.getElementById('btn-save-piece');
+  const originalBtnHTML = btnSave ? btnSave.innerHTML : '<i class="fa-solid fa-floppy-disk"></i>Guardar';
+  if (btnSave) {
+    btnSave.disabled = true;
+    btnSave.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
+  }
+
   const originalId = editingId;
-  const piece={
+  const existingPiece = originalId ? PIECES.find(p => p.id === originalId) : null;
+  const piece = {
     id: originalId !== null ? originalId : null,
     titulo,
-    formato:document.getElementById('p-formato').value||'Reel',
-    fecha:document.getElementById('p-fecha').value||'',
-    fechalimite:document.getElementById('p-fechalimite').value||'',
-    estado:document.getElementById('p-estado').value||'Idea',
-    pilar:document.getElementById('p-pilar').value||'',
-    plataforma:document.getElementById('p-plataforma').value||'Instagram',
-    hook:document.getElementById('p-hook').value||'',
-    notas:document.getElementById('p-notas').value||''
+    formato: document.getElementById('p-formato').value || 'Reel',
+    fecha: document.getElementById('p-fecha').value || '',
+    fechalimite: document.getElementById('p-fechalimite').value || '',
+    estado: document.getElementById('p-estado').value || 'Idea',
+    pilar: document.getElementById('p-pilar').value || '',
+    plataforma: document.getElementById('p-plataforma').value || 'Instagram',
+    hook: document.getElementById('p-hook').value || '',
+    notas: document.getElementById('p-notas').value || '',
+    _raw_content_data: existingPiece?._raw_content_data || null
   };
 
-  await savePieceToSupabase(piece);
+  showToast('Guardando en Supabase...', 'loading');
+  const ok = await savePieceToSupabase(piece);
 
-  if(originalId!==null){
-    const idx=PIECES.findIndex(p=>p.id===originalId);
-    if(idx>-1) PIECES[idx]=piece;
-  } else {
-    PIECES.unshift(piece);
+  if (ok) {
+    if (btnSave) {
+      btnSave.innerHTML = '<i class="fa-solid fa-check"></i> ¡Guardado!';
+      btnSave.style.background = '#27ae60';
+      btnSave.style.borderColor = '#27ae60';
+      btnSave.style.color = '#FFFFFF';
+    }
+
+    if (originalId !== null) {
+      const idx = PIECES.findIndex(p => p.id === originalId);
+      if (idx > -1) PIECES[idx] = piece;
+    } else {
+      PIECES.unshift(piece);
+    }
+
+    resetToNewPiece();
+    renderAll();
   }
 
-  resetToNewPiece();
-  renderAll();
+  if (btnSave) {
+    setTimeout(() => {
+      btnSave.disabled = false;
+      btnSave.innerHTML = originalBtnHTML;
+      btnSave.style.background = '';
+      btnSave.style.borderColor = '';
+      btnSave.style.color = '';
+    }, 1800);
+  }
 }
 
 // ══ ARCHIVAR PIEZA AL ARCHIVO (SOFT-DELETE CON MODAL PERSONALIZADO) ══
@@ -1605,11 +1800,13 @@ async function onCalendarDayDrop(e, targetDateStr) {
   const oldDate = piece.fecha;
   piece.fecha = targetDateStr;
 
-  // Actualizar inmediatamente en memoria y renderizar
+  // Actualizar inmediatamente en memoria y re-renderizar calendario
   renderAll();
-  showToast(`Reprogramado al ${targetDateStr} 🗓️`);
+  
+  // Feedback inmediato al usuario
+  showToast(`Reprogramando fecha al ${formatDateNice(targetDateStr)}...`, 'loading');
 
-  // Persistir en Supabase
+  // Persistir automáticamente en Supabase
   try {
     const { error } = await supabase
       .from('content_pieces')
@@ -1620,11 +1817,15 @@ async function onCalendarDayDrop(e, targetDateStr) {
       .eq('id', id);
 
     if (error) throw error;
+
+    // Comprobante visual indiscutible de que se guardó en Supabase
+    showToast(`¡Movido y guardado al ${formatDateNice(targetDateStr)} en Supabase! ✅`, 'success');
+    window.parent.postMessage({ type: 'PIECE_DATE_CHANGED', payload: { id, publish_date: targetDateStr } }, '*');
   } catch (err) {
-    console.error('Error al reprogramar fecha:', err);
-    piece.fecha = oldDate; // revertir
+    console.error('Error al reprogramar fecha en Supabase:', err);
+    piece.fecha = oldDate; // revertir en memoria y UI
     renderAll();
-    showToast('⚠️ No se pudo guardar la nueva fecha');
+    showToast(`⚠️ No se pudo guardar en Supabase: ${err.message || 'Error de conexión'}`, 'error');
   }
 }
 
@@ -1985,5 +2186,21 @@ loadPieces().then(() => {
     }
   });
 </script>
+
+<script>
+window.addEventListener('message', (e) => {
+    if (e.data && e.data.type === 'THEME_CHANGE') {
+        if (e.data.theme === 'light' || e.data.payload === 'light') {
+            document.body.classList.add('light');
+        } else {
+            document.body.classList.remove('light');
+        }
+    }
+});
+if (localStorage.getItem('theme_preference') === 'light') {
+    document.body.classList.add('light');
+}
+</script>
+
 </body>
 </html>

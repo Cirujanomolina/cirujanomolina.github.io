@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <link rel="stylesheet" href="../design-tokens.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Estrategia — @cirujanomolina</title>
@@ -18,86 +19,36 @@
   --ignite:#2ABFB0;--auth:#b48ef0;--conv:#f5935a;--cons:#5ba3f5;
 }
 body.light{
-  --bg:#F4F5F0;--bg2:#e8e4da;--bg3:#dbd6cb;
-  --sf:#ffffff;--sf2:#f0ece4;--sf3:#e6e2da;
-  --tx:#14262D;--tx2:#4a6068;--tx3:#82959c;
-  --br:rgba(42,191,176,0.3);--br2:rgba(20,38,45,0.1);--br3:rgba(20,38,45,0.05);
+  --bg:#a4b8b4;--bg2:#ffffff;--bg3:#edf2f7;
+  --sf:#ffffff;--sf2:#f0f7f6;--sf3:#e2f0ed;
+  --tx:#14262D;--tx2:#4a6068;--tx3:#7a8f96;
+  --br:rgba(42,191,176,0.3);--br2:#d0e8e4;--br3:rgba(42,191,176,0.12);
 }
+body.light .level-bar{background:#ffffff !important;border-bottom:1px solid #d0e8e4 !important;}
+body.light .ltab{color:#4a6068 !important;}
+body.light .ltab:hover{color:#14262D !important;}
+body.light .ltab.on{color:var(--tl) !important;border-bottom-color:var(--tl) !important;}
+body.light .card{background:#ffffff !important;border-color:#d0e8e4 !important;}
+body.light .save-bar{background:rgba(255,255,255,0.95) !important;border-top:1px solid #d0e8e4 !important;}
+body.light .save-status{color:#14262D !important;}
+body.light .sec-title{color:#ffffff !important;font-weight:300 !important;text-shadow:0 1px 3px rgba(20,38,45,0.3) !important;}
+body.light .sec-title em{color:#14262D !important;font-style:italic !important;font-weight:600 !important;}
+body.light .sec-desc{color:rgba(255,255,255,0.95) !important;}
+body.light .sec-label{color:#14262D !important;font-weight:700 !important;}
+body.light .sec-label i{color:#2ABFB0 !important;}
 html{scroll-behavior:smooth}
 body{font-family:'Archivo',sans-serif;background:var(--bg);color:var(--tx);font-size:13px;line-height:1.5;min-height:100vh}
 ::-webkit-scrollbar{width:3px;height:3px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:rgba(42,191,176,.2);border-radius:4px}
 
-/* ── HEADER PREMIUM ── */
-.vb-header {
-  background: linear-gradient(135deg, var(--bg2) 0%, var(--bg3) 100%);
-  border-bottom: 1px solid var(--br);
-  padding: 1.25rem 2rem;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.vb-header::before {
-  content: '';
-  position: absolute;
-  top: -100px;
-  right: -100px;
-  width: 320px;
-  height: 320px;
-  border-radius: 50%;
-  background: var(--tl);
-  opacity: 0.04;
-  pointer-events: none;
-}
-.vb-header::after {
-  content: '';
-  position: absolute;
-  bottom: -60px;
-  left: 5%;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: var(--be);
-  opacity: 0.03;
-  pointer-events: none;
-}
-.vb-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(22px, 3vw, 30px);
-  font-weight: 300;
-  color: var(--tx);
-  line-height: 1.1;
-  margin-bottom: 0.75rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  z-index: 1;
-}
-.vb-title em {
-  color: var(--tl);
-  font-style: italic;
-}
-.vb-badges {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  z-index: 1;
-}
-.vb-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 11px;
-  border-radius: 20px;
-  background: rgba(42, 191, 176, 0.1);
-  border: 1px solid rgba(42, 191, 176, 0.25);
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--tl);
-}
+
+
+
+
+
+
+
 
 /* ── LEVEL TABS ── */
 .level-bar{background:var(--bg2);border-bottom:1px solid var(--br2);padding:0 2rem;display:flex;gap:0;position:sticky;top:0;z-index:30;overflow-x:auto}
@@ -388,14 +339,16 @@ body{font-family:'Archivo',sans-serif;background:var(--bg);color:var(--tx);font-
 <body>
 
 <!-- HEADER -->
-<div class="vb-header">
-  <div class="vb-title">Estrategia de <em>Instagram</em></div>
-  <div class="vb-badges">
-    <span class="vb-badge"><i class="ti ti-calendar"></i> 2026</span>
-    <span class="vb-badge"><i class="ti ti-target"></i> 20K seguidores</span>
-    <span class="vb-badge"><i class="ti ti-stethoscope"></i> 10 cirugías/mes</span>
+<header class="vb-header">
+  <div class="vb-header-main">
+    <h1 class="vb-title">Estrategia de <em>Instagram</em></h1>
+    <div class="vb-badges">
+      <span class="vb-badge"><i class="ti ti-calendar"></i> 2026</span>
+      <span class="vb-badge"><i class="ti ti-target"></i> 20K seguidores</span>
+      <span class="vb-badge"><i class="ti ti-stethoscope"></i> 10 cirugías/mes</span>
+    </div>
   </div>
-</div>
+</header>
 
 <!-- LEVEL TABS -->
 <div class="level-bar">
@@ -1599,5 +1552,21 @@ window.openWeekDetail = openWeekDetail;
 window.selectFase = selectFase;
 window.renderAnual = renderAnual;
 </script>
+
+<script>
+window.addEventListener('message', (e) => {
+    if (e.data && e.data.type === 'THEME_CHANGE') {
+        if (e.data.theme === 'light' || e.data.payload === 'light') {
+            document.body.classList.add('light');
+        } else {
+            document.body.classList.remove('light');
+        }
+    }
+});
+if (localStorage.getItem('theme_preference') === 'light') {
+    document.body.classList.add('light');
+}
+</script>
+
 </body>
 </html>

@@ -1,84 +1,20 @@
+@import url("design-tokens.css");
 @import url("https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css");
 @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&display=swap');
 
+/* Alias tipografía para retrocompatibilidad */
 :root {
-  /* ═══ COLORES — DARK MODE (DEFAULT) ═══ */
-  --bg:       #0f1e24;    
-  --bg2:      #14262D;    
-  --bg3:      #1F434E;    
-  --surface:  #182f38;    
-  --surface2: #1c3641;    
-  --surface3: #213e4b;    
-
-  --text:     #F4F5F0;    
-  --text2:    #9db8c0;    
-  --text3:    #6a8f98;    
-  
-  --teal:     #2ABFB0;    
-  --accent:   var(--teal);
-  --teal-bg:  rgba(42,191,176,0.12);
-  --teal-bg2: rgba(42,191,176,0.06);
-  --beige:    #CCC2A7;    
-  --amber:    #C9862A;    
-  --amber2:   rgba(201,134,42,0.12);
-  
-  /* ═══ COLORES SEMÁNTICOS ═══ */
-  --success:  #27ae60;
-  --warning:  #f5d35a;
-  --danger:   #f55a8a;
-  --info:     #5ba3f5;
-  --purple:   #b48ef0;
-  
-  /* ═══ COLORES DE PILARES ═══ */
-  --pilar-validacion:    var(--teal);
-  --pilar-educacion:     var(--info);
-  --pilar-contrarian:    var(--amber);
-  --pilar-autoridad:     var(--purple);
-  --pilar-transformacion:var(--warning);
-  --pilar-conversion:    var(--danger);
-  
-  /* ═══ BORDES ═══ */
-  --border:   rgba(42,191,176,0.12);
-  --border2:  rgba(244,245,240,0.07);
-  --border3:  rgba(244,245,240,0.04);
-
-  /* ═══ RADII ═══ */
-  --r:    10px;
-  --r-sm: 7px;
-  --r-lg: 14px;
-
-  /* ═══ LAYOUT ═══ */
-  --topbar-h:  75px;
-  --sidebar-w: 224px;
-
-  /* ═══ TIPOGRAFÍA ═══ */
-  --f-display: 'Cormorant Garamond', Georgia, serif;
-  --f-body:    'Archivo', system-ui, sans-serif;
-  
   --fs-xs: 0.75rem;   /* 12px */
   --fs-sm: 0.8125rem; /* 13px */
   --fs-md: 0.875rem;  /* 14px */
   --fs-lg: 1.125rem;  /* 18px */
   --fs-xl: 1.5rem;    /* 24px */
+  --topbar-h:  var(--cos-topbar-h);
+  --sidebar-w: var(--cos-sidebar-w);
+  --f-display: var(--cos-font-display);
+  --f-body:    var(--cos-font-body);
 }
 
-/* ═══ LIGHT MODE OVERRIDES ═══ */
-body.light {
-  --bg:       #F4F5F0;    
-  --bg2:      #e8e4da;    
-  --bg3:      #dbd6cb;
-  --surface:  #ffffff;    
-  --surface2: #f0ece4;    
-  --surface3: #e6e2da;
-
-  --text:     #14262D;    
-  --text2:    #4a6068;    
-  --text3:    #82959c;
-  
-  --border:   rgba(42,191,176,0.3);
-  --border2:  rgba(20,38,45,0.1);
-  --border3:  rgba(20,38,45,0.05);
-}
 
 /* ═══ BASE RESET ═══ */
 *, *::before, *::after {
