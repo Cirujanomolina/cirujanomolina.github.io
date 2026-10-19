@@ -1963,6 +1963,15 @@ function gather(form){
   }
   d['condiciones'] = condiciones;
 
+  // Handle respiratorio y gastro
+  const roncaVal = fd.get('ronquidos_radio');
+  const cpapVal = fd.get('cpap_radio');
+  const reflujoVal = fd.get('reflujo_radio');
+
+  if (reflujoVal === 'si' && !d['condiciones'].includes('reflujo')) {
+    d['condiciones'].push('reflujo');
+  }
+
   // Handle otras_condiciones (combining custom conditions and allergies)
   const condicionesOtroVal = (condicionesOtroSelect && condicionesOtroSelect.checked) ? fd.get('condiciones_otro_custom') : '';
   const alergiaRadio = fd.get('alergia_radio');
@@ -2001,15 +2010,6 @@ function gather(form){
     d['medicamentos_actuales'] = medTexto.trim();
   } else {
     d['medicamentos_actuales'] = 'Ninguno';
-  }
-
-  // Handle respiratorio y gastro
-  const roncaVal = fd.get('ronquidos_radio');
-  const cpapVal = fd.get('cpap_radio');
-  const reflujoVal = fd.get('reflujo_radio');
-
-  if (reflujoVal === 'si' && !d['condiciones'].includes('reflujo')) {
-    d['condiciones'].push('reflujo');
   }
 
   // Handle tabaquismo dropdown
