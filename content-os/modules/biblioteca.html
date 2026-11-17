@@ -570,7 +570,652 @@
             display: flex;
             flex-direction: column;
         }
-    </style>
+
+        /* ── MODAL DETALLE DE CREATIVO (APAISADO & SPLIT LAYOUT) ── */
+        .modal.modal-detalle {
+            max-width: 1220px;
+            width: 88vw;
+            height: 88vh;
+            max-height: 90vh;
+            border-radius: 20px;
+            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.75);
+            display: flex;
+            flex-direction: column;
+            overflow: visible !important;
+            background: var(--surface);
+            position: relative;
+        }
+
+        /* Botón de cierre en la esquina flotante */
+        .dt-corner-close {
+            position: absolute;
+            top: -14px;
+            right: -14px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #14262D;
+            border: 2px solid #FFFFFF;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            font-size: 16px;
+        }
+
+        .dt-corner-close:hover {
+            background: var(--teal);
+            color: #0F1E24;
+            transform: scale(1.12);
+            box-shadow: 0 6px 20px rgba(42, 191, 176, 0.55);
+        }
+
+        /* Flechas Chevron por fuera del modal */
+        .dt-nav-arrow {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            outline: none;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            z-index: 1010;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            border-radius: 50%;
+        }
+
+        .dt-nav-arrow.dt-nav-prev {
+            left: max(16px, calc((100vw - 1220px) / 2 - 74px));
+        }
+
+        .dt-nav-arrow.dt-nav-next {
+            right: max(16px, calc((100vw - 1220px) / 2 - 74px));
+        }
+
+        .dt-nav-arrow:hover {
+            color: rgba(255, 255, 255, 1);
+            transform: translateY(-50%) scale(1.2);
+            filter: drop-shadow(0 0 16px rgba(255, 255, 255, 0.5));
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .dt-nav-arrow:active {
+            transform: translateY(-50%) scale(0.95);
+        }
+
+        body.light .modal.modal-detalle {
+            background: #F4F6F6;
+            border-color: rgba(20, 38, 45, 0.15);
+            box-shadow: 0 30px 90px rgba(20, 38, 45, 0.25);
+        }
+
+        /* HEADER: Título arriba, pills debajo */
+        .dt-hdr {
+            padding: 18px 28px;
+            border-bottom: 1px solid var(--border2);
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            background: var(--surface);
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            flex-shrink: 0;
+        }
+
+        body.light .dt-hdr {
+            background: #FFFFFF;
+        }
+
+        .dt-hdr-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .dt-title {
+            margin: 0;
+            font-family: var(--f-display, 'Cormorant Garamond', serif);
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.2;
+            word-break: break-word;
+        }
+
+        body.light .dt-title {
+            color: #14262D;
+        }
+
+        .dt-hdr-badges {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dt-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .dt-badge-type {
+            background: rgba(42, 191, 176, 0.14);
+            color: var(--teal);
+            border: 1px solid rgba(42, 191, 176, 0.3);
+        }
+
+        .dt-badge-funnel {
+            background: rgba(91, 163, 245, 0.12);
+            color: #5ba3f5;
+            border: 1px solid rgba(91, 163, 245, 0.28);
+        }
+
+        .dt-badge-priority {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text2);
+            border: 1px solid var(--border2);
+        }
+
+        .dt-badge-platform {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text2);
+            border: 1px solid var(--border2);
+        }
+
+        /* BODY LAYOUT: Columna Izquierda (Foto grande) + Columna Derecha (Main) */
+        .dt-modal-layout {
+            flex: 1;
+            display: flex;
+            min-height: 0;
+            overflow: hidden;
+            background: var(--bg);
+        }
+
+        body.light .dt-modal-layout {
+            background: #EAEFEC;
+        }
+
+        /* Columna Izquierda: Imagen Grande */
+        .dt-cover-col {
+            width: 320px;
+            min-width: 290px;
+            max-width: 340px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-right: 1px solid var(--border2);
+            background: var(--surface);
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        body.light .dt-cover-col {
+            background: #F8FAF9;
+            border-right-color: rgba(20, 38, 45, 0.1);
+        }
+
+        .dt-big-poster {
+            width: 100%;
+            aspect-ratio: 9 / 16;
+            max-height: 520px;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            background: #0D171B;
+            border: 1.5px solid var(--border2);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.28);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dt-big-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .dt-big-poster:hover img {
+            transform: scale(1.02);
+        }
+
+        .dt-big-poster .dt-poster-fallback {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 20px;
+            text-align: center;
+            color: var(--text3);
+        }
+
+        .dt-poster-overlay-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(15, 30, 36, 0.85);
+            backdrop-filter: blur(8px);
+            color: #FFFFFF;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 9px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .dt-poster-zoom-btn {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(15, 30, 36, 0.85);
+            backdrop-filter: blur(8px);
+            color: var(--teal);
+            font-size: 11px;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(42, 191, 176, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .dt-poster-zoom-btn:hover {
+            background: var(--teal);
+            color: #0F1E24;
+        }
+
+        /* Columna Derecha: Main */
+        .dt-main-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        /* Tira de Tabs con FONDO CLARITO para ALTO CONTRASTE */
+        .dt-tabs-bar {
+            margin: 14px 20px 8px 20px;
+            padding: 5px 6px;
+            background: #FFFFFF !important;
+            border: 1px solid rgba(20, 38, 45, 0.12);
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        body.dark .dt-tabs-bar {
+            background: #172B33 !important;
+            border-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+        }
+
+        .dt-tab {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 9px 14px;
+            font-size: 12.5px;
+            font-weight: 600;
+            font-family: var(--f-body);
+            color: #4A5568;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        body.dark .dt-tab {
+            color: #A0B2B7;
+        }
+
+        .dt-tab:hover {
+            color: #14262D;
+            background: rgba(42, 191, 176, 0.08);
+        }
+
+        body.dark .dt-tab:hover {
+            color: #FFFFFF;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .dt-tab.active {
+            background: var(--teal) !important;
+            color: #0F1E24 !important;
+            font-weight: 700 !important;
+            box-shadow: 0 3px 10px rgba(42, 191, 176, 0.4);
+        }
+
+        .dt-tab.active i {
+            color: #0F1E24 !important;
+        }
+
+        /* Modal Body & Panes */
+        .dt-modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 14px 20px 20px 20px;
+        }
+
+        .dt-pane {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .dt-pane.active {
+            display: block;
+        }
+
+        /* Cards inside panes */
+        .dt-card-sec {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: var(--r);
+            padding: 18px 20px;
+            margin-bottom: 16px;
+        }
+
+        body.light .dt-card-sec {
+            background: #FFFFFF;
+            border-color: rgba(20, 38, 45, 0.08);
+        }
+
+        .dt-sec-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--accent);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .dt-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .dt-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .dt-grid-2, .dt-grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .dt-field-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .dt-field-lbl {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text3);
+        }
+
+        .dt-field-val {
+            font-size: 13px;
+            color: var(--text);
+            line-height: 1.45;
+        }
+
+        .dt-field-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(42, 191, 176, 0.1);
+            color: var(--teal);
+            border: 1px solid rgba(42, 191, 176, 0.25);
+            width: fit-content;
+        }
+
+        .dt-copy-box {
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            border-radius: var(--r-sm);
+            padding: 14px;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text);
+            white-space: pre-wrap;
+            max-height: 220px;
+            overflow-y: auto;
+            position: relative;
+            font-family: var(--f-body);
+        }
+
+        /* Guion styling */
+        .dt-guion-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .dt-scene-card {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: 12px;
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            border-left: 3px solid var(--teal);
+            transition: border-color 0.2s ease;
+        }
+
+        body.light .dt-scene-card {
+            background: #FFFFFF;
+            border-color: rgba(20, 38, 45, 0.08);
+        }
+
+        .dt-scene-hdr {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text2);
+        }
+
+        .dt-scene-dialogo {
+            font-size: 13.5px;
+            line-height: 1.5;
+            color: var(--text);
+            padding-left: 12px;
+            border-left: 2px solid rgba(42, 191, 176, 0.4);
+            font-style: italic;
+        }
+
+        .dt-scene-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 11px;
+            color: var(--text3);
+            margin-top: 4px;
+            padding-top: 6px;
+            border-top: 1px dashed var(--border2);
+        }
+
+        /* Hooks cards */
+        .dt-hooks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 16px;
+        }
+
+        .dt-hook-card {
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: 14px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        body.light .dt-hook-card {
+            background: #FFFFFF;
+            border-color: rgba(20, 38, 45, 0.08);
+        }
+
+        .dt-hook-card:hover {
+            border-color: var(--accent);
+        }
+
+        .dt-hook-verbal {
+            font-size: 14.5px;
+            line-height: 1.5;
+            color: var(--text);
+            font-weight: 500;
+            font-style: italic;
+            background: rgba(42, 191, 176, 0.06);
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px dashed rgba(42, 191, 176, 0.25);
+        }
+
+        /* Tareas pipeline */
+        .dt-pipeline-steps {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            padding: 16px 8px;
+            margin-bottom: 24px;
+        }
+
+        .dt-pipeline-steps::before {
+            content: '';
+            position: absolute;
+            top: 32px;
+            left: 36px;
+            right: 36px;
+            height: 2px;
+            background: var(--border2);
+            z-index: 1;
+        }
+
+        .dt-pipeline-step {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            text-align: center;
+        }
+
+        .dt-step-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--surface2);
+            border: 2px solid var(--border2);
+            color: var(--text3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .dt-step-num.completed {
+            background: var(--teal);
+            border-color: var(--teal);
+            color: #0f1e24;
+        }
+
+        .dt-step-num.current {
+            background: rgba(42, 191, 176, 0.2);
+            border-color: var(--teal);
+            color: var(--teal);
+            box-shadow: 0 0 12px rgba(42, 191, 176, 0.4);
+        }
+
+        .dt-step-lbl {
+            font-size: 10.5px;
+            font-weight: 600;
+            color: var(--text3);
+            white-space: nowrap;
+        }
+
+        .dt-pipeline-step.active .dt-step-lbl {
+            color: var(--teal);
+        }
+
+        /* Footer styling */
+        .dt-modal-foot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 24px;
+            border-top: 1px solid var(--border2);
+            background: var(--surface);
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            flex-shrink: 0;
+        }
+
+        body.light .dt-modal-foot {
+            background: #FFFFFF;
+        }
+        </style>
 </head>
 <body class="dark">
 
@@ -702,6 +1347,238 @@
                 <button class="btn btn-primary" onclick="window.savePautar()">Crear Anuncio de Pauta</button>
             </div>
         </div>
+    </div>
+
+
+    <!-- MODAL 3: DETALLE DEL CREATIVO (FICHA TÉCNICA, GUIÓN, HOOKS, TAREAS) -->
+    <div class="overlay" id="modal-detalle" onclick="if(event.target===this) window.cerrarModal('detalle')">
+        <!-- FLECHA NAVEGACIÓN ANTERIOR (IZQUIERDA, POR FUERA DEL MODAL) -->
+        <button class="dt-nav-arrow dt-nav-prev" onclick="window.navDetallePiece(-1)" title="Creativo anterior (←)">
+            <svg viewBox="0 0 24 24" width="46" height="46" stroke="currentColor" stroke-width="3.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+        </button>
+
+        <div class="modal modal-detalle">
+            <!-- BOTÓN X EN LA ESQUINA FLOTANTE (EXACTO A LA REFERENCIA) -->
+            <button class="dt-corner-close" onclick="window.cerrarModal('detalle')" title="Cerrar modal (Esc)">
+                <i class="ti ti-x"></i>
+            </button>
+
+            <!-- HEADER: TÍTULO ARRIBA, PILLS DEBAJO -->
+            <div class="dt-hdr">
+                <div class="dt-hdr-info">
+                    <h3 id="dt-title" class="dt-title">Nombre del Creativo</h3>
+                    <div class="dt-hdr-badges">
+                        <span id="dt-badge-type" class="dt-badge dt-badge-type"><i class="ti ti-movie"></i> Reel</span>
+                        <span id="dt-badge-status" class="dt-badge dt-badge-status">Idea</span>
+                        <span id="dt-badge-funnel" class="dt-badge dt-badge-funnel"><i class="ti ti-filter"></i> TOFU</span>
+                        <span id="dt-badge-priority" class="dt-badge dt-badge-priority">Prioridad: Media</span>
+                        <span id="dt-badge-platform" class="dt-badge dt-badge-platform"><i class="ti ti-brand-instagram"></i> Instagram</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LAYOUT SPLIT: COLUMNA IZQUIERDA (FOTO GRANDE) + MAIN (DERECHA) -->
+            <div class="dt-modal-layout">
+                <!-- COLUMNA IZQUIERDA: IMAGEN GRANDE -->
+                <div class="dt-cover-col">
+                    <div class="dt-big-poster" id="dt-big-poster">
+                        <span class="dt-poster-overlay-badge" id="dt-poster-badge"><i class="ti ti-aspect-ratio"></i> 9:16 Portada</span>
+                        <img id="dt-big-cover-img" src="" alt="Portada" style="display:none;" onerror="this.style.display='none'; document.getElementById('dt-poster-fallback').style.display='flex';">
+                        <div id="dt-poster-fallback" class="dt-poster-fallback">
+                            <i class="ti ti-movie" id="dt-big-fallback-icon" style="font-size: 42px; color: var(--accent);"></i>
+                            <span style="font-size: 12px; font-weight: 600;">Sin portada asignada</span>
+                        </div>
+                        <a id="dt-poster-zoom" href="#" target="_blank" class="dt-poster-zoom-btn" style="display:none;">
+                            <i class="ti ti-maximize"></i> Ver original
+                        </a>
+                    </div>
+                    <div style="margin-top: 14px; width: 100%; display: flex; flex-direction: column; gap: 8px; font-size: 11.5px; color: var(--text2);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: var(--surface2); border-radius: 8px; border: 1px solid var(--border2);">
+                            <span style="color: var(--text3); font-weight: 600; text-transform: uppercase; font-size: 10px;">Formato:</span>
+                            <span id="dt-sidebar-format" style="font-weight: 600; color: var(--text);">Reel</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: var(--surface2); border-radius: 8px; border: 1px solid var(--border2);">
+                            <span style="color: var(--text3); font-weight: 600; text-transform: uppercase; font-size: 10px;">Duración:</span>
+                            <span id="dt-sidebar-duration" style="font-weight: 600; color: var(--teal);">45s</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COLUMNA DERECHA: MAIN -->
+                <div class="dt-main-col">
+                    <!-- TIRA DE TABS CON FONDO CLARITO PARA ALTO CONTRASTE -->
+                    <div class="dt-tabs-bar">
+                        <button class="dt-tab active" data-tab="ficha" onclick="window.switchDetalleTab('ficha')">
+                            <i class="ti ti-file-text"></i> Ficha técnica
+                        </button>
+                        <button class="dt-tab" data-tab="guion" onclick="window.switchDetalleTab('guion')">
+                            <i class="ti ti-movie"></i> Guión
+                        </button>
+                        <button class="dt-tab" data-tab="hooks" onclick="window.switchDetalleTab('hooks')">
+                            <i class="ti ti-bulb"></i> Hooks
+                        </button>
+                        <button class="dt-tab" data-tab="tareas" onclick="window.switchDetalleTab('tareas')">
+                            <i class="ti ti-checkbox"></i> Tareas
+                        </button>
+                    </div>
+
+                    <!-- MODAL BODY -->
+                    <div class="dt-modal-body">
+                        <!-- TAB 1: FICHA TÉCNICA -->
+                        <div class="dt-pane active" id="dt-pane-ficha">
+                            <div class="dt-card-sec">
+                                <div class="dt-sec-title"><i class="ti ti-compass"></i> Estrategia & Psicología</div>
+                                <div class="dt-grid-3" style="margin-bottom: 16px;">
+                                    <div class="dt-field-item">
+                                        <span class="dt-field-lbl">Pilar de Contenido</span>
+                                        <div id="dt-pilar" class="dt-field-chip">Pilar Principal</div>
+                                    </div>
+                                    <div class="dt-field-item">
+                                        <span class="dt-field-lbl">Pilar Secundario</span>
+                                        <div id="dt-pilar-sec" class="dt-field-val" style="color:var(--text2); font-weight:500;">—</div>
+                                    </div>
+                                    <div class="dt-field-item">
+                                        <span class="dt-field-lbl">Arquetipo Ideal</span>
+                                        <div id="dt-arquetipo" class="dt-field-val" style="font-weight:600; color:var(--accent);">—</div>
+                                    </div>
+                                </div>
+
+                                <div class="dt-grid-3" style="margin-bottom: 16px;">
+                                    <div class="dt-field-item">
+                                        <span class="dt-field-lbl">Objetivo Principal</span>
+                                        <div id="dt-obj-p" class="dt-field-val">—</div>
+                                    </div>
+                                    <div class="dt-field-item">
+                                        <span class="dt-field-lbl">Objetivo Algorítmico</span>
+                                        <div id="dt-obj-algo" class="dt-field-val">—</div>
+                                    </div>
+                                    <div class="dt-field-item">
+                                        <span class="dt-field-lbl">Emoción Central</span>
+                                        <div id="dt-emocion" class="dt-field-val">—</div>
+                                    </div>
+                                </div>
+
+                                <div class="dt-grid-3" style="margin-bottom: 16px;">
+                                    <div class="dt-field-item">
+                                        <span class="dt-field-lbl">Objetivo Secundario</span>
+                                        <div id="dt-obj-sec" class="dt-field-val">—</div>
+                                    </div>
+                                    <div class="dt-field-item">
+                                        <span class="dt-field-lbl">Emoción Secundaria</span>
+                                        <div id="dt-emocion-sec" class="dt-field-val">—</div>
+                                    </div>
+                                    <div class="dt-field-item">
+                                        <span class="dt-field-lbl">Prioridad</span>
+                                        <div id="dt-prioridad" class="dt-field-val">—</div>
+                                    </div>
+                                </div>
+
+                                <div class="dt-grid-2">
+                                    <div class="dt-field-item">
+                                        <span class="dt-field-lbl">Respuesta Buscada (Sentir / Pensar)</span>
+                                        <div id="dt-respuesta" class="dt-field-val" style="background:var(--surface2); padding:10px 12px; border-radius:8px; border:1px solid var(--border2); font-style:italic;">—</div>
+                                    </div>
+                                    <div class="dt-field-item">
+                                        <span class="dt-field-lbl">¿Por qué debería ver este reel? (Urgencia)</span>
+                                        <div id="dt-por-que" class="dt-field-val" style="background:var(--surface2); padding:10px 12px; border-radius:8px; border:1px solid var(--border2); font-style:italic;">—</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="dt-card-sec">
+                                <div class="dt-sec-title"><i class="ti ti-video"></i> Producción & Parámetros Técnicos</div>
+                                <div class="dt-grid-3">
+                                    <div class="dt-field-item">
+                                        <span class="dt-field-lbl">Formato de Video</span>
+                                        <div id="dt-formato" class="dt-field-val" style="font-weight:600;">—</div>
+                                    </div>
+                                    <div class="dt-field-item">
+                                        <span class="dt-field-lbl">Duración Objetivo</span>
+                                        <div id="dt-duracion" class="dt-field-val">—</div>
+                                    </div>
+                                    <div class="dt-field-item">
+                                        <span class="dt-field-lbl">Día Recomendado</span>
+                                        <div id="dt-dia-rec" class="dt-field-val">—</div>
+                                    </div>
+                                </div>
+                                <div class="dt-grid-2" style="margin-top:14px;">
+                                    <div class="dt-field-item">
+                                        <span class="dt-field-lbl">Fecha de Publicación</span>
+                                        <div id="dt-fecha-pub" class="dt-field-val">—</div>
+                                    </div>
+                                    <div class="dt-field-item">
+                                        <span class="dt-field-lbl">Etapa del Funnel</span>
+                                        <div id="dt-funnel-val" class="dt-field-val">—</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="dt-card-sec">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                    <div class="dt-sec-title" style="margin-bottom:0;"><i class="ti ti-brand-instagram"></i> Copy / Caption de Instagram</div>
+                                    <button class="btn btn-ghost" style="padding:4px 8px; font-size:11px;" onclick="window.copiarDetalleCopy()"><i class="ti ti-copy"></i> Copiar Copy</button>
+                                </div>
+                                <div id="dt-copy-text" class="dt-copy-box">Sin copy redactado aún.</div>
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px; font-size:11px; color:var(--text3);">
+                                    <span id="dt-copy-count">0 caracteres</span>
+                                    <div id="dt-hashtags-container" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TAB 2: GUIÓN -->
+                        <div class="dt-pane" id="dt-pane-guion">
+                            <div id="dt-guion-content">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- TAB 3: HOOKS -->
+                        <div class="dt-pane" id="dt-pane-hooks">
+                            <div id="dt-hooks-content" class="dt-hooks-grid">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- TAB 4: TAREAS -->
+                        <div class="dt-pane" id="dt-pane-tareas">
+                            <div id="dt-tareas-content">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FOOTER CON 4 BOTONES DE ACCIÓN -->
+            <div class="dt-modal-foot">
+                <div>
+                    <button class="btn btn-ghost" style="color:#ff8fab; border: 1px solid rgba(245, 90, 138, 0.35);" onclick="window.eliminarFromDetalleModal()">
+                        <i class="ti ti-trash"></i> Eliminar
+                    </button>
+                </div>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <button class="btn btn-outline" onclick="window.agendarFromDetalleModal()">
+                        <i class="ti ti-calendar"></i> Agendar
+                    </button>
+                    <button class="btn btn-outline" onclick="window.pautarFromDetalleModal()">
+                        <i class="ti ti-speakerphone"></i> Pautar
+                    </button>
+                    <button class="btn btn-primary" onclick="window.editarFromDetalleModal()">
+                        <i class="ti ti-edit"></i> Editar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- FLECHA NAVEGACION SIGUIENTE (DERECHA, POR FUERA DEL MODAL) -->
+        <button class="dt-nav-arrow dt-nav-next" onclick="window.navDetallePiece(1)" title="Siguiente creativo (→)">
+            <svg viewBox="0 0 24 24" width="46" height="46" stroke="currentColor" stroke-width="3.6" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </button>
     </div>
 
     <!-- TOAST CONTAINER -->
@@ -1048,6 +1925,15 @@
                     </div>
                 `;
 
+                // Click en la tarjeta abre el Modal Detalle
+                card.style.cursor = 'pointer';
+                card.onclick = (e) => {
+                    if (e.target.closest('.card-actions') || e.target.closest('select') || e.target.closest('button') || e.target.closest('a')) {
+                        return;
+                    }
+                    window.abrirModalDetalle(p.id);
+                };
+
                 container.appendChild(card);
             });
         }
@@ -1373,6 +2259,475 @@
             } else {
                 showToast("Campaña no encontrada", "ti-alert-circle");
             }
+        };
+
+
+        // ── MODAL DETALLE LOGIC & HANDLERS ──
+        let currentDetallePiece = null;
+
+        window.abrirModalDetalle = (id) => {
+            const piece = allPieces.find(p => p.id === id);
+            if (!piece) return;
+            currentDetallePiece = piece;
+
+            let cData = piece.content_data;
+            if (typeof cData === 'string') {
+                try { cData = JSON.parse(cData); } catch(e) { cData = {}; }
+            }
+            cData = cData || {};
+
+            // 1. Portada / Thumbnail
+            let imgSrc = '';
+            if (cData.cover_image) imgSrc = cData.cover_image;
+            else if (piece.cover_image) imgSrc = piece.cover_image;
+            else if (cData.portada) imgSrc = cData.portada;
+            else if (cData.thumbnail) imgSrc = cData.thumbnail;
+            else if (cData.thumbnail_url) imgSrc = cData.thumbnail_url;
+            else if (cData.image_url) imgSrc = cData.image_url;
+            else if (cData.image) imgSrc = cData.image;
+            else if (piece.type === 'carrusel' && cData.slides && cData.slides[0]) {
+                const bg = cData.slides[0].bg || cData.slides[0].image;
+                if (bg) {
+                    if (bg.startsWith('http') || bg.startsWith('data:') || bg.startsWith('/')) {
+                        imgSrc = bg;
+                    } else {
+                        const parts = bg.split('/');
+                        imgSrc = '../assets/images_database/' + parts[parts.length - 1];
+                    }
+                }
+            } else if (cData.brief?.cover_image) {
+                imgSrc = cData.brief.cover_image;
+            } else if (cData.brief?.imagen) {
+                const briefImg = String(cData.brief.imagen).trim();
+                if (briefImg.startsWith('http') || briefImg.startsWith('data:') || briefImg.startsWith('/')) {
+                    imgSrc = briefImg;
+                } else if (briefImg.endsWith('.jpg') || briefImg.endsWith('.png') || briefImg.endsWith('.webp')) {
+                    imgSrc = '../assets/images_database/' + briefImg;
+                }
+            } else if (Array.isArray(cData.references) && cData.references.length > 0) {
+                const imgRef = cData.references.find(r => typeof r === 'string' && (r.match(/\.(jpg|jpeg|png|webp|gif)($|\?)/i) || r.startsWith('data:image')));
+                if (imgRef) imgSrc = imgRef;
+            }
+
+            // 1. Portada / Poster Grande a la izquierda
+            const bigImgEl = document.getElementById('dt-big-cover-img');
+            const bigFbEl = document.getElementById('dt-poster-fallback');
+            const bigIcon = document.getElementById('dt-big-fallback-icon');
+            const zoomBtn = document.getElementById('dt-poster-zoom');
+            const posterBadge = document.getElementById('dt-poster-badge');
+
+            if (posterBadge) {
+                posterBadge.innerHTML = piece.type === 'carrusel' ?
+                    '<i class="ti ti-carousel-horizontal"></i> Carrusel' : '<i class="ti ti-aspect-ratio"></i> 9:16 Reel';
+            }
+
+            if (imgSrc) {
+                if (bigImgEl) {
+                    bigImgEl.src = imgSrc;
+                    bigImgEl.style.display = 'block';
+                }
+                if (bigFbEl) bigFbEl.style.display = 'none';
+                if (zoomBtn) {
+                    zoomBtn.href = imgSrc;
+                    zoomBtn.style.display = 'flex';
+                }
+            } else {
+                if (bigImgEl) bigImgEl.style.display = 'none';
+                if (bigFbEl) bigFbEl.style.display = 'flex';
+                if (bigIcon) bigIcon.className = piece.type === 'reel' ? 'ti ti-movie' : 'ti ti-carousel-horizontal';
+                if (zoomBtn) zoomBtn.style.display = 'none';
+            }
+
+            // Sidebar meta
+            const sbFormat = document.getElementById('dt-sidebar-format');
+            if (sbFormat) sbFormat.textContent = piece.type === 'carrusel' ? 'Carrusel' : (cData.formato_video || 'Reel');
+            const sbDur = document.getElementById('dt-sidebar-duration');
+            if (sbDur) sbDur.textContent = cData.duracion || (piece.type === 'carrusel' ? `${cData.slides?.length || 10} slides` : '45s');
+
+            // 2. Header info
+            document.getElementById('dt-title').textContent = piece.title || 'Creativo sin título';
+            document.getElementById('dt-badge-type').innerHTML = piece.type === 'carrusel' ?
+                '<i class="ti ti-carousel-horizontal"></i> Carrusel' : '<i class="ti ti-movie"></i> Reel';
+
+            const exactStatus = cData.ui_state?.exact_status || 
+                                (piece.status === 'en_creacion' ? 'Idea' : 
+                                (piece.status === 'revision' ? 'Edición' : 
+                                (piece.status === 'listo' ? 'Listo' : 'Publicado')));
+            const stStyle = getStatusStyle(exactStatus);
+            const stBadge = document.getElementById('dt-badge-status');
+            stBadge.innerHTML = `<span style="background:${stStyle.color};width:7px;height:7px;border-radius:50%;display:inline-block;"></span> ${exactStatus}`;
+            stBadge.style.background = stStyle.bg;
+            stBadge.style.color = stStyle.color;
+            stBadge.style.border = '1px solid ' + stStyle.border;
+
+            document.getElementById('dt-badge-funnel').innerHTML = `<i class="ti ti-filter"></i> ${cData.funnel || 'TOFU'}`;
+            const platBadge = document.getElementById('dt-badge-platform');
+            if (platBadge) {
+                const platIcon = (piece.platform || '').toLowerCase().includes('tik') ? 'ti-brand-tiktok' : 'ti-brand-instagram';
+                platBadge.innerHTML = `<i class="ti ${platIcon}"></i> ${piece.platform || 'Instagram'}`;
+            }
+
+            const prio = cData.prioridad || 'Media';
+            const prioBadge = document.getElementById('dt-badge-priority');
+            prioBadge.textContent = 'Prioridad: ' + prio;
+            const prioColor = prio === 'Alta' ? '#f55a8a' : (prio === 'Baja' ? 'var(--text3)' : 'var(--teal)');
+            prioBadge.style.color = prioColor;
+            prioBadge.style.borderColor = prioColor;
+
+            // 3. Tab 1: Ficha técnica
+            const pilarVal = piece.pillar || cData.pilar || cData.pillar || 'General';
+            document.getElementById('dt-pilar').textContent = pilarVal;
+            document.getElementById('dt-pilar-sec').textContent = cData.pilar_secundario || '—';
+            document.getElementById('dt-arquetipo').textContent = cData.arquetipo || cData.audiencia || 'Mujer con problemas estéticos y de autoestima';
+
+            document.getElementById('dt-obj-p').textContent = cData.obj_psicologico || '—';
+            document.getElementById('dt-obj-algo').textContent = Array.isArray(cData.obj_algoritmico) ? cData.obj_algoritmico.join(', ') : (cData.obj_algoritmico || 'Compartidos');
+            document.getElementById('dt-emocion').textContent = cData.emocion || '—';
+
+            document.getElementById('dt-obj-sec').textContent = cData.obj_secundario || '—';
+            document.getElementById('dt-emocion-sec').textContent = cData.emocion_secundaria || '—';
+            document.getElementById('dt-prioridad').textContent = prio;
+
+            document.getElementById('dt-respuesta').textContent = cData.respuesta_buscada ? `“${cData.respuesta_buscada}”` : 'Sin respuesta buscada definida';
+            document.getElementById('dt-por-que').textContent = cData.por_que_ahora ? `“${cData.por_que_ahora}”` : 'Sin relevancia/urgencia definida';
+
+            document.getElementById('dt-formato').textContent = cData.formato_video || (piece.type === 'carrusel' ? 'Carrusel Editorial' : 'Juan a cámara');
+            document.getElementById('dt-duracion').textContent = cData.duracion || (piece.type === 'carrusel' ? `${cData.slides?.length || 10} slides` : '45s');
+            document.getElementById('dt-dia-rec').textContent = cData.dia_recomendado || '—';
+            document.getElementById('dt-fecha-pub').textContent = piece.publish_date || 'Sin programar';
+            document.getElementById('dt-funnel-val').textContent = cData.funnel || 'TOFU (Atracción / Descubrimiento)';
+
+            // Copy & Hashtags
+            const copyStr = cData.copy || cData.caption || '';
+            document.getElementById('dt-copy-text').textContent = copyStr || 'Sin copy o caption redactado aún.';
+            document.getElementById('dt-copy-count').textContent = `${copyStr.length} caracteres / 2200 max`;
+
+            const hCont = document.getElementById('dt-hashtags-container');
+            hCont.innerHTML = '';
+            const hashArr = Array.isArray(cData.hashtags) ? cData.hashtags : (typeof cData.hashtags === 'string' ? cData.hashtags.split(/\s+/).filter(Boolean) : []);
+            if (hashArr.length > 0) {
+                hashArr.forEach(h => {
+                    const tag = h.startsWith('#') ? h : ('#' + h);
+                    hCont.innerHTML += `<span style="background:rgba(42,191,176,0.12);color:var(--teal);border:1px solid rgba(42,191,176,0.25);padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600;">${tag}</span>`;
+                });
+            } else {
+                hCont.innerHTML = '<span style="color:var(--text3);font-size:11px;">Sin hashtags asignados</span>';
+            }
+
+            // 4. Tab 2: Guión
+            const gCont = document.getElementById('dt-guion-content');
+            if (piece.type === 'reel') {
+                if (Array.isArray(cData.guion) && cData.guion.length > 0) {
+                    gCont.innerHTML = `<div class="dt-guion-list">` + cData.guion.map((sc, idx) => {
+                        const time = sc.tiempo || `${idx * 3}–${(idx + 1) * 3}s`;
+                        const tipo = sc.tipo || 'normal';
+                        const tipoLabel = tipo === 'rehook' ? '⚡ Re-hook' : (tipo === 'pip' ? '🖼️ PIP / B-Roll' : (tipo === 'cta' ? '🎯 CTA' : '🎬 Normal'));
+                        return `
+                            <div class="dt-scene-card" style="${tipo === 'cta' ? 'border-left-color: var(--accent);' : (tipo === 'rehook' ? 'border-left-color: #f5935a;' : (tipo === 'pip' ? 'border-left-color: #5ba3f5;' : ''))}">
+                                <div class="dt-scene-hdr">
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <span style="font-family:'Cormorant Garamond',serif; font-size:16px; font-weight:700; color:var(--teal);">Escena ${String(idx + 1).padStart(2, '0')}</span>
+                                        <span style="background:rgba(42,191,176,0.1); padding:2px 7px; border-radius:6px; font-size:10.5px; font-weight:600; color:var(--teal);">${time}</span>
+                                    </div>
+                                    <span style="font-size:11px; color:var(--text2); font-weight:600;">${tipoLabel}</span>
+                                </div>
+                                ${sc.dialogo ? `<div class="dt-scene-dialogo">“${sc.dialogo}”</div>` : '<div style="font-size:12px;color:var(--text3);font-style:italic;">(Sin locución/diálogo hablado)</div>'}
+                                <div class="dt-scene-meta">
+                                    ${sc.plano ? `<span><i class="ti ti-camera"></i> <strong>Plano:</strong> ${sc.plano}</span>` : ''}
+                                    ${sc.movimiento ? `<span><i class="ti ti-arrows-move"></i> <strong>Movimiento:</strong> ${sc.movimiento}</span>` : ''}
+                                    ${sc.texto ? `<span><i class="ti ti-typography"></i> <strong>Texto:</strong> <em style="color:var(--teal);">${sc.texto}</em></span>` : ''}
+                                    ${sc.pip ? `<span><i class="ti ti-layout-sidebar"></i> <strong>PIP:</strong> ${sc.pip}</span>` : ''}
+                                    ${sc.notas ? `<span><i class="ti ti-note"></i> <strong>Notas:</strong> ${sc.notas}</span>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    }).join('') + `</div>`;
+                } else {
+                    gCont.innerHTML = `
+                        <div style="text-align:center; padding:3rem 1.5rem; background:var(--surface); border:1px dashed var(--border2); border-radius:var(--r);">
+                            <div style="font-size:2.5rem; color:var(--accent); margin-bottom:10px;"><i class="ti ti-movie"></i></div>
+                            <h4 style="font-size:15px; font-weight:600; color:var(--text); margin-bottom:6px;">Sin guión estructurado por escenas</h4>
+                            <p style="font-size:12px; color:var(--text2); max-width:440px; margin:0 auto 16px;">
+                                ${cData.descripcion ? `Descripción inicial: "${cData.descripcion}"` : 'Esta pieza aún no cuenta con un desglose de escenas de guión.'}
+                            </p>
+                            <button class="btn btn-primary" onclick="window.editarFromDetalleModal()"><i class="ti ti-edit"></i> Escribir Guión en Constructor</button>
+                        </div>
+                    `;
+                }
+            } else {
+                // Carrusel slides
+                if (Array.isArray(cData.slides) && cData.slides.length > 0) {
+                    gCont.innerHTML = `<div class="dt-guion-list">` + cData.slides.map((sl, idx) => {
+                        return `
+                            <div class="dt-scene-card" style="border-left-color: var(--accent);">
+                                <div class="dt-scene-hdr">
+                                    <span style="font-family:'Cormorant Garamond',serif; font-size:16px; font-weight:700; color:var(--teal);">Slide ${idx + 1} de ${cData.slides.length}</span>
+                                    <span style="font-size:11px; color:var(--text2);">${sl.type || 'Contenido'}</span>
+                                </div>
+                                <div style="font-size:14px; font-weight:600; color:var(--text);">${sl.title1 || sl.line1 || 'Titular slide'}</div>
+                                ${sl.title2 || sl.line2 ? `<div style="font-size:12px; color:var(--text2);">${sl.title2 || sl.line2}</div>` : ''}
+                                ${sl.text || sl.body ? `<div style="font-size:12.5px; color:var(--text); line-height:1.5; margin-top:4px;">${sl.text || sl.body}</div>` : ''}
+                                ${sl.visual_desc || sl.prompt ? `<div style="font-size:11px; color:var(--text3); font-style:italic; margin-top:4px;"><i class="ti ti-photo"></i> Prompt visual: ${sl.visual_desc || sl.prompt}</div>` : ''}
+                            </div>
+                        `;
+                    }).join('') + `</div>`;
+                } else {
+                    gCont.innerHTML = `
+                        <div style="text-align:center; padding:3rem 1.5rem; background:var(--surface); border:1px dashed var(--border2); border-radius:var(--r);">
+                            <div style="font-size:2.5rem; color:var(--accent); margin-bottom:10px;"><i class="ti ti-carousel-horizontal"></i></div>
+                            <h4 style="font-size:15px; font-weight:600; color:var(--text); margin-bottom:6px;">Sin diapositivas registradas</h4>
+                            <p style="font-size:12px; color:var(--text2); max-width:440px; margin:0 auto 16px;">Abre el carrusel en su estudio para estructurar sus slides y diseño.</p>
+                            <button class="btn btn-primary" onclick="window.editarFromDetalleModal()"><i class="ti ti-edit"></i> Abrir Carousel Studio</button>
+                        </div>
+                    `;
+                }
+            }
+
+            // 5. Tab 3: Hooks
+            const hkCont = document.getElementById('dt-hooks-content');
+            const hA = cData.hooks?.hook_a || {};
+            const hB = cData.hooks?.hook_b || {};
+            const hC = cData.hooks?.hook_c || {};
+
+            const renderHookCard = (letter, label, hObj, isMain) => {
+                const verbal = hObj.verbal || (isMain && cData.descripcion ? cData.descripcion : '');
+                return `
+                    <div class="dt-hook-card" style="${isMain ? 'border-color: rgba(42, 191, 176, 0.4);' : ''}">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <span style="width:24px; height:24px; border-radius:50%; background:${isMain ? 'var(--teal)' : 'var(--surface2)'}; color:${isMain ? '#0f1e24' : 'var(--text)'}; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700;">${letter}</span>
+                                <span style="font-size:13px; font-weight:700; color:var(--text);">${label}</span>
+                            </div>
+                            ${hObj.tipo ? `<span style="font-size:10.5px; background:rgba(91,163,245,0.12); color:#5ba3f5; border:1px solid rgba(91,163,245,0.25); padding:2px 7px; border-radius:6px;">${hObj.tipo}</span>` : ''}
+                        </div>
+
+                        <div class="dt-hook-verbal">
+                            ${verbal ? `“${verbal}”` : '<span style="color:var(--text3);font-style:italic;">Sin gancho verbal especificado</span>'}
+                        </div>
+
+                        <div style="display:flex; flex-direction:column; gap:6px; font-size:11.5px; color:var(--text2);">
+                            ${hObj.visual ? `<div><strong style="color:var(--text3); text-transform:uppercase; font-size:10px;">Visual:</strong> ${hObj.visual}</div>` : ''}
+                            ${hObj.sonido ? `<div><strong style="color:var(--text3); text-transform:uppercase; font-size:10px;">Audio / Tono:</strong> ${hObj.sonido}</div>` : ''}
+                            ${hObj.escena ? `<div><strong style="color:var(--text3); text-transform:uppercase; font-size:10px;">Escena:</strong> ${hObj.escena}</div>` : ''}
+                        </div>
+
+                        ${verbal ? `
+                            <div style="margin-top:auto; padding-top:10px; border-top:1px dashed var(--border2);">
+                                <button class="btn btn-ghost" style="width:100%; justify-content:center; padding:5px 8px; font-size:11px;" onclick="window.copiarHookText('${verbal.replace(/'/g, "\\'")}')">
+                                    <i class="ti ti-copy"></i> Copiar Gancho ${letter}
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            };
+
+            hkCont.innerHTML = 
+                renderHookCard('A', 'Hook Principal (Ganador)', hA, true) +
+                renderHookCard('B', 'Hook Alternativo', hB, false) +
+                renderHookCard('C', 'Hook Contrarian / Visual', hC, false);
+
+            // 6. Tab 4: Tareas
+            const tkCont = document.getElementById('dt-tareas-content');
+            const STAGES = ['Idea', 'Investigación', 'Guionización', 'Grabación', 'Edición', 'Revisión', 'Publicación'];
+            const curIdx = STAGES.indexOf(exactStatus) !== -1 ? STAGES.indexOf(exactStatus) : 0;
+
+            const TASKS_DEF = [
+                { title: '1 · Idea', color: 'var(--teal)', subs: ['Definir la idea clara', 'Apuntar referencias rápidas'] },
+                { title: '2 · Investigación', color: '#b48ef0', subs: ['Revisar referentes o tendencias', 'Investigar datos y estadísticas', 'Escribir un borrador suelto'] },
+                { title: '3 · Guionización', color: '#5ba3f5', subs: ['Elegir hook inicial', 'Estructurar inicio - desarrollo - cierre', 'Definir CTA', 'Definir formato', 'Preparar props / B-Rolls'] },
+                { title: '4 · Grabación', color: '#f5935a', subs: ['Definir locación / fondo', 'Verificar equipo y look', 'Grabación completa'] },
+                { title: '5 · Edición', color: 'var(--amber)', subs: ['Corte de mejores tomas', 'Subtítulos y textos clave', 'Efectos visuales y audio', 'Ajustes finales'] },
+                { title: '6 · Revisión', color: '#f55a8a', subs: ['Crear / Elegir copy', 'Crear / Elegir hashtags', 'Crear / Elegir portada'] },
+                { title: '7 · Publicación', color: '#5ad0a0', subs: ['Programado para publicación', 'Comprobado publicado sin errores'] }
+            ];
+
+            const savedTasksStates = Array.isArray(cData.tasks_states) ? cData.tasks_states : [];
+            let totalSubtasks = 0;
+            let doneSubtasks = 0;
+
+            TASKS_DEF.forEach((stage, sIdx) => {
+                const stageStates = savedTasksStates[sIdx] || [];
+                stage.subs.forEach((_, subIdx) => {
+                    totalSubtasks++;
+                    if (stageStates[subIdx] || sIdx < curIdx) doneSubtasks++;
+                });
+            });
+
+            const percentDone = Math.round((doneSubtasks / totalSubtasks) * 100);
+
+            // Render pipeline bar
+            let pipelineHTML = `
+                <div class="dt-pipeline-steps">
+                    ${STAGES.map((st, i) => {
+                        const isDone = i < curIdx || (i === 6 && exactStatus === 'Publicado');
+                        const isCur = i === curIdx;
+                        return `
+                            <div class="dt-pipeline-step ${isDone || isCur ? 'active' : ''}">
+                                <div class="dt-step-num ${isDone ? 'completed' : (isCur ? 'current' : '')}">
+                                    ${isDone ? '<i class="ti ti-check" style="font-size:14px;"></i>' : (i + 1)}
+                                </div>
+                                <span class="dt-step-lbl">${st}</span>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding:12px 16px; background:var(--surface); border:1px solid var(--border2); border-radius:12px;">
+                    <div>
+                        <div style="font-size:13px; font-weight:700; color:var(--text);">Avance de Producción: ${doneSubtasks}/${totalSubtasks} subtareas</div>
+                        <div style="font-size:11px; color:var(--text2);">Estado actual del pipeline: <strong style="color:var(--teal);">${exactStatus}</strong></div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="font-size:15px; font-weight:800; color:var(--teal);">${percentDone}%</span>
+                        <div style="width:120px; height:8px; background:var(--surface2); border-radius:10px; overflow:hidden;">
+                            <div style="width:${percentDone}%; height:100%; background:var(--teal); border-radius:10px; transition:width 0.3s ease;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dt-grid-2">
+                    ${TASKS_DEF.map((stage, sIdx) => {
+                        const stageStates = savedTasksStates[sIdx] || [];
+                        const isStageComplete = sIdx < curIdx;
+                        return `
+                            <div class="dt-card-sec" style="margin-bottom:0; padding:14px 16px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                                    <div style="font-size:12px; font-weight:700; color:${stage.color}; display:flex; align-items:center; gap:6px;">
+                                        <i class="ti ${isStageComplete ? 'ti-circle-check-filled' : 'ti-circle-dashed'}"></i> ${stage.title}
+                                    </div>
+                                    <span style="font-size:10px; color:var(--text3); font-weight:600;">${stage.subs.length} pasos</span>
+                                </div>
+                                <div style="display:flex; flex-direction:column; gap:6px;">
+                                    ${stage.subs.map((sub, subIdx) => {
+                                        const isSubDone = stageStates[subIdx] || isStageComplete;
+                                        return `
+                                            <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:${isSubDone ? 'var(--text)' : 'var(--text3)'}; ${isSubDone ? 'text-decoration:line-through; opacity:0.75;' : ''}">
+                                                <i class="ti ${isSubDone ? 'ti-checkbox' : 'ti-square'}" style="color:${isSubDone ? 'var(--teal)' : 'var(--text3)'}; font-size:14px;"></i>
+                                                <span>${sub}</span>
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+
+            tkCont.innerHTML = pipelineHTML;
+
+            // Reset to default tab
+            window.switchDetalleTab('ficha');
+
+            // Show modal
+            document.getElementById('modal-detalle').classList.add('open');
+        };
+
+        window.switchDetalleTab = (tabName) => {
+            document.querySelectorAll('.dt-tab').forEach(b => {
+                b.classList.toggle('active', b.dataset.tab === tabName);
+            });
+            document.querySelectorAll('.dt-pane').forEach(p => {
+                p.classList.toggle('active', p.id === `dt-pane-${tabName}`);
+            });
+        };
+
+        window.copiarDetalleCopy = () => {
+            const copyText = document.getElementById('dt-copy-text')?.textContent || '';
+            if (!copyText || copyText.startsWith('Sin copy')) {
+                showToast("No hay copy para copiar", "ti-info-circle");
+                return;
+            }
+            navigator.clipboard.writeText(copyText).then(() => {
+                showToast("Copy copiado al portapapeles", "ti-check");
+            }).catch(() => {
+                showToast("Error al copiar copy", "ti-alert-circle");
+            });
+        };
+
+        window.copiarHookText = (text) => {
+            if (!text) return;
+            navigator.clipboard.writeText(text).then(() => {
+                showToast("Gancho copiado al portapapeles", "ti-check");
+            }).catch(() => {
+                showToast("Error al copiar gancho", "ti-alert-circle");
+            });
+        };
+
+        // 4 Action Buttons in Detalle Modal Footer
+        window.editarFromDetalleModal = () => {
+            if (!currentDetallePiece) return;
+            window.cerrarModal('detalle');
+            window.editarPiece(currentDetallePiece.id, currentDetallePiece.type);
+        };
+
+        window.agendarFromDetalleModal = () => {
+            if (!currentDetallePiece) return;
+            const p = currentDetallePiece;
+            window.cerrarModal('detalle');
+            window.abrirModalProgramar(p.id, p.publish_date || '');
+        };
+
+        window.pautarFromDetalleModal = () => {
+            if (!currentDetallePiece) return;
+            const p = currentDetallePiece;
+            let cData = p.content_data;
+            if (typeof cData === 'string') {
+                try { cData = JSON.parse(cData); } catch(e) { cData = {}; }
+            }
+            cData = cData || {};
+            let hookText = '';
+            if (p.type === 'carrusel' && cData.slides && cData.slides[0]) {
+                hookText = cData.slides[0].title1 || cData.slides[0].line1 || '';
+            } else if (p.type === 'reel') {
+                hookText = cData.hooks?.hook_a?.verbal || '';
+            }
+            window.cerrarModal('detalle');
+            window.abrirModalPautar(p.id, p.title || 'Creativo', 'cover_image', hookText);
+        };
+
+
+        // Navegación entre creativos (Flechas Chevron & Teclas ← →)
+        window.navDetallePiece = (direction) => {
+            if (!currentDetallePiece) return;
+            const list = (filteredPieces && filteredPieces.length > 0) ? filteredPieces : allPieces;
+            if (!list || list.length === 0) return;
+
+            const curIdx = list.findIndex(p => p.id === currentDetallePiece.id);
+            if (curIdx === -1) return;
+
+            let nextIdx = curIdx + direction;
+            if (nextIdx < 0) nextIdx = list.length - 1;
+            if (nextIdx >= list.length) nextIdx = 0;
+
+            window.abrirModalDetalle(list[nextIdx].id);
+        };
+
+        // Atajos de teclado cuando el modal está abierto
+        document.addEventListener('keydown', (e) => {
+            const modal = document.getElementById('modal-detalle');
+            if (!modal || !modal.classList.contains('open')) return;
+
+            // Ignorar si el usuario está escribiendo en un input o textarea
+            if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
+
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                window.navDetallePiece(-1);
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                window.navDetallePiece(1);
+            } else if (e.key === 'Escape') {
+                window.cerrarModal('detalle');
+            }
+        });
+
+        window.eliminarFromDetalleModal = () => {
+            if (!currentDetallePiece) return;
+            const id = currentDetallePiece.id;
+            window.cerrarModal('detalle');
+            window.deletePiece(id);
         };
 
         // Toast feedback
